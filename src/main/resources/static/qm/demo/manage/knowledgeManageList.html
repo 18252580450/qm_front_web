@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>知识管理</title>
+    <link rel="stylesheet" type="text/css" href="../../assets/lib/easyui/themes/cmcui/cmcui.css"/>
+    <link rel="stylesheet" type="text/css" href="../../assets/lib/easyui/themes/cmcui/iconfont/iconfont.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../assets/lib/ztree/css/cmcStyle/tree.css"/>
+    <link rel="stylesheet" type="text/css" href="../../assets/components/rating/themes/fontawesome-stars.css"/>
+
+    <link href="../../css/style.min.css" rel="stylesheet">
+
+    <style type="text/css">
+
+
+        #templateContent {
+            box-sizing: content-box;
+            padding: 0 15px;
+        }
+
+        #customTempletList {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        #customTempletList > li {
+            display: inline-block;
+            float: left;
+            height: 30px;
+            max-width: 180px;
+            padding: 0 8px;
+            background-color: #d9edf8;
+            border-radius: 30px;
+            margin: 0 10px 10px 0;
+        }
+
+        li {
+            display: list-item;
+            text-align: -webkit-match-parent;
+        }
+
+        .link-blue {
+            color: #007ce5 !important;
+            text-decoration: none;
+            padding: 0 4px;
+        }
+
+        #customTempletList > li a.link-blue {
+            height: 30px;
+            line-height: 30px;
+            max-width: 140px;
+        }
+
+        #customTempletList > li a {
+            display: inline-block;
+            float: left;
+        }
+
+        #customTempletList > li a.formwork-del {
+            width: 20px;
+            height: 20px;
+            margin-top: 5px;
+            background: url(../../image/knowledgeEdit.png) no-repeat -160px -20px;
+        }
+
+        .formwork-list > ul li a {
+            display: inline-block;
+            float: left;
+        }
+
+        .rowMargin {
+            padding-right: 0px !important;
+        }
+    </style>
+
+</head>
+<body>
+<div data-options="region:'center'" style="overflow: auto;">
+    <div id="page_content" data-options="region:'center'" style="width:100%; height:800px;">
+
+    </div>
+</div>
+</body>
+
+<script type="text/javascript" src="../../jsdemo/common/requirejs-main.js"></script>
+<script type="text/javascript" src="../../assets/lib/require/require.min.js"
+        data-main="jsdemo/manage/knowledgeManageList"></script>
+
+
+</html>

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <title>模板详情页面</title>
+    <link rel="stylesheet" type="text/css" href="../../assets/lib/easyui/themes/cmcui/cmcui.css"/>
+    <link rel="stylesheet" type="text/css" href="../../assets/lib/easyui/themes/cmcui/iconfont/iconfont.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../assets/lib/ztree/css/cmcStyle/tree.css"/>
+    <link rel="stylesheet" type="text/css" href="../../assets/components/rating/themes/fontawesome-stars.css"/>
+    <link rel="stylesheet" type="text/css" href="../../css/style.css">
+    <style type="text/css">
+        .clk-add, .clk-edit, .clk-del, .clk-up, .clk-down, .ic-lock {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            background-image: url(../../image/treeOperate.png);
+            background-repeat: no-repeat;
+        }
+
+        .clk-add {
+            background-position: 0 -20px;
+        }
+
+        .clk-add.disabled{
+            background-position: 0 0;
+        }
+        .clk-edit.disabled {
+            background-position: -20px 0;
+        }
+
+        .clk-edit {
+            background-position: -20px -20px;
+        }
+
+        .clk-del.disabled {
+            background-position: -40px 0;
+        }
+
+        .clk-del {
+            background-position: -40px -20px;
+        }
+
+        .clk-up {
+            background-position: -60px -20px;
+        }
+
+        .clk-up.disabled {
+            background-position: -60px 0;
+        }
+
+        .clk-down {
+            background-position: -80px -20px;
+        }
+
+        .clk-down.disabled {
+            background-position: -80px 0;
+        }
+
+        .ke-act-btns > li > a {
+            margin: 5px 3px;
+        }
+
+        element.style {
+            cursor: pointer;
+        }
+
+        .ke-panel-content.clear-overlap {
+            margin-top: -1px;
+        }
+
+        .ke-panel-content {
+            background-color: #FFF;
+            /*border: 1px solid #d0d6d9;*/
+        }
+
+        .ke-panel-content:after {
+            content: "";
+            clear: both;
+            height: 0;
+            display: table;
+            overflow: hidden;
+        }
+
+        .ke-act-btns {
+            height: 30px;
+            background-color: #e8eff2;
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            padding-left: 15px;
+            border-bottom: 1px solid #d0d6d9;
+        }
+
+        .ke-act-btns > li {
+            height: 30px;
+            float: left;
+        }
+
+        li {
+            display: list-item;
+            text-align: -webkit-match-parent;
+        }
+        body{margin:0;padding:0;border:0;font:inherit;font-size:100%;vertical-align:baseline; background:#fff; font-family:"微软雅黑"}
+        p,ul,li{margin:0;padding:0;border:0;font:inherit;font-size:100%;vertical-align:baseline;list-style-type:none;}
+        .bd-list{ border:1px solid #f3f3f3; overflow:hidden}
+        .bd-tile{ font-size:13px; height:40px; line-height:40px; padding-left:20px; color:#666666; font-weight:bold; font-family:"微软雅黑"}
+
+        .bd-boxa{ background:#f8f9fa;  line-height:25px; color:#343843; padding-left:20px; clear:both;padding-top:14px; overflow:hidden; padding-bottom:8px}
+        .bd-boxb{ background:#fff; line-height:25px; color:#343843; padding-left:20px; clear:both; padding-top:14px; overflow:hidden; padding-bottom:8px}
+        .bd-boxa div{ float:left}
+        .bd-boxb div{ float:left}
+
+
+        /*下拉*/
+        .nav{width:150px;height:30px; background:#FFF;border-radius:3px;border: solid 1px #ccc;}
+        .nav p{display:block;padding-left:10px;line-height:30px;}
+        .set{background:url(../image/btn_2.png) 115px 10px no-repeat;}
+        .select{background:url(../image/btn_1.png) 115px 10px no-repeat;}
+        .new{width:148px;position:absolute;border:1px solid #CCC;display:none; background:#FFF;border-radius:5px}
+        .nav ul li{line-height:30px;padding-left:10px;}
+        .nav ul li:hover{background:#F8F9FB;color:#ef5d25;}
+        .nav:hover{ -moz-box-shadow: 0 0 3px 0 #2da9fa;
+            -webkit-box-shadow: 0 0 3px 0 #2da9fa;
+            box-shadow: 0 0 3px 0 #2da9fa;
+            border: solid 1px #2da9fa;border-radius:3px
+        }
+        .bd-text1{ font-size:14px;}
+        .bd-text1 a:link{ color:#007CE5}
+        .bd-text1 a:visited{ color:#007CE5}
+        fieldset{ border: 0; }
+        label{ display: block; cursor: pointer; line-height: 18px; padding-bottom: 9px; }
+        .label_check input,
+        .label_radio input{ margin-right: 5px; }
+        .has-js .label_radio{ padding-left: 24px; }
+        .has-js .label_radio{ background: url(../image/radio-off.png) no-repeat; }
+        .has-js .label_check{ background: url(../image/check-off.png) no-repeat; }
+        .has-js label.c_on{ background: url(../image/check-on.png) no-repeat; }
+        .has-js label.r_on{ background: url(../image/radio-on.png) no-repeat; }
+        .has-js .label_check input,
+        .has-js .label_radio input{ position: absolute; left: -9999px; }
+
+        .bd-dx{ width:600px;  float:left; overflow:hidden}
+        .label_radio{ width:120px; float:left}
+        .label_check{ width:160px; float:left}
+
+    </style>
+</head>
+<body>
+<div id="tmpltDetailMainLayout" class="easyui-layout" style="height:720px;border:none" >
+    <div region = 'north' style="border:none" >
+        <div id="tmpltDetailLayout" class="easyui-layout" style="height:650px;border:none">
+        </div>
+    </div>
+    <div region = 'south'  style="border:none">
+        <div region = 'south' id = 'bottomBtnsForm' style = 'height:60px;border:none' >
+        </div>
+    </div>
+
+</div>
+
+    <!--选择原子弹窗-->
+    <div id='win_content' style='overflow:auto;display: none' >
+    </div>
+    <!--创建分组弹窗-->
+    <div id='createGroupWin' style='overflow:auto;display: none' >
+    </div>
+    <!--新建筛选条件弹窗-->
+    <div id='newFilterWin' style='overflow:auto;display: none'  >
+    </div>
+</body>
+<script type="text/javascript" src="../../jsdemo/common/requirejs-main.js"></script>
+<script type="text/javascript" src="../../assets/lib/require/require.min.js" data-main="jsdemo/manage/tmpltDetails"></script>
+</html>

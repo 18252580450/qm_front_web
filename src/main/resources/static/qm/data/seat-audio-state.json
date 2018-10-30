@@ -1,0 +1,42 @@
+[
+  {
+    "codeType": "SEAT_AUDIO_STATE",
+    "codeValue": "WAITCON",
+    "codeName": "等待链接",
+    "codeDesc": "坐席电话状态",
+    "sortId": 0,
+    "state": "1"
+  },
+  {
+    "codeType": "SEAT_AUDIO_STATE",
+    "codeValue": "BLOCK",
+    "codeName": "阻塞",
+    "codeDesc": "坐席电话状态",
+    "sortId": 1,
+    "state": "1"
+  },
+  {
+    "codeType": "SEAT_AUDIO_STATE",
+    "codeValue": "WAITANS",
+    "codeName": "等待应答",
+    "codeDesc": "坐席电话状态",
+    "sortId": 2,
+    "state": "1"
+  },
+  {
+    "codeType": "SEAT_AUDIO_STATE",
+    "codeValue": "ANSWER",
+    "codeName": "已应答",
+    "codeDesc": "坐席电话状态",
+    "sortId": 3,
+    "state": "1"
+  },
+  {
+    "codeType": "SEAT_AUDIO_STATE",
+    "codeValue": "TALK",
+    "codeName": "已桥接",
+    "codeDesc": "坐席电话状态",
+    "sortId": 4,
+    "state": "1"
+  }
+]

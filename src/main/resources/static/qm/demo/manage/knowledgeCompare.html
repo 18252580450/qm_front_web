@@ -1,0 +1,127 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8"/>
+    <title>知识对比</title>
+    <link rel="stylesheet" type="text/css" href="../../assets/lib/easyui/themes/cmcui/cmcui.css"/>
+    <link rel="stylesheet" type="text/css" href="../../assets/lib/easyui/themes/cmcui/iconfont/iconfont.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../assets/lib/ztree/css/cmcStyle/tree.css"/>
+    <link rel="stylesheet" type="text/css" href="../../assets/components/rating/themes/fontawesome-stars.css"/>
+    <!--<script src="https://cdn.ckeditor.com/ckeditor5/11.0.1/classic/ckeditor.js"></script>-->
+    <script src="../../assets/components/ckeditor/ckeditor.js"></script>
+
+    <link href="../../css/style.min.css" rel="stylesheet">
+
+    <style type="text/css">
+        .contrast-content table .level-2.open, .contrast-content table .level-2.close { background-image: url("data:image/gif;base64,R0lGODlhFAA8APEDAFtbW25ubv///wAAACH5BAUAAAMALAAAAAAUADwAAAJhnI+py+0PVZi0hhaE3vuyzHHeAmqAiHFnlwrA+2qjpKJfzd5hTu68ZLFEhsSi8YhMKpfMpvMJjUqn1Kr1is0OgkKdb5Yo7cAIcYh8MNt6LtgKbVD/wj5Z63sfY7gUrX9aAAA7"); background-repeat: no-repeat; }
+        .contrast-inner { min-width: 960px; max-width: 1560px; box-sizing: border-box; margin: 0 auto; padding: 0 15px; }
+        .km-contrast { width: 100%; min-width: 960px; height: 100%; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: #EDF1F6 ; background-attachment: fixed; }
+        .km-contrast .contrast-inner > table { table-layout: fixed; width: 100%; border-collapse: collapse; color: #333; }
+        .km-contrast .contrast-inner > table th { width: 140px; font-weight: normal; text-align: left; }
+        .contrast-title { position: fixed; top: 0; width: 100%; background-color: #EDF1F6; padding-top: 16px; }
+        .contrast-title table { background-color: #363d41; }
+        .contrast-title table th, .contrast-title table td { padding: 2px 6px; border: 1px solid #50616A; }
+        .contrast-title table th a, .contrast-title table td a { display: block; width: 100%; height: 24px; line-height: 24px; color: #E3E3E3; }
+        .contrast-title table th a:hover, .contrast-title table td a:hover { color: #77ceff; text-decoration: underline; }
+        .contrast-title table th label { display: block; width: 100%; margin: 5px 0; font-size: 12px; color: #DDD; }
+        .contrast-content { padding-top: 68px; margin-bottom: 15px; }
+        .contrast-content table { background-color: #FFF; font-size: 12px; color: #666; }
+        .contrast-content table th, .contrast-content table td { border: 1px solid #BECCD9; vertical-align: top; padding: 8px 6px; line-height: 20px; }
+        .contrast-content table th .con-inner, .contrast-content table td .con-inner { box-sizing: border-box; width: 100%; max-height: 400px; min-height: 0%; word-wrap: break-word; word-break: break-all; overflow: auto; }
+        .contrast-content table th .con-inner img, .contrast-content table td .con-inner img { max-width: 100% !important; }
+        .contrast-content table th .con-inner table, .contrast-content table td .con-inner table { width: 100%; float: left; margin: 5px 5px 5px 0; }
+        .contrast-content table .level-1 { background-color: #E6EDF6; }
+        .contrast-content table .level-1 th, .contrast-content table .level-1 td { font-weight: bold; font-size: 14px; }
+        .contrast-content table .level-2 { padding-left: 20px; font-weight: bold; color: #333; }
+        .contrast-content table .level-2:hover { color: #008DDD; }
+        .contrast-content table .level-2.open { background-position: left -41px; }
+        .contrast-content table .level-2.close { background-position: left -1px; }
+        .contrast-content table .level-3 { margin-left: 40px; float: left; }
+
+        .con-inner {
+            box-sizing: border-box;
+            width: 100%;
+            max-height: 400px;
+            min-height: 0%;
+            word-wrap: break-word;
+            word-break: break-all;
+        }
+
+        .icon {
+            font-size: 20px;
+            position: relative;
+            left: -2px;
+            top: 2px;
+        }
+
+        .km-zhujie:before {
+            content: "\e6d4";
+        }
+
+        .level-3 {
+            margin-left: 40px;
+            float: left;
+        }
+
+        .bg-high {
+            background: #FFFF00 !important;
+            font-size: inherit !important;
+        }
+
+        .close {
+            position: absolute;
+            right: 6px;
+            top: 5px;
+            width: 16px;
+            height: 16px;
+            display: block;
+            font-size: 12px;
+            color: #78909c;
+            text-decoration: none;
+        }
+
+        .level-2 {
+            padding-left: 20px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .level-1 {
+            background-color: #E6EDF6;
+        }
+
+        th, td {
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+    </style>
+</head>
+
+<body class="km-contrast">
+
+<!-- 背景高亮 bg-high, 可以添加给 <tr> 或 <td> -->
+
+<!-- 对比表头 -->
+<div class="contrast-title">
+    <div class="contrast-inner">
+        <table>
+            <tr id="tableTitleId">
+            </tr>
+        </table>
+    </div>
+</div>
+<!-- 对比表头 -->
+
+<div class="contrast-inner contrast-content">
+    <table id="tableBodyId">
+    </table>
+</div>
+</body>
+
+<script type="text/javascript" src="../../jsdemo/common/requirejs-main.js"></script>
+<script type="text/javascript" src="../../assets/lib/require/require.min.js"
+        data-main="jsdemo/manage/knowledgeCompare"></script>
+
+</html>

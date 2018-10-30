@@ -1,0 +1,29 @@
+{
+  "resultVal": 1,
+  "resultMsg": [
+    {
+      "codeType": "SKILL_TYPE@CS_IR",
+      "codeValue": "1",
+      "codeName": "实时类",
+      "codeDesc": "技能队列类型",
+      "sortId": 1,
+      "state": "1"
+    },
+    {
+      "codeType": "SKILL_TYPE@CS_IR",
+      "codeValue": "2",
+      "codeName": "准实时类",
+      "codeDesc": "技能队列类型",
+      "sortId": 2,
+      "state": "1"
+    },
+    {
+      "codeType": "SKILL_TYPE@CS_IR",
+      "codeValue": "3",
+      "codeName": "非实时类",
+      "codeDesc": "技能队列类型",
+      "sortId": 3,
+      "state": "1"
+    }
+  ]
+}

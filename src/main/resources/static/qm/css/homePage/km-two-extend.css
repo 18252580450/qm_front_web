@@ -1,0 +1,13 @@
+@charset "UTF-8";
+
+/* 扩展样式从这里开始 */
+.fn-fr{
+    float: right;
+}
+.fn-fl{
+    float: left;
+}
+.km-search .search-hotwords > ul li.addbg a{
+    color: #e50017;
+    background-color: #f4e8e8;
+}

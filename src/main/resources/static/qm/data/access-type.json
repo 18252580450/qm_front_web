@@ -1,0 +1,74 @@
+[
+  {
+    "codeType": "ACCESS_TYPE@CS_IR",
+    "codeValue": "1",
+    "codeName": "电话",
+    "codeDesc": "接入渠道",
+    "sortId": 0,
+    "state": "1"
+  },
+  {
+    "codeType": "ACCESS_TYPE@CS_IR",
+    "codeValue": "2",
+    "codeName": "移动端网页",
+    "codeDesc": "接入渠道",
+    "sortId": 0,
+    "state": "1"
+  },
+  {
+    "codeType": "ACCESS_TYPE@CS_IR",
+    "codeValue": "3",
+    "codeName": "微信",
+    "codeDesc": "接入渠道",
+    "sortId": 0,
+    "state": "1"
+  },
+  {
+    "codeType": "ACCESS_TYPE@CS_IR",
+    "codeValue": "4",
+    "codeName": "新浪微博",
+    "codeDesc": "接入渠道",
+    "sortId": 0,
+    "state": "1"
+  },
+  {
+    "codeType": "ACCESS_TYPE@CS_IR",
+    "codeValue": "5",
+    "codeName": "Android APP",
+    "codeDesc": "接入渠道",
+    "sortId": 0,
+    "state": "1"
+  },
+  {
+    "codeType": "ACCESS_TYPE@CS_IR",
+    "codeValue": "6",
+    "codeName": "IOS APP",
+    "codeDesc": "接入渠道",
+    "sortId": 0,
+    "state": "1"
+  },
+  {
+    "codeType": "ACCESS_TYPE@CS_IR",
+    "codeValue": "7",
+    "codeName": "邮件",
+    "codeDesc": "接入渠道",
+    "sortId": 0,
+    "state": "1"
+  },
+  {
+    "codeType": "ACCESS_TYPE@CS_IR",
+    "codeValue": "8",
+    "codeName": "短信",
+    "codeDesc": "接入渠道",
+    "sortId": 0,
+    "state": "1"
+  },
+  {
+    "codeType": "ACCESS_TYPE@CS_IR",
+    "codeValue": "9",
+    "codeName": "桌面端网页",
+    "codeDesc": "接入渠道",
+    "sortId": 0,
+    "state": "1"
+  }
+]

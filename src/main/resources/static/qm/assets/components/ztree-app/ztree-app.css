@@ -1,0 +1,178 @@
+.ztree-app{
+  width: 300px;
+}
+
+.ke-act-btns {
+  height: 30px;
+  background-color: #e8eff2;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  padding-left: 15px;
+  border-bottom: 1px solid #d0d6d9;
+}
+
+.ke-act-btns > li {
+  height: 30px;
+  float: left;
+}
+
+.ke-act-btns > li > a {
+  margin: 5px 3px;
+}
+
+.clk-add,
+.clk-edit,
+.clk-del,
+.clk-up,
+.clk-down,
+.ic-lock {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  background-image: url(treeOperate.png);
+  background-repeat: no-repeat;
+}
+
+.clk-add {
+  background-position: 0 -20px;
+}
+
+.clk-edit.disabled {
+  background-position: -20px 0;
+}
+
+.clk-edit {
+  background-position: -20px -20px;
+}
+
+.clk-del.disabled {
+  background-position: -40px 0;
+}
+
+.clk-del {
+  background-position: -40px -20px;
+}
+
+.clk-up {
+  background-position: -60px -20px;
+}
+
+.clk-up.disabled {
+  background-position: -60px 0;
+}
+
+.clk-down {
+  background-position: -80px -20px;
+}
+
+.clk-down.disabled {
+  background-position: -80px 0;
+}
+
+
+
+/* .ke-panel-content.clear-overlap {
+  margin-top: -1px;
+}
+
+.ke-panel-content {
+  background-color: #fff;
+}
+
+.ke-panel-content:after {
+  content: "";
+  clear: both;
+  height: 0;
+  display: table;
+  overflow: hidden;
+}
+
+
+
+li {
+  display: list-item;
+  text-align: -webkit-match-parent;
+}
+
+.rowMargin {
+  margin-top: 20px !important;
+  padding-right: 0%;
+  margin-left: 0%;
+  margin-top: 0px;
+}
+
+.form-horizontal .form-label {
+  padding-right: 6px !important;
+}
+
+#footer {
+  border-color: #c5c0de;
+  text-align: center;
+  padding: 5px;
+  background-color: #fafafa;
+  border-width: 1px;
+  border-style: solid;
+  position: relative;
+  top: 10px;
+  color: #666;
+}
+
+.formlayer.formlayer-has-btns {
+  width: 100%;
+  padding: 0;
+}
+
+.formlayer {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 38px;
+  z-index: 10000;
+  padding: 6px;
+  background: #fff;
+  box-sizing: border-box;
+  text-align: left;
+  border: 1px solid #008ace;
+}
+
+.formlayer-content {
+  padding: 6px;
+  overflow: auto;
+  height: 150px;
+}
+
+.formlayer.formlayer-has-btns > .formlayer-btns {
+  display: block;
+  width: 100%;
+  height: 36px;
+  text-align: center;
+  background: #f7f9fa;
+  border-top: 1px solid #eaeef1;
+}
+
+.treeButton {
+  display: inline-block;
+  height: 22px;
+  line-height: 22px;
+  font-size: 12px;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  background: #fff;
+  text-decoration: none;
+  cursor: pointer;
+  white-space: nowrap;
+  outline: none;
+  color: #333;
+  padding: 0 10px;
+  margin-top: 6px;
+}
+
+.combo_footer {
+  border-width: 1px;
+  border-style: solid;
+  border-color: #c5c0de;
+  border-top-width: 1px;
+  text-align: center;
+} */

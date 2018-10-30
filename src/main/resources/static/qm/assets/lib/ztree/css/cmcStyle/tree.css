@@ -1,0 +1,403 @@
+
+@font-face {
+	font-family: 'FontAwesome';
+	src: url('fontawesome-webfont.eot?v=3.2.1');
+	src: 
+	url('fontawesome-webfont.eot?#iefix&v=3.2.1') format('embedded-opentype'), 
+	url('fontawesome-webfont.woff?v=3.2.1') format('woff'), 
+	url('fontawesome-webfont.ttf?v=3.2.1') format('truetype'), 
+	url('fontawesome-webfont.svg#fontawesomeregular?v=3.2.1') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+[class^="icon-"], [class*=" icon-"] {
+font-family:FontAwesome;
+font-weight:normal;
+font-style:normal;
+text-decoration:inherit;
+-webkit-font-smoothing:antialiased;
+*margin-right:.3em;
+}
+[class^="icon-"]:before, [class*=" icon-"]:before {
+	text-decoration: inherit;
+	display: inline-block;
+	speak: none;
+}
+
+
+.ztree * {
+  padding: 0;
+  margin: 0;
+}
+.ztree{
+  padding: 5px;
+	color: #333;
+}
+.ztree li {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  line-height: 24px;
+  text-align: left;
+  white-space: nowrap;
+  outline: 0;
+}
+.ztree li ul {
+  margin: 0px;
+  padding: 0 0 0 18px;
+}
+.ztree li a {
+  padding-right: 3px;
+  margin: 0;
+  cursor: pointer;
+  height: 20px;
+  background-color: transparent;
+  text-decoration: none;
+  vertical-align: top;
+  display: inline-block;
+}
+.ztree li a input.rename {
+  height: 14px;
+  width: 80px;
+  padding: 0;
+  margin: 0;
+  color: #af0000;
+  background-color: #ffffff;
+  font-size: 12px;
+  border: 1px #585956 solid;
+  *border: 0px;
+}
+
+.ztree li a.curSelectedNode {
+  padding-top: 0px;
+  /*background-color: #00c484;*/
+  /*color: #fff!important;*/
+  height: 20px;
+  opacity: 0.8;
+  width: 100%;
+}
+.ztree li a.curSelectedNode_Edit {
+  padding-top: 0px;
+  background-color: transparent;
+  color: #fff;
+  height: 20px;
+  opacity: 0.8;
+}
+.ztree li a.tmpTargetNode_inner {
+  padding-top: 0px;
+  background-color: #665aa7;
+  color: #fff;
+  height: 20px;
+  opacity: 0.8;
+  filter: alpha(opacity=80);
+}
+.ztree li span {
+  line-height: 17px;
+  margin-right: 2px;
+  background-color: transparent;
+}
+.ztree li span.button {
+  line-height: 0;
+  margin: 0;
+  padding: 0;
+  width: 20px!important;
+  height: 17px;
+	text-align: center;
+  display: inline-block;
+  vertical-align: top;
+  border: 0px solid;
+  cursor: pointer;
+  outline: none;
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-attachment: scroll;
+}
+.ztree li span.button:before {
+  font-family: FontAwesome;
+  padding-top: 10px;
+	cursor: pointer;
+}
+.ztree li span.button.chk {
+  margin: 0px;
+  cursor: pointer;
+  width: 12px;
+  display: inline-block;
+  padding-top: 10px;
+  padding-left: 2px;
+}
+.ztree li span.button.chk.checkbox_false_full:before {
+  content: "\f096";
+}
+.ztree li span.button.chk.checkbox_false_full_focus:before {
+  content: "\f096";
+  color: #665aa7;
+}
+.ztree li span.button.chk.checkbox_false_part:before {
+  content: "\f096";
+  color: #aaaaaa;
+}
+.ztree li span.button.chk.checkbox_false_part_focus:before {
+  content: "\f096";
+  color: #cad96c;
+}
+.ztree li span.button.chk.checkbox_false_disable:before {
+  content: "\f096";
+  color: #808080;
+}
+.ztree li span.button.chk.checkbox_true_full:before {
+  content: "\f046";
+}
+.ztree li span.button.chk.checkbox_true_full_focus:before {
+  content: "\f046";
+}
+.ztree li span.button.chk.checkbox_true_part:before {
+  content: "\f14a";
+}
+.ztree li span.button.chk.checkbox_true_part_focus:before {
+  content: "\f14a";
+  color: #665aa7;
+}
+.ztree li span.button.chk.checkbox_true_full_focus:before {
+  content: "\f046";
+  color: #665aa7;
+}
+.ztree li span.button.chk.checkbox_true_part:before {
+  content: "\f046";
+  color: #aaaaaa;
+}
+.ztree li span.button.chk.checkbox_true_part_focus:before {
+  content: "\f046";
+  color: #cad96c;
+}
+.ztree li span.button.chk.checkbox_true_disable:before {
+  content: "\f046";
+  color: #808080;
+}
+.ztree li span.button.chk.radio_false_full:before {
+  content: "\f096";
+}
+.ztree li span.button.chk.radio_false_full_focus:before {
+  content: "\f096";
+  color: #665aa7;
+}
+.ztree li span.button.chk.radio_false_part:before {
+  content: "\f096";
+  color: #aaaaaa;
+}
+.ztree li span.button.chk.radio_false_part_focus:before {
+  content: "\f096";
+  color: #665aa7;
+}
+.ztree li span.button.chk.radio_false_disable:before {
+  content: "\f1db";
+  color: #808080;
+}
+.ztree li span.button.chk.radio_true_full:before {
+  content: "\f046";
+}
+.ztree li span.button.chk.radio_true_full_focus:before {
+  content: "\f046";
+  color: #665aa7;
+}
+.ztree li span.button.chk.radio_true_part:before {
+  content: "\f046";
+  color: #aaaaaa;
+}
+.ztree li span.button.chk.radio_true_part_focus:before {
+  content: "\f046";
+  color: #aaaaaa;
+}
+.ztree li span.button.chk.radio_true_disable:before {
+  content: "\f1db";
+  color: #808080;
+}
+
+.ztree li span.button.switch {
+  width: 15px;
+  height: 17px;
+}
+.ztree li span.button.root_open:before {
+  content: "\f0d7";
+  padding-top: 10px;
+  padding-left: 2px;
+  display: inline-block;
+}
+.ztree li span.button.root_close:before {
+  content: "\f0da";
+  padding-top: 10px;
+  padding-left: 2px;
+  display: inline-block;
+}
+.ztree li span.button.roots_open:before {
+  font-family: 'FontAwesome';
+  content: "\f0d7";
+  padding-top: 10px;
+  padding-left: 2px;
+  display: inline-block;
+	color: #666;
+}
+.ztree li span.button.roots_close:before {
+  content: "\f0da";
+  padding-top: 10px;
+  padding-left: 2px;
+  display: inline-block;
+	color: #666;
+}
+.ztree li span.button.center_open:before {
+  content: "\f0d7";
+  padding-top: 10px;
+  padding-left: 2px;
+  display: inline-block;
+	color: #666;
+}
+.ztree li span.button.center_close:before {
+  content: "\f0da";
+  padding-top: 10px;
+  padding-left: 2px;
+  display: inline-block;
+	color: #666;
+}
+.ztree li span.button.bottom_open:before {
+  content: "\f0d7";
+  padding-top: 10px;
+  padding-left: 2px;
+  display: inline-block;
+	color: #666;
+}
+.ztree li span.button.bottom_close:before {
+  content: "\f0da";
+  padding-top: 10px;
+  padding-left: 2px;
+  display: inline-block;
+	color: #666;
+}
+.ztree li span.button.root_docu {
+  background: none;
+}
+.ztree li span.button.roots_docu:before {
+  content: "\f0f6";
+  padding-left: 2px;
+  display: inline-block;
+  color: #ffffff;
+}
+.ztree li span.button.center_docu:before {
+  padding-top: 10px;
+  padding-left: 2px;
+  display: inline-block;
+  color: #ffffff;
+}
+.ztree li span.button.bottom_docu:before {
+  padding-top: 10px;
+  padding-left: 2px;
+  display: inline-block;
+  color: #ffffff;
+}
+.ztree li span.button.noline_docu {
+  background: none;
+}
+.ztree li span.button.ico_open:before {
+  content: "\f115";
+  font-family: FontAwesome;
+  padding-top: 10px;
+  padding-left: 2px;
+  display: inline-block;
+}
+.ztree li span.button.ico_close:before {
+  content: "\f114";
+  font-family: FontAwesome;
+  padding-top: 10px;
+  padding-left: 2px;
+  display: inline-block;
+}
+.ztree li span.button.ico_docu:before {
+  content: "\f0f6";
+  font-family: FontAwesome;
+  padding-top: 10px;
+  padding-left: 2px;
+  display: inline-block;
+}
+.ztree li span.button.edit {
+  margin-left: 4px;
+  margin-right: -1px;
+  vertical-align: top;
+  *vertical-align: middle;
+  padding-top: 10px;
+}
+.ztree li span.button.edit:before {
+  content: "\f044";
+  font-family: FontAwesome;
+
+}
+.ztree li span.button.remove {
+  margin-left: 4px;
+  margin-right: -1px;
+  vertical-align: top;
+  *vertical-align: middle;
+  padding-top: 10px;
+}
+.ztree li span.button.remove:before {
+  content: "\f014";
+  font-family: FontAwesome;
+	color: #dd514c;
+}
+.ztree li span.button.add {
+  margin-left: 4px;
+  margin-right: -1px;
+  vertical-align: top;
+  *vertical-align: middle;
+  padding-top: 10px;
+}
+.ztree li span.button.add:before {
+  content: "\f067";
+  font-family: FontAwesome;
+}
+.ztree li a.curSelectedNode span.button.add:before ,.ztree li a.curSelectedNode span.button.remove:before,.ztree li a.curSelectedNode span.button.edit:before {
+	color: #fff;
+}
+.ztree li span.button.ico_loading {
+  margin-right: 2px;
+  background: url(./img/loading.gif) no-repeat scroll 0 0 transparent;
+  vertical-align: top;
+  *vertical-align: middle;
+}
+ul.tmpTargetzTree {
+  background-color: #FFE6B0;
+  opacity: 0.8;
+  filter: alpha(opacity=80);
+}
+span.tmpzTreeMove_arrow {
+  width: 16px;
+  height: 17px;
+  display: inline-block;
+  padding: 0;
+  margin: 2px 0 0 1px;
+  border: 0 none;
+  position: absolute;
+  background-color: transparent;
+  background-attachment: scroll;
+}
+span.tmpzTreeMove_arrow:before {
+  content: "\f04b";
+  font-family: FontAwesome;
+  color: #665aa7;
+}
+ul.ztree.zTreeDragUL {
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  width: auto;
+  height: auto;
+  overflow: hidden;
+  background-color: #cfcfcf;
+  border: 1px #665aa7 dotted;
+  opacity: 0.8;
+  filter: alpha(opacity=80);
+}
+.ztreeMask {
+  z-index: 10000;
+  background-color: #cfcfcf;
+  opacity: 0.0;
+  filter: alpha(opacity=0);
+  position: absolute;
+}
+

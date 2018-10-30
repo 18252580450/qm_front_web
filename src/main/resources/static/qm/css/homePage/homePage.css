@@ -1,0 +1,802 @@
+html {color:#707070;background:#eeeff0;-webkit-text-size-adjust: 100%;-ms-text-size-adjust: 100%;}
+/* 内外边距通常让各个浏览器样式的表现位置不同 */
+body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,textarea,p,blockquote,th,td,hr,button,article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section {margin:0;padding:0;}
+/* 重设 HTML5 标签, IE 需要在 js 中 createElement(TAG) */
+article,aside,details,figcaption,figure,footer,header,menu,nav,section {display:block;}
+/* HTML5 媒体文件跟 img 保持一致 */
+audio,canvas,video {display: inline-block;*display: inline;*zoom: 1;}
+/* 要注意表单元素并不继承父级 font 的问题 */
+body,button,input,select,textarea {font:12px/1.5 "Microsoft Yahei",tahoma,arial,"Hiragino Sans GB",\5b8b\4f53;}
+input,select,textarea {font-size:100%;}
+input[type="text"],select,textarea{padding-left: 5px;}
+/* 去掉各Table  cell 的边距并让其边重合 */
+table {border-collapse:collapse;border-spacing:0;}
+/* IE bug fixed: th 不继承 text-align*/
+th {text-align:inherit;}
+/* 去除默认边框 */
+fieldset,img {border:0;}
+/* ie6 7 8(q) bug 显示为行内表现 */
+iframe {display:block;}
+/* 去掉 firefox 下此元素的边框 */
+abbr,acronym {border:0;font-variant:normal;}
+/* 一致的 del 样式 */
+del {text-decoration:line-through;}
+address,caption,cite,code,dfn,em,th,var {font-style:normal;font-weight:500;}
+/* 去掉列表前的标识, li 会继承 */
+ol,ul {list-style:none;}
+/* 对齐是排版最重要的因素, 别让什么都居中 */
+caption,th {text-align:left;}
+/* 来自yahoo, 让标题都自定义, 适应多个系统应用 */
+h1,h2,h3,h4,h5,h6 {font-size:100%;font-weight:500;}
+q:before,q:after {content:'';}
+/* 统一上标和下标 */
+sub, sup {font-size: 75%; line-height: 0; position: relative; vertical-align: baseline;}
+sup { top: -0.5em; }
+sub { bottom: -0.25em; }
+/* 鼠标悬停 */
+a:hover {text-decoration: none;}
+a{cursor:pointer;outline: none;}
+/*a:active {star:expression(this.onFocus=this.blur());}*/
+:focus { outline:0; }
+/* 默认不显示下划线，保持页面简洁 */
+ins,a {text-decoration:none;}
+/* 清理浮动 */
+.fn-clear:after {visibility:hidden;display:block;font-size:0;content:" ";clear:both;height:0;}
+.fn-clear {zoom:1; /* for IE6 IE7 */}
+/* 隐藏, 通常用来与 JS 配合 */
+body .fn-hide {display:none;}
+/* 设置内联, 减少浮动带来的bug */
+.fn-left,.fn-right {display:inline;}
+.fn-left {float:left;}
+.fn-right {float:right;}
+/* 单行文字溢出时出现省略号，需设定宽度 */
+.fn-text-overflow {overflow: hidden;text-overflow: ellipsis;white-space: nowrap;}
+body{
+    min-width:1024px;
+}
+#boxCon{
+    width:100%;
+    background-color:#eeeff0;
+    overflow:auto;
+}
+/*----左侧菜单----strat---*/
+#treeMue{
+  width:18%;
+  height:100%;
+  border:solid 1px #ddd;
+  background-color:#eeeff0;
+    margin:7px 0.2%;
+  /*margin:2px 0.2%;*/
+  position:relative;
+}
+#treTop{
+   width:100%;
+   height:30px;
+    font-family: "微软雅黑";
+    font-size: 16px;
+    /*color: #4A4A4A;*/
+    color:#e60018;
+    line-height:30px;
+   text-align:center;
+   background-color:#eeeff0;
+   /*border-left:4px  solid #e50017;*/
+
+}
+/*----------------菜单内容区--------strat------------*/
+#treeCon{
+    width:100%;
+    background-color:#fff;
+
+}
+#treeUl{
+   width:100%;
+   padding-bottom:25px;
+}
+.treeLi{
+    width:100%;
+    height:40px;
+    font-size:14px;
+    color:#999;
+    text-align:center;
+    line-height:40px;
+    cursor:pointer;
+}
+.trebox{display:block;width:80%;height:1px;background: #f0f0f0;margin:0 auto;}
+.treeLi:hover{
+   width:100%;
+   height:40px;
+   background-color:#e50017;
+   color:#fff;
+}
+.acret{
+    background-color:#e50017;
+    color:#fff;
+}
+.trelidv{
+   display:none;
+   position:absolute;
+   top:0px;
+   left:100%;
+   width:700px;
+   height:500px;
+    padding:0px 15px;
+   z-index:1000;
+   border:solid 1px #e50017;
+   background-color:#fff;
+   overflow-y:auto;
+}
+.trelidvsp{
+    float:left;
+    width:105px;
+    line-height:30px;
+    text-align:left;
+    font-size:14px;
+    color:#666;
+}
+.trelidvsp:hover{
+    color:#e50017;
+}
+
+.treliulli{
+    min-height:30px;
+    padding:5px 0px;
+    border-bottom:dashed 1px #eeeff0;
+}
+
+.trelidvul{
+    width:100%;
+    height:100%;
+}
+.li2dv{
+  float:left;
+  width:550px;
+ /* margin-left:10px;*/
+}
+.li2dvul li{
+    float:left;
+    padding:0px 20px;
+    line-height:30px;
+    font-size:14px;
+    color:#999;
+}
+.li2dvul li:hover{
+    color:#e50017;
+}
+
+/*----------------菜单内容区--------end--------------*/
+/*----左侧菜单----end---*/
+/*-----右侧右侧搜索框和商品详情--strat---*/
+#rigSech{
+ width:80%;
+ min-height:500px;
+/* border:solid 1px red;*/
+ margin:7px 0.7%;
+}
+/*-------上部分查询部分---strat----*/
+#sechTop{
+    height:100px;
+    padding:5px 1.2% 0px 0.5%;
+    background-color:#fff;
+}
+.sechTo{
+    height:54px;
+    border:solid 1px #ddd;
+    position:relative;
+    box-shadow:none;
+}
+.sechToTo{
+    border:solid 1px #e50017;
+    box-shadow: inset -1px 0px 7px 0px #ffd2d6;
+    transition:.3s;
+    -webkit-transition: .3s;
+    -moz-transition: .3s;
+    -o-transition:.3s;
+}
+.sechTdv{
+    display:none;
+    width:70px;
+    height:52px;
+}
+.sechTdv1{
+  width:50px;
+  height:52px;
+}
+.sechTdv1 img{
+    width:100%;
+    height:100%;
+}
+.sechGuan{
+  width:20px;
+  line-height:52px;
+  background-color:#fff;
+  color:#333;
+  font-size:18px;
+  text-align:center;
+  cursor: pointer;
+}
+.sechInp{
+    width:60%;
+    height:100%;
+    border:none;
+    font-size:16px;
+    outline:none;
+    background:none;
+    line-height:52px;
+    /*line-height:55px;
+    border: solid 1px #ddd;
+    kit-trtransition:.3s;
+    -webkit-transition: .3s;
+    -moz-transition: .3s;*/
+}
+
+.advancedStyle{
+    font-size: 16px;
+    margin: 0 16px;
+    display: block;
+    color:#9B9B9B;
+    line-height:54px;
+}
+.sechP4 a:hover{
+    color:#e50017;;
+}
+
+/*.sechTo input:focus{
+    height:54px;
+    border: solid 1px #e50017;
+    position: relative;
+    box-shadow: inset -1px 0px 7px 0px #ffd2d6;
+}*/
+.sechRig{
+    min-width:230px;
+   /* width:30%;*/
+    height:100%;
+    position:absolute;
+    top:0;
+    right:0;
+}
+.sechp{
+    /*width:32px;*/
+    /*height:32px;*/
+    /*margin-top:12px;*/
+    cursor:pointer;
+}
+.sechp img{
+    width:32px;
+    height:32px;
+}
+.sechP1{
+    /*margin-right:10px;*/
+    background: #e50017;
+    width: 54px;
+    height: 52px;
+    padding: 10px;
+    margin-left:20px;
+}
+.sechP2, .sechP3{
+    padding:0 16px;
+    margin:11px 0 7px;
+    border-right:1px solid #dddddd;
+}
+/*.sechP3{*/
+    /*border-right:1px solid #dddddd;*/
+/*}*/
+/*.sechP2{*/
+    /*margin-right:30px;*/
+/*}*/
+/*.sechP3{*/
+   /*margin-right:18px;*/
+/*}*/
+/*--------搜索框----end------*/
+#sechBot{
+  height:40px;
+  margin-top:2px;
+}
+.sechBp{
+    height:30px;
+    font-size:16px;
+    color:#4a4a4a;
+    font-family: '微软雅黑';
+    line-height:30px;
+    padding:0px  30px;
+    background-color:#fafafa;
+    border:solid 1px #ddd;
+    margin:4px 10px 0px 0px;
+    cursor:pointer;
+}
+.sechBp:hover{
+    background-color:#e50017;
+    color:#fff;
+    border:solid 1px #e50017;
+}
+.acretp{
+    background-color:#e50017;
+    color:#fff;
+    border:solid 1px #e50017;
+}
+/*-------上部分查询部分---end------*/
+/*-----------------------------查询列表部分------strat------------*/
+#conList{
+   width:100%;
+   height:390px;
+   margin-top:15px;
+}
+#conLiLf{
+    width:70%;
+    min-height:382px;
+    background-color:#fff;
+    border:solid 1px #ddd;
+
+}
+/*--上部分标题---------------strat------------------*/
+.conLlTop{
+    width:100%;
+    height:40px;
+    background-color:#fafafa;
+}
+.conLTp{
+    padding:0px 10px;
+    font-size: 16px;
+    color: #9B9B9B;
+    text-align: center;
+    line-height:37px;
+    margin:0px 15px;
+    cursor:pointer;
+    border-bottom:solid 3px #fafafa;
+}
+.conLTp:hover{
+    color:#e50017;
+    font-weight: 550;
+    border-bottom:solid 3px #e50017;
+}
+.conLTpact{
+    color:#e50017;
+    font-weight: 550;
+    border-bottom:solid 3px #e50017;
+}
+
+/*-------------下部分内容区域-----strat------------*/
+#conLcent{
+    height:340px;
+    padding-bottom:11px;
+    overflow: auto;
+}
+
+/*------------------滚动条美化-----------strat---------------*/
+#conLcent::-webkit-scrollbar{/*滚动条整体样式*/
+    width: 10px;     /*高宽分别对应横竖滚动条的尺寸*/
+    height: 10px;
+}
+#conLcent::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
+    border-radius: 50px;
+    -webkit-box-shadow: inset 0 0 50px #efefef;
+    /*background: rgba(0,0,0,0.2);*/
+    background-color:#efefef;
+}
+#conLcent::-webkit-scrollbar-track {/*滚动条里面轨道*/
+    -webkit-box-shadow: inset 0 0 5px #fff;
+    border-radius: 0;
+    background: #fff;
+}
+/*------------------滚动条美化-----------end---------------*/
+#conLul{
+    padding-left:15px;
+}
+.conLulli{
+    width:100%;
+    height:100px;
+    margin-top:11px;
+}
+.conLenl{
+  width:19%;
+  height:100%;
+}
+.conLenl img{
+    width:100%;
+    height:100%;
+}
+.conLenr{
+  width:78%;
+  height:100%;
+  margin-right:1%;
+  border-bottom:1px dotted #ddd;
+}
+.conLeh4{
+    height:22px;
+    font-size:14px;
+    color:#e50017;
+    text-align:left;
+    cursor:pointer;
+}
+.conLenrc{
+    height:40px;
+    font-size:13px;
+    color:#6a6a6a;
+    text-align:left;
+    margin-top:3px;
+
+}
+.conLenrb{
+    height:20px;
+    margin-top:5px;
+}
+.conLenrbp{
+    font-size:12px;
+    color:#9B9B9B;
+    line-height:20px;
+}
+.conLenrbp1,.conLenrbp2,.conLenrbp3{
+    margin:0px 10px;
+}
+.conLenrbp1 img,.conLenrbp2 img,.conLenrbp3 img{
+    display:inline-block;
+    width:12px;
+    height:12px;
+    margin-top:4px;
+}
+.conLenrbp1 span{
+    display:block;
+    float:right;
+    margin-left:4px;
+    font-size:10px;
+    color:#F5A623;
+    line-height:20px;
+}
+.conLenrbp2 span{
+    display:block;
+    float:right;
+    margin-left:4px;
+    font-size:10px;
+    color:#e50017;
+    line-height:20px;
+}
+.conLenrbp3 span{
+    display:block;
+    float:right;
+    margin-left:5px;
+    font-size:10px;
+    color:#64cc99;
+    line-height:20px;
+}
+
+
+/*-------------左部分-----end-------------*/
+#conLiRg{
+    width:28.8%;
+    min-height:382px;
+    border:solid 1px #ddd;
+    background-color:#fff;
+}
+.conLRtop{
+    position:relative;
+    width:100%;
+    height:40px;
+    background-color:#fafafa;
+}
+.conLRtop img{
+    display: block;
+    position: absolute;
+    margin-left: 95px;
+    margin-top: 4px;
+}
+.conRp{
+    padding:0px 10px;
+    font-size: 16px;
+    color: #9B9B9B;
+    text-align: center;
+    line-height:37px;
+    margin:0px 15px;
+    cursor:pointer;
+    border-bottom:solid 3px #fafafa;
+}
+.conRp:hover{
+    color:#e50017;
+    font-weight: 550;
+    border-bottom:solid 3px #e50017;
+}
+.conRpact{
+    color:#e50017;
+    font-weight: 550;
+    border-bottom:solid 3px #e50017;
+}
+/*------------内容区域-----strat-------------*/
+#conLRb{
+    min-height:340px;
+  /*  padding-bottom:11px;*/
+    overflow:auto;
+}
+#conLRbul{
+    padding-left:15px;
+}
+.conLRbulli{
+    width:95%;
+    height:100px;
+    margin-top:11px;
+    border-bottom:1px dotted #ddd;
+}
+.conLRbulh4{
+    font-size:14px;
+    color:#e50017;
+    line-height:22px;
+    text-align:left;
+    cursor:pointer;
+}
+.conLRlidv1{
+    height:40px;
+    font-size: 13px;
+    color: #6a6a6a;
+    text-align: left;
+    margin-top: 3px;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+}
+.conLRlip1{
+    margin-top: 5px;
+    font-size: 12px;
+    color: #9B9B9B;
+    line-height: 20px;
+
+}
+/*------------------滚动条美化-----------strat---------------*/
+#conLRb::-webkit-scrollbar {/*滚动条整体样式*/
+    width: 10px;     /*高宽分别对应横竖滚动条的尺寸*/
+    height: 10px;
+}
+#conLRb::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
+    border-radius: 50px;
+    -webkit-box-shadow: inset 0 0 50px #efefef;
+    /*background: rgba(0,0,0,0.2);*/
+    background-color:#efefef;
+}
+#conLRb::-webkit-scrollbar-track {/*滚动条里面轨道*/
+    -webkit-box-shadow: inset 0 0 5px #fff;
+    border-radius: 0;
+    background: #fff;
+}
+/*------------------滚动条美化-----------end---------------*/
+/*------------内容区域-----end-------------*/
+/*-------------右部分-----end-------------*/
+/*-----------------------------查询列表部分------end-------------*/
+/*-------右侧搜索框和商品详情--end--*/
+/*--------------------点击图片按钮出现弹框--strat---*/
+#modl1{
+    display:none;
+}
+#z_modl1{
+    position: fixed;
+    top: 0%;
+    left: 0%;
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    z-index: 1119;
+    filter: Alpha(Opacity=30);
+    opacity: 0.3;
+    background: #000;
+}
+#modlCon{
+    height: 370px;
+    width: 80%;
+    position: fixed;
+    left: 19%;
+    top: 7px;
+    border:solid 1px #e50017;
+    background-color: #fff;
+    z-index: 1999;
+}
+.modlTop{
+    height:60px;
+    border-bottom:solid 1px #eeeff0;
+}
+.modlInp{
+    width:85%;
+    height:59px;
+    font-size:16px;
+    line-height:59px;
+    border:none;
+    outline: none;
+    margin-left:10px;
+}
+.modlTdv{
+    width:10%;
+    height:60px;
+    background-color:#e50017;
+    cursor:pointer;
+}
+.modlTdv1{
+    width:32px;
+    height:32px;
+    margin:auto;
+    margin-top:14px;
+}
+.modlTdv1 img{
+    width:100%;
+    height:100%;
+}
+.modlBot{
+    height:305px;
+}
+
+.modlBotTop{
+    height:270px;
+}
+.modlBTdv{
+  width:620px;
+  margin:auto;
+  padding-top:55px;
+}
+.modlTu{
+    height:120px;
+    background-color:#eee;
+}
+.modlTuto{
+    visibility:hidden;
+    width:200px;
+    height:40px;
+    margin:auto;
+    padding-top:25px;
+}
+
+.modlShan{
+    display:none;
+    width:240px;
+    height:60px;
+    margin:auto;
+    border:solid 1px #ddd;
+    margin-top:25px;
+    cursor:pointer;
+}
+.modlFimg{
+   width:36px;
+   height:36px;
+   margin:auto;
+   cursor:pointer;
+}
+.modlFimg img{
+    width:100%;
+    height:100%;
+}
+.modlShanIm{
+    width:24px;
+    height:24px;
+    margin:auto;
+    margin-top:18px;
+}
+.modlShanIm img{
+    width:100%;
+    height:100%;
+}
+/*--------------上传图片上部分------------end--------*/
+.modlBotbt{
+    height:40px;
+    margin-bottom:5px;
+}
+.modlBotbtdv{
+    width:24px;
+    height:24px;
+    margin-right:12px;
+    cursor:pointer;
+}
+.modlBotbtdv img{
+    width:100%;
+    height:100%;
+}
+/*--------------------点击图片按钮出现弹框--end-----*/
+/*--------------------点击语音按钮出现弹框--strat--------*/
+#modl2{
+    display:none;
+}
+#z_modl2{
+    position: fixed;
+    top: 0%;
+    left: 0%;
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    z-index: 1119;
+    filter: Alpha(Opacity=30);
+    opacity: 0.3;
+    background: #000;
+}
+#modl2Con{
+    height: 370px;
+    width: 80%;
+    position: fixed;
+    left: 19%;
+    top: 7px;
+    border:solid 1px #e50017;
+    background-color: #fff;
+    z-index: 1999;
+}
+.modl2Top{
+    height:60px;
+    border-bottom:solid 1px #eeeff0;
+}
+.modl2Inp{
+    width:87%;
+    height:59px;
+    font-size:16px;
+    line-height:59px;
+    border:none;
+    outline: none;
+    margin-left:10px;
+}
+.modl2Tdv{
+    width:7%;
+    height:60px;
+    /*background-color:#e50017;*/
+    cursor:pointer;
+}
+.modl2Tdv1{
+    width:32px;
+    height:32px;
+    margin:auto;
+    margin-top:14px;
+}
+.modl2Tdv1 img{
+    width:100%;
+    height:100%;
+}
+.modl2Bot{
+    height:305px;
+}
+.modl2BotTop{
+    box-sizing:content-box;
+    -moz-box-sizing:content-box; /* Firefox */
+    -webkit-box-sizing:content-box; /* Safari */
+    height:190px;
+    padding-top:80px;
+}
+.modl2Topim{
+    width:100px;
+    height:100px;
+    margin:auto;
+
+}
+.modl2Topim img{
+    width:100%;
+    height:100%;
+}
+.modl2Botbt{
+    height:40px;
+    margin-bottom:5px;
+}
+.modl2Botbtdv{
+    width:24px;
+    height:24px;
+    margin-right:12px;
+    cursor:pointer;
+}
+.modl2Botbtdv img{
+    width:100%;
+    height:100%;
+}
+/*--------------------点击语音按钮出现弹框--end----------*/
+/*--------------------搜索输入框实现提示查询--------strat------------*/
+ .search-hotwords { position: absolute; z-index: 100; left: -1px; top: 55px; background-color: #FFF; width: 70.8%; max-height: 338px; padding: 6px 0; border: 1px solid #DDD;border-top:none; display: none; -webkit-box-shadow: 0 2px 6px #CCC; box-shadow: 0 2px 6px #CCC; }
+ .search-hotwords > p { padding: 4px 12px; color: #999; }
+ .search-hotwords > ul { margin-top: 4px; }
+ .search-hotwords > ul li a { display: block; height: 26px; line-height: 26px; padding: 0 12px; word-wrap: break-word; color: #333; position: relative; }
+ .search-hotwords > ul li a:hover { color:#e50017; background-color:#f4e8e8; }
+ .search-hotwords > ul li a em { color: #cc0000; font-style: normal; }
+.search-hotwords .addbg { color:#e50017; background-color:#f4e8e8;}
+.item:hover { background-color: #f6f6f6; }
+.search-hotwords .keyword.gray { color: #999 !important; }
+.kwCol{
+    position:absolute;
+    width:22px;
+    height:22px;
+    top:16px;
+    right:36%;
+    visibility:hidden;
+    display:none;
+}
+.kwCol img{
+    width:100%;
+    height:100%;
+}
+.search-hotwords  .addcl{
+    color:#e50017; background-color:#f4e8e8;
+}
+/*--------------------搜索输入框实现提示查询--------end------------*/

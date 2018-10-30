@@ -1,0 +1,75 @@
+[
+  {
+    "id": 1,
+    "pId": 0,
+    "name": "知识中心菜单",
+    "open": true
+  },
+  {
+    "id": 11,
+    "pId": 1,
+    "name": "知识原子管理",
+    "content": "http://127.0.0.1:8080/html/manage/tmptKeysManage.html"
+  },
+  {
+    "id": 16,
+    "pId": 1,
+    "name": "自定义标签",
+    "content": "http://127.0.0.1:8080/html/manage/taglibManagement.html"
+  },
+  {
+    "id": 17,
+    "pId": 1,
+    "name": "知识管理草稿箱",
+    "content": "http://127.0.0.1:8080/html/manage/knowledgeManageList.html"
+  },
+  {
+    "id": 18,
+    "pId": 1,
+    "name": "评价管理",
+    "content": "http://127.0.0.1:8080/html/manage/evaluationManage.html"
+  },
+  {
+    "id": 19,
+    "pId": 1,
+    "name": "模板详情页面",
+    "content": "http://127.0.0.1:8080/html/manage/tmptDetails.html"
+  },
+  {
+    "id": 20,
+    "pId": 1,
+    "name": "知识模板管理",
+    "content": "http://127.0.0.1:8080/html/manage/catalogTempateManage.html"
+  },
+  {
+    "id": 21,
+    "pId": 1,
+    "name": "审核管理",
+    "content": "http://127.0.0.1:8080/html/manage/kmAuditManage.html"
+  },
+  {
+    "id": 22,
+    "pId": 1,
+    "name": "业务树维护",
+    "content": "http://127.0.0.1:8080/html/manage/kmBusineCatl.html"
+  },
+  {
+    "id": 23,
+    "pId": 1,
+    "name": "地区配置",
+    "content": "http://127.0.0.1:8080/html/manage/districtManage.html"
+  },
+  {
+    "id": 24,
+    "pId": 1,
+    "name": "敏感词配置",
+    "content": "http://127.0.0.1:8080/html/manage/sensitiveWord.html"
+  },
+  {
+    "id": 29,
+    "pId": 1,
+    "name": "测试checkbox",
+    "content": "http://127.0.0.1:8080/test/list/list.html"
+  }
+]
+

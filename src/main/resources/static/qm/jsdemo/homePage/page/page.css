@@ -1,0 +1,24 @@
+.sn-pagination {font-size: 12px;}
+.sn-pagination .sn-pagebox-right span,
+.sn-pagination .sn-pagebox-right a {display: inline-block;}
+.sn-pagination .current,
+.sn-pagination a { padding: 0 10px; line-height: 28px; height: 28px; text-decoration: none; }
+.sn-pagination .current{
+    background: #e50017;
+    color:#fff;
+    border: 1px solid #e50017;
+    font-weight: 700;
+}
+.sn-pagination a.current:hover {
+    background: #e50017;
+    color:#fff;
+    border: 1px solid #e50017;
+    font-weight: 700;
+}
+.sn-pagination a { color: #666; background: #FFF; border: 1px solid #d0d6d9;}
+.sn-pagination a:hover { text-decoration: none; color: #fff; background-color: #e50017; border: 1px solid #e50017;}
+.sn-pagination .prev:after{ content:"<上一页"; }
+.sn-pagination .next:before{ content:"下一页>"; }
+.noword .sn-pagination .prev:after{ content:"<"; }
+.noword .sn-pagination .next:before{ content:">"; }
+.sn-pagination .sn-pagebox-right a.hide { display: block;}

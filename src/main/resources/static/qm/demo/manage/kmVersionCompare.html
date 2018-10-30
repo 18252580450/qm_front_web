@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="renderer" content="webkit" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+    <link href="../../assets/lib/ztree/css/cmcStyle/kbes.css" rel="stylesheet" type="text/css">
+    <title>版本比较</title>
+    <link rel="stylesheet" type="text/css" href="../../assets/lib/easyui/themes/cmcui/cmcui.css"/>
+    <link rel="stylesheet" type="text/css" href="../../assets/lib/easyui/themes/cmcui/iconfont/iconfont.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../assets/components/rating/themes/fontawesome-stars.css"/>
+    <script src="../../assets/components/ckeditor/ckeditor.js"></script>
+    <link href="../../css/style.min.css" rel="stylesheet">
+    <style>
+        .left-wrap {
+            float: left;
+            width: 50%;
+            height: 100%;
+        }
+        .right-wrap {
+            margin-left: 50%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body id="layout_content" >
+<div data-options="region:'center'" style="overflow: auto;">
+    <div class='panel-tool-box cl' >
+        <div class='title'>版本比较</div>
+    </div>
+    <div id="page_left" class="left-wrap"></div>
+    <div id="page_right" class="right-wrap"></div>
+</div>
+</body>
+
+<script type="text/javascript" src="../../jsdemo/common/requirejs-main.js"></script>
+<script type="text/javascript" src="../../assets/lib/require/require.min.js"
+        data-main="jsdemo/manage/versionCompare"></script>
+</html>

@@ -1,0 +1,16 @@
+{
+  "skillId": 1000120,
+  "skillName": "电话",
+  "skillDesc": "1",
+  "priorityOrder": 1,
+  "queueMaxSize": 11,
+  "queueTimeout": 60,
+  "isOverflow": null,
+  "overflowSkill": 0,
+  "overflowSkillName": null,
+  "opTime": "2017-05-10 15:33:04.0",
+  "remark1": null,
+  "remark2": null,
+  "remark3": null,
+  "skillType": 1
+}

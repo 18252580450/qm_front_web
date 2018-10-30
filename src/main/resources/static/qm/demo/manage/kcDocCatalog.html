@@ -1,0 +1,116 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>业务树维护</title>
+    <link rel="stylesheet" type="text/css" href="../../assets/lib/easyui/themes/cmcui/cmcui.css"/>
+    <link rel="stylesheet" type="text/css" href="../../assets/lib/easyui/themes/cmcui/iconfont/iconfont.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../assets/lib/ztree/css/cmcStyle/tree.css"/>
+    <link rel="stylesheet" type="text/css" href="../../assets/components/rating/themes/fontawesome-stars.css"/>
+    <link href="../css/style.min.css" rel="stylesheet">
+
+    <style type="text/css">
+        .clk-add, .clk-edit, .clk-del, .clk-up, .clk-down, .ic-lock {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            background-image: url(../../image/treeOperate.png);
+            background-repeat: no-repeat;
+        }
+
+        .clk-add {
+            background-position: 0 -20px;
+        }
+
+        .clk-edit.disabled {
+            background-position: -20px 0;
+        }
+
+        .clk-edit {
+            background-position: -20px -20px;
+        }
+
+        .clk-del.disabled {
+            background-position: -40px 0;
+        }
+
+        .clk-del {
+            background-position: -40px -20px;
+        }
+
+        .clk-up {
+            background-position: -60px -20px;
+        }
+
+        .clk-up.disabled {
+            background-position: -60px 0;
+        }
+
+        .clk-down {
+            background-position: -80px -20px;
+        }
+
+        .clk-down.disabled {
+            background-position: -80px 0;
+        }
+
+        .ke-act-btns > li > a {
+            margin: 5px 3px;
+        }
+
+        element.style {
+            cursor: pointer;
+        }
+
+        .ke-panel-content.clear-overlap {
+            margin-top: -1px;
+        }
+
+        .ke-panel-content {
+            background-color: #FFF;
+            /*border: 1px solid #d0d6d9;*/
+        }
+
+        .ke-panel-content:after {
+            content: "";
+            clear: both;
+            height: 0;
+            display: table;
+            overflow: hidden;
+        }
+
+        .ke-act-btns {
+            height: 30px;
+            background-color: #e8eff2;
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            padding-left: 15px;
+            border-bottom: 1px solid #d0d6d9;
+        }
+
+        .ke-act-btns > li {
+            height: 30px;
+            float: left;
+        }
+
+        li {
+            display: list-item;
+            text-align: -webkit-match-parent;
+        }
+    </style>
+</head>
+<body>
+<div data-options="region:'center'" style="overflow: auto;">
+    <div id="page_content" data-options="region:'center'" style="width:100%; height:800px;">
+
+    </div>
+</div>
+
+</body>
+
+<script type="text/javascript" src="../../jsdemo/common/requirejs-main.js"></script>
+<script type="text/javascript" src="../../assets/lib/require/require.min.js" data-main="jsdemo/manage/kcDocCatalog"></script>
+
+</html>
