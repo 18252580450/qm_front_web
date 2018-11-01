@@ -136,17 +136,13 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
             }
             var ids = [];
             for (var i = 0; i < selRows.length; i++) {
-                var wordId = selRows[i].WORDID;
-                ids.push(wordId);
+                var id = selRows[i].paramsPurposeId;
+                ids.push(id);
             }
-
-            var params = {'ids': ids};
-            var ps = $.param(params, true); //序列化
-
             $.messager.confirm('确认删除弹窗', '确定要删除吗？', function (confirm) {
 
                 if (confirm) {
-                    Util.ajax.deleteJson(Util.constants.CONTEXT + qmURI + "/deleteByIds", ps, function (result) {
+                    Util.ajax.deleteJson(Util.constants.CONTEXT.concat(qmURI).concat("/deleteByIds/").concat(ids), {}, function (result) {
 
                         $.messager.show({
                             msg: result.RSP.RSP_DESC,
