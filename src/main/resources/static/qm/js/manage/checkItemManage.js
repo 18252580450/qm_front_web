@@ -39,9 +39,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                 {field: 'remark', title: '考评项描述', align: 'center', width: '35%'},
                 {
                     field: 'action', title: '操作', align: 'center', width: '10%',
-
                     formatter: function (value, row, index) {
-
                         var Action =
                             "<a href='javascript:void(0);' class='reviseBtn' id = 'checkItem'" + row.checkItemId + " >修改</a>";
                         return Action;
@@ -98,7 +96,6 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
 
                     var rspCode = result.RSP.RSP_CODE;
                     if (rspCode != "1") {
-
                         $.messager.show({
                             msg: result.RSP.RSP_DESC,
                             timeout: 1000,
@@ -106,7 +103,6 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                             showType: 'slide'
                         });
                     }
-
                     success(data);
                 });
             }
@@ -127,21 +123,19 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
 
         //删除
         $("#delBtn").on("click", function () {
-
-            var selRows = $("#staticParamsManage").datagrid("getSelections");
-            if (selRows.length == 0) {
+            var delRows = $("#checkItemList").datagrid("getSelections");
+            if (delRows.length == 0) {
                 $.messager.alert("提示", "请至少选择一行数据!");
                 return false;
             }
-            var ids = [];
-            for (var i = 0; i < selRows.length; i++) {
-                var id = selRows[i].paramsPurposeId;
-                ids.push(id);
+            var delArr = [];
+            for (var i = 0; i < delRows.length; i++) {
+                var id = delRows[i].checkitemId;
+                delArr.push(id);
             }
             $.messager.confirm('确认删除弹窗', '确定要删除吗？', function (confirm) {
-
                 if (confirm) {
-                    Util.ajax.deleteJson(Util.constants.CONTEXT.concat(qmURI).concat("/deleteByIds/").concat(ids), {}, function (result) {
+                    Util.ajax.deleteJson(Util.constants.CONTEXT.concat(qmURI).concat("/deleteCheckItem/").concat(delArr), {}, function (result) {
 
                         $.messager.show({
                             msg: result.RSP.RSP_DESC,
@@ -149,13 +143,13 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                             style: {right: '', bottom: ''},     //居中显示
                             showType: 'slide'
                         });
+
                         var rspCode = result.RSP.RSP_CODE;
 
                         if (rspCode == "1") {
-                            $("#staticParamsManage").datagrid('reload'); //删除成功后，刷新页面
+                            $("#checkItemList").datagrid('reload'); //删除成功后，刷新页面
                         }
                     });
-
                 }
             });
         });
