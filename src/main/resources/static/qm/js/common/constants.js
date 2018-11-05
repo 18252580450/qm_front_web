@@ -7,7 +7,7 @@ define(function () {
        // CONTEXT: "http://marathon-lb-kc.skyark.mesos:9010",
         CONTEXT: "http://localhost:9002",
         TENANT_ID: "10010000",
-
+        PARENT_CHECK_ITEM_ID:"1",
 
         NGKM_TEMPLET_CHNL: "NGKM.TEMPLET.CHNL",
         NGKM_ATOM_PARAM_TYPE: "NGKM.ATOM.PARAM.TYPE",//知识原子数据类型数据字典

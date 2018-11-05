@@ -1,0 +1,123 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>考评项管理1</title>
+    <link rel="stylesheet" type="text/css" href="../../assets/lib/easyui/themes/cmcui/cmcui.css"/>
+    <link rel="stylesheet" type="text/css" href="../../assets/lib/easyui/themes/cmcui/iconfont/iconfont.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../assets/lib/ztree/css/cmcStyle/tree.css"/>
+    <link rel="stylesheet" type="text/css" href="../../assets/components/rating/themes/fontawesome-stars.css"/>
+    <!--<script src="https://cdn.ckeditor.com/ckeditor5/11.0.1/classic/ckeditor.js"></script>-->
+    <script src="../../assets/components/ckeditor/ckeditor.js"></script>
+
+    <link href="../../css/style.min.css" rel="stylesheet">
+
+
+</head>
+<body>
+<div id="page_content" data-options="region:'center'" style="height:100%;">
+    <div id='layout_content' class='easyui-layout' data-options="region:'center'" style='overflow: auto; height:100%;'>,
+        <div data-options="region:'center'" style='overflow: hidden;height: 100%'>
+            <div id = "page">
+                <div class='panel-search ' title="">
+                    <form class='form form-horizontal'>
+                        <div class='row cl'>
+                            <label class='form-label col-2'>考评项名称：</label>
+                            <div class='formControls col-2'>
+                                <input id="checkItemName" type='text' class='easyui-textbox' style='width:100%;height:30px' >
+                            </div>
+                            <label class='form-label col-2'>模板渠道：</label>
+                            <div class='formControls col-2'>
+                                <input id="tenantName" type='text' class='easyui-textbox' style='width:100%;height:30px' >
+                            </div>
+                            <label class='form-label col-2'>父节点名称：</label>
+                            <div class='formControls col-2'>
+                                <input id="parentCheckItemName" type='text' class='easyui-textbox' style='width:100%;height:30px' >
+                            </div>
+                        </div>
+                    </form>
+                    <form class='form form-horizontal'>
+                        <div class='row cl'>
+                            <label class='form-label col-2'>考评项类别：</label>
+                            <div class='formControls col-2'>
+                                <input id="checkItemType" type='text' class='easyui-textbox' style='width:100%;height:30px' >
+                            </div>
+                            <div class='formControls col-1'>
+                            </div>
+                            <div class='formControls col-2'>
+                                <a href='javascript:void(0)' class='btn btn-green radius mt-l-20' id="queryBtn"><i class='iconfont iconfont-search2'></i>查询</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div class='cl'>
+                    <div class='panel-tool-box cl' >
+                        <div class='fl text-bold'>人工考评项</div>
+                        <div class="formControls col-2" style="text-align: right;width: 90%">
+                            <a href='javascript:void(0)' class='btn btn-green radius mt-l-20' id="addBtn"><i class='iconfont iconfont-add4'></i>新增</a>
+                            <a href='javascript:void(0)' class='btn btn-green radius mt-l-20' id="editBtn" style='display:none;'><i class='iconfont iconfont-edit1'></i>修改</a>
+                            <a href='javascript:void(0)' class='btn btn-default radius mt-l-20' id="delBtn"><i class='iconfont iconfont-del2'></i>删除</a>
+                        </div>
+                    </div>
+                        <table id='checkItemList' class='easyui-datagrid'  style=' width:100%;'>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+        <!--删除弹窗，默认隐藏-->
+        <div  id='pop_window' style='display:none;'>
+            <div id='win_content' style='overflow:auto'>
+            </div>
+        </div>
+        <!-- 敏感词增加弹窗，默认隐藏  -->
+        <div  id='add_window' style='display:none;'>
+            <div id='add_content' style='overflow:auto'>
+                <div class='panel-tool-box cl' >
+                    <div class='fl text-bold'>敏感词配置</div>
+                </div>
+                <div class='panel-search'>
+                    <form id='createSkillConfig' method='POST' class='form form-horizontal'>
+                        <div style='display:none'>
+                            <input type='hidden' name='skillId' class='easyui-textbox' value='0'/>
+                        </div>
+                        <div class='row cl'>
+                            <label class='form-label col-2'>敏感词</label>
+                            <div class='formControls col-2' style="width: 26%">
+                                <input  type='text' id='sensitiveWord' name = 'sensitiveWord' class='easyui-textbox' style='width:90%;height:30px'/>
+                                <span style='color:red;padding-left:2px'>*</span>
+                            </div>
+                            <label class='form-label col-2'>替换词</label>
+                            <div class='formControls col-2' style="width: 26%">
+                                <input  type='text' class='easyui-textbox'  id='substituteWord' name = 'substituteWord' style='width:90%;height:30px'/>
+                                <span style='color:red;padding-left:2px'>*</span>
+                            </div>
+                        </div>
+
+                        <div class='row cl'>
+                            <label class='form-label col-2'>备&nbsp;&nbsp;&nbsp;&nbsp;注</label>
+                            <div class='formControls col-8'>
+                                <input  id='rmk' name = 'rmk' class='easyui-textbox' style='height:60px;width:99%'/>
+                            </div>
+                        </div>
+                        <div>
+                            <input id = "wordId" name = "wordId" style="display:none;">
+                        </div>
+                    </form>
+                    <div class='mt-10 test-c'>
+                        <label class='form-label col-5'></label>
+                        <a href='javascript:void(0)' id='global' class='btn btn-green radius  mt-l-20'>提交</a>
+                        <a href='javascript:void(0)' id='cancel' class='btn btn-secondary radius  mt-l-20'>关闭</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+<script type="text/javascript" src="../../js/common/requirejs-main.js"></script>
+<script type="text/javascript" src="../../assets/lib/require/require.min.js" data-main="js/manage/checkItemManage"></script>
+
+</html>

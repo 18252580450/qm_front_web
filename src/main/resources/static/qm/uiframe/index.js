@@ -33,6 +33,7 @@ var setting = {
 var zNodes = [
     {id: 1, pId: 0, name: "质检菜单列表", open: true},
     {id: 10, pId: 1, name: "静态参数管理", file: "http://127.0.0.1:8080/qm/html/manage/staticParamsManage.html"},
+    {id: 11, pId: 1, name: "考评项管理", file: "http://127.0.0.1:8080/qm/html/manage/checkItemManage.html"},
 ];
 
 
