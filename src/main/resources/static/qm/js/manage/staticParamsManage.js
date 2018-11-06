@@ -6,8 +6,9 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
     function initialize() {
         initGrid();
         initGlobalEvent();
+        initTypeWindowEvent();
         initWindowEvent();
-        //initReviseEvent();
+        initReviseEvent();
     };
 
     //格式化时间方法
@@ -33,6 +34,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
         $("#page").find("#staticParamsManage").datagrid({
             columns: [[
                 {field: 'paramsPurposeId', title: '参数用途ID', hidden: true},
+                {field: 'paramsTypeId', title: '参数类型ID', hidden: true},
                 {field: 'ck', checkbox: true, align: 'center'},
                 {field: 'tenantId', title: '渠道', width: '15%'},
                 {field: 'paramsTypeName', title: '参数用途名称', width: '20%'},
@@ -43,8 +45,10 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
 
                     formatter: function (value, row, index) {
                         var bean = {
-                            'paramsPurposeId': row.paramsPurposeId, 'tenantId': row.tenantId,
-                            'paramsTypeId': row.paramsTypeId
+                            'tenantId': row.tenantId,
+                            'paramsPurposeId': row.paramsPurposeId, 'paramsTypeId': row.paramsTypeId,
+                            'paramsCode': row.paramsCode,'paramsName': row.paramsName,
+                            'paramsTypeName': row.paramsTypeName
                         };
                         var beanStr = JSON.stringify(bean);   //转成字符串
 
@@ -169,6 +173,97 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
         /*
          * 弹出添加窗口
          */
+        $("#page").on("click", "#addBut", function () {
+            $("#add_content").find('form.form').form('clear');  //初始化清空
+
+            $("#add_content").show().window({   //弹框
+                width: 950,
+                height: 400,
+                modal: true,
+                title: "新增参数"
+            });
+
+            var params = {
+                "tenantId":Util.constants.TENANT_ID
+            };
+            var reqparams = {
+                "params":JSON.stringify(params)
+            };
+
+            Util.ajax.getJson(Util.constants.CONTEXT + qmURI + "/selectAllTypes", reqparams, function (result) {
+                var rspCode = result.RSP.RSP_CODE;
+                if (rspCode == "1") {
+                    $("#typeList").combobox({
+                        data : result.RSP.DATA,
+                        valueField:'paramsTypeId',
+                        textField:'paramsTypeName'
+                    });
+                }
+            });
+
+            $("#add_content").unbind("click");
+
+            /*
+             * 清除表单信息
+             */
+            $("#add_content").on("click", "#cancel", function () {
+                $("#add_content").find('form.form').form('clear');
+                $("#add_content").window("close");
+            });
+
+            $("#add_content").on("click", "#subBut", function () {
+                //禁用按钮，防止多次提交
+                $('#subBut').linkbutton({disabled: true});
+
+                var paramsCode = $("#paramsCode").val();
+                var paramsName = $("#paramsName").val();
+                var paramsTypeId = $("#typeList").combobox('getValue');
+                var paramsTypeName = $("#typeList").combobox('getText');
+
+                var params = {
+                    'tenantId': Util.constants.TENANT_ID,
+                    'paramsCode': paramsCode,
+                    'paramsName': paramsName,
+                    'paramsTypeId':paramsTypeId,
+                    'paramsTypeName':paramsTypeName
+                };
+
+                if (paramsCode == null || paramsCode == "" || paramsName == null || paramsName == "" || paramsTypeId == null
+                    || paramsTypeId == "") {
+                    $.messager.alert('警告', '必填项不能为空。');
+
+                    $("#subTypeBut").linkbutton({disabled: false});  //按钮可用
+                    return false;
+                }
+
+                Util.ajax.postJson(Util.constants.CONTEXT.concat(qmURI).concat("/"), JSON.stringify(params), function (result) {
+
+                    $.messager.show({
+                        msg: result.RSP.RSP_DESC,
+                        timeout: 1000,
+                        style: {right: '', bottom: ''},     //居中显示
+                        showType: 'slide'
+                    });
+
+                    var rspCode = result.RSP.RSP_CODE;
+
+                    if (rspCode == "1") {
+                        $("#staticParamsManage").datagrid('reload'); //插入成功后，刷新页面
+                    }
+                });
+                //enable按钮
+                $("#subBut").linkbutton({disabled: false}); //按钮可用
+            });
+        });
+    }
+
+    /**
+     * 增加类型弹出窗口事件
+     */
+    function initTypeWindowEvent() {
+        /*
+         * 弹出添加窗口
+         */
         $("#page").on("click", "#addTypeBut", function () {
             $("#addtype_content").find('form.form').form('clear');  //初始化清空
 
@@ -233,69 +328,69 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
             });
         });
     }
-    //
-    ////敏感词修改
-    //function initReviseEvent() {
-    //    /*
-    //     * 弹出修改窗口
-    //     */
-    //    $("#page").on("click", "a.reviseBtn", function () {
-    //        $("#add_content").show().window({
-    //            width: 950,
-    //            height: 400,
-    //            modal: true,
-    //            title: "修改敏感词配置"
-    //        });
-    //
-    //        var sensStr = $(this).attr('id'); //获取选中行的数据
-    //        var sensjson = JSON.parse(sensStr); //转成json格式
-    //
-    //        $('#createSkillConfig').form('load', sensjson);   //将数据填入弹框中
-    //
-    //        $("#add_content").unbind("click");              //解绑事件
-    //
-    //        $("#add_content").on("click", "#cancel", function () {
-    //            $("#add_content").find('form.form').form('clear');
-    //            $("#add_content").window("close");
-    //        });
-    //
-    //        $("#add_content").on("click", "#global", function () {
-    //
-    //            var wordId = $("#wordId").val();
-    //            var sensitiveWord = $("#sensitiveWord").val();
-    //            var substituteWord = $("#substituteWord").val();
-    //            var rmk = $("#rmk").val();
-    //
-    //            var params = {'wordId':wordId, 'sensitiveWord': sensitiveWord, 'substituteWord': substituteWord, 'rmk': rmk};
-    //
-    //            if (sensitiveWord == null || sensitiveWord == "" || substituteWord == null
-    //                || substituteWord == "") {
-    //                $.messager.alert('警告', '敏感词和替换词不能为空。');
-    //
-    //                $("#global").linkbutton({disabled: false});  //按钮可用
-    //
-    //                return false;
-    //            }
-    //
-    //            Util.ajax.putJson(Util.constants.CONTEXT + "/sensword/updatesensword", params, function (result) {
-    //
-    //                $.messager.show({
-    //                    msg: result.RSP.RSP_DESC,
-    //                    timeout: 1000,
-    //                    style: {right: '', bottom: ''},     //居中显示
-    //                    showType: 'slide'
-    //                });
-    //
-    //                var rspCode = result.RSP.RSP_CODE;
-    //
-    //                if (rspCode == "1") {
-    //                    $("#evaluManage").datagrid('reload'); //修改成功后，刷新页面
-    //                }
-    //
-    //            })
-    //        })
-    //    });
-    //};
+
+    //修改
+    function initReviseEvent() {
+        /*
+         * 弹出修改窗口
+         */
+        $("#page").on("click", "a.reviseBtn", function () {
+            $("#add_content").show().window({
+                width: 950,
+                height: 400,
+                modal: true,
+                title: "修改参数"
+            });
+
+            var beanStr = $(this).attr('id'); //获取选中行的数据
+            var beanjson = JSON.parse(beanStr); //转成json格式
+            var arr = new Array(beanjson);
+            $('#createType').form('load', beanjson);   //将数据填入弹框中
+            $("#typeList").combobox({
+                data : arr,
+                valueField:'paramsTypeId',
+                textField:'paramsTypeName'
+            });
+            $("#typeList").combobox("setValue",beanjson['paramsTypeId']);
+
+            $("#add_content").unbind("click");              //解绑事件
+
+            $("#add_content").on("click", "#cancel", function () {
+                $("#add_content").find('form.form').form('clear');
+                $("#add_content").window("close");
+            });
+
+            $("#add_content").on("click", "#subBut", function () {
+
+                var paramsName = $("#paramsName").val();
+                beanjson['paramsName'] = paramsName;
+                if (paramsName == null || paramsName == "") {
+                    $.messager.alert('警告', '参数名称不能为空。');
+
+                    $("#subBut").linkbutton({disabled: false});  //按钮可用
+
+                    return false;
+                }
+
+                Util.ajax.putJson(Util.constants.CONTEXT.concat(qmURI).concat("/"), JSON.stringify(beanjson), function (result) {
+
+                    $.messager.show({
+                        msg: result.RSP.RSP_DESC,
+                        timeout: 1000,
+                        style: {right: '', bottom: ''},     //居中显示
+                        showType: 'slide'
+                    });
+
+                    var rspCode = result.RSP.RSP_CODE;
+
+                    if (rspCode == "1") {
+                        $("#staticParamsManage").datagrid('reload'); //修改成功后，刷新页面
+                    }
+
+                })
+            })
+        });
+    };
 
     return {
         initialize: initialize

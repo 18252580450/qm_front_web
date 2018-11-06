@@ -61,7 +61,7 @@
                     <div class='fl text-bold'>新增类别</div>
                 </div>
                 <div class='panel-search'>
-                    <form id='createChecktype' method='POST' class='form form-horizontal'>
+                    <form  method='POST' class='form form-horizontal'>
                         <div style='display:none'>
                             <input type='hidden' name='skillId' class='easyui-textbox' value='0'/>
                         </div>
@@ -112,9 +112,9 @@
                     <div class='fl text-bold'>新增参数</div>
                 </div>
                 <div class='panel-search'>
-                    <form  method='POST' class='form form-horizontal'>
+                    <form  method='POST' class='form form-horizontal' id='createType'>
                         <div style='display:none'>
-                            <input type='hidden' name='skillId' class='easyui-textbox' value='0'/>
+                            <input type='hidden' name='paramsPurposeId' class='easyui-textbox' value='0'/>
                         </div>
                         <div class='row cl'>
                             <label class='form-label col-2'>渠道</label>
@@ -136,16 +136,15 @@
                             </div>
                         </div>
                         <div class='row cl'>
-                            <label class='form-label col-2'>参数用途ID</label>
-                            <div class='formControls col-2' style="width: 26%">
-                                <input  type='text' id='paramsTypeId' name = 'paramsTypeId' class='easyui-textbox' style='width:90%;height:30px'/>
-                                <span style='color:red;padding-left:2px'>*</span>
-                            </div>
                             <label class='form-label col-2'>参数用途名称</label>
                             <div class='formControls col-2' style="width: 26%">
-                                <input  type='text' class='easyui-textbox'  id='paramsTypeName' name = 'paramsTypeName' style='width:90%;height:30px'/>
+                                <select class="easyui-combobox f-ipt w100" name="typeList" id="typeList">
+                                </select>
                                 <span style='color:red;padding-left:2px'>*</span>
                             </div>
+                        </div>
+                        <div>
+                            <input id = "paramsPurposeId" name = "paramsPurposeId" style="display:none;">
                         </div>
                     </form>
                     <div class='mt-10 test-c'>
