@@ -170,32 +170,32 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
          * 弹出添加窗口
          */
         $("#page").on("click", "#addTypeBut", function () {
-            $("#add_content").find('form.form').form('clear');  //初始化清空
+            $("#addtype_content").find('form.form').form('clear');  //初始化清空
 
-            $("#add_content").show().window({   //弹框
+            $("#addtype_content").show().window({   //弹框
                 width: 950,
                 height: 400,
                 modal: true,
                 title: "新增类别"
             });
 
-            $("#add_content").unbind("click");
+            $("#addtype_content").unbind("click");
             /*
              * 清除表单信息
              */
-            $("#add_content").on("click", "#cancel", function () {
-                $("#add_content").find('form.form').form('clear');
-                $("#add_content").window("close");
+            $("#addtype_content").on("click", "#cancelType", function () {
+                $("#addtype_content").find('form.form').form('clear');
+                $("#addtype_content").window("close");
             });
 
-            $("#add_content").on("click", "#subTypeBut", function () {
+            $("#addtype_content").on("click", "#subTypeBut", function () {
                 //禁用按钮，防止多次提交
                 $('#subTypeBut').linkbutton({disabled: true});
 
-                var paramsCode = $("#paramsCode").val();
-                var paramsName = $("#paramsName").val();
-                var paramsTypeId = $("#paramsTypeId").val();
-                var paramsTypeName = $("#paramsTypeName").val();
+                var paramsCode = $("#paramsCodet").val();
+                var paramsName = $("#paramsNamet").val();
+                var paramsTypeId = $("#paramsTypeIdt").val();
+                var paramsTypeName = $("#paramsTypeNamet").val();
 
                 var params = {
                     'tenantId': Util.constants.TENANT_ID,
