@@ -6,7 +6,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
     function initialize() {
         initGrid();
         initGlobalEvent();
-        //initWindowEvent();
+        initWindowEvent();
         //initReviseEvent();
     };
 
@@ -35,7 +35,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                 {field: 'paramsPurposeId', title: '参数用途ID', hidden: true},
                 {field: 'ck', checkbox: true, align: 'center'},
                 {field: 'tenantId', title: '渠道', width: '15%'},
-                {field: 'paramsTypeId', title: '参数用途名称', width: '20%'},
+                {field: 'paramsTypeName', title: '参数用途名称', width: '20%'},
                 {field: 'paramsCode', title: '参数编码', width: '20%'},
                 {field: 'paramsName', title: '参数名称', width: '20%'},
                 {
@@ -83,7 +83,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
             loader: function (param, success) {
                 var start = (param.page - 1) * param.rows;
                 var pageNum = param.rows;
-                var paramsTypeId = $("#paramsName").val();
+                var paramsTypeId = $("#paramsNameq").val();
                 var reqParams = {
                     "tenantId":Util.constants.TENANT_ID,
                     "paramsTypeId": paramsTypeId
@@ -142,7 +142,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
             $.messager.confirm('确认删除弹窗', '确定要删除吗？', function (confirm) {
 
                 if (confirm) {
-                    Util.ajax.deleteJson(Util.constants.CONTEXT.concat(qmURI).concat("/deleteByIds/").concat(ids), {}, function (result) {
+                    Util.ajax.deleteJson(Util.constants.CONTEXT.concat(qmURI).concat("/").concat(ids), {}, function (result) {
 
                         $.messager.show({
                             msg: result.RSP.RSP_DESC,
@@ -165,70 +165,74 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
     /**
      * 增加弹出窗口事件
      */
-    //function initWindowEvent() {
-    //    /*
-    //     * 弹出添加窗口
-    //     */
-    //    $("#page").on("click", "#addSens", function () {
-    //        $("#add_content").find('form.form').form('clear');  //初始化清空
-    //
-    //        $("#add_content").show().window({   //弹框
-    //            width: 950,
-    //            height: 400,
-    //            modal: true,
-    //            title: "添加静态参数配置"
-    //        });
-    //
-    //        $("#add_content").unbind("click");
-    //        /*
-    //         * 清除表单信息
-    //         */
-    //        $("#add_content").on("click", "#cancel", function () {
-    //            $("#add_content").find('form.form').form('clear');
-    //            $("#add_content").window("close");
-    //        });
-    //
-    //        $("#add_content").on("click", "#global", function () {
-    //            // if ($(this).textbox({disabled : true})) {
-    //            //     return;
-    //            // }
-    //            //禁用按钮，防止多次提交
-    //            $('#global').linkbutton({disabled: true});
-    //
-    //            var sensitiveWord = $("#sensitiveWord").val();
-    //            var substituteWord = $("#substituteWord").val();
-    //            var rmk = $("#rmk").val();
-    //
-    //            var params = {'sensitiveWord': sensitiveWord, 'substituteWord': substituteWord, 'rmk': rmk};
-    //
-    //            if (sensitiveWord == null || sensitiveWord == "" || substituteWord == null
-    //                || substituteWord == "") {
-    //                $.messager.alert('警告', '敏感词和替换词不能为空。');
-    //
-    //                $("#global").linkbutton({disabled: false});  //按钮可用
-    //                return false;
-    //            }
-    //
-    //            Util.ajax.postJson(Util.constants.CONTEXT + "/sensword/insertsensword", params, function (result) {
-    //
-    //                $.messager.show({
-    //                    msg: result.RSP.RSP_DESC,
-    //                    timeout: 1000,
-    //                    style: {right: '', bottom: ''},     //居中显示
-    //                    showType: 'slide'
-    //                });
-    //
-    //                var rspCode = result.RSP.RSP_CODE;
-    //
-    //                if (rspCode == "1") {
-    //                    $("#evaluManage").datagrid('reload'); //插入成功后，刷新页面
-    //                }
-    //            });
-    //            //enable按钮
-    //            $("#global").linkbutton({disabled: false}); //按钮可用
-    //        });
-    //    });
-    //}
+    function initWindowEvent() {
+        /*
+         * 弹出添加窗口
+         */
+        $("#page").on("click", "#addTypeBut", function () {
+            $("#add_content").find('form.form').form('clear');  //初始化清空
+
+            $("#add_content").show().window({   //弹框
+                width: 950,
+                height: 400,
+                modal: true,
+                title: "新增类别"
+            });
+
+            $("#add_content").unbind("click");
+            /*
+             * 清除表单信息
+             */
+            $("#add_content").on("click", "#cancel", function () {
+                $("#add_content").find('form.form').form('clear');
+                $("#add_content").window("close");
+            });
+
+            $("#add_content").on("click", "#subTypeBut", function () {
+                //禁用按钮，防止多次提交
+                $('#subTypeBut').linkbutton({disabled: true});
+
+                var paramsCode = $("#paramsCode").val();
+                var paramsName = $("#paramsName").val();
+                var paramsTypeId = $("#paramsTypeId").val();
+                var paramsTypeName = $("#paramsTypeName").val();
+
+                var params = {
+                    'tenantId': Util.constants.TENANT_ID,
+                    'paramsCode': paramsCode,
+                    'paramsName': paramsName,
+                    'paramsTypeId':paramsTypeId,
+                    'paramsTypeName':paramsTypeName
+                };
+
+                if (paramsCode == null || paramsCode == "" || paramsName == null || paramsName == "" || paramsTypeId == null
+                    || paramsTypeId == "" || paramsTypeName == null || paramsTypeName == "") {
+                    $.messager.alert('警告', '必填项不能为空。');
+
+                    $("#subTypeBut").linkbutton({disabled: false});  //按钮可用
+                    return false;
+                }
+
+                Util.ajax.postJson(Util.constants.CONTEXT.concat(qmURI).concat("/"), JSON.stringify(params), function (result) {
+
+                    $.messager.show({
+                        msg: result.RSP.RSP_DESC,
+                        timeout: 1000,
+                        style: {right: '', bottom: ''},     //居中显示
+                        showType: 'slide'
+                    });
+
+                    var rspCode = result.RSP.RSP_CODE;
+
+                    if (rspCode == "1") {
+                        $("#staticParamsManage").datagrid('reload'); //插入成功后，刷新页面
+                    }
+                });
+                //enable按钮
+                $("#subTypeBut").linkbutton({disabled: false}); //按钮可用
+            });
+        });
+    }
     //
     ////敏感词修改
     //function initReviseEvent() {
