@@ -294,6 +294,7 @@ define(['jquery', 'encrypt'], function (JQuery, EncryptJS) {
 			url: url,
 			type: type,
 			data: cmd,
+			contentType: "application/json",
 			//请求头中添加日志uuid
 			headers: {
 				"Authorization" : value,
