@@ -1,0 +1,18 @@
+[
+  {
+    "codeType": "CHECK_ITEM_VITAL_TYPE@CS_IR",
+    "codeValue": "0",
+    "codeName": "非致命性",
+    "codeDesc": "非致命性考评项",
+    "sortId": 0,
+    "state": "1"
+  },
+  {
+    "codeType": "CHECK_ITEM_VIATL_TYPE@CS_IR",
+    "codeValue": "1",
+    "codeName": "致命性",
+    "codeDesc": "致命性考评项",
+    "sortId": 0,
+    "state": "1"
+  }
+]

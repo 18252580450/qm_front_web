@@ -1,0 +1,26 @@
+[
+  {
+    "codeType": "TENANT_TYPE@CS_IR",
+    "codeValue": "10010000",
+    "codeName": "北京10000",
+    "codeDesc": "北京电信",
+    "sortId": 0,
+    "state": "1"
+  },
+  {
+    "codeType": "TENANT_TYPE@CS_IR",
+    "codeValue": "10110000",
+    "codeName": "江苏10000",
+    "codeDesc": "江苏电信",
+    "sortId": 0,
+    "state": "1"
+  },
+  {
+    "codeType": "TENANT_TYPE@CS_IR",
+    "codeValue": "10210000",
+    "codeName": "上海10000",
+    "codeDesc": "上海电信",
+    "sortId": 0,
+    "state": "1"
+  }
+]
