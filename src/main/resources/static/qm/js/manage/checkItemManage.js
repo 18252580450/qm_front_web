@@ -53,16 +53,16 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
         var IsCheckFlag = true; //标示是否是勾选复选框选中行的，true - 是 , false - 否
         $("#checkItemList").datagrid({
             columns: [[
-                {field: 'checkitemId', title: '考评项ID', hidden: true},
+                {field: 'checkItemId', title: '考评项ID', hidden: true},
                 {field: 'ck', checkbox: true, align: 'center'},
-                {field: 'checkitemName', title: '考评项名称', align: 'center', width: '20%'},
-                {field: 'checkitemType', title: '考评项类型', align: 'center', width: '20%'},
-                {field: 'checkitemVitalType', title: '致命类别', align: 'center', width: '13%'},
+                {field: 'checkItemName', title: '考评项名称', align: 'center', width: '20%'},
+                {field: 'checkItemType', title: '考评项类型', align: 'center', width: '20%'},
+                {field: 'checkItemVitalType', title: '致命类别', align: 'center', width: '13%'},
                 {field: 'remark', title: '考评项描述', align: 'center', width: '30%'},
                 {
                     field: 'action', title: '操作', align: 'center', width: '13%',
                     formatter: function (value, row, index) {
-                            return '<a href="javascript:void(0);" id = "checkItem' + row.checkitemId + '">修改</a>';
+                            return '<a href="javascript:void(0);" id = "checkItem' + row.checkItemId + '">修改</a>';
                     }
                 }
             ]],
@@ -116,7 +116,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
             onLoadSuccess:function(data){
                 //绑定考评项修改事件
                 $.each(data.rows, function(i, item){
-                    $("#checkItem"+item.checkitemId).on("click",function () {
+                    $("#checkItem"+item.checkItemId).on("click",function () {
                         showCheckItemUpdateDialog(item);
                     });
                 });
@@ -217,10 +217,10 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
             }
             var params = {
                 "tenantId":tenantId,
-                "parentCheckitemId":Util.constants.PARENT_CHECK_ITEM_ID,
-                'checkitemName':checkItemName,
-                'checkitemType':checkItemType,
-                'checkitemVitalType':checkItemVitalType,
+                "parentCheckItemId":Util.constants.PARENT_CHECK_ITEM_ID,
+                'checkItemName':checkItemName,
+                'checkItemType':checkItemType,
+                'checkItemVitalType':checkItemVitalType,
                 'remark':checkItemDesc
             };
             Util.ajax.postJson(Util.constants.CONTEXT.concat(qmURI).concat("/"), JSON.stringify(params), function (result) {
@@ -245,28 +245,28 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
      * 修改考评项弹框
      */
     function showCheckItemUpdateDialog(item) {
-        switch(item.checkitemType)
+        switch(item.checkItemType)
         {
             case "语音考核项":
-                item.checkitemType = "0";
+                item.checkItemType = "0";
                 break;
             case "工单考核项":
-                item.checkitemType = "1";
+                item.checkItemType = "1";
                 break;
             case "电商平台考核项":
-                item.checkitemType = "2";
+                item.checkItemType = "2";
                 break;
             case "互联网考核项":
-                item.checkitemType = "3";
+                item.checkItemType = "3";
                 break;
         }
-        switch(item.checkitemVitalType)
+        switch(item.checkItemVitalType)
         {
             case "非致命性":
-                item.checkitemVitalType = "0";
+                item.checkItemVitalType = "0";
                 break;
             case "致命性":
-                item.checkitemVitalType = "1";
+                item.checkItemVitalType = "1";
                 break;
         }
         $("#checkItemConfig").form('clear');  //清空表单
@@ -278,7 +278,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
             title: "考评项修改"
         });
         //自动填入待修改考评项名称
-        $("#checkItemNameConfig").val(item.checkitemName);
+        $("#checkItemNameConfig").val(item.checkItemName);
         //自动填入待修改考评项描述
         $("#checkItemDescConfig").val(item.remark);
         //考评项类型下拉框
@@ -291,7 +291,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
             editable:false,
             onLoadSuccess : function(){
                 //自动填入待修改考评项类型
-                $('#checkItemTypeConfig').combobox('setValue',item.checkitemType);
+                $('#checkItemTypeConfig').combobox('setValue',item.checkItemType);
             }
         });
         //考评项致命类别下拉框
@@ -304,7 +304,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
             editable:false,
             onLoadSuccess : function(){
                 //自动填入待修改考评项致命类别
-                $('#checkItemVitalTypeConfig').combobox('setValue',item.checkitemVitalType);
+                $('#checkItemVitalTypeConfig').combobox('setValue',item.checkItemVitalType);
             }
         });
         //取消
@@ -335,7 +335,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                 submitBtn.linkbutton({disabled: false});  //取消提交禁用
                 return false;
             }
-            if (checkItemName === item.checkitemName && checkItemType === item.checkitemType && checkItemVitalType === item.checkitemVitalType && checkItemDesc === item.remark) {
+            if (checkItemName === item.checkItemName && checkItemType === item.checkItemType && checkItemVitalType === item.checkItemVitalType && checkItemDesc === item.remark) {
                 $.messager.alert("提示", "没有作任何修改!", null, function () {
                     $("#checkItemConfig").form('clear');    //清空表单
                     $("#checkItemDialog").window("close");
@@ -345,13 +345,13 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                 return false;
             }
 
-            item.checkitemName = checkItemName;
+            item.checkItemName = checkItemName;
             item.remark = checkItemDesc;
             if(checkItemType != null && checkItemType !== ""){
-                item.checkitemType = checkItemType;
+                item.checkItemType = checkItemType;
             }
             if(checkItemVitalType != null && checkItemVitalType !== ""){
-                item.checkitemVitalType = checkItemVitalType;
+                item.checkItemVitalType = checkItemVitalType;
             }
 
             Util.ajax.putJson(Util.constants.CONTEXT.concat(qmURI).concat("/"), JSON.stringify(item), function (result) {
@@ -383,7 +383,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
         }
         var delArr = [];
         for (var i = 0; i < delRows.length; i++) {
-            var id = delRows[i].checkitemId;
+            var id = delRows[i].checkItemId;
             delArr.push(id);
         }
         $.messager.confirm('确认删除弹窗', '确定要删除吗？', function (confirm) {
