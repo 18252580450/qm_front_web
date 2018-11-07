@@ -64,7 +64,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                 {
                     field: 'action', title: '操作', align: 'center', width: '13%',
                     formatter: function (value, row, index) {
-                            return "<a href='javascript:void(0);' class='reviseBtn' id = 'checkItem'" + row.checkItemId + " >修改</a>";
+                            return '<a href="javascript:void(0);" id = "checkItem' + row.checkitemId + '">修改</a>';
                     }
                 }
             ]],
@@ -79,21 +79,6 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
             checkOnSelect: false,
             autoRowHeight: true,
             selectOnCheck: true,
-            onClickCell: function (rowIndex, field, value) {
-                IsCheckFlag = false;
-            },
-            onSelect: function (rowIndex, rowData) {
-                if (!IsCheckFlag) {
-                    IsCheckFlag = true;
-                    $("#checkItemList").datagrid("unselectRow", rowIndex);
-                }
-            },
-            onUnselect: function (rowIndex, rowData) {
-                if (!IsCheckFlag) {
-                    IsCheckFlag = true;
-                    $("#checkItemList").datagrid("selectRow", rowIndex);
-                }
-            },
             loader: function (param, success) {
                 var start = (param.page - 1) * param.rows;
                 var pageNum = param.rows;
@@ -129,6 +114,14 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                     }
                     success(data);
                 });
+            },
+            onLoadSuccess:function(data){
+                //绑定item修改事件
+                $.each(data.rows, function(i, item){
+                    $("#checkItem"+item.checkitemId).on("click",function () {
+                        showCheckItemUpdateDialog(item);
+                    });
+                });
             }
         });
     }
@@ -144,9 +137,6 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
         $("#addBtn").on("click", function () {
             showCheckItemCreateDialog();
         });
-
-        //修改
-
 
         //删除
         $("#delBtn").on("click", function () {
@@ -164,7 +154,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
             width: 600,
             height: 350,
             modal: true,
-            title: "新增考评项"
+            title: "考评项新增"
         });
         //考评项类型下拉框
         $("#checkItemTypeConfig").combobox({
@@ -255,14 +245,43 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
     /**
      * 修改考评项弹框
      */
-    function showCheckItemUpdateDialog() {
+    function showCheckItemUpdateDialog(item) {
+        switch(item.checkitemType)
+        {
+            case "语音考核项":
+                item.checkitemType = "0";
+                break;
+            case "工单考核项":
+                item.checkitemType = "1";
+                break;
+            case "电商平台考核项":
+                item.checkitemType = "2";
+                break;
+            case "互联网考核项":
+                item.checkitemType = "3";
+                break;
+        }
+        switch(item.checkitemVitalType)
+        {
+            case "非致命性":
+                item.checkitemVitalType = "0";
+                break;
+            case "致命性":
+                item.checkitemVitalType = "1";
+                break;
+        }
         $("#checkItemConfig").form('clear');  //清空表单
+        var disableSubmit = false;  //禁用提交按钮标志
         $("#checkItemDialog").show().window({
             width: 600,
             height: 350,
             modal: true,
-            title: "修改考评项"
+            title: "考评项修改"
         });
+        //自动填入待修改考评项名称
+        $("#checkItemNameConfig").val(item.checkitemName);
+        //自动填入待修改考评项描述
+        $("#checkItemDescConfig").val(item.remark);
         //考评项类型下拉框
         $("#checkItemTypeConfig").combobox({
             url: '../../data/check_item_config_type.json',
@@ -272,11 +291,8 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
             panelHeight:'auto',
             editable:false,
             onLoadSuccess : function(){
-                var checkItemType = $('#checkItemTypeConfig');
-                var data = checkItemType.combobox('getData');
-                if (data.length > 0) {
-                    checkItemType.combobox('select', data[0].codeValue);
-                }
+                //自动填入待修改考评项类型
+                $('#checkItemTypeConfig').combobox('setValue',item.checkitemType);
             }
         });
         //考评项致命类别下拉框
@@ -288,11 +304,8 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
             panelHeight:'auto',
             editable:false,
             onLoadSuccess : function(){
-                var checkItemVitalType = $('#checkItemVitalTypeConfig');
-                var data = checkItemVitalType.combobox('getData');
-                if (data.length > 0) {
-                    checkItemVitalType.combobox('select', data[0].codeValue);
-                }
+                //自动填入待修改考评项致命类别
+                $('#checkItemVitalTypeConfig').combobox('setValue',item.checkitemVitalType);
             }
         });
         //取消
@@ -306,7 +319,57 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
         var submitBtn = $("#submitBtn");
         submitBtn.unbind("click");
         submitBtn.on("click",function () {
-            submitBtn.linkbutton({disabled: true});  //防止多次提交
+            if(disableSubmit){
+                return false;
+            }
+            disableSubmit = true;   //防止多次提交
+            submitBtn.linkbutton({disabled: true});  //禁用提交按钮（样式）
+
+            var checkItemName = $("#checkItemNameConfig").val();
+            var checkItemType = $("#checkItemTypeConfig").combobox("getValue");
+            var checkItemVitalType = $("#checkItemVitalTypeConfig").combobox("getValue");
+            var checkItemDesc = $("#checkItemDescConfig").val();
+
+            if(checkItemName == null || checkItemName ===""){
+                $.messager.alert("提示", "考评项名称不能为空!");
+                disableSubmit = false;
+                submitBtn.linkbutton({disabled: false});  //取消提交禁用
+                return false;
+            }
+            if (checkItemName === item.checkitemName && checkItemType === item.checkitemType && checkItemVitalType === item.checkitemVitalType && checkItemDesc === item.remark) {
+                $.messager.alert("提示", "没有作任何修改!", null, function () {
+                    $("#checkItemConfig").form('clear');    //清空表单
+                    $("#checkItemDialog").window("close");
+                });
+                disableSubmit = false;
+                submitBtn.linkbutton({disabled: false});  //取消提交禁用
+                return false;
+            }
+
+            item.checkitemName = checkItemName;
+            item.remark = checkItemDesc;
+            if(checkItemType != null && checkItemType !== ""){
+                item.checkitemType = checkItemType;
+            }
+            if(checkItemVitalType != null && checkItemVitalType !== ""){
+                item.checkitemVitalType = checkItemVitalType;
+            }
+
+            Util.ajax.putJson(Util.constants.CONTEXT.concat(qmURI).concat("/"), JSON.stringify(item), function (result) {
+                $.messager.show({
+                    msg: result.RSP.RSP_DESC,
+                    timeout: 1000,
+                    style: {right: '', bottom: ''},     //居中显示
+                    showType: 'show'
+                });
+                var rspCode = result.RSP.RSP_CODE;
+                if (rspCode != null && rspCode === "1") {
+                    $("#checkItemDialog").window("close");  //关闭对话框
+                    $("#checkItemList").datagrid('reload'); //插入成功后，刷新页面
+                }
+                disableSubmit = false;
+                submitBtn.linkbutton({disabled: false});  //取消提交禁用
+            });
         });
     }
 
@@ -341,137 +404,6 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
             }
         });
     }
-
-    /**
-     * 增加弹出窗口事件
-     */
-    //function initWindowEvent() {
-    //    /*
-    //     * 弹出添加窗口
-    //     */
-    //    $("#page").on("click", "#addSens", function () {
-    //        $("#add_content").find('form.form').form('clear');  //初始化清空
-    //
-    //        $("#add_content").show().window({   //弹框
-    //            width: 950,
-    //            height: 400,
-    //            modal: true,
-    //            title: "添加静态参数配置"
-    //        });
-    //
-    //        $("#add_content").unbind("click");
-    //        /*
-    //         * 清除表单信息
-    //         */
-    //        $("#add_content").on("click", "#cancel", function () {
-    //            $("#add_content").find('form.form').form('clear');
-    //            $("#add_content").window("close");
-    //        });
-    //
-    //        $("#add_content").on("click", "#global", function () {
-    //            // if ($(this).textbox({disabled : true})) {
-    //            //     return;
-    //            // }
-    //            //禁用按钮，防止多次提交
-    //            $('#global').linkbutton({disabled: true});
-    //
-    //            var sensitiveWord = $("#sensitiveWord").val();
-    //            var substituteWord = $("#substituteWord").val();
-    //            var rmk = $("#rmk").val();
-    //
-    //            var params = {'sensitiveWord': sensitiveWord, 'substituteWord': substituteWord, 'rmk': rmk};
-    //
-    //            if (sensitiveWord == null || sensitiveWord == "" || substituteWord == null
-    //                || substituteWord == "") {
-    //                $.messager.alert('警告', '敏感词和替换词不能为空。');
-    //
-    //                $("#global").linkbutton({disabled: false});  //按钮可用
-    //                return false;
-    //            }
-    //
-    //            Util.ajax.postJson(Util.constants.CONTEXT + "/sensword/insertsensword", params, function (result) {
-    //
-    //                $.messager.show({
-    //                    msg: result.RSP.RSP_DESC,
-    //                    timeout: 1000,
-    //                    style: {right: '', bottom: ''},     //居中显示
-    //                    showType: 'show'
-    //                });
-    //
-    //                var rspCode = result.RSP.RSP_CODE;
-    //
-    //                if (rspCode == "1") {
-    //                    $("#evaluManage").datagrid('reload'); //插入成功后，刷新页面
-    //                }
-    //            });
-    //            //enable按钮
-    //            $("#global").linkbutton({disabled: false}); //按钮可用
-    //        });
-    //    });
-    //}
-    //
-    ////敏感词修改
-    //function initReviseEvent() {
-    //    /*
-    //     * 弹出修改窗口
-    //     */
-    //    $("#page").on("click", "a.reviseBtn", function () {
-    //        $("#add_content").show().window({
-    //            width: 950,
-    //            height: 400,
-    //            modal: true,
-    //            title: "修改敏感词配置"
-    //        });
-    //
-    //        var sensStr = $(this).attr('id'); //获取选中行的数据
-    //        var sensjson = JSON.parse(sensStr); //转成json格式
-    //
-    //        $('#createSkillConfig').form('load', sensjson);   //将数据填入弹框中
-    //
-    //        $("#add_content").unbind("click");              //解绑事件
-    //
-    //        $("#add_content").on("click", "#cancel", function () {
-    //            $("#add_content").find('form.form').form('clear');
-    //            $("#add_content").window("close");
-    //        });
-    //
-    //        $("#add_content").on("click", "#global", function () {
-    //
-    //            var wordId = $("#wordId").val();
-    //            var sensitiveWord = $("#sensitiveWord").val();
-    //            var substituteWord = $("#substituteWord").val();
-    //            var rmk = $("#rmk").val();
-    //
-    //            var params = {'wordId':wordId, 'sensitiveWord': sensitiveWord, 'substituteWord': substituteWord, 'rmk': rmk};
-    //
-    //            if (sensitiveWord == null || sensitiveWord == "" || substituteWord == null
-    //                || substituteWord == "") {
-    //                $.messager.alert('警告', '敏感词和替换词不能为空。');
-    //
-    //                $("#global").linkbutton({disabled: false});  //按钮可用
-    //
-    //                return false;
-    //            }
-    //
-    //            Util.ajax.putJson(Util.constants.CONTEXT + "/sensword/updatesensword", params, function (result) {
-    //
-    //                $.messager.show({
-    //                    msg: result.RSP.RSP_DESC,
-    //                    timeout: 1000,
-    //                    style: {right: '', bottom: ''},     //居中显示
-    //                    showType: 'show'
-    //                });
-    //
-    //                var rspCode = result.RSP.RSP_CODE;
-    //
-    //                if (rspCode == "1") {
-    //                    $("#evaluManage").datagrid('reload'); //修改成功后，刷新页面
-    //                }
-    //
-    //            })
-    //        })
-    //    });
-    //};
 
     return {
         initialize: initialize
