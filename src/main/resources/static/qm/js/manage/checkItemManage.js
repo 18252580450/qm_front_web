@@ -124,7 +124,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                             msg: result.RSP.RSP_DESC,
                             timeout: 1000,
                             style: {right: '', bottom: ''},     //居中显示
-                            showType: 'slide'
+                            showType: 'show'
                         });
                     }
                     success(data);
@@ -159,6 +159,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
      */
     function showCheckItemCreateDialog() {
         $("#checkItemConfig").form('clear');  //清空表单
+        var disableSubmit = false;  //禁用提交按钮标志
         $("#checkItemDialog").show().window({
             width: 600,
             height: 350,
@@ -208,7 +209,11 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
         var submitBtn = $("#submitBtn");
         submitBtn.unbind("click");
         submitBtn.on("click",function () {
-            submitBtn.linkbutton({disabled: true});  //防止多次提交
+            if(disableSubmit){
+                return false;
+            }
+            disableSubmit = true;   //防止多次提交
+            submitBtn.linkbutton({disabled: true});  //禁用提交按钮（样式）
 
             var checkItemName = $("#checkItemNameConfig").val();
             var checkItemType = $("#checkItemTypeConfig").combobox("getValue");
@@ -217,6 +222,8 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
 
             if(checkItemName == null || checkItemName ===""){
                 $.messager.alert("提示", "考评项名称不能为空!");
+                disableSubmit = false;
+                submitBtn.linkbutton({disabled: false});  //取消提交禁用
                 return false;
             }
             var params = {
@@ -232,12 +239,15 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                     msg: result.RSP.RSP_DESC,
                     timeout: 1000,
                     style: {right: '', bottom: ''},     //居中显示
-                    showType: 'slide'
+                    showType: 'show'
                 });
                 var rspCode = result.RSP.RSP_CODE;
                 if (rspCode != null && rspCode === "1") {
+                    $("#checkItemDialog").window("close");  //关闭对话框
                     $("#checkItemList").datagrid('reload'); //插入成功后，刷新页面
                 }
+                disableSubmit = false;
+                submitBtn.linkbutton({disabled: false});  //取消提交禁用
             });
         });
     }
@@ -321,7 +331,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                         msg: result.RSP.RSP_DESC,
                         timeout: 1000,
                         style: {right: '', bottom: ''},     //居中显示
-                        showType: 'slide'
+                        showType: 'show'
                     });
                     var rspCode = result.RSP.RSP_CODE;
                     if (rspCode != null && rspCode === "1") {
@@ -385,7 +395,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
     //                    msg: result.RSP.RSP_DESC,
     //                    timeout: 1000,
     //                    style: {right: '', bottom: ''},     //居中显示
-    //                    showType: 'slide'
+    //                    showType: 'show'
     //                });
     //
     //                var rspCode = result.RSP.RSP_CODE;
@@ -449,7 +459,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
     //                    msg: result.RSP.RSP_DESC,
     //                    timeout: 1000,
     //                    style: {right: '', bottom: ''},     //居中显示
-    //                    showType: 'slide'
+    //                    showType: 'show'
     //                });
     //
     //                var rspCode = result.RSP.RSP_CODE;
