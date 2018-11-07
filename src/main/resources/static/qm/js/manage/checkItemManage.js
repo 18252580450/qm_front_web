@@ -6,8 +6,6 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
     function initialize() {
         initPageInfo();
         initEvent();
-        //initWindowEvent();
-        //initReviseEvent();
     };
 
     //页面信息初始化
@@ -116,7 +114,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                 });
             },
             onLoadSuccess:function(data){
-                //绑定item修改事件
+                //绑定考评项修改事件
                 $.each(data.rows, function(i, item){
                     $("#checkItem"+item.checkitemId).on("click",function () {
                         showCheckItemUpdateDialog(item);
@@ -205,6 +203,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
             disableSubmit = true;   //防止多次提交
             submitBtn.linkbutton({disabled: true});  //禁用提交按钮（样式）
 
+            var tenantId = $("#tenantType").combobox("getValue");
             var checkItemName = $("#checkItemNameConfig").val();
             var checkItemType = $("#checkItemTypeConfig").combobox("getValue");
             var checkItemVitalType = $("#checkItemVitalTypeConfig").combobox("getValue");
@@ -217,7 +216,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                 return false;
             }
             var params = {
-                "tenantId":Util.constants.TENANT_ID,
+                "tenantId":tenantId,
                 "parentCheckitemId":Util.constants.PARENT_CHECK_ITEM_ID,
                 'checkitemName':checkItemName,
                 'checkitemType':checkItemType,
