@@ -12,7 +12,7 @@
     "codeValue": "1",
     "codeName": "工单考评项",
     "codeDesc": "工单考评项",
-    "sortId": 0,
+    "sortId": 1,
     "state": "1"
   },
   {
@@ -20,7 +20,7 @@
     "codeValue": "2",
     "codeName": "电商平台考评项",
     "codeDesc": "电商平台考评项",
-    "sortId": 0,
+    "sortId": 2,
     "state": "1"
   },
   {
@@ -28,7 +28,7 @@
     "codeValue": "3",
     "codeName": "互联网考评项",
     "codeDesc": "互联网考评项",
-    "sortId": 0,
+    "sortId": 3,
     "state": "1"
   }
 ]

@@ -6,7 +6,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
     function initialize() {
         initPageInfo();
         initEvent();
-    };
+    }
 
     //页面信息初始化
     function initPageInfo() {

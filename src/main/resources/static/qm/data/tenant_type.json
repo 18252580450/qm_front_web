@@ -12,7 +12,7 @@
     "codeValue": "10110000",
     "codeName": "江苏10000",
     "codeDesc": "江苏电信",
-    "sortId": 0,
+    "sortId": 1,
     "state": "1"
   },
   {
@@ -20,7 +20,7 @@
     "codeValue": "10210000",
     "codeName": "上海10000",
     "codeDesc": "上海电信",
-    "sortId": 0,
+    "sortId": 2,
     "state": "1"
   }
 ]
