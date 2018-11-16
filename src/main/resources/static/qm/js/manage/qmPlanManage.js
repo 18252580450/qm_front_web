@@ -1,14 +1,15 @@
 require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
     //调用初始化方法
     initialize();
+    var planTypes = [];
 
     function initialize() {
-        initSearchForm();
-        initGrid();
-        initGlobalEvent();
-        //initReviseEvent();
+        initSearchForm();//初始化表单数据
+        initGrid();//初始化列表
+        initGlobalEvent();//初始化按钮事件
     };
 
+    //批量更新计划  发布和暂停
     function batchUpdate(targetBut){
         var currId = targetBut.currentTarget.id;
         var title = "";
@@ -16,8 +17,8 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
         var halfFlag = "";
         if(currId == "batchStart"){
             halfFlag = "1";
-            title = "确认启动弹窗";
-            msg = "确定启动吗？";
+            title = "确认发布弹窗";
+            msg = "确定发布吗？";
         }else if(currId == "batchStop"){
             halfFlag = "0";
             title = "确认暂停弹窗";
@@ -55,8 +56,8 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
         });
     }
 
+    //批量删除计划
     function batchDelete(){
-        //绑定删除按钮事件
         $("#batchDelete").on("click", function () {
             var selRows = $("#planList").datagrid("getSelections");
             if (selRows.length == 0) {
@@ -88,11 +89,8 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
     }
 
     function addToolsDom() {
-        $(["<td><a href='javascript:void(0)' id='updateQmPlan' class='btn btn-green radius  mt-l-20'"+
-            " style='height: 24px;line-height: 1.42857;padding: 2px 6px;'>修改</a></td>"].join("")
-        ).appendTo($(".datagrid .datagrid-pager > table > tbody > tr"));
         $(["<td><a href='javascript:void(0)' id='batchStart' class='btn btn-green radius  mt-l-20'"+
-            " style='height: 24px;line-height: 1.42857;padding: 2px 6px;'>启动</a></td>"].join("")
+            " style='height: 24px;line-height: 1.42857;padding: 2px 6px;'>发布</a></td>"].join("")
         ).appendTo($(".datagrid .datagrid-pager > table > tbody > tr"));
         $(["<td><a href='javascript:void(0)' id='batchStop' class='btn btn-green radius  mt-l-20'"+
             " style='height: 24px;line-height: 1.42857;padding: 2px 6px;'>暂停</a></td>"].join("")
@@ -122,16 +120,29 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                         var beanStr = JSON.stringify(bean);   //转成字符串
 
                         var Action =
-                            "<a href='javascript:void(0);' class='copyBtn' id =" + beanStr + " >复制</a>"+
-                            " | <a href='javascript:void(0);' class='reviseBtn' id =" + beanStr + " >编辑</a>"+
+                            "<a href='javascript:void(0);' class='reviseBtn' id =" + beanStr + " >编辑</a>"+
                             " | <a href='javascript:void(0);' class='qryDetailBtn' id =" + beanStr + " >详情</a>";
                         return Action;
                     }
                 },
-                {field: 'planName', title: '计划名称', width: '8%'},
-                {field: 'planStarttime', title: '计划开始时间', width: '13%'},
-                {field: 'planEndtime', title: '计划结束时间', width: '13%'},
-                {field: 'templateName', title: '考评模板', width: '13%'},
+                {field: 'planName', title: '计划名称', width: '7%'},
+                {field: 'planStarttime', title: '计划开始时间', width: '12%'},
+                {field: 'planEndtime', title: '计划结束时间', width: '12%'},
+                {field: 'templateName', title: '考评模板', width: '10%'},
+                {field: 'planType', title: '计划类型', width: '8%',
+                    formatter: function (value, row, index) {
+                        var str = "";
+                        if(planTypes){
+                            $.each(planTypes,function(index, item){
+                                if(item.paramsCode == value){
+                                    str = item.paramsName;
+                                    return;
+                                }
+                            });
+                        }
+                        return str;
+                    }
+                },
                 {field: 'haltFlag', title: '发布状态', width: '5%',
                     formatter: function (value, row, index) {
                         if(0 == value){
@@ -141,8 +152,8 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                         }
                     }
                 },
-                {field: 'createTime', title: '创建时间', width: '13%'},
-                {field: 'modifiedTime', title: '修改时间', width: '13%'},
+                {field: 'createTime', title: '创建时间', width: '12%'},
+                {field: 'modifiedTime', title: '修改时间', width: '12%'},
                 {field: 'remark', title: '描述', width: '10%'}
             ]],
             fitColumns: true,
@@ -232,6 +243,11 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
             $("#searchForm").form('clear');
         });
 
+        //新增
+        $("#addBtn").on("click", function(){
+            crossAPI.createTab('新建计划', _root+Constants.PREAJAXURL+"");
+        });
+
         //批量删除
         batchDelete();
         //批量启动
@@ -240,6 +256,20 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
         $("#batchStop").on("click",batchUpdate);
     }
 
+    //添加一个选项卡面板
+    function addTabs(title, url, icon) {
+        if (!$('#tabs').tabs('exists', title)) {
+            $('#tabs').tabs('add', {
+                title: title,
+                content: '<iframe src="' + url + '" frameBorder="0" border="0" scrolling="auto"  style="width: 100%; height: 100%;"/>',
+                closable: true
+            });
+        } else {
+            $('#tabs').tabs('select', title);
+        }
+    }
+
+    //初始化搜索表单
     function initSearchForm() {
         $('#createTimeStart').datetimebox({
             required: false,
@@ -287,13 +317,13 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
             "pageNum": 0,
             "params": JSON.stringify(reqParams)
         };
-        var data = [];
+
         Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.STATIC_PARAMS_DNS + "/selectByParams", params, function (result) {
             var rspCode = result.RSP.RSP_CODE;
             if (rspCode == "1") {
-                data = result.RSP.DATA;
+                planTypes = result.RSP.DATA;
                 $('#planTypeq').combobox({
-                    data: data,
+                    data: planTypes,
                     valueField: 'paramsCode',
                     textField: 'paramsName',
                     editable: false
@@ -301,236 +331,10 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
             }
         });
         $('#planTypeq').combobox({
-            data: data,
+            data: planTypes,
             editable: false
         });
     }
-
-    /**
-     * 增加弹出窗口事件
-     */
-    //function initWindowEvent() {
-    //    /*
-    //     * 弹出添加窗口
-    //     */
-    //    $("#page").on("click", "#addBut", function () {
-    //        $("#add_content").find('form.form').form('clear');  //初始化清空
-    //
-    //        $("#add_content").show().window({   //弹框
-    //            width: 950,
-    //            height: 400,
-    //            modal: true,
-    //            title: "新增参数"
-    //        });
-    //
-    //        var params = {
-    //            "tenantId":Util.constants.TENANT_ID
-    //        };
-    //        var reqparams = {
-    //            "params":JSON.stringify(params)
-    //        };
-    //
-    //        Util.ajax.getJson(Util.constants.CONTEXT + qmURI + "/selectAllTypes", reqparams, function (result) {
-    //            var rspCode = result.RSP.RSP_CODE;
-    //            if (rspCode == "1") {
-    //                $("#typeList").combobox({
-    //                    data : result.RSP.DATA,
-    //                    valueField:'paramsTypeId',
-    //                    textField:'paramsTypeName'
-    //                });
-    //            }
-    //        });
-    //
-    //        $("#add_content").unbind("click");
-    //
-    //        /*
-    //         * 清除表单信息
-    //         */
-    //        $("#add_content").on("click", "#cancel", function () {
-    //            $("#add_content").find('form.form').form('clear');
-    //            $("#add_content").window("close");
-    //        });
-    //
-    //        $("#add_content").on("click", "#subBut", function () {
-    //            //禁用按钮，防止多次提交
-    //            $('#subBut').linkbutton({disabled: true});
-    //
-    //            var paramsCode = $("#paramsCode").val();
-    //            var paramsName = $("#paramsName").val();
-    //            var paramsTypeId = $("#typeList").combobox('getValue');
-    //            var paramsTypeName = $("#typeList").combobox('getText');
-    //
-    //            var params = {
-    //                'tenantId': Util.constants.TENANT_ID,
-    //                'paramsCode': paramsCode,
-    //                'paramsName': paramsName,
-    //                'paramsTypeId':paramsTypeId,
-    //                'paramsTypeName':paramsTypeName
-    //            };
-    //
-    //            if (paramsCode == null || paramsCode == "" || paramsName == null || paramsName == "" || paramsTypeId == null
-    //                || paramsTypeId == "") {
-    //                $.messager.alert('警告', '必填项不能为空。');
-    //
-    //                $("#subTypeBut").linkbutton({disabled: false});  //按钮可用
-    //                return false;
-    //            }
-    //
-    //            Util.ajax.postJson(Util.constants.CONTEXT.concat(qmURI).concat("/"), JSON.stringify(params), function (result) {
-    //
-    //                $.messager.show({
-    //                    msg: result.RSP.RSP_DESC,
-    //                    timeout: 1000,
-    //                    style: {right: '', bottom: ''},     //居中显示
-    //                    showType: 'slide'
-    //                });
-    //
-    //                var rspCode = result.RSP.RSP_CODE;
-    //
-    //                if (rspCode == "1") {
-    //                    $("#staticParamsManage").datagrid('reload'); //插入成功后，刷新页面
-    //                }
-    //            });
-    //            //enable按钮
-    //            $("#subBut").linkbutton({disabled: false}); //按钮可用
-    //        });
-    //    });
-    //}
-
-    /**
-     * 增加类型弹出窗口事件
-     */
-    //function initTypeWindowEvent() {
-    //    /*
-    //     * 弹出添加窗口
-    //     */
-    //    $("#page").on("click", "#addTypeBut", function () {
-    //        $("#addtype_content").find('form.form').form('clear');  //初始化清空
-    //
-    //        $("#addtype_content").show().window({   //弹框
-    //            width: 950,
-    //            height: 400,
-    //            modal: true,
-    //            title: "新增类别"
-    //        });
-    //
-    //        $("#addtype_content").unbind("click");
-    //        /*
-    //         * 清除表单信息
-    //         */
-    //        $("#addtype_content").on("click", "#cancelType", function () {
-    //            $("#addtype_content").find('form.form').form('clear');
-    //            $("#addtype_content").window("close");
-    //        });
-    //
-    //        $("#addtype_content").on("click", "#subTypeBut", function () {
-    //            //禁用按钮，防止多次提交
-    //            $('#subTypeBut').linkbutton({disabled: true});
-    //
-    //            var paramsCode = $("#paramsCodet").val();
-    //            var paramsName = $("#paramsNamet").val();
-    //            var paramsTypeId = $("#paramsTypeIdt").val();
-    //            var paramsTypeName = $("#paramsTypeNamet").val();
-    //
-    //            var params = {
-    //                'tenantId': Util.constants.TENANT_ID,
-    //                'paramsCode': paramsCode,
-    //                'paramsName': paramsName,
-    //                'paramsTypeId':paramsTypeId,
-    //                'paramsTypeName':paramsTypeName
-    //            };
-    //
-    //            if (paramsCode == null || paramsCode == "" || paramsName == null || paramsName == "" || paramsTypeId == null
-    //                || paramsTypeId == "" || paramsTypeName == null || paramsTypeName == "") {
-    //                $.messager.alert('警告', '必填项不能为空。');
-    //
-    //                $("#subTypeBut").linkbutton({disabled: false});  //按钮可用
-    //                return false;
-    //            }
-    //
-    //            Util.ajax.postJson(Util.constants.CONTEXT.concat(qmURI).concat("/"), JSON.stringify(params), function (result) {
-    //
-    //                $.messager.show({
-    //                    msg: result.RSP.RSP_DESC,
-    //                    timeout: 1000,
-    //                    style: {right: '', bottom: ''},     //居中显示
-    //                    showType: 'slide'
-    //                });
-    //
-    //                var rspCode = result.RSP.RSP_CODE;
-    //
-    //                if (rspCode == "1") {
-    //                    $("#staticParamsManage").datagrid('reload'); //插入成功后，刷新页面
-    //                }
-    //            });
-    //            //enable按钮
-    //            $("#subTypeBut").linkbutton({disabled: false}); //按钮可用
-    //        });
-    //    });
-    //}
-
-    //修改
-    //function initReviseEvent() {
-    //    /*
-    //     * 弹出修改窗口
-    //     */
-    //    $("#page").on("click", "a.reviseBtn", function () {
-    //        $("#add_content").show().window({
-    //            width: 950,
-    //            height: 400,
-    //            modal: true,
-    //            title: "修改参数"
-    //        });
-    //
-    //        var beanStr = $(this).attr('id'); //获取选中行的数据
-    //        var beanjson = JSON.parse(beanStr); //转成json格式
-    //        var arr = new Array(beanjson);
-    //        $('#createType').form('load', beanjson);   //将数据填入弹框中
-    //        $("#typeList").combobox({
-    //            data : arr,
-    //            valueField:'paramsTypeId',
-    //            textField:'paramsTypeName'
-    //        });
-    //        $("#typeList").combobox("setValue",beanjson['paramsTypeId']);
-    //
-    //        $("#add_content").unbind("click");              //解绑事件
-    //
-    //        $("#add_content").on("click", "#cancel", function () {
-    //            $("#add_content").find('form.form').form('clear');
-    //            $("#add_content").window("close");
-    //        });
-    //
-    //        $("#add_content").on("click", "#subBut", function () {
-    //
-    //            var paramsName = $("#paramsName").val();
-    //            beanjson['paramsName'] = paramsName;
-    //            if (paramsName == null || paramsName == "") {
-    //                $.messager.alert('警告', '参数名称不能为空。');
-    //
-    //                $("#subBut").linkbutton({disabled: false});  //按钮可用
-    //
-    //                return false;
-    //            }
-    //
-    //            Util.ajax.putJson(Util.constants.CONTEXT.concat(qmURI).concat("/"), JSON.stringify(beanjson), function (result) {
-    //
-    //                $.messager.show({
-    //                    msg: result.RSP.RSP_DESC,
-    //                    timeout: 1000,
-    //                    style: {right: '', bottom: ''},     //居中显示
-    //                    showType: 'slide'
-    //                });
-    //
-    //                var rspCode = result.RSP.RSP_CODE;
-    //
-    //                if (rspCode == "1") {
-    //                    $("#staticParamsManage").datagrid('reload'); //修改成功后，刷新页面
-    //                }
-    //
-    //            })
-    //        })
-    //    });
-    //};
 
     return {
         initialize: initialize
