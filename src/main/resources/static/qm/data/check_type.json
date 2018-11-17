@@ -1,0 +1,34 @@
+[
+  {
+    "codeType": "CHECK_TYPE@CS_IR",
+    "codeValue": "0",
+    "codeName": "语音质检",
+    "codeDesc": "语言质检",
+    "sortId": 0,
+    "state": "1"
+  },
+  {
+    "codeType": "CHECK_TYPE@CS_IR",
+    "codeValue": "1",
+    "codeName": "工单质检",
+    "codeDesc": "工单质检",
+    "sortId": 1,
+    "state": "1"
+  },
+  {
+    "codeType": "CHECK_TYPE@CS_IR",
+    "codeValue": "2",
+    "codeName": "电商平台质检",
+    "codeDesc": "电商平台质检",
+    "sortId": 2,
+    "state": "1"
+  },
+  {
+    "codeType": "CHECK_TYPE@CS_IR",
+    "codeValue": "3",
+    "codeName": "互联网质检",
+    "codeDesc": "互联网质检",
+    "sortId": 3,
+    "state": "1"
+  }
+]

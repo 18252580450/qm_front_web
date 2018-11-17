@@ -6,6 +6,7 @@ define(function () {
     return {
        // CONTEXT: "http://marathon-lb-kc.skyark.mesos:9010",
         CONTEXT: "http://localhost:9002",
+        URLCONTEXT:"http://127.0.0.1:8080",
         TENANT_ID: "10010000",
         PARENT_CHECK_ITEM_ID:"1",
 

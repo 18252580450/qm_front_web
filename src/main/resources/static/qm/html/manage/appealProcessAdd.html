@@ -1,0 +1,155 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>申诉流程-新增</title>
+    <link rel="stylesheet" type="text/css" href="../../assets/lib/easyui/themes/cmcui/cmcui.css"/>
+    <link rel="stylesheet" type="text/css" href="../../assets/lib/easyui/themes/cmcui/iconfont/iconfont.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../assets/lib/ztree/css/cmcStyle/tree.css"/>
+    <link rel="stylesheet" type="text/css" href="../../assets/components/rating/themes/fontawesome-stars.css"/>
+    <!--<script src="https://cdn.ckeditor.com/ckeditor5/11.0.1/classic/ckeditor.js"></script>-->
+    <script src="../../assets/components/ckeditor/ckeditor.js"></script>
+
+    <link href="../../css/style.min.css" rel="stylesheet">
+
+
+</head>
+<body>
+<div id="page_content" data-options="region:'center'" style="height:100%;">
+    <div id='layout_content' class='easyui-layout' data-options="region:'center'" style='overflow: auto; height:100%;'>,
+        <div data-options="region:'center'" style='overflow: hidden;height: 100%'>
+            <div id = "page">
+                <div class='panel-search'>
+                    <form class='form form-horizontal'>
+                        <div class='row cl'>
+                            <label class='form-label col-1' data-options="required:'true'">流程名称</label>
+                            <div class='formControls col-2'>
+                                <input id="processName" type='text' class='easyui-textbox' style='width:100%;height:30px' >
+                            </div>
+                            <label class='form-label col-1'>渠道</label>
+                            <div class='formControls col-2'>
+                                <input id="tenantType" type='text' class='easyui-textbox' style='width:100%;height:30px' >
+                            </div>
+                            <label class='form-label col-1'>部门</label>
+                            <div class='formControls col-2'>
+                                <input id="departmentName" type='text' class='easyui-textbox' style='width:80%;height:30px' >
+                                <a href='javascript:void(0)'id="departmentSearch"><i class='iconfont iconfont-search'></i></a>
+                                <input id="departmentId" type='text' class='easyui-textbox' style="display:none" >
+                            </div>
+                            <label class='form-label col-1'>质检类型</label>
+                            <div class='formControls col-2'>
+                                <input id="checkType" type='text' class='easyui-textbox' style='width:100%;height:30px'>
+                            </div>
+                        </div>
+                    </form>
+                    <form class='form form-horizontal'>
+                        <div class='row cl'>
+                            <label class='form-label col-1'>最大节点数</label>
+                            <div class='formControls col-2'>
+                                <input id="maxNodeNum" type='text' class='easyui-textbox'style='width:100%;height:30px' value="10" readonly>
+                            </div>
+                            <label class='form-label col-1'>选择流程</label>
+                            <div class='formControls col-2'>
+                                <input id="orderNo" type='text' class='easyui-textbox'style='width:100%;height:30px'>
+                            </div>
+                            <!--<div class='formControls col-1'>-->
+                            <!--</div>-->
+                            <!--<div class='formControls col-2'>-->
+                                <!--<a href='javascript:void(0)' class='btn btn-orange radius mt-l-20' id="addMainProcess"><i class='iconfont iconfont-add'></i>新增主流程</a>-->
+                            <!--</div>-->
+                        </div>
+                    </form>
+                </div>
+
+                <div class='cl' style="margin-bottom: 10px">
+                    <div class='panel-tool-box cl' >
+                        <div class='fl text-bold'>申诉流程</div>
+                        <div class="formControls col-4" style="text-align: right;width: 90%">
+                            <a href='javascript:void(0)' class='btn btn-orange radius mt-l-20' id="addAppealProcess"><i class='iconfont iconfont-add'></i>新增流程</a>
+                        </div>
+                    </div>
+                    <table id='processList' class='easyui-datagrid'  style=' width:100%;'>
+                    </table>
+                </div>
+
+                <div class='cl'>
+                    <div class='panel-tool-box cl' >
+                        <div class='fl text-bold'>申诉节点</div>
+                        <div class="formControls col-2" style="text-align: right;width: 90%">
+                            <a href='javascript:void(0)' class='btn btn-orange radius mt-l-20' id="addSubNode"><i class='iconfont iconfont-add'></i>新增节点</a>
+                        </div>
+                    </div>
+                    <table id='subNodeList' class='easyui-datagrid'  style=' width:100%;'>
+                    </table>
+                </div>
+
+                <div class="cl">
+                    <div class='mt-10 test-c' style="height: 100px">
+                        <div class='formControls col-5'>
+                        </div>
+                        <div class='formControls col-1' style="margin-top: 30px">
+                            <a href='javascript:void(0)' class='btn btn-green radius mt-l-20' id="submitBtn">新增</a>
+                        </div>
+                        <div class='formControls col-1' style="margin-top: 30px">
+                            <a href='javascript:void(0)' class='btn btn-secondary radius mt-l-20' id="cancelBtn">取消</a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- 子节点新增弹框，默认隐藏  -->
+        <div  id='subNodeDialog' style='display:none;'>
+            <div class='panel-search'>
+                <form id='subNodeConfig' method='POST' class='form form-horizontal'>
+                    <div class='row cl' style="margin-top: 10px">
+                        <div class='formControls col-1'>
+                        </div>
+                        <label class='form-label col-2'>流程名称：</label>
+                        <div class='formControls col-8'>
+                            <input  id='subProcessName'type='text' class='easyui-textbox' style='width:100%;height:30px' readonly/>
+                        </div>
+                    </div>
+
+                    <div class='row cl' style="margin-top: 0px">
+                        <div class='formControls col-1'>
+                        </div>
+                        <label class='form-label col-2'>节点名称：</label>
+                        <div class='formControls col-8'>
+                            <input  id='subNodeName'type='text' class='easyui-textbox' style='width:100%;height:30px'/>
+                        </div>
+                    </div>
+
+                    <div class='row cl'style="margin-top: 0px">
+                        <div class='formControls col-1'>
+                        </div>
+                        <label class='form-label col-2'>审批角色：</label>
+                        <div class='formControls col-8'>
+                            <input id="userName" class='easyui-combotree' style='width:100%;height:30px' >
+                            <input id="userId" type='text' class='easyui-textbox' style="display:none" >
+                        </div>
+                    </div>
+                </form>
+
+                <div class='mt-10 test-c' style="margin-top: 250px">
+                    <div class='formControls col-4'>
+                    </div>
+                    <div class='formControls col-2'>
+                        <a href='javascript:void(0)' class='btn btn-green radius mt-l-20' id="subNodeAddBtn">保存</a>
+                    </div>
+                    <div class='formControls col-2'>
+                        <a href='javascript:void(0)' class='btn btn-secondary radius mt-l-20' id="subNodeCancelBtn">取消</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+</body>
+
+<script type="text/javascript" src="../../js/common/requirejs-main.js"></script>
+<script type="text/javascript" src="../../assets/lib/require/require.min.js" data-main="js/manage/appealProcessAdd"></script>
+
+</html>

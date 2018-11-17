@@ -1,4 +1,5 @@
 require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
+
     var qmURI = "/qm/configservice/checkItem";
     //初始化方法
     initialize();
@@ -50,7 +51,6 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
         });
 
         //考评项列表
-        var IsCheckFlag = true; //标示是否是勾选复选框选中行的，true - 是 , false - 否
         $("#checkItemList").datagrid({
             columns: [[
                 {field: 'checkItemId', title: '考评项ID', hidden: true},
@@ -72,7 +72,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
             pagination: true,
             pageSize: 10,
             pageList: [5, 10, 20, 50],
-            rownumbers: true,
+            rownumbers: false,
             singleSelect: false,
             checkOnSelect: false,
             autoRowHeight: true,
@@ -218,10 +218,10 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
             var params = {
                 "tenantId":tenantId,
                 "parentCheckItemId":Util.constants.PARENT_CHECK_ITEM_ID,
-                'checkItemName':checkItemName,
-                'checkItemType':checkItemType,
-                'checkItemVitalType':checkItemVitalType,
-                'remark':checkItemDesc
+                "checkItemName":checkItemName,
+                "checkItemType":checkItemType,
+                "checkItemVitalType":checkItemVitalType,
+                "remark":checkItemDesc
             };
             Util.ajax.postJson(Util.constants.CONTEXT.concat(qmURI).concat("/"), JSON.stringify(params), function (result) {
                 $.messager.show({

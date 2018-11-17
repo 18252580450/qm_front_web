@@ -3108,6 +3108,18 @@ y:focus, .btn-secondary:active, .btn-secondary.active {
   border-color: #ef5d25;
 }
 
+.btn-orange {
+  color: #fff;
+  background-color: #FF6328;
+  border-color: #FF6328;
+}
+
+.btn-orange:hover, .btn-green:focus, .btn-green:active, .btn-green.active {
+  color: #fff;
+  background-color: #ef5d25;
+  border-color: #ef5d25;
+}
+
 .btn-danger:hover, .btn-danger:focus, .btn-danger:active, .btn-danger.active {
 	color: #fff;
 	background-color: #dd514c;
