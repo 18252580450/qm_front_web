@@ -10,6 +10,9 @@ define(function () {
         TENANT_ID: "10010000",
         PARENT_CHECK_ITEM_ID:"1",
 
+        STATIC_PARAMS_DNS: "/qm/configservice/staticParams",//静态数据配置
+        QM_PLAN_DNS: "/qm/configservice/qmPlan",//考评计划
+
         NGKM_TEMPLET_CHNL: "NGKM.TEMPLET.CHNL",
         NGKM_ATOM_PARAM_TYPE: "NGKM.ATOM.PARAM.TYPE",//知识原子数据类型数据字典
         NGKM_ATOM_PARAM_PRICEORTIMETYPE_WKUNIT: "NGKM.ATOM.PARAM.PRICEORTIMETYPE.WKUNIT",//知识原子数据字典：价格/时间类型单位

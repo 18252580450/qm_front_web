@@ -1,5 +1,4 @@
 require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
-    var qmURI = "/qm/configservice/staticParams";
     //调用初始化方法
     initialize();
 
@@ -10,23 +9,6 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
         initWindowEvent();
         initReviseEvent();
     };
-
-    //格式化时间方法
-    function formatDateTime(inputTime) {
-        var date = new Date(inputTime);
-        var y = date.getFullYear();
-        var m = date.getMonth() + 1;
-        m = m < 10 ? ('0' + m) : m;
-        var d = date.getDate();
-        d = d < 10 ? ('0' + d) : d;
-        var h = date.getHours();
-        h = h < 10 ? ('0' + h) : h;
-        var minute = date.getMinutes();
-        var second = date.getSeconds();
-        minute = minute < 10 ? ('0' + minute) : minute;
-        second = second < 10 ? ('0' + second) : second;
-        return y + '-' + m + '-' + d + ' ' + h + ':' + minute + ':' + second;
-    }
 
     //初始化列表
     function initGrid() {
@@ -98,7 +80,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                     "params": JSON.stringify(reqParams)
                 }, Util.PageUtil.getParams($("#searchForm")));
 
-                Util.ajax.getJson(Util.constants.CONTEXT + qmURI + "/selectByParams", params, function (result) {
+                Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.STATIC_PARAMS_DNS + "/selectByParams", params, function (result) {
                     var data = Transfer.DataGrid.transfer(result);
 
                     var rspCode = result.RSP.RSP_CODE;
@@ -146,7 +128,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
             $.messager.confirm('确认删除弹窗', '确定要删除吗？', function (confirm) {
 
                 if (confirm) {
-                    Util.ajax.deleteJson(Util.constants.CONTEXT.concat(qmURI).concat("/").concat(ids), {}, function (result) {
+                    Util.ajax.deleteJson(Util.constants.CONTEXT.concat(Util.constants.STATIC_PARAMS_DNS).concat("/").concat(ids), {}, function (result) {
 
                         $.messager.show({
                             msg: result.RSP.RSP_DESC,
@@ -190,7 +172,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                 "params":JSON.stringify(params)
             };
 
-            Util.ajax.getJson(Util.constants.CONTEXT + qmURI + "/selectAllTypes", reqparams, function (result) {
+            Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.STATIC_PARAMS_DNS + "/selectAllTypes", reqparams, function (result) {
                 var rspCode = result.RSP.RSP_CODE;
                 if (rspCode == "1") {
                     $("#typeList").combobox({
@@ -236,7 +218,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                     return false;
                 }
 
-                Util.ajax.postJson(Util.constants.CONTEXT.concat(qmURI).concat("/"), JSON.stringify(params), function (result) {
+                Util.ajax.postJson(Util.constants.CONTEXT.concat(Util.constants.STATIC_PARAMS_DNS).concat("/"), JSON.stringify(params), function (result) {
 
                     $.messager.show({
                         msg: result.RSP.RSP_DESC,
@@ -308,7 +290,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                     return false;
                 }
 
-                Util.ajax.postJson(Util.constants.CONTEXT.concat(qmURI).concat("/"), JSON.stringify(params), function (result) {
+                Util.ajax.postJson(Util.constants.CONTEXT.concat(Util.constants.STATIC_PARAMS_DNS).concat("/"), JSON.stringify(params), function (result) {
 
                     $.messager.show({
                         msg: result.RSP.RSP_DESC,
@@ -372,7 +354,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                     return false;
                 }
 
-                Util.ajax.putJson(Util.constants.CONTEXT.concat(qmURI).concat("/"), JSON.stringify(beanjson), function (result) {
+                Util.ajax.putJson(Util.constants.CONTEXT.concat(Util.constants.STATIC_PARAMS_DNS).concat("/"), JSON.stringify(beanjson), function (result) {
 
                     $.messager.show({
                         msg: result.RSP.RSP_DESC,
