@@ -18,28 +18,36 @@
     <div id='layout_content' class='easyui-layout' data-options="region:'center'" style='overflow: auto; height:100%;'>,
         <div data-options="region:'center'" style='overflow: hidden;height: 100%'>
             <div id = "page">
-                <div class='panel-search ' title="">
+                <div class='panel-search' title="基本信息">
                     <form class='form form-horizontal' id="mainForm">
                         <div class='row cl'>
                             <label class='form-label col-2'>计划名称</label>
                             <div class='formControls col-2'>
                                 <input id="planNameq" type='text' class='easyui-textbox' style='width:100%;height:30px' >
                             </div>
-                            <label class='form-label col-2'>发布状态</label>
-                            <div class='formControls col-2'>
-                                <input id="haltFlagq" type='text' type="text" style='width:100%;height:30px' >
-                            </div>
                             <label class='form-label col-2'>计划类型</label>
                             <div class='formControls col-2'>
                                 <input id="planTypeq" type='text' class='easyui-textbox' style='width:100%;height:30px' >
                             </div>
+                            <label class='form-label col-2'>计划开始时间</label>
+                            <div class='formControls col-2'>
+                                <input id="planStarttime" type="text" style='width:100%;height:30px'>
+                            </div>
+                            <label class='form-label col-2'>计划结束时间</label>
+                            <div class='formControls col-2'>
+                                <input id='planEndtime' type="text" style='width:100%;height:30px'>
+                            </div>
                         </div>
                         <div class='row cl'>
-                            <label class='form-label col-2'>创建时间始</label>
+                            <label class='form-label col-2'>考评模板</label>
+                            <div class='formControls col-2'>
+                                <input id="templateId" type='text' class='easyui-textbox' style='width:100%;height:30px' >
+                            </div>
+                            <label class='form-label col-2'>接触记录开始时间</label>
                             <div class='formControls col-2'>
                                 <input id="createTimeStart" type="text" style='width:100%;height:30px'>
                             </div>
-                            <label class='form-label col-2'>创建时间止</label>
+                            <label class='form-label col-2'>接触记录结束时间</label>
                             <div class='formControls col-2'>
                                 <input id='createTimeEnd' type="text" style='width:100%;height:30px'>
                             </div>
@@ -77,6 +85,6 @@
 
 <script type="text/javascript" src="../../js/common/requirejs-main.js"></script>
 <script type="text/javascript" src="../../assets/lib/easyui/jquery.easyui.min.js"></script>
-<script type="text/javascript" src="../../assets/lib/require/require.min.js" data-main="js/manage/qmPlanManage"></script>
+<script type="text/javascript" src="../../assets/lib/require/require.min.js" data-main="js/manage/qmPlanManageAdd"></script>
 
 </html>

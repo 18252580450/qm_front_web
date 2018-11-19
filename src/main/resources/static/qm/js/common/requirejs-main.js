@@ -70,11 +70,14 @@ var requirePath = {
     "exporting": "assets/lib/highcharts/modules/exporting",
     /* highcharts */
     "ZeroClipboard": "assets/components/uedit/third-party/zeroclipboard/ZeroClipboard.min",
-
+    /*"js/homePage/components/crossAPI"*/
+    "ZeroClipboard": "assets/components/uedit/third-party/zeroclipboard/ZeroClipboard.min",
 
     // 业务模块 开始
-    "constants": "js/common/constants"
-
+    "constants": "js/common/constants",
+    "dateUtil": "js/common/dateUtil",
+    /* crossAPI */
+    "crossAPI": "js/common/crossAPI"
 };
 
 window.addEventListener("mousewheel", function (e) {

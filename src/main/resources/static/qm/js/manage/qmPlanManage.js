@@ -1,4 +1,4 @@
-require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
+require(["jquery", 'util', "transfer", "easyui","crossAPI","dateUtil"], function ($, Util, Transfer,crossAPI,dateUtil) {
     //调用初始化方法
     initialize();
     var planTypes = [];
@@ -126,8 +126,19 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                     }
                 },
                 {field: 'planName', title: '计划名称', width: '7%'},
-                {field: 'planStarttime', title: '计划开始时间', width: '12%'},
-                {field: 'planEndtime', title: '计划结束时间', width: '12%'},
+                {field: 'planStarttime', title: '计划开始时间', width: '12%',
+                    formatter: function (value, row, index) {
+                        if(value){
+                            return DateUtil.formatDateTime(value);
+                        }
+                    }
+                },
+                {field: 'planEndtime', title: '计划结束时间', width: '12%',
+                    formatter: function (value, row, index) {
+                        if(value){
+                            return DateUtil.formatDateTime(value);
+                        }
+                    }},
                 {field: 'templateName', title: '考评模板', width: '10%'},
                 {field: 'planType', title: '计划类型', width: '8%',
                     formatter: function (value, row, index) {
@@ -152,8 +163,18 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                         }
                     }
                 },
-                {field: 'createTime', title: '创建时间', width: '12%'},
-                {field: 'modifiedTime', title: '修改时间', width: '12%'},
+                {field: 'createTime', title: '创建时间', width: '12%',
+                    formatter: function (value, row, index) {
+                        if(value){
+                            return DateUtil.formatDateTime(value);
+                        }
+                    }},
+                {field: 'modifiedTime', title: '修改时间', width: '12%',
+                    formatter: function (value, row, index) {
+                        if(value){
+                            return DateUtil.formatDateTime(value);
+                        }
+                    }},
                 {field: 'remark', title: '描述', width: '10%'}
             ]],
             fitColumns: true,
@@ -245,7 +266,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
 
         //新增
         $("#addBtn").on("click", function(){
-            crossAPI.createTab('新建计划', _root+Constants.PREAJAXURL+"");
+            window.open("http://127.0.0.1:8080/qm/html/manage/qmPlanManageAdd.html");
         });
 
         //批量删除
@@ -257,17 +278,17 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
     }
 
     //添加一个选项卡面板
-    function addTabs(title, url, icon) {
-        if (!$('#tabs').tabs('exists', title)) {
-            $('#tabs').tabs('add', {
-                title: title,
-                content: '<iframe src="' + url + '" frameBorder="0" border="0" scrolling="auto"  style="width: 100%; height: 100%;"/>',
-                closable: true
-            });
-        } else {
-            $('#tabs').tabs('select', title);
-        }
-    }
+    //function addTabs(title, url, icon) {
+    //    if (!$('#tabs').tabs('exists', title)) {
+    //        $('#tabs').tabs('add', {
+    //            title: title,
+    //            content: '<iframe src="' + url + '" frameBorder="0" border="0" scrolling="auto"  style="width: 100%; height: 100%;"/>',
+    //            closable: true
+    //        });
+    //    } else {
+    //        $('#tabs').tabs('select', title);
+    //    }
+    //}
 
     //初始化搜索表单
     function initSearchForm() {
