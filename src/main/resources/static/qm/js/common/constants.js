@@ -6,12 +6,14 @@ define(function () {
     return {
        // CONTEXT: "http://marathon-lb-kc.skyark.mesos:9010",
         CONTEXT: "http://localhost:9002",
-        URLCONTEXT:"http://127.0.0.1:8080",
+        URL_CONTEXT:"http://127.0.0.1:8080",
         TENANT_ID: "10010000",
         PARENT_CHECK_ITEM_ID:"1",
 
         STATIC_PARAMS_DNS: "/qm/configservice/staticParams",//静态数据配置
+        CHECK_ITEM_DNS:"/qm/configservice/checkItem",//考评项配置
         QM_PLAN_DNS: "/qm/configservice/qmPlan",//考评计划
+        APPEAL_PROCESS_CONFIG_DNS:"/qm/configservice/appealProcess",//申诉流程（配置）
 
         NGKM_TEMPLET_CHNL: "NGKM.TEMPLET.CHNL",
         NGKM_ATOM_PARAM_TYPE: "NGKM.ATOM.PARAM.TYPE",//知识原子数据类型数据字典

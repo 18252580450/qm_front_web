@@ -1,6 +1,5 @@
 require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
 
-    var qmURI = "/qm/configservice/checkItem";
     //初始化方法
     initialize();
 
@@ -98,7 +97,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                     "params": JSON.stringify(reqParams)
                 }, Util.PageUtil.getParams($("#searchForm")));
 
-                Util.ajax.getJson(Util.constants.CONTEXT + qmURI + "/queryCheckItem", params, function (result) {
+                Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.CHECK_ITEM_DNS + "/queryCheckItem", params, function (result) {
                     var data = Transfer.DataGrid.transfer(result);
 
                     var rspCode = result.RSP.RSP_CODE;
@@ -223,7 +222,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                 "checkItemVitalType":checkItemVitalType,
                 "remark":checkItemDesc
             };
-            Util.ajax.postJson(Util.constants.CONTEXT.concat(qmURI).concat("/"), JSON.stringify(params), function (result) {
+            Util.ajax.postJson(Util.constants.CONTEXT.concat(Util.constants.CHECK_ITEM_DNS).concat("/"), JSON.stringify(params), function (result) {
                 $.messager.show({
                     msg: result.RSP.RSP_DESC,
                     timeout: 1000,
@@ -354,7 +353,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                 item.checkItemVitalType = checkItemVitalType;
             }
 
-            Util.ajax.putJson(Util.constants.CONTEXT.concat(qmURI).concat("/"), JSON.stringify(item), function (result) {
+            Util.ajax.putJson(Util.constants.CONTEXT.concat(Util.constants.CHECK_ITEM_DNS).concat("/"), JSON.stringify(item), function (result) {
                 $.messager.show({
                     msg: result.RSP.RSP_DESC,
                     timeout: 1000,
@@ -388,7 +387,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
         }
         $.messager.confirm('确认删除弹窗', '确定要删除吗？', function (confirm) {
             if (confirm) {
-                Util.ajax.deleteJson(Util.constants.CONTEXT.concat(qmURI).concat("/").concat(delArr), {}, function (result) {
+                Util.ajax.deleteJson(Util.constants.CONTEXT.concat(Util.constants.CHECK_ITEM_DNS).concat("/").concat(delArr), {}, function (result) {
                     $.messager.show({
                         msg: result.RSP.RSP_DESC,
                         timeout: 1000,

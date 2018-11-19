@@ -1,6 +1,5 @@
 require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
 
-    var qmURI = "/qm/configservice/appealProcess";
     //初始化方法
     initialize();
 
@@ -158,7 +157,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                     "params": JSON.stringify(reqParams)
                 }, Util.PageUtil.getParams($("#searchForm")));
 
-                Util.ajax.getJson(Util.constants.CONTEXT + qmURI + "/queryAppealProcess", params, function (result) {
+                Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.APPEAL_PROCESS_CONFIG_DNS + "/queryAppealProcess", params, function (result) {
                     var data = Transfer.DataGrid.transfer(result);
 
                     var rspCode = result.RSP.RSP_CODE;
@@ -191,7 +190,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
 
         //新增
         $("#addBtn").on("click", function () {
-            addTabs("申诉流程-新增",Util.constants.URLCONTEXT+"/qm/html/manage/appealProcessAdd.html")
+            addTabs("申诉流程-新增",Util.constants.URL_CONTEXT+"/qm/html/manage/appealProcessAdd.html")
         });
 
         //删除

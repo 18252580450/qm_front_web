@@ -1,6 +1,5 @@
 require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
 
-    var qmURI = "/qm/configservice/appealProcess";
     var appealProcessDatas = [];    //新增流程（新增提交入参）
     //初始化方法
     initialize();
@@ -435,7 +434,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
         var params = {
             "appealProcess":appealProcessDatas
         };
-        Util.ajax.postJson(Util.constants.CONTEXT.concat(qmURI).concat("/"), JSON.stringify(params), function (result) {
+        Util.ajax.postJson(Util.constants.CONTEXT.concat(Util.constants.APPEAL_PROCESS_CONFIG_DNS).concat("/"), JSON.stringify(params), function (result) {
             var rspCode = result.RSP.RSP_CODE;
             if (rspCode != null && rspCode === "1") {   //新增成功
                 $.messager.alert("提示", result.RSP.RSP_DESC, null, function () {
