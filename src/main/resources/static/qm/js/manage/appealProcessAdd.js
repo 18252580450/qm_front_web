@@ -341,7 +341,6 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
 
     //新增子节点，subProcessObj父流程对象
     function addSubNode(subProcessObj) {
-        debugger;
         var processOrder = subProcessObj.orderNo;
         //新增节点弹框
         $("#subNodeConfig").form('clear');  //清空表单
@@ -416,7 +415,6 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
             //更新父流程的子节点列表
             appealProcessDatas[processOrder].subNodeList = subNodeList;
 
-            debugger;
             //刷新子节点列表
             refreshSubNodeList(subNodeList);
 
@@ -433,30 +431,31 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
             $.messager.alert("提示", "请添加主流程!");
             return false;
         }
-        debugger;
 
         var params = {
             "appealProcess":appealProcessDatas
         };
         Util.ajax.postJson(Util.constants.CONTEXT.concat(qmURI).concat("/"), JSON.stringify(params), function (result) {
-           debugger;
-            $.messager.show({
-                msg: result.RSP.RSP_DESC,
-                timeout: 1000,
-                style: {right: '', bottom: ''},     //居中显示
-                showType: 'show'
-            });
             var rspCode = result.RSP.RSP_CODE;
-            if (rspCode != null && rspCode === "1") {
-                var jq = top.jQuery;
-                if (jq('#tabs').tabs('exists', "申诉流程-新增")) {
-                    jq('#tabs').tabs('close', "申诉流程-新增");
-                }
+            if (rspCode != null && rspCode === "1") {   //新增成功
+                $.messager.alert("提示", result.RSP.RSP_DESC, null, function () {
+                    var jq = top.jQuery;
+                    if (jq('#tabs').tabs('exists', "申诉流程-新增")) {
+                        jq('#tabs').tabs('close', "申诉流程-新增");
+                    }
+                });
+            } else {  //新增失败
+                $.messager.show({
+                    msg: result.RSP.RSP_DESC,
+                    timeout: 1000,
+                    style: {right: '', bottom: ''},     //居中显示
+                    showType: 'show'
+                });
             }
         });
     }
 
-    //子节点列表刷新
+    //子节点列表刷新（同一节点合并到同一行）
     function refreshSubNodeList(subNodeList) {
         var subNodeTable =  $("#subNodeList");
         //为空时返回
