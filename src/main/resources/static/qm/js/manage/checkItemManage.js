@@ -55,8 +55,38 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                 {field: 'checkItemId', title: '考评项ID', hidden: true},
                 {field: 'ck', checkbox: true, align: 'center'},
                 {field: 'checkItemName', title: '考评项名称', align: 'center', width: '20%'},
-                {field: 'checkItemType', title: '考评项类型', align: 'center', width: '20%'},
-                {field: 'checkItemVitalType', title: '致命类别', align: 'center', width: '13%'},
+                {field: 'checkItemType', title: '考评项类型', align: 'center', width: '20%',
+                    formatter:function(value,row,index) {
+                        var itemType = null;
+                        var checkItemType = row.checkItemType;
+                        if( checkItemType != null && checkItemType === "0"){
+                            itemType = "语音考评项";
+                        }
+                        if( checkItemType != null && checkItemType === "1"){
+                            itemType = "工单考评项";
+                        }
+                        if( checkItemType != null && checkItemType === "2"){
+                            itemType = "电商平台考评项";
+                        }
+                        if( checkItemType != null && checkItemType === "3"){
+                            itemType = "互联网考评项";
+                        }
+                        return itemType;
+                    }
+                },
+                {field: 'checkItemVitalType', title: '致命类别', align: 'center', width: '13%',
+                    formatter:function(value,row,index) {
+                        var vitalType = null;
+                        var checkItemVitalType = row.checkItemVitalType;
+                        if( checkItemVitalType != null && checkItemVitalType === "0"){
+                            vitalType = "非致命性";
+                        }
+                        if( checkItemVitalType != null && checkItemVitalType === "1"){
+                            vitalType = "致命性";
+                        }
+                        return vitalType;
+                    }
+                },
                 {field: 'remark', title: '考评项描述', align: 'center', width: '30%'},
                 {
                     field: 'action', title: '操作', align: 'center', width: '13%',
@@ -72,10 +102,6 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
             pageSize: 10,
             pageList: [5, 10, 20, 50],
             rownumbers: false,
-            singleSelect: false,
-            checkOnSelect: false,
-            autoRowHeight: true,
-            selectOnCheck: true,
             loader: function (param, success) {
                 var start = (param.page - 1) * param.rows;
                 var pageNum = param.rows;
@@ -244,30 +270,6 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
      * 修改考评项弹框
      */
     function showCheckItemUpdateDialog(item) {
-        switch(item.checkItemType)
-        {
-            case "语音考核项":
-                item.checkItemType = "0";
-                break;
-            case "工单考核项":
-                item.checkItemType = "1";
-                break;
-            case "电商平台考核项":
-                item.checkItemType = "2";
-                break;
-            case "互联网考核项":
-                item.checkItemType = "3";
-                break;
-        }
-        switch(item.checkItemVitalType)
-        {
-            case "非致命性":
-                item.checkItemVitalType = "0";
-                break;
-            case "致命性":
-                item.checkItemVitalType = "1";
-                break;
-        }
         $("#checkItemConfig").form('clear');  //清空表单
         var disableSubmit = false;  //禁用提交按钮标志
         $("#checkItemDialog").show().window({

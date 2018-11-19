@@ -124,10 +124,6 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
             pageSize: 10,
             pageList: [5, 10, 20, 50],
             rownumbers: false,
-            singleSelect: false,
-            checkOnSelect: false,
-            autoRowHeight: true,
-            selectOnCheck: true,
             loader: function (param, success) {
                 var start = (param.page - 1) * param.rows;
                 var pageNum = param.rows;
@@ -195,10 +191,47 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
 
         //删除
         $("#delBtn").on("click", function () {
-
+            showAppealProcessDeleteDialog();
         });
     }
 
+    /**
+     * 删除申诉流程确认弹框
+     */
+    function showAppealProcessDeleteDialog() {
+        var delRows = $("#appealProcessList").datagrid("getSelections");
+        if (delRows.length === 0) {
+            $.messager.alert("提示", "请至少选择一行数据!");
+            return false;
+        }
+        var delArr = [];
+        for (var i = 0; i < delRows.length; i++) {
+            var id = delRows[i].processId;
+            delArr.push(id);
+            if(delRows[i].processStatus === "0"){
+                $.messager.alert("提示", "删除失败！已启动的流程不允许被删除!");
+                return false;
+            }
+        }
+        $.messager.confirm('确认删除弹窗', '确定要删除吗？', function (confirm) {
+            if (confirm) {
+                // Util.ajax.deleteJson(Util.constants.CONTEXT.concat(Util.constants.CHECK_ITEM_DNS).concat("/").concat(delArr), {}, function (result) {
+                //     $.messager.show({
+                //         msg: result.RSP.RSP_DESC,
+                //         timeout: 1000,
+                //         style: {right: '', bottom: ''},     //居中显示
+                //         showType: 'show'
+                //     });
+                //     var rspCode = result.RSP.RSP_CODE;
+                //     if (rspCode != null && rspCode === "1") {
+                //         $("#checkItemList").datagrid('reload'); //删除成功后，刷新页面
+                //     }
+                // });
+            }
+        });
+    }
+
+    //时间格式化
     function formatDateTime(inputDate) {
         var date = new Date(inputDate);
         var y = date.getFullYear();
@@ -215,6 +248,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
         return y + '-' + m + '-' + d + ' ' + h + ':' + minute + ':' + second;
     }
 
+    //校验开始时间和终止时间
     function checkBeginEndTime() {
         var beginTime = $("#createTimeBegin").datetimebox("getValue");
         var endTime = $("#createTimeEnd").datetimebox("getValue");
