@@ -31,23 +31,25 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
         });
         //考评项类型下拉框
         $("#checkItemType").combobox({
-            url: '../../data/check_item_type.json',
+            url: '../../data/select_init_data.json',
             method: "GET",
-            valueField: 'codeValue',
-            textField: 'codeName',
+            valueField: 'paramsCode',
+            textField: 'paramsName',
             panelHeight: 'auto',
             editable: false,
             onLoadSuccess: function () {
                 var checkItemType = $('#checkItemType');
                 var data = checkItemType.combobox('getData');
                 if (data.length > 0) {
-                    checkItemType.combobox('select', data[0].codeValue);
+                    checkItemType.combobox('select', data[0].paramsCode);
                 }
             },
             onSelect: function () {
                 $("#checkItemList").datagrid("load");
             }
         });
+        //重载下拉框数据
+        reloadSelectData("CHECK_ITEM_TYPE", "checkItemType", true)
 
         //考评项列表
         $("#checkItemList").datagrid({
@@ -105,12 +107,13 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
             pageList: [5, 10, 20, 50],
             rownumbers: false,
             loader: function (param, success) {
+                debugger;
                 var start = (param.page - 1) * param.rows;
                 var pageNum = param.rows;
                 var checkItemName = $("#checkItemName").val();
                 var tenantId = $("#tenantType").combobox("getValue");
                 var checkItemType = $("#checkItemType").combobox("getValue");
-                if (checkItemType === "4") {
+                if (checkItemType === "-1") {
                     checkItemType = null;
                 }
                 var reqParams = {
@@ -183,36 +186,42 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
         });
         //考评项类型下拉框
         $("#checkItemTypeConfig").combobox({
-            url: '../../data/check_item_config_type.json',
+            url: '../../data/select_init_data.json',
             method: "GET",
-            valueField: 'codeValue',
-            textField: 'codeName',
+            valueField: 'paramsCode',
+            textField: 'paramsName',
             panelHeight: 'auto',
             editable: false,
             onLoadSuccess: function () {
                 var checkItemType = $('#checkItemTypeConfig');
                 var data = checkItemType.combobox('getData');
                 if (data.length > 0) {
-                    checkItemType.combobox('select', data[0].codeValue);
+                    checkItemType.combobox('select', data[0].paramsCode);
                 }
             }
         });
+        //重载下拉框数据
+        reloadSelectData("CHECK_ITEM_TYPE", "checkItemTypeConfig", false);
+
         //考评项致命类别下拉框
         $("#checkItemVitalTypeConfig").combobox({
-            url: '../../data/check_item_vital_type.json',
+            url: '../../data/select_init_data.json',
             method: "GET",
-            valueField: 'codeValue',
-            textField: 'codeName',
+            valueField: 'paramsCode',
+            textField: 'paramsName',
             panelHeight: 'auto',
             editable: false,
             onLoadSuccess: function () {
                 var checkItemVitalType = $('#checkItemVitalTypeConfig');
                 var data = checkItemVitalType.combobox('getData');
                 if (data.length > 0) {
-                    checkItemVitalType.combobox('select', data[0].codeValue);
+                    checkItemVitalType.combobox('select', data[0].paramsCode);
                 }
             }
         });
+        //重载下拉框数据
+        reloadSelectData("CHECK_VITAL_TYPE", "checkItemVitalTypeConfig", false);
+
         //取消
         var cancelBtn = $("#cancelBtn");
         cancelBtn.unbind("click");
@@ -403,6 +412,35 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                         $("#checkItemList").datagrid('reload'); //删除成功后，刷新页面
                     }
                 });
+            }
+        });
+    }
+
+    /**
+     * 下拉框数据重载
+     */
+    function reloadSelectData(paramsType, select, showAll) {
+        var reqParams = {
+            "tenantId": Util.constants.TENANT_ID,
+            "paramsTypeId": paramsType
+        };
+        var params = {
+            "start": 0,
+            "pageNum": 0,
+            "params": JSON.stringify(reqParams)
+        };
+        Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.STATIC_PARAMS_DNS + "/selectByParams", params, function (result) {
+            var rspCode = result.RSP.RSP_CODE;
+            if (rspCode === "1") {
+                var selectData = result.RSP.DATA;
+                if (showAll) {
+                    var data = {
+                        "paramsCode": "-1",
+                        "paramsName": "全部"
+                    };
+                    selectData.unshift(data);
+                }
+                $("#" + select).combobox('loadData', selectData);
             }
         });
     }

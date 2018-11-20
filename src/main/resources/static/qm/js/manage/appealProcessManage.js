@@ -32,23 +32,25 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
 
         //流程状态下拉框
         $("#processStatus").combobox({
-            url: '../../data/process_status.json',
+            url: '../../data/select_init_data.json',
             method: "GET",
-            valueField: 'codeValue',
-            textField: 'codeName',
+            valueField: 'paramsCode',
+            textField: 'paramsName',
             panelHeight: 'auto',
             editable: false,
             onLoadSuccess: function () {
                 var processStatus = $("#processStatus");
                 var data = processStatus.combobox('getData');
                 if (data.length > 0) {
-                    processStatus.combobox('select', data[0].codeValue);
+                    processStatus.combobox('select', data[0].paramsCode);
                 }
             },
             onSelect: function () {
                 $("#appealProcessList").datagrid("load");
             }
         });
+        //重载下拉框数据
+        reloadSelectData("PROCESS_STATUS", "processStatus", true);
 
         //时间控件初始化
         var beginDateBox = $('#createTimeBegin');
@@ -138,7 +140,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                 var processStatus = $("#processStatus").combobox("getValue");
                 var createTimeBegin = $("#createTimeBegin").datetimebox("getValue");
                 var createTimeEnd = $("#createTimeEnd").datetimebox("getValue");
-                if (processStatus === "4") {
+                if (processStatus === "-1") {
                     processStatus = null;
                 }
 
@@ -337,6 +339,35 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
         } else {
             jq('#tabs').tabs('select', title);
         }
+    }
+
+    /**
+     * 下拉框数据重载
+     */
+    function reloadSelectData(paramsType, select, showAll) {
+        var reqParams = {
+            "tenantId": Util.constants.TENANT_ID,
+            "paramsTypeId": paramsType
+        };
+        var params = {
+            "start": 0,
+            "pageNum": 0,
+            "params": JSON.stringify(reqParams)
+        };
+        Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.STATIC_PARAMS_DNS + "/selectByParams", params, function (result) {
+            var rspCode = result.RSP.RSP_CODE;
+            if (rspCode === "1") {
+                var selectData = result.RSP.DATA;
+                if (showAll) {
+                    var data = {
+                        "paramsCode": "-1",
+                        "paramsName": "全部"
+                    };
+                    selectData.unshift(data);
+                }
+                $("#" + select).combobox('loadData', selectData);
+            }
+        });
     }
 
     return {

@@ -33,37 +33,39 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
 
         //质检类型下拉框
         $("#checkType").combobox({
-            url: '../../data/check_type.json',
+            url: '../../data/select_init_data.json',
             method: "GET",
-            valueField: 'codeValue',
-            textField: 'codeName',
+            valueField: 'paramsCode',
+            textField: 'paramsName',
             panelHeight: 'auto',
             editable: false,
             onLoadSuccess: function () {
                 var tenantType = $("#checkType");
                 var data = tenantType.combobox('getData');
                 if (data.length > 0) {
-                    tenantType.combobox('select', data[0].codeValue);
+                    tenantType.combobox('select', data[0].paramsCode);
                 }
             },
             onSelect: function () {
                 $("#appealProcessList").datagrid("load");
             }
         });
+        //重载下拉框数据
+        reloadSelectData("CHECK_ITEM_TYPE", "checkType", false);
 
         //流程顺序下拉框
         $("#orderNo").combobox({
-            url: '../../data/process_order.json',
+            url: '../../data/select_init_data.json',
             method: "GET",
-            valueField: 'codeValue',
-            textField: 'codeName',
+            valueField: 'paramsCode',
+            textField: 'paramsName',
             panelHeight: 'auto',
             editable: false,
             onLoadSuccess: function () {
                 var orderNo = $("#orderNo");
                 var data = orderNo.combobox('getData');
                 if (data.length > 0) {
-                    orderNo.combobox('select', data[0].codeValue);
+                    orderNo.combobox('select', data[0].paramsCode);
                 }
             },
             onSelect: function () {
@@ -87,6 +89,8 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                 }
             }
         });
+        //重载下拉框数据
+        reloadSelectData("PROCESS_LEVEL", "orderNo", false);
 
         //申诉流程添加列表
         $("#processList").datagrid({
@@ -498,6 +502,35 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
         };
         subNodeData.push(showData);
         subNodeTable.datagrid("loadData", {rows: subNodeData});
+    }
+
+    /**
+     * 下拉框数据重载
+     */
+    function reloadSelectData(paramsType, select, showAll) {
+        var reqParams = {
+            "tenantId": Util.constants.TENANT_ID,
+            "paramsTypeId": paramsType
+        };
+        var params = {
+            "start": 0,
+            "pageNum": 0,
+            "params": JSON.stringify(reqParams)
+        };
+        Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.STATIC_PARAMS_DNS + "/selectByParams", params, function (result) {
+            var rspCode = result.RSP.RSP_CODE;
+            if (rspCode === "1") {
+                var selectData = result.RSP.DATA;
+                if (showAll) {
+                    var data = {
+                        "paramsCode": "-1",
+                        "paramsName": "全部"
+                    };
+                    selectData.unshift(data);
+                }
+                $("#" + select).combobox('loadData', selectData);
+            }
+        });
     }
 
     return {
