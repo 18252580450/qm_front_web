@@ -4,25 +4,18 @@
 define(function () {
 
     return {
-       // CONTEXT: "http://marathon-lb-kc.skyark.mesos:9010",
         CONTEXT: "http://localhost:9002",
         URL_CONTEXT:"http://127.0.0.1:8080",
         TENANT_ID: "10010000",
         PARENT_CHECK_ITEM_ID:"1",
+        PROCESS_STATUS_START:"1", //申诉主流程启动状态
+        PROCESS_STATUS_STOP:"2",
 
+        //URI
         STATIC_PARAMS_DNS: "/qm/configservice/staticParams",//静态数据配置
         CHECK_ITEM_DNS:"/qm/configservice/checkItem",//考评项配置
         QM_PLAN_DNS: "/qm/configservice/qmPlan",//考评计划
         APPEAL_PROCESS_CONFIG_DNS:"/qm/configservice/appealProcess",//申诉流程（配置）
-
-        NGKM_TEMPLET_CHNL: "NGKM.TEMPLET.CHNL",
-        NGKM_ATOM_PARAM_TYPE: "NGKM.ATOM.PARAM.TYPE",//知识原子数据类型数据字典
-        NGKM_ATOM_PARAM_PRICEORTIMETYPE_WKUNIT: "NGKM.ATOM.PARAM.PRICEORTIMETYPE.WKUNIT",//知识原子数据字典：价格/时间类型单位
-        NGKM_ATOM_PARAM_RAMTYPE_WKUNIT: "NGKM.ATOM.PARAM.RAMTYPE.WKUNIT",//知识原子数据字典：内存类型单位
-        NGKM_ATOM_PARAM_TIMES_WKUNIT: "NGKM.ATOM.PARAM.TIMES.WKUNIT",//知识原子数据字典：时间类型单位
-        NGKM_INDEX_EXTEND_FIELD_STORE: "NGKM.INDEX.EXTEND.FIELD.STORE",//知识索引模板配置字段名称
-        NGKM_KNWLG_INDEX_FIELD_TYPE: "NGKM.KNWLG.INDEX.FIELD.TYPE",// 知识索引模板配置字段类型编码
-
 
         NGKM_ATOM_DATA_TYPE_CHAR: "1",//字符串
         NGKM_ATOM_DATA_TYPE_RADIO: "2",//单选
@@ -42,13 +35,6 @@ define(function () {
         NGKM_ATOM_DATA_TYPE_REGN: "16",//地区
         NGKM_ATOM_DATA_TYPE_MEDIA: "17",//多媒体素材
 
-
-        TEMPLET_DETAIL_DNS: "/kc/tmplt/tmpltsvc/msa",
-        TEMPLET_CATALOG_DNS: "/kc/tmplt/catalogsvc/msa",
-        MULTIMEDIA_DNS: "/kc/doc/multimediasvc/msa",
-        DISTRICT_DNS: "/kc/manage/distsvc/msa",
-        KNOWLEDGE_CATALOG_DNS: "/kc/doc/catalogsvc/msa",
-        SEARCH_APP_DNS: "/kc/search/appsvc/msa",
 
         STATUS: {
             "-1": "删除",

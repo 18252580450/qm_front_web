@@ -18,25 +18,28 @@
 <div id="page_content" data-options="region:'center'" style="height:100%;">
     <div id='layout_content' class='easyui-layout' data-options="region:'center'" style='overflow: auto; height:100%;'>,
         <div data-options="region:'center'" style='overflow: hidden;height: 100%'>
-            <div id = "page">
+            <div id="page">
                 <div class='panel-search ' title="">
                     <form class='form form-horizontal'>
                         <div class='row cl'>
                             <label class='form-label col-1'>流程编码</label>
                             <div class='formControls col-2'>
-                                <input id="processId" type='text' class='easyui-textbox' style='width:100%;height:30px' >
+                                <input id="processId" type='text' class='easyui-textbox' style='width:100%;height:30px'>
                             </div>
                             <label class='form-label col-1'>流程名称</label>
                             <div class='formControls col-2'>
-                                <input id="processName" type='text' class='easyui-textbox' style='width:100%;height:30px' >
+                                <input id="processName" type='text' class='easyui-textbox'
+                                       style='width:100%;height:30px'>
                             </div>
                             <label class='form-label col-1'>创建工号</label>
                             <div class='formControls col-2'>
-                                <input id="createStaffName" type='text' class='easyui-textbox' style='width:100%;height:30px' >
+                                <input id="createStaffName" type='text' class='easyui-textbox'
+                                       style='width:100%;height:30px'>
                             </div>
                             <label class='form-label col-1'>模板渠道</label>
                             <div class='formControls col-2'>
-                                <input id="tenantType" type='text' class='easyui-textbox' style='width:100%;height:30px' >
+                                <input id="tenantType" type='text' class='easyui-textbox'
+                                       style='width:100%;height:30px'>
                             </div>
                         </div>
                     </form>
@@ -44,30 +47,32 @@
                         <div class='row cl'>
                             <label class='form-label col-1'>流程状态</label>
                             <div class='formControls col-2'>
-                                <input id="processStatus" type='text' class='easyui-textbox' style='width:100%;height:30px' >
+                                <input id="processStatus" type='text' class='easyui-textbox'
+                                       style='width:100%;height:30px'>
                             </div>
                             <label class='form-label col-1'>创建时间始</label>
                             <div class='formControls col-2'>
-                                <input id="createTimeBegin" class='easyui-datetimebox' style='width:100%;height:30px' >
+                                <input id="createTimeBegin" class='easyui-datetimebox' style='width:100%;height:30px'>
                             </div>
                             <label class='form-label col-1'>创建时间止</label>
                             <div class='formControls col-2'>
-                                <input id="createTimeEnd" class="easyui-datetimebox" style='width:100%;height:30px' >
+                                <input id="createTimeEnd" class="easyui-datetimebox" style='width:100%;height:30px'>
                             </div>
                             <div class="formControls col-1">
                             </div>
                             <div class='formControls col-1'>
-                                <a href='javascript:void(0)' class='btn btn-green radius mt-l-20' id="queryBtn"><i class='iconfont iconfont-search2'></i>查询</a>
+                                <a href='javascript:void(0)' class='btn btn-green radius mt-l-20' id="queryBtn"><i
+                                        class='iconfont iconfont-search2'></i>查询</a>
                             </div>
                         </div>
                     </form>
                 </div>
 
                 <div class='cl'>
-                    <div class='panel-tool-box cl' >
+                    <div class='panel-tool-box cl'>
                         <div class='fl text-bold'>申诉流程</div>
                     </div>
-                    <table id='appealProcessList' class='easyui-datagrid'  style=' width:100%;'>
+                    <table id='appealProcessList' class='easyui-datagrid' style=' width:100%;'>
                     </table>
                 </div>
 
@@ -91,6 +96,7 @@
 </body>
 
 <script type="text/javascript" src="../../js/common/requirejs-main.js"></script>
-<script type="text/javascript" src="../../assets/lib/require/require.min.js" data-main="js/manage/appealProcessManage"></script>
+<script type="text/javascript" src="../../assets/lib/require/require.min.js"
+        data-main="js/manage/appealProcessManage"></script>
 
 </html>

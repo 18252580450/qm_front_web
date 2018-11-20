@@ -16,9 +16,9 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
             method: "GET",
             valueField: 'codeValue',
             textField: 'codeName',
-            panelHeight:'auto',
-            editable:false,
-            onLoadSuccess : function(){
+            panelHeight: 'auto',
+            editable: false,
+            onLoadSuccess: function () {
                 var tenantType = $("#tenantType");
                 var data = tenantType.combobox('getData');
                 if (data.length > 0) {
@@ -35,9 +35,9 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
             method: "GET",
             valueField: 'codeValue',
             textField: 'codeName',
-            panelHeight:'auto',
-            editable:false,
-            onLoadSuccess : function(){
+            panelHeight: 'auto',
+            editable: false,
+            onLoadSuccess: function () {
                 var checkItemType = $('#checkItemType');
                 var data = checkItemType.combobox('getData');
                 if (data.length > 0) {
@@ -55,33 +55,35 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                 {field: 'checkItemId', title: '考评项ID', hidden: true},
                 {field: 'ck', checkbox: true, align: 'center'},
                 {field: 'checkItemName', title: '考评项名称', align: 'center', width: '20%'},
-                {field: 'checkItemType', title: '考评项类型', align: 'center', width: '20%',
-                    formatter:function(value,row,index) {
+                {
+                    field: 'checkItemType', title: '考评项类型', align: 'center', width: '20%',
+                    formatter: function (value, row, index) {
                         var itemType = null;
                         var checkItemType = row.checkItemType;
-                        if( checkItemType != null && checkItemType === "0"){
+                        if (checkItemType != null && checkItemType === "0") {
                             itemType = "语音考评项";
                         }
-                        if( checkItemType != null && checkItemType === "1"){
+                        if (checkItemType != null && checkItemType === "1") {
                             itemType = "工单考评项";
                         }
-                        if( checkItemType != null && checkItemType === "2"){
+                        if (checkItemType != null && checkItemType === "2") {
                             itemType = "电商平台考评项";
                         }
-                        if( checkItemType != null && checkItemType === "3"){
+                        if (checkItemType != null && checkItemType === "3") {
                             itemType = "互联网考评项";
                         }
                         return itemType;
                     }
                 },
-                {field: 'checkItemVitalType', title: '致命类别', align: 'center', width: '13%',
-                    formatter:function(value,row,index) {
+                {
+                    field: 'checkItemVitalType', title: '致命类别', align: 'center', width: '13%',
+                    formatter: function (value, row, index) {
                         var vitalType = null;
                         var checkItemVitalType = row.checkItemVitalType;
-                        if( checkItemVitalType != null && checkItemVitalType === "0"){
+                        if (checkItemVitalType != null && checkItemVitalType === "0") {
                             vitalType = "非致命性";
                         }
-                        if( checkItemVitalType != null && checkItemVitalType === "1"){
+                        if (checkItemVitalType != null && checkItemVitalType === "1") {
                             vitalType = "致命性";
                         }
                         return vitalType;
@@ -91,7 +93,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                 {
                     field: 'action', title: '操作', align: 'center', width: '13%',
                     formatter: function (value, row, index) {
-                            return '<a href="javascript:void(0);" id = "checkItem' + row.checkItemId + '">修改</a>';
+                        return '<a href="javascript:void(0);" id = "checkItem' + row.checkItemId + '">修改</a>';
                     }
                 }
             ]],
@@ -108,13 +110,13 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                 var checkItemName = $("#checkItemName").val();
                 var tenantId = $("#tenantType").combobox("getValue");
                 var checkItemType = $("#checkItemType").combobox("getValue");
-                if(checkItemType === "4"){
+                if (checkItemType === "4") {
                     checkItemType = null;
                 }
                 var reqParams = {
-                    "parentCheckItemId":Util.constants.PARENT_CHECK_ITEM_ID,
-                    "checkItemName":checkItemName,
-                    "tenantId":tenantId,
+                    "parentCheckItemId": Util.constants.PARENT_CHECK_ITEM_ID,
+                    "checkItemName": checkItemName,
+                    "tenantId": tenantId,
                     "checkItemType": checkItemType
                 };
                 var params = $.extend({
@@ -138,10 +140,10 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                     success(data);
                 });
             },
-            onLoadSuccess:function(data){
+            onLoadSuccess: function (data) {
                 //绑定考评项修改事件
-                $.each(data.rows, function(i, item){
-                    $("#checkItem"+item.checkItemId).on("click",function () {
+                $.each(data.rows, function (i, item) {
+                    $("#checkItem" + item.checkItemId).on("click", function () {
                         showCheckItemUpdateDialog(item);
                     });
                 });
@@ -185,9 +187,9 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
             method: "GET",
             valueField: 'codeValue',
             textField: 'codeName',
-            panelHeight:'auto',
-            editable:false,
-            onLoadSuccess : function(){
+            panelHeight: 'auto',
+            editable: false,
+            onLoadSuccess: function () {
                 var checkItemType = $('#checkItemTypeConfig');
                 var data = checkItemType.combobox('getData');
                 if (data.length > 0) {
@@ -201,9 +203,9 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
             method: "GET",
             valueField: 'codeValue',
             textField: 'codeName',
-            panelHeight:'auto',
-            editable:false,
-            onLoadSuccess : function(){
+            panelHeight: 'auto',
+            editable: false,
+            onLoadSuccess: function () {
                 var checkItemVitalType = $('#checkItemVitalTypeConfig');
                 var data = checkItemVitalType.combobox('getData');
                 if (data.length > 0) {
@@ -214,15 +216,15 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
         //取消
         var cancelBtn = $("#cancelBtn");
         cancelBtn.unbind("click");
-        cancelBtn.on("click",function () {
+        cancelBtn.on("click", function () {
             $("#checkItemConfig").form('clear');  //清空表单
             $("#checkItemDialog").window("close");
         });
         //提交
         var submitBtn = $("#submitBtn");
         submitBtn.unbind("click");
-        submitBtn.on("click",function () {
-            if(disableSubmit){
+        submitBtn.on("click", function () {
+            if (disableSubmit) {
                 return false;
             }
             disableSubmit = true;   //防止多次提交
@@ -234,19 +236,19 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
             var checkItemVitalType = $("#checkItemVitalTypeConfig").combobox("getValue");
             var checkItemDesc = $("#checkItemDescConfig").val();
 
-            if(checkItemName == null || checkItemName ===""){
+            if (checkItemName == null || checkItemName === "") {
                 $.messager.alert("提示", "考评项名称不能为空!");
                 disableSubmit = false;
                 submitBtn.linkbutton({disabled: false});  //取消提交禁用
                 return false;
             }
             var params = {
-                "tenantId":tenantId,
-                "parentCheckItemId":Util.constants.PARENT_CHECK_ITEM_ID,
-                "checkItemName":checkItemName,
-                "checkItemType":checkItemType,
-                "checkItemVitalType":checkItemVitalType,
-                "remark":checkItemDesc
+                "tenantId": tenantId,
+                "parentCheckItemId": Util.constants.PARENT_CHECK_ITEM_ID,
+                "checkItemName": checkItemName,
+                "checkItemType": checkItemType,
+                "checkItemVitalType": checkItemVitalType,
+                "remark": checkItemDesc
             };
             Util.ajax.postJson(Util.constants.CONTEXT.concat(Util.constants.CHECK_ITEM_DNS).concat("/"), JSON.stringify(params), function (result) {
                 $.messager.show({
@@ -288,11 +290,11 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
             method: "GET",
             valueField: 'codeValue',
             textField: 'codeName',
-            panelHeight:'auto',
-            editable:false,
-            onLoadSuccess : function(){
+            panelHeight: 'auto',
+            editable: false,
+            onLoadSuccess: function () {
                 //自动填入待修改考评项类型
-                $('#checkItemTypeConfig').combobox('setValue',item.checkItemType);
+                $('#checkItemTypeConfig').combobox('setValue', item.checkItemType);
             }
         });
         //考评项致命类别下拉框
@@ -301,25 +303,25 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
             method: "GET",
             valueField: 'codeValue',
             textField: 'codeName',
-            panelHeight:'auto',
-            editable:false,
-            onLoadSuccess : function(){
+            panelHeight: 'auto',
+            editable: false,
+            onLoadSuccess: function () {
                 //自动填入待修改考评项致命类别
-                $('#checkItemVitalTypeConfig').combobox('setValue',item.checkItemVitalType);
+                $('#checkItemVitalTypeConfig').combobox('setValue', item.checkItemVitalType);
             }
         });
         //取消
         var cancelBtn = $("#cancelBtn");
         cancelBtn.unbind("click");
-        cancelBtn.on("click",function () {
+        cancelBtn.on("click", function () {
             $("#checkItemConfig").form('clear');  //清空表单
             $("#checkItemDialog").window("close");
         });
         //提交
         var submitBtn = $("#submitBtn");
         submitBtn.unbind("click");
-        submitBtn.on("click",function () {
-            if(disableSubmit){
+        submitBtn.on("click", function () {
+            if (disableSubmit) {
                 return false;
             }
             disableSubmit = true;   //防止多次提交
@@ -330,7 +332,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
             var checkItemVitalType = $("#checkItemVitalTypeConfig").combobox("getValue");
             var checkItemDesc = $("#checkItemDescConfig").val();
 
-            if(checkItemName == null || checkItemName ===""){
+            if (checkItemName == null || checkItemName === "") {
                 $.messager.alert("提示", "考评项名称不能为空!");
                 disableSubmit = false;
                 submitBtn.linkbutton({disabled: false});  //取消提交禁用
@@ -348,10 +350,10 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
 
             item.checkItemName = checkItemName;
             item.remark = checkItemDesc;
-            if(checkItemType != null && checkItemType !== ""){
+            if (checkItemType != null && checkItemType !== "") {
                 item.checkItemType = checkItemType;
             }
-            if(checkItemVitalType != null && checkItemVitalType !== ""){
+            if (checkItemVitalType != null && checkItemVitalType !== "") {
                 item.checkItemVitalType = checkItemVitalType;
             }
 
