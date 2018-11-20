@@ -208,25 +208,25 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
         for (var i = 0; i < delRows.length; i++) {
             var id = delRows[i].processId;
             delArr.push(id);
-            if(delRows[i].processStatus === "0"){
-                $.messager.alert("提示", "删除失败！已启动的流程不允许被删除!");
+            if(delRows[i].processStatus === "1"){
+                $.messager.alert("提示", "删除失败！已启动的流程不能删除!");
                 return false;
             }
         }
         $.messager.confirm('确认删除弹窗', '确定要删除吗？', function (confirm) {
             if (confirm) {
-                // Util.ajax.deleteJson(Util.constants.CONTEXT.concat(Util.constants.CHECK_ITEM_DNS).concat("/").concat(delArr), {}, function (result) {
-                //     $.messager.show({
-                //         msg: result.RSP.RSP_DESC,
-                //         timeout: 1000,
-                //         style: {right: '', bottom: ''},     //居中显示
-                //         showType: 'show'
-                //     });
-                //     var rspCode = result.RSP.RSP_CODE;
-                //     if (rspCode != null && rspCode === "1") {
-                //         $("#checkItemList").datagrid('reload'); //删除成功后，刷新页面
-                //     }
-                // });
+                Util.ajax.deleteJson(Util.constants.CONTEXT.concat(Util.constants.APPEAL_PROCESS_CONFIG_DNS).concat("/").concat(delArr), {}, function (result) {
+                    $.messager.show({
+                        msg: result.RSP.RSP_DESC,
+                        timeout: 1000,
+                        style: {right: '', bottom: ''},     //居中显示
+                        showType: 'show'
+                    });
+                    var rspCode = result.RSP.RSP_CODE;
+                    if (rspCode != null && rspCode === "1") {
+                        $("#appealProcessList").datagrid("load"); //删除成功后，刷新页面
+                    }
+                });
             }
         });
     }
