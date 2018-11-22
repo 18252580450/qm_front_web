@@ -1,4 +1,4 @@
-require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
+require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, Transfer,dateUtil) {
     var qmURI = "/qm/configservice/ordinaryComment";
     //调用初始化方法
     initialize();
@@ -9,23 +9,6 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
         initWindowEvent();
         initReviseEvent();
     };
-
-    //格式化时间方法(解决前端获取数据库的datetime类型为一串数字（时间戳）)
-    function formatDateTime(inputTime) {
-        var date = new Date(inputTime);
-        var y = date.getFullYear();
-        var m = date.getMonth() + 1;
-        m = m < 10 ? ('0' + m) : m;
-        var d = date.getDate();
-        d = d < 10 ? ('0' + d) : d;
-        var h = date.getHours();
-        h = h < 10 ? ('0' + h) : h;
-        var minute = date.getMinutes();
-        var second = date.getSeconds();
-        minute = minute < 10 ? ('0' + minute) : minute;
-        second = second < 10 ? ('0' + second) : second;
-        return y + '-' + m + '-' + d + ' ' + h + ':' + minute + ':' + second;
-    }
 
     //初始化列表
     function initGrid() {
@@ -53,12 +36,12 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                 {field: 'commentName', title: '评语名称', width: '20%'},
                 {field: 'crtTime', title: '创建时间', width: '20%',
                  formatter:function(value,row,index){//格式化时间格式
-                    return formatDateTime(row.crtTime);
+                    return DateUtil.formatDateTime(value);
                  }},
                 {field: 'createStaffId', title: '创建工号', width: '20%'},
                 {field: 'modfTime', title: '修改时间', width: '20%',
                     formatter:function(value,row,index){
-                        return formatDateTime(row.modfTime);
+                        return DateUtil.formatDateTime(value);
                     }},
                 {field: 'operateStaffId', title: '修改工号', width: '20%'},
                 {field: 'remark', title: '描述', width: '20%'}
@@ -95,8 +78,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                 var parentCommentId = $("#mainCommentName").val();//父级评语名称。显示名称，但是传过来的是id，隐藏域
                 var commentName = $("#commentName").val();//评语名称
                 var reqParams = {//入参
-                    "tenantId":Util.constants.TENANT_ID,
-                    "parentCommentId": parentCommentId,
+                    "parentCommentId": Util.constants.PARENT_CHECK_ITEM_ID,
                     "commentName":commentName
                 };
                 var params = $.extend({
@@ -119,7 +101,6 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                             showType: 'slide'
                         });
                     }
-
                     success(data);
                 });
             }
@@ -275,9 +256,6 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
            $("#modf_content").on("click", "#ok", function () {
 
                var commentId = sensjson.commentId;
-               // var id = [];
-               // id.push(commentId);
-
                var modfName = $("#modfName").val();
                var remark = $("#remark").val();
                var createStaffId = sensjson.createStaffId;

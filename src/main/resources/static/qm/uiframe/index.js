@@ -36,6 +36,7 @@ var zNodes = [
     {id: 11, pId: 1, name: "考评项管理", file: "http://127.0.0.1:8080/qm/html/manage/checkItemManage.html"},
     {id: 12, pId: 1, name: "考评评语", file: "http://127.0.0.1:8080/qm/html/manage/ordinaryComment.html"},
     {id: 14, pId: 1, name: "考评计划", file: "http://127.0.0.1:8080/qm/html/manage/qmPlanManage.html"},
+    {id: 15, pId: 1, name: "考评模板", file: "http://127.0.0.1:8080/qm/html/manage/checkTemplate.html"},
     {id: 31, pId: 1, name: "申诉流程", file: "http://127.0.0.1:8080/qm/html/manage/appealProcessManage.html"}
 ];
 
