@@ -1,6 +1,7 @@
 require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
 
-    var processDetailUrl = Util.constants.URL_CONTEXT + "/qm/html/manage/appealProcessDetail.html",
+    var processStatusData = [],   //流程状态下拉框静态数据
+        processDetailUrl = Util.constants.URL_CONTEXT + "/qm/html/manage/appealProcessDetail.html",
         processAddUrl = Util.constants.URL_CONTEXT + "/qm/html/manage/appealProcessAdd.html";
 
     initialize();
@@ -75,6 +76,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
         });
 
         //申诉主流程列表
+        var IsCheckFlag = true; //标示是否是勾选复选框选中行的，true - 是 , false - 否
         $("#appealProcessList").datagrid({
             columns: [[
                 {field: 'ck', checkbox: true, align: 'center'},
@@ -110,18 +112,15 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                 {
                     field: 'processStatus', title: '流程状态', align: 'center', width: '10%',
                     formatter: function (value, row, index) {
-                        var status = null;
-                        var processStatus = row.processStatus;
-                        if (processStatus != null && processStatus === "0") {
-                            status = "未启动";
+                        var processStatus = "";
+                        if (processStatusData.length !== 0) {
+                            $.each(processStatusData, function (index, item) {
+                                if (item.paramsCode === value) {
+                                    processStatus = item.paramsName;
+                                }
+                            });
                         }
-                        if (processStatus != null && processStatus === "1") {
-                            status = "启动";
-                        }
-                        if (processStatus != null && processStatus === "2") {
-                            status = "暂停";
-                        }
-                        return status;
+                        return processStatus;
                     }
                 }
             ]],
@@ -133,6 +132,21 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
             pageList: [5, 10, 20, 50],
             rownumbers: false,
             checkOnSelect: false,
+            onClickCell: function (rowIndex, field, value) {
+                IsCheckFlag = false;
+            },
+            onSelect: function (rowIndex, rowData) {
+                if (!IsCheckFlag) {
+                    IsCheckFlag = true;
+                    $("#appealProcessList").datagrid("unselectRow", rowIndex);
+                }
+            },
+            onUnselect: function (rowIndex, rowData) {
+                if (!IsCheckFlag) {
+                    IsCheckFlag = true;
+                    $("#appealProcessList").datagrid("selectRow", rowIndex);
+                }
+            },
             loader: function (param, success) {
                 var start = (param.page - 1) * param.rows;
                 var pageNum = param.rows;
@@ -186,6 +200,11 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                         showDialog(url, "流程详情", 900, 600, false);
                     });
                 });
+            },
+            //双击显示详情
+            onDblClickRow: function (index, data) {
+                var url = createURL(processDetailUrl, data);
+                showDialog(url, "流程详情", 900, 600, false);
             }
         });
     }
@@ -367,7 +386,6 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
             modal: shadow,
             title: title,
             onClose: function () {
-                debugger;
                 $(this).dialog('destroy');//后面可以关闭后的事件
             }
         });
@@ -405,6 +423,9 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                         "paramsName": "全部"
                     };
                     selectData.unshift(data);
+                }
+                if (paramsType === "PROCESS_STATUS") {
+                    processStatusData = selectData;
                 }
                 $("#" + select).combobox('loadData', selectData);
             }

@@ -85,7 +85,6 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                 if (orderNo === "-1" || orderNo === "0" || parseInt(orderNo) >= appealProcessData.length) {
                     $("#subNodeList").datagrid("loadData", {rows: []});
                 } else {
-                    debugger;
                     var subNodeList = appealProcessData[parseInt(orderNo)].subNodeList;
                     refreshSubNodeList(subNodeList);
                 }
@@ -95,6 +94,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
         reloadSelectData("PROCESS_LEVEL", "orderNo", false);
 
         //申诉流程添加列表
+        var IsCheckFlag = true; //标示是否是勾选复选框选中行的，true - 是 , false - 否
         $("#processList").datagrid({
             columns: [[
                 {field: 'orderName', title: '流程顺序', align: 'center', width: '15%'},
@@ -134,6 +134,21 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
             pagination: false,
             rownumbers: false,
             checkOnSelect: false,
+            onClickCell: function (rowIndex, field, value) {
+                IsCheckFlag = false;
+            },
+            onSelect: function (rowIndex, rowData) {
+                if (!IsCheckFlag) {
+                    IsCheckFlag = true;
+                    $("#processList").datagrid("unselectRow", rowIndex);
+                }
+            },
+            onUnselect: function (rowIndex, rowData) {
+                if (!IsCheckFlag) {
+                    IsCheckFlag = true;
+                    $("#processList").datagrid("selectRow", rowIndex);
+                }
+            },
             onLoadSuccess: function (data) {
                 //绑定流程删除事件
                 $.each(data.rows, function (i, item) {
@@ -183,6 +198,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
         });
 
         //申诉节点添加列表
+        var IsNodeCheckFlag = true; //标示是否是勾选复选框选中行的，true - 是 , false - 否
         $("#subNodeList").datagrid({
             columns: [[
                 {field: 'processId', title: '子流程序号', align: 'center', hidden: true},
@@ -207,6 +223,21 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
             pagination: false,
             rownumbers: false,
             checkOnSelect: false,
+            onClickCell: function (rowIndex, field, value) {
+                IsNodeCheckFlag = false;
+            },
+            onSelect: function (rowIndex, rowData) {
+                if (!IsNodeCheckFlag) {
+                    IsNodeCheckFlag = true;
+                    $("#subNodeList").datagrid("unselectRow", rowIndex);
+                }
+            },
+            onUnselect: function (rowIndex, rowData) {
+                if (!IsNodeCheckFlag) {
+                    IsNodeCheckFlag = true;
+                    $("#subNodeList").datagrid("selectRow", rowIndex);
+                }
+            },
             onLoadSuccess: function (data) {
                 //绑定子节点删除事件
                 $.each(data.rows, function (i, item) {

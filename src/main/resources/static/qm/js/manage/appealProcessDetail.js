@@ -12,7 +12,6 @@ require(["jquery", 'util', "easyui"], function ($, Util) {
 
     //页面信息初始化
     function initPageInfo() {
-        debugger;
         var appealProcess = getRequestObj();
         //主流程基本信息
         $("#detailProcessName").val(appealProcess.processName);
@@ -55,6 +54,7 @@ require(["jquery", 'util', "easyui"], function ($, Util) {
         }
 
         //子流程列表
+        var IsCheckFlag = true; //标示是否是勾选复选框选中行的，true - 是 , false - 否
         $("#subProcessList").datagrid({
             columns: [[
                 {field: 'orderNo', title: '流程顺序', align: 'center', width: '10%'},
@@ -78,6 +78,21 @@ require(["jquery", 'util', "easyui"], function ($, Util) {
             pagination: false,
             rownumbers: false,
             checkOnSelect: false,
+            onClickCell: function (rowIndex, field, value) {
+                IsCheckFlag = false;
+            },
+            onSelect: function (rowIndex, rowData) {
+                if (!IsCheckFlag) {
+                    IsCheckFlag = true;
+                    $("#subProcessList").datagrid("unselectRow", rowIndex);
+                }
+            },
+            onUnselect: function (rowIndex, rowData) {
+                if (!IsCheckFlag) {
+                    IsCheckFlag = true;
+                    $("#subProcessList").datagrid("selectRow", rowIndex);
+                }
+            },
             loader: function (param, success) {
                 var start = "0";
                 var pageNum = "0";
@@ -111,7 +126,6 @@ require(["jquery", 'util', "easyui"], function ($, Util) {
                 });
             },
             onClickRow: function (index, data) {
-                debugger;
                 //刷新子节点列表
                 for(var i = 0; i < subNodeData.length; i++){
                     if(subNodeData[i].processId === data.processId && subNodeData[i].subNodeList != null){
@@ -155,6 +169,7 @@ require(["jquery", 'util', "easyui"], function ($, Util) {
         });
 
         //子节点列表
+        var IsNodeCheckFlag = true; //标示是否是勾选复选框选中行的，true - 是 , false - 否
         $("#subNodeList").datagrid({
             columns: [[
                 {field: 'processId', title: '流程编码', align: 'center', width: '20%'},
@@ -168,8 +183,20 @@ require(["jquery", 'util', "easyui"], function ($, Util) {
             pagination: false,
             rownumbers: false,
             checkOnSelect: false,
-            onLoadSuccess: function (data) {
-
+            onClickCell: function (rowIndex, field, value) {
+                IsNodeCheckFlag = false;
+            },
+            onSelect: function (rowIndex, rowData) {
+                if (!IsNodeCheckFlag) {
+                    IsNodeCheckFlag = true;
+                    $("#subNodeList").datagrid("unselectRow", rowIndex);
+                }
+            },
+            onUnselect: function (rowIndex, rowData) {
+                if (!IsNodeCheckFlag) {
+                    IsNodeCheckFlag = true;
+                    $("#subNodeList").datagrid("selectRow", rowIndex);
+                }
             }
         });
     }
@@ -177,7 +204,6 @@ require(["jquery", 'util', "easyui"], function ($, Util) {
     function initEvent() {
         //取消
         $("#detailCancelBtn").on("click", function () {
-            debugger;
             parent.document.getElementById("#processDetailDialog").window('close');
         });
     }

@@ -55,6 +55,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
         reloadSelectData("CHECK_ITEM_TYPE", "checkItemType", true)
 
         //考评项列表
+        var IsCheckFlag = true; //标示是否是勾选复选框选中行的，true - 是 , false - 否
         $("#checkItemList").datagrid({
             columns: [[
                 {field: 'checkItemId', title: '考评项ID', hidden: true},
@@ -103,6 +104,21 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
             pageList: [5, 10, 20, 50],
             rownumbers: false,
             checkOnSelect: false,
+            onClickCell: function (rowIndex, field, value) {
+                IsCheckFlag = false;
+            },
+            onSelect: function (rowIndex, rowData) {
+                if (!IsCheckFlag) {
+                    IsCheckFlag = true;
+                    $("#checkItemList").datagrid("unselectRow", rowIndex);
+                }
+            },
+            onUnselect: function (rowIndex, rowData) {
+                if (!IsCheckFlag) {
+                    IsCheckFlag = true;
+                    $("#checkItemList").datagrid("selectRow", rowIndex);
+                }
+            },
             loader: function (param, success) {
                 var start = (param.page - 1) * param.rows;
                 var pageNum = param.rows;
