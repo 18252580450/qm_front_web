@@ -1,6 +1,9 @@
 require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
 
-    //初始化方法
+    var checkTypeData = [],    //考评项下拉框静态数据
+        checkItemData = [],    //新增考评项下拉框静态数据
+        vitalTypeData = [];    //新增致命类别下拉框静态数据
+
     initialize();
 
     function initialize() {
@@ -60,19 +63,13 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                 {
                     field: 'checkItemType', title: '考评项类型', align: 'center', width: '20%',
                     formatter: function (value, row, index) {
-                        var itemType = null;
-                        var checkItemType = row.checkItemType;
-                        if (checkItemType != null && checkItemType === "0") {
-                            itemType = "语音考评项";
-                        }
-                        if (checkItemType != null && checkItemType === "1") {
-                            itemType = "工单考评项";
-                        }
-                        if (checkItemType != null && checkItemType === "2") {
-                            itemType = "电商平台考评项";
-                        }
-                        if (checkItemType != null && checkItemType === "3") {
-                            itemType = "互联网考评项";
+                        var itemType = "";
+                        if(checkTypeData.length !== 0){
+                            $.each(checkTypeData,function(index, item){
+                                if(item.paramsCode === value){
+                                    itemType = item.paramsName;
+                                }
+                            });
                         }
                         return itemType;
                     }
@@ -81,11 +78,10 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                     field: 'checkItemVitalType', title: '致命类别', align: 'center', width: '13%',
                     formatter: function (value, row, index) {
                         var vitalType = null;
-                        var checkItemVitalType = row.checkItemVitalType;
-                        if (checkItemVitalType != null && checkItemVitalType === "0") {
+                        if (value != null && value === "0") {
                             vitalType = "非致命性";
                         }
-                        if (checkItemVitalType != null && checkItemVitalType === "1") {
+                        if (value != null && value === "1") {
                             vitalType = "致命性";
                         }
                         return vitalType;
@@ -106,8 +102,8 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
             pageSize: 10,
             pageList: [5, 10, 20, 50],
             rownumbers: false,
+            checkOnSelect: false,
             loader: function (param, success) {
-                debugger;
                 var start = (param.page - 1) * param.rows;
                 var pageNum = param.rows;
                 var checkItemName = $("#checkItemName").val();
@@ -186,7 +182,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
         });
         //考评项类型下拉框
         $("#checkItemTypeConfig").combobox({
-            url: '../../data/select_init_data.json',
+            data: checkItemData,
             method: "GET",
             valueField: 'paramsCode',
             textField: 'paramsName',
@@ -201,11 +197,13 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
             }
         });
         //重载下拉框数据
-        reloadSelectData("CHECK_ITEM_TYPE", "checkItemTypeConfig", false);
+        if (checkItemData.length === 0) {
+            reloadSelectData("CHECK_ITEM_TYPE", "checkItemTypeConfig", false);
+        }
 
         //考评项致命类别下拉框
         $("#checkItemVitalTypeConfig").combobox({
-            url: '../../data/select_init_data.json',
+            data: vitalTypeData,
             method: "GET",
             valueField: 'paramsCode',
             textField: 'paramsName',
@@ -220,7 +218,9 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
             }
         });
         //重载下拉框数据
-        reloadSelectData("CHECK_VITAL_TYPE", "checkItemVitalTypeConfig", false);
+        if (vitalTypeData.length === 0) {
+            reloadSelectData("CHECK_VITAL_TYPE", "checkItemVitalTypeConfig", false);
+        }
 
         //取消
         var cancelBtn = $("#cancelBtn");
@@ -295,30 +295,44 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
         $("#checkItemDescConfig").val(item.remark);
         //考评项类型下拉框
         $("#checkItemTypeConfig").combobox({
-            url: '../../data/check_item_config_type.json',
+            data: checkItemData,
             method: "GET",
-            valueField: 'codeValue',
-            textField: 'codeName',
+            valueField: 'paramsCode',
+            textField: 'paramsName',
             panelHeight: 'auto',
             editable: false,
             onLoadSuccess: function () {
                 //自动填入待修改考评项类型
-                $('#checkItemTypeConfig').combobox('setValue', item.checkItemType);
+                if(checkItemData.length !== 0){
+                    $('#checkItemTypeConfig').combobox('setValue', item.checkItemType);
+                }
             }
         });
+        //重载下拉框数据
+        if (checkItemData.length === 0) {
+            reloadSelectData("CHECK_ITEM_TYPE", "checkItemTypeConfig", false);
+        }
+
         //考评项致命类别下拉框
         $("#checkItemVitalTypeConfig").combobox({
-            url: '../../data/check_item_vital_type.json',
+            data: vitalTypeData,
             method: "GET",
-            valueField: 'codeValue',
-            textField: 'codeName',
+            valueField: 'paramsCode',
+            textField: 'paramsName',
             panelHeight: 'auto',
             editable: false,
             onLoadSuccess: function () {
                 //自动填入待修改考评项致命类别
-                $('#checkItemVitalTypeConfig').combobox('setValue', item.checkItemVitalType);
+                if(vitalTypeData.length !== 0){
+                    $('#checkItemVitalTypeConfig').combobox('setValue', item.checkItemVitalType);
+                }
             }
         });
+        //重载下拉框数据
+        if (vitalTypeData.length === 0) {
+            reloadSelectData("CHECK_VITAL_TYPE", "checkItemVitalTypeConfig", false);
+        }
+
         //取消
         var cancelBtn = $("#cancelBtn");
         cancelBtn.unbind("click");
@@ -416,9 +430,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
         });
     }
 
-    /**
-     * 下拉框数据重载
-     */
+    //下拉框数据重载
     function reloadSelectData(paramsType, select, showAll) {
         var reqParams = {
             "tenantId": Util.constants.TENANT_ID,
@@ -440,6 +452,17 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                     };
                     selectData.unshift(data);
                 }
+                //下拉框静态数据更新
+                if (paramsType === "CHECK_ITEM_TYPE" && showAll) {
+                    checkTypeData = selectData;
+                }
+                if (paramsType === "CHECK_ITEM_TYPE" && !showAll) {
+                    checkItemData = selectData;
+                }
+                if (paramsType === "CHECK_VITAL_TYPE") {
+                    vitalTypeData = selectData;
+                }
+                //重载下拉框数据
                 $("#" + select).combobox('loadData', selectData);
             }
         });

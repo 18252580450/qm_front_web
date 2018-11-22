@@ -16,6 +16,7 @@ define(function () {
         CHECK_ITEM_DNS:"/qm/configservice/checkItem",//考评项配置
         QM_PLAN_DNS: "/qm/configservice/qmPlan",//考评计划
         APPEAL_PROCESS_CONFIG_DNS:"/qm/configservice/appealProcess",//申诉流程（配置）
+        APPEAL_NODE_CONFIG_DNS:"/qm/configservice/appealNode",//申诉节点（配置）
 
         NGKM_ATOM_DATA_TYPE_CHAR: "1",//字符串
         NGKM_ATOM_DATA_TYPE_RADIO: "2",//单选

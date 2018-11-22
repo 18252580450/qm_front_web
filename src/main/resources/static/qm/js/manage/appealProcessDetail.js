@@ -1,0 +1,259 @@
+require(["jquery", 'util', "easyui"], function ($, Util) {
+
+    var checkTypeData = [],    //质检类型静态数据
+        subNodeData = [];      //子节点数据
+
+    initialize();
+
+    function initialize() {
+        initPageInfo();
+        initEvent();
+    }
+
+    //页面信息初始化
+    function initPageInfo() {
+        debugger;
+        var appealProcess = getRequestObj();
+        //主流程基本信息
+        $("#detailProcessName").val(appealProcess.processName);
+        $("#detailTenantType").val(appealProcess.tenantId);
+        $("#departmentName").val(appealProcess.departmentName);
+        //查询质检类型
+        var checkType = "";
+        if (checkTypeData.length !== 0) {
+            $.each(checkTypeData, function (index, item) {
+                if (item.paramsCode === appealProcess.checkType) {
+                    checkType = item.paramsName;
+                    $("#checkType").val(checkType);
+                }
+            });
+        } else {
+            var reqParams = {
+                "tenantId": Util.constants.TENANT_ID,
+                "paramsTypeId": "CHECK_TYPE"
+            };
+            var params = {
+                "start": 0,
+                "pageNum": 0,
+                "params": JSON.stringify(reqParams)
+            };
+            Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.STATIC_PARAMS_DNS + "/selectByParams", params, function (result) {
+                var rspCode = result.RSP.RSP_CODE;
+                if (rspCode === "1") {
+                    var data = result.RSP.DATA;
+                    if (data.length > 0) {
+                        checkTypeData = data;
+                        $.each(data, function (index, item) {
+                            if (item.paramsCode === appealProcess.checkType) {
+                                checkType = item.paramsName;
+                            }
+                        });
+                        $("#checkType").val(checkType);
+                    }
+                }
+            });
+        }
+
+        //子流程列表
+        $("#subProcessList").datagrid({
+            columns: [[
+                {field: 'orderNo', title: '流程顺序', align: 'center', width: '10%'},
+                {field: 'processId', title: '流程编码', align: 'center', width: '20%'},
+                {field: 'processName', title: '流程名称', align: 'center', width: '20%'},
+                {field: 'departmentName', title: '部门', align: 'center', width: '20%'},
+                {
+                    field: 'createTime', title: '创建时间', align: 'center', width: '20%',
+                    formatter: function (value, row, index) { //格式化时间格式
+                        if (row.createTime != null) {
+                            var createTime = formatDateTime(row.createTime);
+                            return '<span title=' + createTime + '>' + createTime + '</span>';
+                        }
+                    }
+                },
+                {field: 'createStaffId', title: '创建工号', align: 'center', width: '10%'}
+            ]],
+            fitColumns: true,
+            width: '100%',
+            height: 150,
+            pagination: false,
+            rownumbers: false,
+            checkOnSelect: false,
+            loader: function (param, success) {
+                var start = "0";
+                var pageNum = "0";
+                var parentProcessId = appealProcess.processId;
+
+                var reqParams = {
+                    "mainProcessFlag": "1",
+                    "parentProcessId": parentProcessId
+                };
+                var params = $.extend({
+                    "start": start,
+                    "pageNum": pageNum,
+                    "params": JSON.stringify(reqParams)
+                }, Util.PageUtil.getParams($("#searchForm")));
+
+                Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.APPEAL_PROCESS_CONFIG_DNS + "/queryAppealProcess", params, function (result) {
+                    var data = {
+                        rows: result.RSP.DATA
+                    };
+
+                    var rspCode = result.RSP.RSP_CODE;
+                    if (rspCode != null && rspCode !== "1") {
+                        $.messager.show({
+                            msg: result.RSP.RSP_DESC,
+                            timeout: 1000,
+                            style: {right: '', bottom: ''},     //居中显示
+                            showType: 'show'
+                        });
+                    }
+                    success(data);
+                });
+            },
+            onClickRow: function (index, data) {
+                debugger;
+                //刷新子节点列表
+                for(var i = 0; i < subNodeData.length; i++){
+                    if(subNodeData[i].processId === data.processId && subNodeData[i].subNodeList != null){
+                        refreshSubNodeList(subNodeData[i].subNodeList);
+                        return;
+                    }
+                }
+                //查询子节点列表
+                var start = "0";
+                var pageNum = "0";
+                var processId = data.processId;
+
+                var reqParams = {
+                    "processId": processId
+                };
+                var params = $.extend({
+                    "start": start,
+                    "pageNum": pageNum,
+                    "params": JSON.stringify(reqParams)
+                }, Util.PageUtil.getParams($("#searchForm")));
+
+                Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.APPEAL_NODE_CONFIG_DNS + "/queryAppealNode", params, function (result) {
+                    var rspCode = result.RSP.RSP_CODE;
+                    if (rspCode != null && rspCode !== "1") {
+                        $.messager.show({
+                            msg: result.RSP.RSP_DESC,
+                            timeout: 1000,
+                            style: {right: '', bottom: ''},     //居中显示
+                            showType: 'show'
+                        });
+                    }
+                    refreshSubNodeList(result.RSP.DATA);
+
+                    //更新子节点数据
+                    var data = {};
+                    data.processId = processId;
+                    data.subNodeList = result.RSP.DATA;
+                    subNodeData.push(data);
+                });
+            }
+        });
+
+        //子节点列表
+        $("#subNodeList").datagrid({
+            columns: [[
+                {field: 'processId', title: '流程编码', align: 'center', width: '20%'},
+                {field: 'orderNo', title: '节点序号', align: 'center', width: '10%'},
+                {field: 'nodeName', title: '节点名称', align: 'center', width: '20%'},
+                {field: 'userName', title: '角色', align: 'center', width: '50'}
+            ]],
+            fitColumns: true,
+            width: '100%',
+            height: 250,
+            pagination: false,
+            rownumbers: false,
+            checkOnSelect: false,
+            onLoadSuccess: function (data) {
+
+            }
+        });
+    }
+
+    function initEvent() {
+        //取消
+        $("#detailCancelBtn").on("click", function () {
+            debugger;
+            parent.document.getElementById("#processDetailDialog").window('close');
+        });
+    }
+
+    //时间格式化
+    function formatDateTime(inputDate) {
+        var date = new Date(inputDate);
+        var y = date.getFullYear();
+        var m = date.getMonth() + 1;
+        m = m < 10 ? ('0' + m) : m;
+        var d = date.getDate();
+        d = d < 10 ? ('0' + d) : d;
+        var h = date.getHours();
+        h = h < 10 ? ('0' + h) : h;
+        var minute = date.getMinutes();
+        var second = date.getSeconds();
+        minute = minute < 10 ? ('0' + minute) : minute;
+        second = second < 10 ? ('0' + second) : second;
+        return y + '-' + m + '-' + d + ' ' + h + ':' + minute + ':' + second;
+    }
+
+    //获取url对象
+    function getRequestObj() {
+        var url = decodeURI(decodeURI(location.search)); //获取url中"?"符后的字串，使用了两次decodeRUI解码
+        var requestObj = {};
+        if (url.indexOf("?") > -1) {
+            var str = url.substr(1),
+                strArr = str.split("&");
+            for (var i = 0; i < strArr.length; i++) {
+                requestObj[strArr[i].split("=")[0]] = unescape(strArr[i].split("=")[1]);
+            }
+            return requestObj;
+        }
+    }
+
+    //子节点列表刷新（同一节点合并到同一行）
+    function refreshSubNodeList(subNodeList) {
+        var subNodeTable = $("#subNodeList");
+        //为空时返回
+        if (subNodeList.length === 0) {
+            subNodeTable.datagrid("loadData", {rows: []});
+            return false;
+        }
+        //刷新（页面）子节点列表,将同一节点合并到一行
+        var subNodeData = [];
+        var nodeOrder = 1;
+        var userNameStr = "";
+        var showData = {};
+        for (var j = 0; j < subNodeList.length; j++) {
+            if (subNodeList[j].orderNo === nodeOrder) {
+                userNameStr = userNameStr + subNodeList[j].userName + " ";
+            } else {
+                showData = {
+                    "processId":subNodeList[j - 1].processId,
+                    "orderNo": subNodeList[j - 1].orderNo,
+                    "nodeName": subNodeList[j - 1].nodeName,
+                    "userName": userNameStr
+                };
+                subNodeData.push(showData);
+                //重置nodeOrder
+                nodeOrder = subNodeList[j].orderNo;
+                userNameStr = "";
+                j--;
+            }
+        }
+        showData = {
+            "processId":subNodeList[j - 1].processId,
+            "orderNo": subNodeList[subNodeList.length - 1].orderNo,
+            "nodeName": subNodeList[subNodeList.length - 1].nodeName,
+            "userName": userNameStr
+        };
+        subNodeData.push(showData);
+        subNodeTable.datagrid("loadData", {rows: subNodeData});
+    }
+
+    return {
+        initialize: initialize
+    };
+});
