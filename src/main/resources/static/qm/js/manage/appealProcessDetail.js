@@ -20,12 +20,13 @@ require(["jquery", 'util', "easyui"], function ($, Util) {
         //查询质检类型
         var checkType = "";
         if (checkTypeData.length !== 0) {
-            $.each(checkTypeData, function (index, item) {
-                if (item.paramsCode === appealProcess.checkType) {
-                    checkType = item.paramsName;
+            for (var i = 0; i < checkTypeData.length; i++) {
+                if (checkTypeData[i].paramsCode === appealProcess.checkType) {
+                    checkType = checkTypeData[i].paramsName;
                     $("#checkType").val(checkType);
+                    break;
                 }
-            });
+            }
         } else {
             var reqParams = {
                 "tenantId": Util.constants.TENANT_ID,
@@ -42,12 +43,13 @@ require(["jquery", 'util', "easyui"], function ($, Util) {
                     var data = result.RSP.DATA;
                     if (data.length > 0) {
                         checkTypeData = data;
-                        $.each(data, function (index, item) {
-                            if (item.paramsCode === appealProcess.checkType) {
-                                checkType = item.paramsName;
+                        for (var i = 0; i < checkTypeData.length; i++) {
+                            if (checkTypeData[i].paramsCode === appealProcess.checkType) {
+                                checkType = checkTypeData[i].paramsName;
+                                $("#checkType").val(checkType);
+                                break;
                             }
-                        });
-                        $("#checkType").val(checkType);
+                        }
                     }
                 }
             });
@@ -57,12 +59,12 @@ require(["jquery", 'util', "easyui"], function ($, Util) {
         var IsCheckFlag = true; //标示是否是勾选复选框选中行的，true - 是 , false - 否
         $("#subProcessList").datagrid({
             columns: [[
-                {field: 'orderNo', title: '流程顺序', align: 'center', width: '10%'},
-                {field: 'processId', title: '流程编码', align: 'center', width: '20%'},
-                {field: 'processName', title: '流程名称', align: 'center', width: '20%'},
-                {field: 'departmentName', title: '部门', align: 'center', width: '20%'},
+                {field: 'orderNo', title: '流程顺序', width: '10%'},
+                {field: 'processId', title: '流程编码', width: '20%'},
+                {field: 'processName', title: '流程名称', width: '20%'},
+                {field: 'departmentName', title: '部门', width: '20%'},
                 {
-                    field: 'createTime', title: '创建时间', align: 'center', width: '20%',
+                    field: 'createTime', title: '创建时间', width: '20%',
                     formatter: function (value, row, index) { //格式化时间格式
                         if (row.createTime != null) {
                             var createTime = formatDateTime(row.createTime);
@@ -70,7 +72,7 @@ require(["jquery", 'util', "easyui"], function ($, Util) {
                         }
                     }
                 },
-                {field: 'createStaffId', title: '创建工号', align: 'center', width: '10%'}
+                {field: 'createStaffId', title: '创建工号', width: '10%'}
             ]],
             fitColumns: true,
             width: '100%',
@@ -148,7 +150,8 @@ require(["jquery", 'util', "easyui"], function ($, Util) {
                 }, Util.PageUtil.getParams($("#searchForm")));
 
                 Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.APPEAL_NODE_CONFIG_DNS + "/queryAppealNode", params, function (result) {
-                    var rspCode = result.RSP.RSP_CODE;
+                    var rspCode = result.RSP.RSP_CODE,
+                        rspData = result.RSP.DATA;
                     if (rspCode != null && rspCode !== "1") {
                         $.messager.show({
                             msg: result.RSP.RSP_DESC,
@@ -157,12 +160,12 @@ require(["jquery", 'util', "easyui"], function ($, Util) {
                             showType: 'show'
                         });
                     }
-                    refreshSubNodeList(result.RSP.DATA);
+                    refreshSubNodeList(rspData);
 
                     //更新子节点数据
                     var data = {};
                     data.processId = processId;
-                    data.subNodeList = result.RSP.DATA;
+                    data.subNodeList = rspData;
                     subNodeData.push(data);
                 });
             }
@@ -172,14 +175,14 @@ require(["jquery", 'util', "easyui"], function ($, Util) {
         var IsNodeCheckFlag = true; //标示是否是勾选复选框选中行的，true - 是 , false - 否
         $("#subNodeList").datagrid({
             columns: [[
-                {field: 'processId', title: '流程编码', align: 'center', width: '20%'},
-                {field: 'orderNo', title: '节点序号', align: 'center', width: '10%'},
-                {field: 'nodeName', title: '节点名称', align: 'center', width: '20%'},
-                {field: 'userName', title: '角色', align: 'center', width: '50'}
+                {field: 'processId', title: '流程编码', width: '20%'},
+                {field: 'orderNo', title: '节点序号', width: '10%'},
+                {field: 'nodeName', title: '节点名称', width: '20%'},
+                {field: 'userName', title: '角色', width: '50'}
             ]],
             fitColumns: true,
             width: '100%',
-            height: 250,
+            height: 200,
             pagination: false,
             rownumbers: false,
             checkOnSelect: false,

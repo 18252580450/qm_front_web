@@ -2,7 +2,8 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
 
     var processStatusData = [],   //流程状态下拉框静态数据
         processDetailUrl = Util.constants.URL_CONTEXT + "/qm/html/manage/appealProcessDetail.html",
-        processAddUrl = Util.constants.URL_CONTEXT + "/qm/html/manage/appealProcessAdd.html";
+        processAddUrl = Util.constants.URL_CONTEXT + "/qm/html/manage/appealProcessAdd.html",
+        processEditUrl = Util.constants.URL_CONTEXT + "/qm/html/manage/appealProcessEdit.html";
 
     initialize();
 
@@ -81,15 +82,17 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
             columns: [[
                 {field: 'ck', checkbox: true, align: 'center'},
                 {
-                    field: 'detail', title: '操作', align: 'center', width: '5%',
+                    field: 'detail', title: '操作', width: '8%',
                     formatter: function (value, row, index) {
-                        return '<a href="javascript:void(0);" id = "processDetail' + row.processId + '">详情</a>';
+                        var detail = '<a href="javascript:void(0);" id = "processDetail' + row.processId + '">详情</a>';
+                        var edit = '<a href="javascript:void(0);" id = "processEdit' + row.processId + '">修改</a>';
+                        return detail + "&nbsp;&nbsp;" + edit;
                     }
                 },
-                {field: 'processId', title: '流程编码', align: 'center', width: '15%'},
-                {field: 'processName', title: '流程名称', align: 'center', width: '10%'},
+                {field: 'processId', title: '流程编码', width: '15%'},
+                {field: 'processName', title: '流程名称', width: '10%'},
                 {
-                    field: 'createTime', title: '创建时间', align: 'center', width: '15%',
+                    field: 'createTime', title: '创建时间', width: '15%',
                     formatter: function (value, row, index) { //格式化时间格式
                         if (row.createTime != null) {
                             var createTime = formatDateTime(row.createTime);
@@ -97,10 +100,10 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                         }
                     }
                 },
-                {field: 'createStaffId', title: '创建工号', align: 'center', width: '10%'},
-                {field: 'tenantId', title: '渠道', align: 'center', width: '10%'},
+                {field: 'createStaffId', title: '创建工号', width: '10%'},
+                {field: 'tenantId', title: '渠道', width: '10%'},
                 {
-                    field: 'modifyTime', title: '修改时间', align: 'center', width: '15%',
+                    field: 'modifyTime', title: '修改时间', width: '15%',
                     formatter: function (value, row, index) { //格式化时间格式
                         if (row.modifyTime != null) {
                             var modifyTime = formatDateTime(row.modifyTime);
@@ -108,17 +111,18 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                         }
                     }
                 },
-                {field: 'modifyStaffId', title: '修改工号', align: 'center', width: '10%'},
+                {field: 'modifyStaffId', title: '修改工号', width: '10%'},
                 {
-                    field: 'processStatus', title: '流程状态', align: 'center', width: '10%',
+                    field: 'processStatus', title: '流程状态', width: '7%',
                     formatter: function (value, row, index) {
                         var processStatus = "";
                         if (processStatusData.length !== 0) {
-                            $.each(processStatusData, function (index, item) {
-                                if (item.paramsCode === value) {
-                                    processStatus = item.paramsName;
+                            for (var i = 0; i < processStatusData.length; i++) {
+                                if (processStatusData[i].paramsCode === value) {
+                                    processStatus = processStatusData[i].paramsName;
+                                    break;
                                 }
-                            });
+                            }
                         }
                         return processStatus;
                     }
@@ -198,6 +202,13 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                     $("#processDetail" + item.processId).on("click", function () {
                         var url = createURL(processDetailUrl, item);
                         showDialog(url, "流程详情", 900, 600, false);
+                    });
+                });
+                //修改
+                $.each(data.rows, function (i, item) {
+                    $("#processEdit" + item.processId).on("click", function () {
+                        var url = createURL(processEditUrl, item);
+                        addTabs("申诉流程-修改", url);
                     });
                 });
             },

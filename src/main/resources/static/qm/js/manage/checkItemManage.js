@@ -60,23 +60,24 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
             columns: [[
                 {field: 'checkItemId', title: '考评项ID', hidden: true},
                 {field: 'ck', checkbox: true, align: 'center'},
-                {field: 'checkItemName', title: '考评项名称', align: 'center', width: '20%'},
+                {field: 'checkItemName', title: '考评项名称', width: '20%'},
                 {
-                    field: 'checkItemType', title: '考评项类型', align: 'center', width: '20%',
+                    field: 'checkItemType', title: '考评项类型', width: '20%',
                     formatter: function (value, row, index) {
                         var itemType = "";
-                        if(checkTypeData.length !== 0){
-                            $.each(checkTypeData,function(index, item){
-                                if(item.paramsCode === value){
-                                    itemType = item.paramsName;
+                        if (checkTypeData.length !== 0) {
+                            for (var i = 0; i < checkTypeData.length; i++) {
+                                if (checkTypeData[i].paramsCode === value) {
+                                    itemType = checkTypeData[i].paramsName;
+                                    break;
                                 }
-                            });
+                            }
                         }
                         return itemType;
                     }
                 },
                 {
-                    field: 'checkItemVitalType', title: '致命类别', align: 'center', width: '13%',
+                    field: 'checkItemVitalType', title: '致命类别', width: '13%',
                     formatter: function (value, row, index) {
                         var vitalType = null;
                         if (value != null && value === "0") {
@@ -88,9 +89,9 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                         return vitalType;
                     }
                 },
-                {field: 'remark', title: '考评项描述', align: 'center', width: '30%'},
+                {field: 'remark', title: '考评项描述', width: '30%'},
                 {
-                    field: 'action', title: '操作', align: 'center', width: '13%',
+                    field: 'action', title: '操作', width: '13%',
                     formatter: function (value, row, index) {
                         return '<a href="javascript:void(0);" id = "checkItem' + row.checkItemId + '">修改</a>';
                     }
