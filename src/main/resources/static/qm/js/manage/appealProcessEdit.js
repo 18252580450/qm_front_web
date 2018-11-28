@@ -6,9 +6,9 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
         processDelData = [],        //流程删除数据
         processUpdateData = [],     //流程修改数据（已有子流程的修改列表）
         nodeAddData = [],           //节点新增数据（已有子流程的新增节点）
-        nodeDelData = [],           //节点删除数据（已有子流程的删除节点）
-        nodeUpdateData = [],        //节点修改数据（已有子流程的修改节点）
-        processListData = [],       //流程列表展示数据（包括子节点列表数据）
+        nodeDelData = [],           //节点删除数据（已有子流程的已有节点删除数据）
+        nodeUpdateData = [],        //节点修改数据（已有子流程的已有节点修改数据）
+        processListData = [],       //列表展示数据（包括子流程和子节点列表数据）
         checkTypeData = [],         //质检类型静态数据
         orderData = [];             //流程顺序静态数据
 
@@ -23,7 +23,6 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
     function initPageInfo() {
         //获取主流程基本信息
         mainProcess = getRequestObj();
-        debugger;
 
         //主流程基本信息
         $("#processName").val(mainProcess.processName);
@@ -87,7 +86,6 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                     $("#processName").val("");
                 }
                 showProcessName = false;
-                debugger;
                 var orderNo = parseInt($("#orderNo").combobox("getValue"));
                 //切换子流程时同时刷新子节点列表
                 if (orderNo === 0 || orderNo >= processListData.length) {
@@ -126,7 +124,6 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                 {field: 'departmentName', title: '部门', width: '20%'},
                 {field: 'departmentId', title: '部门Id', hidden: true},
                 {
-
                     field: 'checkType', title: '质检类型', width: '20%',
                     formatter: function (value, row, index) {
                         var itemType = "";
@@ -254,7 +251,8 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                         $("#processDel" + orderNo).on("click", function () {
                             $.messager.confirm('确认删除弹窗', '确定要删除' + item.processName + '吗？', function (confirm) {
                                 if (confirm) {
-                                    debugger;
+                                    //更新主流程的子流程数
+                                    mainProcess.subProcessNum--;
                                     //删除已有子流程
                                     if (item.hasOwnProperty("createTime")) {   //根据有无创建时间字段判断
                                         processDelData.push(item);
@@ -263,6 +261,27 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                                             if (processUpdateData[i].processId === item.processId) {
                                                 processUpdateData.splice(i, 1);
                                                 break;
+                                            }
+                                        }
+                                        //删除该子流程的子节点新增数据
+                                        for (var j = 0; j < nodeAddData.length; j++) {
+                                            if (nodeAddData[j].processOrder === item.orderNo) {
+                                                nodeAddData.splice(j, 1);
+                                                j--;
+                                            }
+                                        }
+                                        //删除该子流程的子节点删除数据
+                                        for (var k = 0; k < nodeDelData.length; k++) {
+                                            if (nodeDelData[k].processId === item.processId) {
+                                                nodeDelData.splice(k, 1);
+                                                k--;
+                                            }
+                                        }
+                                        //删除该子流程的子节点修改数据
+                                        for (var l = 0; l < nodeUpdateData.length; l++) {
+                                            if (nodeUpdateData[l].processId === item.processId) {
+                                                nodeUpdateData.splice(l, 1);
+                                                l--;
                                             }
                                         }
                                     } else {  //删除新增子流程
@@ -290,6 +309,9 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
             },
             //子流程列表行点击事件
             onClickRow: function (index, data) {
+                debugger;
+                //子节点列表上方显示流程名
+                $("#subProcess").val(data.orderNo);
                 //刷新选择流程下拉框
                 $("#orderNo").combobox("setValue", orderToParamsCode(data.orderNo));
                 //主流程则返回
@@ -302,6 +324,12 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                     refreshSubNodeList(processListData[data.orderNo].subNodeList);
                     return;
                 }
+                //未添加子节点的新增子流程
+                if (!processListData[data.orderNo].hasOwnProperty("createTime")) {
+                    $("#subNodeList").datagrid("loadData", {rows: []});
+                    return;
+                }
+
                 //查询已有子节点列表
                 queryNodeList(data);
             }
@@ -311,16 +339,28 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
         var IsNodeCheckFlag = true; //标示是否是勾选复选框选中行的，true - 是 , false - 否
         $("#subNodeList").datagrid({
             columns: [[
-                {field: 'processOrder', title: '子流程序号', hidden: true},
+                {
+                    field: 'processOrder', title: '子流程', width: '15%',
+                    formatter: function (value, row, index) {
+                        var order = "";
+                        if (orderData.length !== 0) {
+                            for (var i = 0; i < orderData.length; i++) {
+                                if (parseInt(orderData[i].paramsCode) === value) {
+                                    order = orderData[i].paramsName;
+                                    return order;
+                                }
+                            }
+                        }
+                    }
+                },
                 {field: 'processName', title: '子流程', hidden: true},
                 {field: 'orderNo', title: '节点序号', width: '15%'},
                 {field: 'nodeName', title: '节点名称', width: '20%'},
-                {field: 'userName', title: '角色', width: '55'},
+                {field: 'userName', title: '角色', width: '40'},
                 {field: 'userId', title: '角色Id', hidden: true},
                 {
                     field: 'detail', title: '操作', width: '10%',
                     formatter: function (value, row, index) {
-                        debugger;
                         if (processListData[row.processOrder].hasOwnProperty("subNodeList")) {
                             var edit = '<a href="javascript:void(0);" id = "nodeEdit' + row.orderNo + '">修改</a>';
                             //只允许删除末子节点
@@ -371,19 +411,24 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                                         //删除末子节点（多条数据）
                                         if (subNodeList[i].orderNo === orderNo) {
                                             for (var j = i; j < subNodeList.length; j++) {
-                                                debugger;
-                                                //删除已有节点（非新增节点）
-                                                if (subNodeList[subNodeList.length - 1].hasOwnProperty("createTime")) {
+                                                //删除已有节点（已有子流程的已有节点）
+                                                if (subNodeList[j].hasOwnProperty("createTime")) {
                                                     nodeDelData.push(subNodeList[j]);
-                                                    continue;
-                                                }
-                                                debugger;
-                                                //删除新增节点（已有子流程的新增节点）
-                                                if (processListData[item.processOrder].hasOwnProperty("createTime")) {
-                                                    for (var k = 0; k < nodeAddData.length; k++) {
-                                                        if (nodeAddData[k].processId === subNodeList[j].processId && nodeAddData[k].orderNo === orderNo && nodeAddData[k].userId === subNodeList[j].userId) {
-                                                            nodeAddData.splice(k, 1);
-                                                            break;
+                                                    //删除节点修改数据（已有子流程的已有子节点）
+                                                    for (var l = 0; l < nodeUpdateData.length; l++) {
+                                                        if (nodeUpdateData[l].processId === subNodeList[j].processId && nodeUpdateData[l].orderNo === orderNo && nodeUpdateData[l].userId === subNodeList[j].userId) {
+                                                            nodeUpdateData.splice(l, 1);
+                                                            l--;
+                                                        }
+                                                    }
+                                                } else {
+                                                    //删除新增节点（已有子流程的新增节点）
+                                                    if (processListData[item.processOrder].hasOwnProperty("createTime")) {
+                                                        for (var k = 0; k < nodeAddData.length; k++) {
+                                                            if (nodeAddData[k].processOrder === subNodeList[j].processOrder && nodeAddData[k].orderNo === orderNo && nodeAddData[k].userId === subNodeList[j].userId) {
+                                                                nodeAddData.splice(k, 1);
+                                                                break;
+                                                            }
                                                         }
                                                     }
                                                 }
@@ -393,11 +438,22 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                                             break;
                                         }
                                     }
-                                    debugger;
                                     //更新子节点列表
                                     processListData[item.processOrder].subNodeList = subNodeList;
                                     //更新子流程的子节点数
                                     processListData[item.processOrder].subNodeNum--;
+
+                                    //更新子流程修改数据（更新子流程子节点数）
+                                    if (processListData[item.processOrder].hasOwnProperty("createTime")) {
+                                        for (var m = 0; m < processUpdateData.length; m++) {
+                                            if (processUpdateData[m].orderNo === processListData[item.processOrder].orderNo) {
+                                                processUpdateData.splice(m, 1);
+                                                break;
+                                            }
+                                        }
+                                        processUpdateData.push(processListData[item.processOrder]);
+                                    }
+
                                     //刷新（页面）子节点列表
                                     refreshSubNodeList(subNodeList);
                                 }
@@ -436,7 +492,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
 
         //新增提交
         $("#submitBtn").on("click", function () {
-            createProcess();
+            submitBtn();
         });
 
         //新增取消
@@ -503,6 +559,9 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
         //刷新子流程列表
         processListData.push(data);
         $("#processList").datagrid("loadData", {rows: processListData});
+
+        //更新主流程的子流程数
+        mainProcess.subProcessNum++;
     }
 
     //新增子节点，subProcessObj父流程对象
@@ -531,6 +590,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                 // $('#userName').combotree("tree").tree("options").url = "../../data/process_user.json";
             }
         });
+
         //取消
         var cancelBtn = $("#subNodeCancelBtn");
         cancelBtn.unbind("click");
@@ -538,6 +598,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
             $("#subNodeConfig").form('clear');  //清空表单
             $("#subNodeDialog").window("close");
         });
+
         //提交
         var submitBtn = $("#subNodeSaveBtn");
         submitBtn.unbind("click");
@@ -560,7 +621,6 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
             var subNodeNum = subProcessObj.subNodeNum;
             //子流程租户ID
             var tenantId = subProcessObj.tenantId;
-            debugger;
             //子流程子节点列表
             var subNodeList = [];
             if (subProcessObj.hasOwnProperty("subNodeList")) {
@@ -601,6 +661,16 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                         item.subNodeList = subNodeList;
                     }
                 });
+            }
+            //更新子流程修改数据（更新子流程子节点数）
+            if (subProcessObj.hasOwnProperty("createTime")) {
+                for (var j = 0; j < processUpdateData.length; j++) {
+                    if (processUpdateData[j].orderNo === subProcessObj.orderNo) {
+                        processUpdateData.splice(j, 1);
+                        break;
+                    }
+                }
+                processUpdateData.push(processListData[processOrder]);
             }
             //刷新子节点列表
             refreshSubNodeList(subNodeList);
@@ -652,7 +722,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                 $.messager.alert("提示", "未作任何修改!");
                 return false;
             }
-            debugger;
+
             subProcessObj.processName = processName;
             subProcessObj.departmentName = departmentName;
             subProcessObj.departmentId = departmentId;
@@ -761,9 +831,9 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                 }
             }
 
-            for (var k = 0; k < subNodeList.length; k++) {
+            for (var k = 0; k < subNodeList.length; k++) {  //该子流程下所有子节点
                 //排除非该子节点数据
-                if (subNodeList[k].orderNo !== nodeOrder) {
+                if (subNodeList[k].orderNo !== nodeOrder) {  //该子流程下该子节点下所有数据
                     continue;
                 }
                 //子节点新增
@@ -794,9 +864,26 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                     if (nodeName !== newNodeName) {
                         if (noChangeUserIdArr[l] === subNodeList[k].userId) {
                             subNodeList[k].nodeName = newNodeName;
-                            //更新子节点（已有子流程的子节点）
-                            if (subProcessObj.hasOwnProperty("createTime")) {
+                            //更新子节点（已有子流程的已有子节点）
+                            if (subNodeList[k].hasOwnProperty("createTime")) {
+                                for (var z = 0; z < nodeUpdateData.length; z++) {
+                                    if (nodeUpdateData[z].processId === subNodeList[k].processId && nodeUpdateData[z].orderNo === subNodeList[k].orderNo && nodeUpdateData[z].userId === subNodeList[k].userId) { //防止重复修改，添加多条数据
+                                        nodeUpdateData.splice(z, 1);
+                                        break;
+                                    }
+                                }
                                 nodeUpdateData.push(subNodeList[k]);
+                            } else {
+                                //更新子节点（已有子流程的新增子节点）
+                                if (subProcessObj.hasOwnProperty("createTime")) {
+                                    for (var x = 0; x < nodeAddData.length; x++) {
+                                        if (nodeAddData[x].processOrder === processOrder && nodeAddData[x].orderNo === subNodeList[k].orderNo && nodeAddData[x].userId === subNodeList[k].userId) {
+                                            nodeAddData.splice(x, 1);
+                                            break;
+                                        }
+                                    }
+                                    nodeAddData.push(subNodeList[k]);
+                                }
                             }
                             break;
                         }
@@ -805,9 +892,19 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                 //子节点删除
                 for (var m = 0; m < oldUserIdArr.length; m++) {
                     if (oldUserIdArr[m] === subNodeList[k].userId) {
-                        //删除子节点（已有子流程的子节点）
-                        if (subProcessObj.hasOwnProperty("createTime")) {
+                        //删除子节点（已有子流程的已有子节点）
+                        if (subNodeList[k].hasOwnProperty("createTime")) {
                             nodeDelData.push(subNodeList[k]);
+                        } else {
+                            //删除子节点（已有子流程的新增子节点）
+                            if (subProcessObj.hasOwnProperty("createTime")) {
+                                for (var y = 0; y < nodeAddData.length; y++) {
+                                    if (nodeAddData[y].processOrder === processOrder && nodeAddData[y].orderNo === subNodeList[k].orderNo && nodeAddData[y].userId === subNodeList[k].userId) {
+                                        nodeAddData.splice(y, 1);
+                                        break;
+                                    }
+                                }
+                            }
                         }
                         subNodeList.splice(k, 1);
                         oldUserIdArr.splice(m, 1);
@@ -834,24 +931,41 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
         });
     }
 
-    //申诉流程新增-提交
-    function createProcess() {
-        //判断主流程是否添加
-        if (processListData.length === 0 || processListData[0] == null) {
-            $.messager.alert("提示", "请添加主流程!");
+    //申诉流程修改-提交
+    function submitBtn() {
+        if (processAddData.length === 0 && processDelData.length === 0 && processUpdateData.length === 0 && nodeAddData.length === 0 && nodeDelData.length === 0 && nodeUpdateData.length === 0) {
+            $.messager.alert("提示", "未作任何修改!");
             return false;
         }
+        //更新主流程信息
+        for (var i = 0; i < processUpdateData.length; i++) {
+            if (processUpdateData[i].orderNo === 0) {
+                mainProcess.processName = processUpdateData[i].processName;
+                mainProcess.departmentId = processUpdateData[i].departmentId;
+                mainProcess.departmentName = processUpdateData[i].departmentName;
+
+                processUpdateData.splice(i, 1);
+            }
+        }
+        processUpdateData.push(mainProcess);
 
         var params = {
-            "appealProcess": processListData
+            "mainProcessId": mainProcess.processId,
+            "processAddData": processAddData,
+            "processDelData": processDelData,
+            "processUpdateData": processUpdateData,
+            "nodeAddData": nodeAddData,
+            "nodeDelData": nodeDelData,
+            "nodeUpdateData": nodeUpdateData
         };
-        Util.ajax.postJson(Util.constants.CONTEXT.concat(Util.constants.APPEAL_PROCESS_CONFIG_DNS).concat("/"), JSON.stringify(params), function (result) {
+        debugger;
+        Util.ajax.putJson(Util.constants.CONTEXT.concat(Util.constants.APPEAL_PROCESS_CONFIG_DNS).concat("/"), JSON.stringify(params), function (result) {
             var rspCode = result.RSP.RSP_CODE;
-            if (rspCode != null && rspCode === "1") {   //新增成功
+            if (rspCode != null && rspCode === "1") {   //修改成功
                 $.messager.alert("提示", result.RSP.RSP_DESC, null, function () {
                     var jq = top.jQuery;
                     //刷新申诉流程tab页
-                    jq('#tabs').tabs('close', "申诉流程-新增");
+                    jq('#tabs').tabs('close', "申诉流程-修改");
                     var tab = jq('#tabs').tabs('getTab', "申诉流程"),
                         iframe = jq(tab.panel('options').content),
                         content = '<iframe scrolling="auto" frameborder="0"  src="' + iframe.attr('src') + '" style="width:100%;height:100%;"></iframe>';
@@ -860,7 +974,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                         options: {content: content, closable: true}
                     });
                 });
-            } else {  //新增失败
+            } else {  //修改失败
                 $.messager.show({
                     msg: result.RSP.RSP_DESC,
                     timeout: 1000,
@@ -901,7 +1015,6 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                     showType: 'show'
                 });
             }
-            debugger;
             //更新processListData的子节点列表
             $.each(rspData, function (index, item) {
                 item.processOrder = subProcessObj.orderNo;
@@ -914,6 +1027,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
 
     //子节点列表刷新（同一节点合并到同一行）
     function refreshSubNodeList(subNodeList) {
+        debugger;
         var subNodeTable = $("#subNodeList");
         //为空时返回
         if (subNodeList.length === 0) {
@@ -972,7 +1086,6 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
         };
         Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.STATIC_PARAMS_DNS + "/selectByParams", params, function (result) {
             var rspCode = result.RSP.RSP_CODE;
-            debugger;
             if (rspCode === "1") {
                 var selectData = result.RSP.DATA;
                 if (showAll) {
