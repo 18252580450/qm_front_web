@@ -233,7 +233,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
 
     //添加一个选项卡面板
     function addTabs(title, url) {
-        var jq = top.jQuery;//顶层的window对象
+        var jq = top.jQuery;//顶层的window对象.取得整个父页面对象
         //重写jndex.js中的方法
         if (!jq('#tabs').tabs('exists', title)) {
             jq('#tabs').tabs('add', {
