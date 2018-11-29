@@ -309,7 +309,6 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
             },
             //子流程列表行点击事件
             onClickRow: function (index, data) {
-                debugger;
                 //子节点列表上方显示流程名
                 $("#subProcess").val(data.orderNo);
                 //刷新选择流程下拉框
@@ -937,6 +936,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
             $.messager.alert("提示", "未作任何修改!");
             return false;
         }
+        debugger;
         //更新主流程信息
         for (var i = 0; i < processUpdateData.length; i++) {
             if (processUpdateData[i].orderNo === 0) {
@@ -958,8 +958,11 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
             "nodeDelData": nodeDelData,
             "nodeUpdateData": nodeUpdateData
         };
-        debugger;
+        Util.loading.showLoading();
+
         Util.ajax.putJson(Util.constants.CONTEXT.concat(Util.constants.APPEAL_PROCESS_CONFIG_DNS).concat("/"), JSON.stringify(params), function (result) {
+
+            Util.loading.destroyLoading();
             var rspCode = result.RSP.RSP_CODE;
             if (rspCode != null && rspCode === "1") {   //修改成功
                 $.messager.alert("提示", result.RSP.RSP_DESC, null, function () {
@@ -1027,7 +1030,6 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
 
     //子节点列表刷新（同一节点合并到同一行）
     function refreshSubNodeList(subNodeList) {
-        debugger;
         var subNodeTable = $("#subNodeList");
         //为空时返回
         if (subNodeList.length === 0) {
