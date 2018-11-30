@@ -32,6 +32,13 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
             }
         });
 
+        //部门搜索框
+        $("#departmentName").searchbox({
+                searcher: function () {
+                }
+            }
+        );
+
         //质检类型下拉框
         $("#checkType").combobox({
             url: '../../data/select_init_data.json',
