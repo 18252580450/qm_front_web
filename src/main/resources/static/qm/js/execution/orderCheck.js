@@ -1,9 +1,12 @@
 require(["jquery", 'util', "transfer", "easyui"], function ($, Util) {
 
+    var orderCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/execution/orderCheckDetail.html";
+
     initialize();
 
     function initialize() {
         initPageInfo();
+        initEvent();
     }
 
     //页面信息初始化
@@ -105,6 +108,46 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util) {
                 });
             }
         });
+    }
+
+    //事件初始化
+    function initEvent() {
+        $("#showOrderCheckDetail").on("click",function () {
+            showOrderCheckDetail();
+        })
+    }
+
+    //工单质检详情
+    function showOrderCheckDetail() {
+        var url = createURL(orderCheckDetail, null);
+        addTabs("工单质检详情", url);
+    }
+
+    //拼接对象到url
+    function createURL(url, param) {
+        var urlLink = url;
+        if(param != null){
+            $.each(param, function (item, value) {
+                urlLink += '&' + item + "=" + encodeURI(value);
+            });
+            urlLink = url + "?" + urlLink.substr(1);
+        }
+        return urlLink.replace(' ', '');
+    }
+
+    //添加一个选项卡面板
+    function addTabs(title, url) {
+        var jq = top.jQuery;
+
+        if (!jq('#tabs').tabs('exists', title)) {
+            jq('#tabs').tabs('add', {
+                title: title,
+                content: '<iframe src="' + url + '" frameBorder="0" border="0" scrolling="auto"  style="width: 100%; height: 100%;"/>',
+                closable: true
+            });
+        } else {
+            jq('#tabs').tabs('select', title);
+        }
     }
 
     //时间格式化

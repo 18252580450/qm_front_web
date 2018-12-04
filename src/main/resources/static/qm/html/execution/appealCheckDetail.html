@@ -22,7 +22,7 @@
                     <div class='panel-tool-box cl'>
                         <div class='fl text-bold'>基本信息</div>
                     </div>
-                    <div class='panel-search ' title="">
+                    <div class='panel-search'>
                         <form class='form form-horizontal'>
                             <div class='row cl'>
                                 <label class='form-label col-1'>工单流水</label>
@@ -30,36 +30,175 @@
                                     <input id="orderId" type='text' class='easyui-textbox'
                                            style='width:100%;height:30px'>
                                 </div>
-                                <label class='form-label col-1'>申诉开始时间</label>
+                                <label class='form-label col-1'>受理号码</label>
                                 <div class='formControls col-2'>
-                                    <input id="appealBeginTime" class='easyui-datetimebox' style='width:100%;height:30px'>
+                                    <input id="serviceNumber" class='easyui-textbox' style='width:100%;height:30px'>
                                 </div>
-                                <label class='form-label col-1'>申诉结束时间</label>
+                                <label class='form-label col-1'>工单类型</label>
                                 <div class='formControls col-2'>
-                                    <input id="appealEndTime" class="easyui-datetimebox" style='width:100%;height:30px'>
+                                    <input id="orderType" class="easyui-textbox" style='width:100%;height:30px'>
                                 </div>
-                                <label class='form-label col-1'>考评环节</label>
+                                <label class='form-label col-1'>号码归属地</label>
                                 <div class='formControls col-2'>
-                                    <input id="checkLink" type='text' class='easyui-searchbox'
+                                    <input id="eparchyName" type='text' class='easyui-textbox'
                                            style='width:100%;height:30px'>
                                 </div>
                             </div>
                         </form>
                         <form class='form form-horizontal'>
                             <div class='row cl'>
-                                <label class='form-label col-1'>质检流水</label>
+                                <label class='form-label col-1'>疑难客户类型</label>
                                 <div class='formControls col-2'>
-                                    <input id="checkId" type='text' class='easyui-textbox'
+                                    <input id="troubleCustomType" type='text' class='easyui-textbox'
                                            style='width:100%;height:30px'>
                                 </div>
-                                <div class="formControls col-1">
+                                <label class='form-label col-1'>受理渠道</label>
+                                <div class='formControls col-2'>
+                                    <input id="tentType" class='easyui-datetimebox' style='width:100%;height:30px'>
                                 </div>
-                                <div class='formControls col-1'>
-                                    <a href='javascript:void(0)' class='btn btn-green radius mt-l-20' id="queryBtn"><i
-                                            class='iconfont iconfont-search2'></i>查询</a>
+                                <label class='form-label col-1'>是否重复投诉</label>
+                                <div class='formControls col-2'>
+                                    <input id="isRepeatComplaint" class="easyui-datetimebox"
+                                           style='width:100%;height:30px'>
+                                </div>
+                                <label class='form-label col-1'>升级投诉情况</label>
+                                <div class='formControls col-2'>
+                                    <input id="escalationComplaints" type='text' class='easyui-textbox'
+                                           style='width:100%;height:30px'>
                                 </div>
                             </div>
                         </form>
+                        <form class='form form-horizontal'>
+                            <div class='row cl'>
+                                <label class='form-label col-1'>是否突出投诉</label>
+                                <div class='formControls col-2'>
+                                    <input id="isOutstandingComplaint" type='text' class='easyui-textbox'
+                                           style='width:100%;height:30px'>
+                                </div>
+                                <label class='form-label col-1'>是否重大投诉</label>
+                                <div class='formControls col-2'>
+                                    <input id="isSignificantComplaint" class='easyui-datetimebox'
+                                           style='width:100%;height:30px'>
+                                </div>
+                                <label class='form-label col-1'>是否补救工单</label>
+                                <div class='formControls col-2'>
+                                    <input id="isRemedyOrder" class="easyui-datetimebox" style='width:100%;height:30px'>
+                                </div>
+                            </div>
+                        </form>
+                        <form class='form form-horizontal'>
+                            <div class='row cl'>
+                                <label class='form-label col-1'>工单受理内容</label>
+                                <div class='formControls col-11'>
+                                    <input id="orderDealContent" class='easyui-textarea' data-options="multiline:true"
+                                           style='width:100%;height:90px'>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class='cl'>
+                    <div class='panel-tool-box cl'>
+                        <div class='fl text-bold'>处理过程浏览</div>
+                    </div>
+                    <div class='panel-search'>
+
+                    </div>
+                </div>
+
+                <div class='cl'>
+                    <div class='panel-tool-box cl'>
+                        <div class='fl text-bold'>工作质量评价区</div>
+                    </div>
+
+                    <div class='panel-search'>
+                        <table id='checkItemList' class='easyui-datagrid' style=' width:100%;'>
+                        </table>
+
+                        <form class='form form-horizontal'>
+                            <div class='row cl'>
+                                <label class='form-label col-1'>得分</label>
+                                <div class='formControls col-2'>
+                                    <input id="checkItemScore" type='text' class='easyui-textbox'
+                                           style='width:100%;height:30px'>
+                                </div>
+                            </div>
+                        </form>
+
+                        <form class='form form-horizontal' style="margin-bottom: 50px">
+                            <div class='row cl'>
+                                <label class='form-label col-1'>考评评语</label>
+                                <div class='formControls col-8'>
+                                    <input id="checkItemRemark" class='easyui-textarea' data-options="multiline:true"
+                                           style='width:100%;height:90px'>
+                                </div>
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+
+                <div class='cl'>
+                    <div class='panel-tool-box cl'>
+                        <div class='fl text-bold'>申诉信息</div>
+                    </div>
+
+                    <div class='panel-search'>
+                        <form class='form form-horizontal'>
+                            <div class='row cl'>
+                                <label class='form-label col-1'>申诉原因</label>
+                                <div class='formControls col-8'>
+                                    <input id="appealReason" class='easyui-textarea' data-options="multiline:true"
+                                           style='width:100%;height:90px'>
+                                </div>
+                            </div>
+                        </form>
+
+                        <form class='form form-horizontal'>
+                            <div class='row cl'>
+                                <label class='form-label col-1'>申诉处理意见</label>
+                                <div class='formControls col-8'>
+                                    <input id="appealDealSuggestion" class='easyui-textarea'
+                                           data-options="multiline:true"
+                                           style='width:100%;height:90px'>
+                                </div>
+                            </div>
+                        </form>
+
+                        <form class='form form-horizontal' style="margin-top: 10px">
+                            <div class='row cl'>
+                                <div class="formControls col-1">
+                                </div>
+                                <div class='formControls col-2'>
+                                    <input id="checkPass" type="radio" name="checkResult"
+                                           class="easyui-validatebox" checked="checked" value="申诉通过">&nbsp;&nbsp;申述通过
+                                </div>
+
+                                <div class='formControls col-2'>
+                                    <input id="checkUnPass" type="radio" name="checkResult"
+                                           class="easyui-validatebox" value="申诉驳回">&nbsp;&nbsp;申诉驳回
+                                </div>
+                            </div>
+                        </form>
+
+                        <form class='form form-horizontal' style="margin-top: 30px;margin-bottom: 30px">
+                            <div class='row cl'>
+                                <div class="formControls col-5">
+                                </div>
+
+                                <div class='formControls col-1'>
+                                    <a href='javascript:void(0)' class='btn btn-green-large radius mt-l-20'
+                                       id="submitBtn">提交</a>
+                                </div>
+
+                                <div class='formControls col-1' style="margin-left: 10px">
+                                    <a href='javascript:void(0)' class='btn btn-green-large radius mt-l-20'
+                                       id="cancelBtn">取消</a>
+                                </div>
+                            </div>
+                        </form>
+
                     </div>
                 </div>
 

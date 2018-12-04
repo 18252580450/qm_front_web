@@ -3108,6 +3108,19 @@ y:focus, .btn-secondary:active, .btn-secondary.active {
   border-color: #ef5d25;
 }
 
+.btn-green-large {
+  color: #fff;
+  background-color: #FF6328;
+  border-color: #FF6328;
+  width:85px
+}
+
+.btn-green-large:hover, .btn-green:focus, .btn-green:active, .btn-green.active {
+  color: #fff;
+  background-color: #ef5d25;
+  border-color: #ef5d25;
+}
+
 .btn-orange {
   color: #fff;
   background-color: #FF6328;

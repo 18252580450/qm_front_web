@@ -1,9 +1,12 @@
 require(["jquery", 'util', "transfer", "easyui"], function ($, Util) {
 
+    var appealCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/execution/appealCheckDetail.html";
+
     initialize();
 
     function initialize() {
         initPageInfo();
+        initEvent();
     }
 
     //页面信息初始化
@@ -97,6 +100,46 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util) {
                 });
             }
         });
+    }
+
+    //事件初始化
+    function initEvent(){
+        $("#showAppealDetail").on("click",function () {
+            showAppealDetail();
+        })
+    }
+
+    //申诉处理详情
+    function showAppealDetail(){
+        var url = createURL(appealCheckDetail, null);
+        addTabs("申诉处理详情", url);
+    }
+
+    //拼接对象到url
+    function createURL(url, param) {
+        var urlLink = url;
+        if(param != null){
+            $.each(param, function (item, value) {
+                urlLink += '&' + item + "=" + encodeURI(value);
+            });
+            urlLink = url + "?" + urlLink.substr(1);
+        }
+        return urlLink.replace(' ', '');
+    }
+
+    //添加一个选项卡面板
+    function addTabs(title, url) {
+        var jq = top.jQuery;
+
+        if (!jq('#tabs').tabs('exists', title)) {
+            jq('#tabs').tabs('add', {
+                title: title,
+                content: '<iframe src="' + url + '" frameBorder="0" border="0" scrolling="auto"  style="width: 100%; height: 100%;"/>',
+                closable: true
+            });
+        } else {
+            jq('#tabs').tabs('select', title);
+        }
     }
 
     //时间格式化
