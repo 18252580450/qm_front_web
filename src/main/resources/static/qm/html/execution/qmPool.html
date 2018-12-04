@@ -1,0 +1,48 @@
+<!doctype html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>后台管理系统模板</title>
+
+    <link rel="stylesheet" type="text/css" href="../../assets/lib/easyui/themes/cmcui/cmcui.css" />
+    <link rel="stylesheet" type="text/css" href="../../assets/lib/easyui/themes/cmcui/demo.css">
+    <link rel="stylesheet" type="text/css" href="../../assets/lib/easyui/themes/cmcui/iconfont/iconfont.css">
+    <link rel="stylesheet" type="text/css" href="../../assets/lib/ztree/css/cmcStyle/tree.css">
+
+    <script type="text/javascript" src="../../assets/lib/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../../assets/lib/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../../assets/lib/ztree/js/jquery.ztree.core.js"></script>
+    <script type="text/javascript" src="../../assets/lib/ztree/js/jquery.ztree.exedit.js"></script>
+</head>
+<body class="easyui-layout">
+<div id="page_content" data-options="region:'center'" style="height:100%;">
+    <div id='layout_content' class='easyui-layout' data-options="region:'center'" style='overflow: auto; height:100%;'>
+        <div data-options="region:'center'" style='overflow: hidden;height: 100%'>
+            <div id="page" style="height:100%;">
+                <div id="tt" class="easyui-tabs" style="height:100%;">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script type="text/javascript">
+    $(function(){
+        showTaps("工单质检池", "http://127.0.0.1:8080/qm/html/execution/workOrderQm.html");
+        showTaps("语音质检池", "http://127.0.0.1:8080/qm/html/execution/voiceQm.html");
+       //Tabs初始化时让工单质检池tab处于选中状态
+        $('#tt').tabs({selected: 1});
+    });
+    function showTaps(title, url){
+        if (!$('#tt').tabs('exists', title)) {
+            $('#tt').tabs('add', {
+                title: title,
+                content: '<iframe src="' + url + '" frameBorder="0" border="0" scrolling="auto"  style="width: 100%; height: 100%;"/>',
+                closable: false
+            });
+        } else {
+            $('#tt').tabs('select', title);
+        }
+    }
+</script>
+</html>

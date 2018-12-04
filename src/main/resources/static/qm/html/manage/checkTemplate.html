@@ -2,7 +2,8 @@
 <html>
 <head>
     <meta charset="utf-8"/>
-    <title>考评评语</title>
+    <title>考评模板</title>
+
     <link rel="stylesheet" type="text/css" href="../../assets/lib/easyui/themes/cmcui/cmcui.css"/>
     <link rel="stylesheet" type="text/css" href="../../assets/lib/easyui/themes/cmcui/iconfont/iconfont.min.css"/>
     <link rel="stylesheet" type="text/css" href="../../assets/lib/ztree/css/cmcStyle/tree.css"/>
@@ -19,18 +20,22 @@
     <div id='layout_content' class='easyui-layout' data-options="region:'center'" style='overflow: auto; height:100%;'>
         <div data-options="region:'center'" style='overflow: hidden;height: 100%'>
             <div id = "page">
-                <div class='panel-search ' title="考评评语">
+                <div class='panel-search ' title="考评模板">
                     <form class='form form-horizontal' id = "searchForm">
                         <div class='row cl'>
-                            <label class='form-label col-2'>父级评语名称</label>
-                            <div class='formControls col-2'>
-                                <input id="mainCommentName" type='text' class='easyui-textbox' style='width:100%;height:30px' >
+                            <label class='form-label col-1'>模板名称</label>
+                            <div class='formControls col-1'>
+                                <input id="templateName" type='text' class='easyui-textbox' style='width:100%;height:30px' >
                             </div>
-                            <label class='form-label col-2'>评语名称</label>
-                            <div class='formControls col-2'>
-                                <input id="commentName" type='text' class='easyui-textbox' style='width:100%;height:30px' >
+                            <label class='form-label col-1'>模板渠道</label>
+                            <div class='formControls col-1' style="width: 26%">
+                                <input id="templatChannel" type='text' class='easyui-textbox' style='width:100%;height:30px' >
                             </div>
-                            <div class='formControls col-3' style="text-align: right">
+                            <label class='form-label col-1'>模板状态</label>
+                            <div class='formControls col-1' style="width: 26%">
+                                <input id="templateStatus" type='text' class='easyui-textbox' style='width:100%;height:30px' >
+                            </div>
+                            <div class='formControls col-1' style="text-align: right">
                                 <a href='javascript:void(0)' class='btn btn-green radius mt-l-20' id = "selectBut"><i class='iconfont iconfont-search2'></i>查询</a>
                             </div>
                         </div>
@@ -38,13 +43,15 @@
                 </div>
                 <div class='cl'>
                     <div class='panel-tool-box cl' >
-                        <div class='fl text-bold'>考评评语管理列表</div>
+                        <div class='fl text-bold'>考评模板管理列表</div>
                         <div class="formControls col-2" style="text-align: right;width: 83.2%">
-                            <a href='javascript:void(0)' class='btn btn-green radius mt-l-20' id="addBut"><i class='iconfont iconfont-add'></i>创建</a>
+                            <a href='javascript:void(0)' class='btn btn-green radius mt-l-20' id="addBut"><i class='iconfont iconfont-add'></i>新建</a>
+                            <a href='javascript:void(0)' class='btn btn-green radius mt-l-20' id="modfBut"><i class='iconfont iconfont-del2'></i>修改</a>
                             <a href='javascript:void(0)' class='btn btn-green radius mt-l-20' id="delBut"><i class='iconfont iconfont-del2'></i>删除</a>
+                            <a href='javascript:void(0)' class='btn btn-green radius mt-l-20' id="copyBut"><i class='iconfont iconfont-del2'></i>复制</a>
                         </div>
                     </div>
-                    <table id='ordinaryComment' name = 'ordinaryComment' class='easyui-datagrid'  style=' width:100%;'>
+                    <table id='checkTemplateManage' name = 'checkTemplateManage' class='easyui-datagrid'  style=' width:100%;'>
                     </table>
                 </div>
             </div>
@@ -57,20 +64,17 @@
         <!-- 增加弹窗，默认隐藏  -->
         <div  id='add_window' style='display:none;'>
             <div id='add_content' style='overflow:auto'>
-                <!--<div class='panel-tool-box cl' >-->
-                    <!--<div class='fl text-bold'>敏感词配置</div>-->
-                <!--</div>-->
                 <div class='panel-search'>
                     <form id='createSkillConfig' method='POST' class='form form-horizontal'>
                         <div style='display:none'>
                             <input type='hidden' name='skillId' class='easyui-textbox' value='0'/>
                         </div>
                         <div class='row cl'>
-                            <label class='form-label col-2'>父评语名称</label>
+                            <label class='form-label col-2'>父评语名称：</label>
                             <div class='formControls col-2' style="width: 26%">
                                 <input  type='text' id='parentCommentName' name = 'parentCommentName' class='easyui-textbox' style='width:90%;height:30px'/>
                             </div>
-                            <label class='form-label col-2'>名称</label>
+                            <label class='form-label col-2'>名称：</label>
                             <div class='formControls col-2' style="width: 26%">
                                 <input  type='text' class='easyui-textbox'  id='name' name = 'name' style='width:90%;height:30px'/>
                                 <span style='color:red;padding-left:2px'>*</span>
@@ -78,7 +82,7 @@
                         </div>
 
                         <div class='row cl'>
-                            <label class='form-label col-2'>描述</label>
+                            <label class='form-label col-2'>描述：</label>
                             <div class='formControls col-8'>
                                 <input  id='desc' name = 'desc' data-options='multiline:true' class='easyui-textbox' style='height:60px;width:99%'/>
                             </div>
@@ -102,14 +106,14 @@
                             <input type='hidden' name='skillId' class='easyui-textbox' value='0'/>
                         </div>
                         <div class='row cl'>
-                            <label class='form-label col-2'>名称</label>
+                            <label class='form-label col-2'>名称：</label>
                             <div class='formControls col-2' style="width: 26%">
                                 <input  type='text' class='easyui-textbox'  id='modfName' name = 'name' style='width:90%;height:30px'/>
                                 <span style='color:red;padding-left:2px'>*</span>
                             </div>
                         </div>
                         <div class='row cl'>
-                            <label class='form-label col-2'>描述</label>
+                            <label class='form-label col-2'>描述：</label>
                             <div class='formControls col-8'>
                                 <input  id='remark' name = 'desc' data-options='multiline:true' class='easyui-textbox' style='height:60px;width:99%'/>
                             </div>
@@ -128,6 +132,5 @@
 </body>
 
 <script type="text/javascript" src="../../js/common/requirejs-main.js"></script>
-<script type="text/javascript" src="../../assets/lib/require/require.min.js" data-main="js/manage/ordinaryComment"></script>
-
+<script type="text/javascript" src="../../assets/lib/require/require.min.js" data-main="js/manage/checkTemplate"></script>
 </html>

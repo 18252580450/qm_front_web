@@ -1,0 +1,18 @@
+[
+  {
+    "codeType": "CHECK_ITEM_TYPE@CS_IR",
+    "codeValue": "0",
+    "codeName": "已分配",
+    "codeDesc": "已分配",
+    "sortId": 0,
+    "state": "1"
+  },
+  {
+    "codeType": "CHECK_ITEM_TYPE@CS_IR",
+    "codeValue": "1",
+    "codeName": "未分配",
+    "codeDesc": "未分配",
+    "sortId": 1,
+    "state": "1"
+  }
+]

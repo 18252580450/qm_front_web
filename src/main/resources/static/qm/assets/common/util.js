@@ -1,10 +1,11 @@
 /**
  * 全局公用模块
  */
-define(['constants', 'page-util', 'ajax'], function(constants, PageUtil, ajax) {
+define(['constants', 'page-util', 'ajax', 'loading'], function (constants, PageUtil, ajax, loading) {
     return {
         constants: constants,
         ajax: ajax,
-        PageUtil: PageUtil
+        PageUtil: PageUtil,
+        loading: loading
     }
 });

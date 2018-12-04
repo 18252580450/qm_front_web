@@ -1,7 +1,8 @@
 require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
 
-    var appealProcessDatas = [];    //新增流程（新增提交入参）
-    //初始化方法
+    var appealProcessData = [],     //新增流程（新增提交入参）
+        checkTypeData = [];         //质检类型静态数据
+
     initialize();
 
     function initialize() {
@@ -31,6 +32,13 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
             }
         });
 
+        //部门搜索框
+        $("#departmentName").searchbox({
+                searcher: function () {
+                }
+            }
+        );
+
         //质检类型下拉框
         $("#checkType").combobox({
             url: '../../data/select_init_data.json',
@@ -51,7 +59,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
             }
         });
         //重载下拉框数据
-        reloadSelectData("CHECK_ITEM_TYPE", "checkType", false);
+        reloadSelectData("CHECK_TYPE", "checkType", false);
 
         //流程顺序下拉框
         $("#orderNo").combobox({
@@ -73,7 +81,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                 $("#processName").val("");
                 //新增子流程时，禁用渠道和质检类型下拉框，保证子流程渠道和质检类型和主流程保持一致
                 var orderNo = $("#orderNo").combobox("getValue");
-                if (orderNo === "0") {
+                if (orderNo === "00") {
                     $("#tenantType").combobox('enable');
                     $("#checkType").combobox('enable');
                 } else {
@@ -81,10 +89,10 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                     $("#checkType").combobox('disable');
                 }
                 //切换子流程时同时刷新子节点列表
-                if (orderNo === "0" || parseInt(orderNo) >= appealProcessDatas.length) {
+                if (orderNo === "-1" || orderNo === "00" || parseInt(orderNo) >= appealProcessData.length) {
                     $("#subNodeList").datagrid("loadData", {rows: []});
                 } else {
-                    var subNodeList = appealProcessDatas[parseInt(orderNo)].subNodeList;
+                    var subNodeList = appealProcessData[parseInt(orderNo)].subNodeList;
                     refreshSubNodeList(subNodeList);
                 }
             }
@@ -93,70 +101,76 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
         reloadSelectData("PROCESS_LEVEL", "orderNo", false);
 
         //申诉流程添加列表
+        var IsCheckFlag = true; //标示是否是勾选复选框选中行的，true - 是 , false - 否
         $("#processList").datagrid({
-            fitColumns: true,
-            width: '100%',
-            height: 250,
-            pagination: false,
-            rownumbers: false,
             columns: [[
+                {field: 'orderName', title: '流程顺序', width: '15%'},
+                {field: 'orderNo', title: '流程序号', hidden: true},
+                {field: 'processName', title: '流程名称', width: '20%'},
+                {field: 'tenantName', title: '模板渠道', width: '15%'},
+                {field: 'tenantId', title: '模板渠道Id', hidden: true},
+                {field: 'departmentName', title: '部门', width: '20%'},
+                {field: 'departmentId', title: '部门Id', hidden: true},
                 {
-                    field: 'mainProcessFlag', title: '主流程标识', align: 'center', width: '10%',
+                    field: 'checkType', title: '质检类型', width: '20%',
                     formatter: function (value, row, index) {
-                        if (row.mainProcessFlag === "0") {
-                            return "主流程";
-                        } else {
-                            return "";
+                        var itemType = "";
+                        if (checkTypeData.length !== 0) {
+                            for (var i = 0; i < checkTypeData.length; i++) {
+                                if (checkTypeData[i].paramsCode === value) {
+                                    itemType = checkTypeData[i].paramsName;
+                                    break;
+                                }
+                            }
                         }
-                    }
-                },
-                {field: 'orderNo', title: '流程序号', align: 'center', width: '10%'},
-                {field: 'processName', title: '流程名称', align: 'center', width: '20%'},
-                {field: 'tenantName', title: '模板渠道', align: 'center', width: '15%'},
-                {field: 'tenantId', title: '模板渠道Id', align: 'center', hidden: true},
-                {field: 'departmentName', title: '部门', align: 'center', width: '20%'},
-                {field: 'departmentId', title: '部门Id', align: 'center', hidden: true},
-                {
-                    field: 'checkType', title: '质检类型', align: 'center', width: '15%',
-                    formatter: function (value, row, index) {
-                        if (row.checkType === "0") {
-                            return "语言质检";
-                        }
-                        if (row.checkType === "1") {
-                            return "工单质检";
-                        }
-                        if (row.checkType === "2") {
-                            return "电商平台质检";
-                        }
-                        if (row.checkType === "3") {
-                            return "互联网质检";
-                        }
+                        return itemType;
                     }
                 },
                 {
-                    field: 'operation', title: '操作', align: 'center', width: '10%',
+                    field: 'operation', title: '操作', width: '10%',
                     formatter: function (value, row, index) {
                         //只允许删除主流程和最后一个子流程
-                        if (parseInt(row.orderNo) === 0 || parseInt(row.orderNo) === appealProcessDatas.length - 1) {
+                        if (parseInt(row.orderNo) === 0 || parseInt(row.orderNo) === appealProcessData.length - 1) {
                             return '<a href="javascript:void(0);" id = "appealProcess' + row.orderNo + '">删除</a>';
                         }
                     }
                 }
             ]],
+            fitColumns: true,
+            width: '100%',
+            height: 250,
+            pagination: false,
+            rownumbers: false,
+            checkOnSelect: false,
+            onClickCell: function (rowIndex, field, value) {
+                IsCheckFlag = false;
+            },
+            onSelect: function (rowIndex, rowData) {
+                if (!IsCheckFlag) {
+                    IsCheckFlag = true;
+                    $("#processList").datagrid("unselectRow", rowIndex);
+                }
+            },
+            onUnselect: function (rowIndex, rowData) {
+                if (!IsCheckFlag) {
+                    IsCheckFlag = true;
+                    $("#processList").datagrid("selectRow", rowIndex);
+                }
+            },
             onLoadSuccess: function (data) {
                 //绑定流程删除事件
                 $.each(data.rows, function (i, item) {
                     //删除主流程，子流程将被全部删除
                     if (parseInt(item.orderNo) === 0) {
                         $("#appealProcess" + item.orderNo).on("click", function () {
-                            if (appealProcessDatas.length === 1) {
-                                appealProcessDatas = [];
-                                $("#processList").datagrid("loadData", {rows: appealProcessDatas});
+                            if (appealProcessData.length === 1) {
+                                appealProcessData = [];
+                                $("#processList").datagrid("loadData", {rows: appealProcessData});
                             } else {
                                 $.messager.confirm('确认删除弹窗', '子流程将被全部删除! 确定删除主流程？', function (confirm) {
                                     if (confirm) {
-                                        appealProcessDatas = [];
-                                        $("#processList").datagrid("loadData", {rows: appealProcessDatas});
+                                        appealProcessData = [];
+                                        $("#processList").datagrid("loadData", {rows: appealProcessData});
                                         $("#subNodeList").datagrid("loadData", {rows: []});
                                     }
                                 });
@@ -164,18 +178,18 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                         });
                     }
                     //末子流程才允许被删除
-                    if (parseInt(item.orderNo) === appealProcessDatas.length - 1) {
+                    if (parseInt(item.orderNo) === appealProcessData.length - 1) {
                         $("#appealProcess" + item.orderNo).on("click", function () {
-                            appealProcessDatas.splice(appealProcessDatas.length - 1, 1);
+                            appealProcessData.splice(appealProcessData.length - 1, 1);
                             //刷新流程列表
-                            $("#processList").datagrid("loadData", {rows: appealProcessDatas});
+                            $("#processList").datagrid("loadData", {rows: appealProcessData});
                             //刷新子节点列表（当前展示的子节点的父流程被删除时）
                             var orderNoSelect = $("#orderNo");
                             if (item.orderNo === orderNoSelect.combobox("getValue")) {
-                                if (item.orderNo !== "0") {
-                                    orderNoSelect.combobox("setValue", String(parseInt(item.orderNo) - 1));
+                                if (item.orderNo !== "00") {
+                                    orderNoSelect.combobox("setValue", appealProcessData[parseInt(item.orderNo) - 1].orderNo);
                                 }
-                                var subNodeList = appealProcessDatas[parseInt(item.orderNo) - 1].subNodeList;
+                                var subNodeList = appealProcessData[parseInt(item.orderNo) - 1].subNodeList;
                                 refreshSubNodeList(subNodeList);
                             }
                         });
@@ -187,38 +201,56 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                 var subNodeList = data.subNodeList;
                 refreshSubNodeList(subNodeList);
                 //刷新选择流程下拉框
-                $("#orderNo").combobox("setValue", index);
+                $("#orderNo").combobox("setValue", data.orderNo);
             }
         });
 
         //申诉节点添加列表
+        var IsNodeCheckFlag = true; //标示是否是勾选复选框选中行的，true - 是 , false - 否
         $("#subNodeList").datagrid({
-            fitColumns: true,
-            width: '100%',
-            height: 250,
-            pagination: false,
-            rownumbers: false,
             columns: [[
-                {field: 'processId', title: '子流程', align: 'center', width: '10%'},
-                {field: 'orderNo', title: '节点序号', align: 'center', width: '10%'},
-                {field: 'nodeName', title: '节点名称', align: 'center', width: '20%'},
-                {field: 'userName', title: '角色', align: 'center', width: '50'},
+                {field: 'processId', title: '子流程序号', hidden: true},
+                {field: 'processName', title: '子流程', hidden: true},
+                {field: 'orderNo', title: '节点序号', width: '15%'},
+                {field: 'nodeName', title: '节点名称', width: '20%'},
+                {field: 'userName', title: '角色', width: '55'},
                 {
-                    field: 'detail', title: '操作', align: 'center', width: '10%',
+                    field: 'detail', title: '操作', width: '10%',
                     formatter: function (value, row, index) {
                         //只允许删除末子节点
-                        var subNodeList = appealProcessDatas[row.processId].subNodeList;
+                        var subNodeList = appealProcessData[parseInt(row.processId)].subNodeList;
                         if (parseInt(row.orderNo) === subNodeList[subNodeList.length - 1].orderNo) {
                             return '<a href="javascript:void(0);" id = "appealNode' + row.orderNo + '">删除</a>';
                         }
                     }
                 }
             ]],
+            fitColumns: true,
+            width: '100%',
+            height: 250,
+            pagination: false,
+            rownumbers: false,
+            checkOnSelect: false,
+            onClickCell: function (rowIndex, field, value) {
+                IsNodeCheckFlag = false;
+            },
+            onSelect: function (rowIndex, rowData) {
+                if (!IsNodeCheckFlag) {
+                    IsNodeCheckFlag = true;
+                    $("#subNodeList").datagrid("unselectRow", rowIndex);
+                }
+            },
+            onUnselect: function (rowIndex, rowData) {
+                if (!IsNodeCheckFlag) {
+                    IsNodeCheckFlag = true;
+                    $("#subNodeList").datagrid("selectRow", rowIndex);
+                }
+            },
             onLoadSuccess: function (data) {
                 //绑定子节点删除事件
                 $.each(data.rows, function (i, item) {
                     //末子节点才允许被删除
-                    var subNodeList = appealProcessDatas[item.processId].subNodeList;
+                    var subNodeList = appealProcessData[parseInt(item.processId)].subNodeList;
                     if (parseInt(item.orderNo) === subNodeList[subNodeList.length - 1].orderNo) {
                         $("#appealNode" + item.orderNo).on("click", function () {
                             //删除末子节点（多条数据）
@@ -230,9 +262,9 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                                 }
                             }
                             //更新子流程的子节点列表
-                            appealProcessDatas[item.processId].subNodeList = subNodeList;
+                            appealProcessData[parseInt(item.processId)].subNodeList = subNodeList;
                             //更新子流程的子节点数
-                            appealProcessDatas[item.processId].subNodeNum--;
+                            appealProcessData[parseInt(item.processId)].subNodeNum--;
                             //刷新（页面）子节点列表
                             refreshSubNodeList(subNodeList);
                         });
@@ -251,18 +283,20 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
 
         //新增子节点
         $("#addSubNode").on("click", function () {
-            var processOrder = $("#orderNo").combobox("getValue");
+            var orderNo = $("#orderNo"),
+                processOrder = orderNo.combobox("getValue"),
+                processOrderName = orderNo.combobox("getText");
             //主流程则返回
-            if (processOrder === "0") {
+            if (processOrder === "00") {
                 $.messager.alert("提示", '主流程不允许添加子节点！');
                 return false;
             }
             //判断子流程是否已添加
-            if (parseInt(processOrder) >= appealProcessDatas.length) {
-                $.messager.alert("提示", "请先添加子流程" + processOrder + "!");
+            if (parseInt(processOrder) >= appealProcessData.length) {
+                $.messager.alert("提示", "请先添加" + processOrderName + "!");
                 return false;
             }
-            addSubNode(appealProcessDatas[parseInt(processOrder)]);
+            addSubNode(appealProcessData[parseInt(processOrder)]);
         });
 
         //新增提交
@@ -281,24 +315,28 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
 
     //添加流程
     function addProcess() {
-        var orderNo = $("#orderNo").combobox("getValue");
+        var orderNoSelect = $("#orderNo"),
+            orderNo = orderNoSelect.combobox("getValue"),
+            orderName = orderNoSelect.combobox("getText");
         //判断主流程是否已添加
-        if (appealProcessDatas.length === 0 && parseInt(orderNo) > 0) {
+        if (appealProcessData.length === 0 && parseInt(orderNo) > 0) {
             $.messager.alert("提示", "请先添加主流程!");
             return false;
         }
         //判断子流程是否已添加
-        if (parseInt(orderNo) < appealProcessDatas.length) {
-            if (orderNo === "0") {
+        if (parseInt(orderNo) < appealProcessData.length) {
+            if (orderNo === "00") {
                 $.messager.alert("提示", "主流程已添加!");
             } else {
-                $.messager.alert("提示", "子流程" + orderNo + "已添加!");
+                $.messager.alert("提示", orderName + "已添加!");
             }
             return false;
         }
         //判断前置流程是否已添加
-        if (parseInt(orderNo) > appealProcessDatas.length) {
-            $.messager.alert("提示", "请先添加子流程" + appealProcessDatas.length + "!");
+        if (parseInt(orderNo) > appealProcessData.length) {
+            orderNoSelect.combobox('select', appealProcessData.length);
+            var processOrderName = orderNoSelect.combobox("getText");
+            $.messager.alert("提示", "请先添加" + processOrderName + "!");
             return false;
         }
 
@@ -312,7 +350,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
         var mainProcessFlag = "0";
         if (parseInt(orderNo) > 0) {
             //更新主流程的子流程数
-            appealProcessDatas[0].subProcessNum = parseInt(orderNo);
+            appealProcessData[0].subProcessNum = parseInt(orderNo);
             //子流程的主流程标识设为"1"
             mainProcessFlag = "1";
         }
@@ -334,17 +372,19 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
             "checkType": checkType,
             "mainProcessFlag": mainProcessFlag,
             "orderNo": orderNo,
+            "orderName": orderName,
             "subProcessNum": 0,
             "subNodeNum": 0,
             "subNodeList": []
         };
-        appealProcessDatas.push(data);
-        $("#processList").datagrid("loadData", {rows: appealProcessDatas});
+        appealProcessData.push(data);
+        $("#processList").datagrid("loadData", {rows: appealProcessData});
     }
 
     //新增子节点，subProcessObj父流程对象
     function addSubNode(subProcessObj) {
-        var processOrder = subProcessObj.orderNo;
+        var processOrder = subProcessObj.orderNo,
+            processOrderName = subProcessObj.orderName;
         //新增节点弹框
         $("#subNodeConfig").form('clear');  //清空表单
         $("#subNodeDialog").show().window({
@@ -403,6 +443,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                 var data = {
                     "tenantId": tenantId,
                     "processId": processOrder,
+                    "processName": processOrderName,
                     "nodeId": subNodeNum + 1,
                     "nodeName": subNodeName,
                     "userId": userIdArr[i],
@@ -414,9 +455,9 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
             }
             subNodeNum++;
             //更新父流程的子节点数
-            appealProcessDatas[processOrder].subNodeNum = subNodeNum;
+            appealProcessData[parseInt(processOrder)].subNodeNum = subNodeNum;
             //更新父流程的子节点列表
-            appealProcessDatas[processOrder].subNodeList = subNodeList;
+            appealProcessData[parseInt(processOrder)].subNodeList = subNodeList;
 
             //刷新子节点列表
             refreshSubNodeList(subNodeList);
@@ -430,13 +471,13 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
     //申诉流程新增-提交
     function createProcess() {
         //判断主流程是否添加
-        if (appealProcessDatas.length === 0 || appealProcessDatas[0] == null) {
+        if (appealProcessData.length === 0 || appealProcessData[0] == null) {
             $.messager.alert("提示", "请添加主流程!");
             return false;
         }
 
         var params = {
-            "appealProcess": appealProcessDatas
+            "appealProcess": appealProcessData
         };
         Util.ajax.postJson(Util.constants.CONTEXT.concat(Util.constants.APPEAL_PROCESS_CONFIG_DNS).concat("/"), JSON.stringify(params), function (result) {
             var rspCode = result.RSP.RSP_CODE;
@@ -483,6 +524,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
             } else {
                 showData = {
                     "processId": subNodeList[j - 1].processId,
+                    "processName": subNodeList[j - 1].processName,
                     "orderNo": subNodeList[j - 1].orderNo,
                     "nodeName": subNodeList[j - 1].nodeName,
                     "userName": userNameStr
@@ -495,7 +537,8 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
             }
         }
         showData = {
-            "processId": subNodeList[subNodeList.length - 1].processId,
+            "processId": subNodeList[j - 1].processId,
+            "processName": subNodeList[subNodeList.length - 1].processName,
             "orderNo": subNodeList[subNodeList.length - 1].orderNo,
             "nodeName": subNodeList[subNodeList.length - 1].nodeName,
             "userName": userNameStr
@@ -504,9 +547,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
         subNodeTable.datagrid("loadData", {rows: subNodeData});
     }
 
-    /**
-     * 下拉框数据重载
-     */
+    //下拉框数据重载
     function reloadSelectData(paramsType, select, showAll) {
         var reqParams = {
             "tenantId": Util.constants.TENANT_ID,
@@ -529,6 +570,9 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                     selectData.unshift(data);
                 }
                 $("#" + select).combobox('loadData', selectData);
+                if (paramsType === "CHECK_TYPE") {
+                    checkTypeData = selectData;
+                }
             }
         });
     }

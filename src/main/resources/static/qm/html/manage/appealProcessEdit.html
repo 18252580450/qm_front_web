@@ -21,7 +21,7 @@
                 <div class='panel-search'>
                     <form class='form form-horizontal'>
                         <div class='row cl'>
-                            <label class='form-label col-1' data-options="required:'true'">流程名称</label>
+                            <label class='form-label col-1' data-options="required:'true'">主流程名称</label>
                             <div class='formControls col-2'>
                                 <input id="processName" type='text' class='easyui-textbox'
                                        style='width:100%;height:30px'>
@@ -29,17 +29,20 @@
                             <label class='form-label col-1'>渠道</label>
                             <div class='formControls col-2'>
                                 <input id="tenantType" type='text' class='easyui-textbox'
-                                       style='width:100%;height:30px'>
+                                       style='width:100%;height:30px' readonly>
                             </div>
                             <label class='form-label col-1'>部门</label>
                             <div class='formControls col-2'>
-                                <input id="departmentName" type='text' class='easyui-searchbox'
-                                       style='width:100%;height:30px'>
+                                <input id="departmentName" type='text' class='easyui-textbox'
+                                       style='width:80%;height:30px'>
+                                <a href='javascript:void(0)' id="departmentSearch"><i
+                                        class='iconfont iconfont-search'></i></a>
                                 <input id="departmentId" type='text' class='easyui-textbox' style="display:none">
                             </div>
                             <label class='form-label col-1'>质检类型</label>
                             <div class='formControls col-2'>
-                                <input id="checkType" type='text' class='easyui-textbox' style='width:100%;height:30px'>
+                                <input id="checkType" type='text' class='easyui-textbox' style='width:100%;height:30px'
+                                       readonly>
                             </div>
                         </div>
                     </form>
@@ -87,7 +90,7 @@
                         <div class='formControls col-5'>
                         </div>
                         <div class='formControls col-1' style="margin-top: 15px">
-                            <a href='javascript:void(0)' class='btn btn-green radius mt-l-20' id="submitBtn">新增</a>
+                            <a href='javascript:void(0)' class='btn btn-green radius mt-l-20' id="submitBtn">保存</a>
                         </div>
                         <div class='formControls col-1' style="margin-top: 15px">
                             <a href='javascript:void(0)' class='btn btn-secondary radius mt-l-20' id="cancelBtn">取消</a>
@@ -98,7 +101,7 @@
             </div>
         </div>
 
-        <!-- 子节点新增弹框，默认隐藏  -->
+        <!-- 子节点新增、修改弹框，默认隐藏  -->
         <div id='subNodeDialog' style='display:none;'>
             <div class='panel-search'>
                 <form id='subNodeConfig' method='POST' class='form form-horizontal'>
@@ -136,11 +139,55 @@
                     <div class='formControls col-4'>
                     </div>
                     <div class='formControls col-2'>
-                        <a href='javascript:void(0)' class='btn btn-green radius mt-l-20' id="subNodeAddBtn">保存</a>
+                        <a href='javascript:void(0)' class='btn btn-green radius mt-l-20' id="subNodeSaveBtn">保存</a>
                     </div>
                     <div class='formControls col-2'>
                         <a href='javascript:void(0)' class='btn btn-secondary radius mt-l-20'
                            id="subNodeCancelBtn">取消</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 子流程修改弹框，默认隐藏  -->
+        <div id='editProcessDialog' style='display:none;'>
+            <div class='panel-search'>
+                <form id='editProcessConfig' method='POST' class='form form-horizontal'>
+                    <div class='row cl' style="margin-top: 10px">
+                        <div class='formControls col-1'>
+                        </div>
+                        <label class='form-label col-2'>流程名称：</label>
+                        <div class='formControls col-8'>
+                            <input id='editProcessName' type='text' class='easyui-textbox'
+                                   style='width:100%;height:30px'/>
+                        </div>
+                    </div>
+
+                    <div class='row cl' style="margin-top: 0px">
+                        <div class='formControls col-1'>
+                        </div>
+                        <label class='form-label col-2'>部门：</label>
+                        <!--<div class='formControls col-8'>-->
+                        <!--<input id="editDepartName" class='easyui-combotree' style='width:100%;height:30px'>-->
+                        <!--<input id="editDepartId" type='text' class='easyui-textbox' style="display:none">-->
+                        <!--</div>-->
+                        <div class='formControls col-8'>
+                            <input id="editDepartName" type='text' class='easyui-textbox'
+                                   style='width:100%;height:30px'>
+                            <input id="editDepartId" type='text' class='easyui-textbox' style="display:none">
+                        </div>
+                    </div>
+                </form>
+
+                <div class='mt-10 test-c' style="margin-top: 100px">
+                    <div class='formControls col-4'>
+                    </div>
+                    <div class='formControls col-2'>
+                        <a href='javascript:void(0)' class='btn btn-green radius mt-l-20' id="editProcessSaveBtn">保存</a>
+                    </div>
+                    <div class='formControls col-2'>
+                        <a href='javascript:void(0)' class='btn btn-secondary radius mt-l-20'
+                           id="editProcessCancelBtn">取消</a>
                     </div>
                 </div>
             </div>
@@ -152,6 +199,6 @@
 
 <script type="text/javascript" src="../../js/common/requirejs-main.js"></script>
 <script type="text/javascript" src="../../assets/lib/require/require.min.js"
-        data-main="js/manage/appealProcessAdd"></script>
+        data-main="js/manage/appealProcessEdit"></script>
 
 </html>

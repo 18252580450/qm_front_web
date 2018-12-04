@@ -1,6 +1,10 @@
 require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
 
-    //初始化方法
+    var processStatusData = [],   //流程状态下拉框静态数据
+        processDetailUrl = Util.constants.URL_CONTEXT + "/qm/html/manage/appealProcessDetail.html",
+        processAddUrl = Util.constants.URL_CONTEXT + "/qm/html/manage/appealProcessAdd.html",
+        processEditUrl = Util.constants.URL_CONTEXT + "/qm/html/manage/appealProcessEdit.html";
+
     initialize();
 
     function initialize() {
@@ -72,20 +76,23 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
             }
         });
 
-        //申诉流程列表
+        //申诉主流程列表
+        var IsCheckFlag = true; //标示是否是勾选复选框选中行的，true - 是 , false - 否
         $("#appealProcessList").datagrid({
             columns: [[
                 {field: 'ck', checkbox: true, align: 'center'},
                 {
-                    field: 'detail', title: '操作', align: 'center', width: '5%',
+                    field: 'detail', title: '操作', width: '8%',
                     formatter: function (value, row, index) {
-                        return '<a href="javascript:void(0);" id = "appealProcess' + row.processId + '">详情</a>';
+                        var detail = '<a href="javascript:void(0);" id = "processDetail' + row.processId + '">详情</a>';
+                        var edit = '<a href="javascript:void(0);" id = "processEdit' + row.processId + '">修改</a>';
+                        return detail + "&nbsp;&nbsp;" + edit;
                     }
                 },
-                {field: 'processId', title: '流程编码', align: 'center', width: '15%'},
-                {field: 'processName', title: '流程名称', align: 'center', width: '10%'},
+                {field: 'processId', title: '流程编码', width: '15%'},
+                {field: 'processName', title: '流程名称', width: '10%'},
                 {
-                    field: 'createTime', title: '创建时间', align: 'center', width: '15%',
+                    field: 'createTime', title: '创建时间', width: '15%',
                     formatter: function (value, row, index) { //格式化时间格式
                         if (row.createTime != null) {
                             var createTime = formatDateTime(row.createTime);
@@ -93,33 +100,31 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                         }
                     }
                 },
-                {field: 'createStaffId', title: '创建工号', align: 'center', width: '10%'},
-                {field: 'tenantId', title: '渠道', align: 'center', width: '10%'},
+                {field: 'createStaffId', title: '创建工号', width: '10%'},
+                {field: 'tenantId', title: '渠道', width: '10%'},
                 {
-                    field: 'modifyTime', title: '修改时间', align: 'center', width: '15%',
+                    field: 'modifyTime', title: '修改时间', width: '15%',
                     formatter: function (value, row, index) { //格式化时间格式
                         if (row.modifyTime != null) {
-                            var modifyTime = formatDateTime(row.modifyTime)
+                            var modifyTime = formatDateTime(row.modifyTime);
                             return '<span title=' + modifyTime + '>' + modifyTime + '</span>';
                         }
                     }
                 },
-                {field: 'modifyStaffId', title: '修改工号', align: 'center', width: '10%'},
+                {field: 'modifyStaffId', title: '修改工号', width: '10%'},
                 {
-                    field: 'processStatus', title: '流程状态', align: 'center', width: '10%',
+                    field: 'processStatus', title: '流程状态', width: '7%',
                     formatter: function (value, row, index) {
-                        var status = null;
-                        var processStatus = row.processStatus;
-                        if (processStatus != null && processStatus === "0") {
-                            status = "未启动";
+                        var processStatus = "";
+                        if (processStatusData.length !== 0) {
+                            for (var i = 0; i < processStatusData.length; i++) {
+                                if (processStatusData[i].paramsCode === value) {
+                                    processStatus = processStatusData[i].paramsName;
+                                    break;
+                                }
+                            }
                         }
-                        if (processStatus != null && processStatus === "1") {
-                            status = "启动";
-                        }
-                        if (processStatus != null && processStatus === "2") {
-                            status = "暂停";
-                        }
-                        return status;
+                        return processStatus;
                     }
                 }
             ]],
@@ -130,6 +135,22 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
             pageSize: 10,
             pageList: [5, 10, 20, 50],
             rownumbers: false,
+            checkOnSelect: false,
+            onClickCell: function (rowIndex, field, value) {
+                IsCheckFlag = false;
+            },
+            onSelect: function (rowIndex, rowData) {
+                if (!IsCheckFlag) {
+                    IsCheckFlag = true;
+                    $("#appealProcessList").datagrid("unselectRow", rowIndex);
+                }
+            },
+            onUnselect: function (rowIndex, rowData) {
+                if (!IsCheckFlag) {
+                    IsCheckFlag = true;
+                    $("#appealProcessList").datagrid("selectRow", rowIndex);
+                }
+            },
             loader: function (param, success) {
                 var start = (param.page - 1) * param.rows;
                 var pageNum = param.rows;
@@ -145,6 +166,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                 }
 
                 var reqParams = {
+                    "mainProcessFlag": "0",
                     "processId": processId,
                     "processName": processName,
                     "createStaffId": createStaffId,
@@ -177,8 +199,23 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
             onLoadSuccess: function (data) {
                 //详情
                 $.each(data.rows, function (i, item) {
-
+                    $("#processDetail" + item.processId).on("click", function () {
+                        var url = createURL(processDetailUrl, item);
+                        showDialog(url, "流程详情", 900, 600, false);
+                    });
                 });
+                //修改
+                $.each(data.rows, function (i, item) {
+                    $("#processEdit" + item.processId).on("click", function () {
+                        var url = createURL(processEditUrl, item);
+                        addTabs("申诉流程-修改", url);
+                    });
+                });
+            },
+            //双击显示详情
+            onDblClickRow: function (index, data) {
+                var url = createURL(processDetailUrl, data);
+                showDialog(url, "流程详情", 900, 600, false);
             }
         });
     }
@@ -192,7 +229,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
 
         //新增
         $("#addBtn").on("click", function () {
-            addTabs("申诉流程-新增", Util.constants.URL_CONTEXT + "/qm/html/manage/appealProcessAdd.html")
+            addTabs("申诉流程-新增", processAddUrl);
         });
 
         //删除
@@ -255,35 +292,41 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
             return false;
         }
 
-        //剔除状态不需要更改的流程
-        for (var i = 0; i < updateRows.length; i++) {
-            if (updateRows[i].processStatus != null && updateRows[i].processStatus === processStatus) {
-                updateRows.splice(i, 1);
-                i--;
-            } else {
-                updateRows[i].processStatus = processStatus;
-            }
+        var status = "";
+        if (processStatus === "1") {
+            status = "启动";
+        } else {
+            status = "暂停";
         }
+        $.messager.confirm('提示', '确定要' + status + '流程？', function (confirm) {
+            if (confirm) {
+                //剔除状态不需要更改的流程
+                for (var i = 0; i < updateRows.length; i++) {
+                    if (updateRows[i].processStatus != null && updateRows[i].processStatus === processStatus) {
+                        updateRows.splice(i, 1);
+                        i--;
+                    } else {
+                        updateRows[i].processStatus = processStatus;
+                    }
+                }
 
-        if (updateRows.length === 0) {
-            if (processStatus === "1") {
-                $.messager.alert("提示", "流程已启动!");
-            } else {
-                $.messager.alert("提示", "流程已暂停!");
-            }
-            return false;
-        }
+                if (updateRows.length === 0) {
+                    $.messager.alert("提示", "流程已" + status + "!");
+                    return false;
+                }
 
-        Util.ajax.putJson(Util.constants.CONTEXT + Util.constants.APPEAL_PROCESS_CONFIG_DNS + "/changeProcessStatus", JSON.stringify(updateRows), function (result) {
-            $.messager.show({
-                msg: result.RSP.RSP_DESC,
-                timeout: 1000,
-                style: {right: '', bottom: ''},     //居中显示
-                showType: 'show'
-            });
-            var rspCode = result.RSP.RSP_CODE;
-            if (rspCode != null && rspCode === "1") {
-                $("#appealProcessList").datagrid('load'); //流程状态更新成功后，刷新页面
+                Util.ajax.putJson(Util.constants.CONTEXT + Util.constants.APPEAL_PROCESS_CONFIG_DNS + "/changeProcessStatus", JSON.stringify(updateRows), function (result) {
+                    $.messager.show({
+                        msg: result.RSP.RSP_DESC,
+                        timeout: 1000,
+                        style: {right: '', bottom: ''},     //居中显示
+                        showType: 'show'
+                    });
+                    var rspCode = result.RSP.RSP_CODE;
+                    if (rspCode != null && rspCode === "1") {
+                        $("#appealProcessList").datagrid('load'); //流程状态更新成功后，刷新页面
+                    }
+                });
             }
         });
     }
@@ -341,9 +384,36 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
         }
     }
 
-    /**
-     * 下拉框数据重载
-     */
+    //dialog弹框
+    //url：窗口调用地址，title：窗口标题，width：宽度，height：高度，shadow：是否显示背景阴影罩层
+    function showDialog(url, title, width, height, shadow) {
+        var content = '<iframe src="' + url + '" width="100%" height="100%" frameborder="0" scrolling="auto"></iframe>';
+        var dialogDiv = '<div id="processDetailDialog" title="' + title + '"></div>'; //style="overflow:hidden;"可以去掉滚动条
+        $(document.body).append(dialogDiv);
+        var win = $('#processDetailDialog').dialog({
+            content: content,
+            width: width,
+            height: height,
+            modal: shadow,
+            title: title,
+            onClose: function () {
+                $(this).dialog('destroy');//后面可以关闭后的事件
+            }
+        });
+        win.dialog('open');
+    }
+
+    //拼接对象到url
+    function createURL(url, param) {
+        var urlLink = '';
+        $.each(param, function (item, value) {
+            urlLink += '&' + item + "=" + encodeURI(value);
+        });
+        urlLink = url + "?" + urlLink.substr(1);
+        return urlLink.replace(' ', '');
+    }
+
+    //下拉框数据重载
     function reloadSelectData(paramsType, select, showAll) {
         var reqParams = {
             "tenantId": Util.constants.TENANT_ID,
@@ -364,6 +434,9 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                         "paramsName": "全部"
                     };
                     selectData.unshift(data);
+                }
+                if (paramsType === "PROCESS_STATUS") {
+                    processStatusData = selectData;
                 }
                 $("#" + select).combobox('loadData', selectData);
             }

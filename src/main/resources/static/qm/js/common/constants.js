@@ -18,6 +18,7 @@ define(function () {
         APPEAL_PROCESS_CONFIG_DNS:"/qm/configservice/appealProcess",//申诉流程（配置）
         QM_STRATEGY_DNS: "/qm/configservice/qmStrategy",//考评策略
         QM_STRATEGY_ELES_DNS: "/qm/configservice/qmStrategyEles",//策略元素
+        APPEAL_NODE_CONFIG_DNS:"/qm/configservice/appealNode",//申诉节点（配置）
 
         NGKM_ATOM_DATA_TYPE_CHAR: "1",//字符串
         NGKM_ATOM_DATA_TYPE_RADIO: "2",//单选
