@@ -1,4 +1,7 @@
-require(["jquery", 'util', "transfer", "easyui","crossAPI","dateUtil"], function ($, Util, Transfer,crossAPI,dateUtil) {
+define([
+    "js/manage/qmPlanManageAdd",
+    "jquery", 'util', "transfer", "easyui","crossAPI","dateUtil"],
+    function (qmPlanManageAdd,$, Util, Transfer,crossAPI) {
     //调用初始化方法
     initialize();
     var planTypes = [];
@@ -108,38 +111,15 @@ require(["jquery", 'util', "transfer", "easyui","crossAPI","dateUtil"], function
                 {field: 'planId', title: '计划编码', hidden: true},
                 {field: 'ck', checkbox: true, align: 'center'},
                 {
-                    field: 'action', title: '操作', width: '10%',
-
+                    field: 'action', title: '操作', width: '8%',
                     formatter: function (value, row, index) {
-                        var bean = {
-                            'planId': row.planId,
-                            'planName': row.planName, 'planStarttime': row.planStarttime,
-                            'planEndtime': row.planEndtime,'templateName': row.templateName,
-                            'haltFlag': row.haltFlag,'remark' : row.remark
-                        };
-                        var beanStr = JSON.stringify(bean);   //转成字符串
-
                         var Action =
-                            "<a href='javascript:void(0);' class='reviseBtn' id =" + beanStr + " >编辑</a>"+
-                            " | <a href='javascript:void(0);' class='qryDetailBtn' id =" + beanStr + " >详情</a>";
+                            "<a href='javascript:void(0);' class='reviseBtn' id =" + row.planId + " >编辑</a>"+
+                            " | <a href='javascript:void(0);' class='qryDetailBtn' id =" + row.planId + " >详情</a>";
                         return Action;
                     }
                 },
-                {field: 'planName', title: '计划名称', width: '7%'},
-                {field: 'planStarttime', title: '计划开始时间', width: '12%',
-                    formatter: function (value, row, index) {
-                        if(value){
-                            return DateUtil.formatDateTime(value);
-                        }
-                    }
-                },
-                {field: 'planEndtime', title: '计划结束时间', width: '12%',
-                    formatter: function (value, row, index) {
-                        if(value){
-                            return DateUtil.formatDateTime(value);
-                        }
-                    }},
-                {field: 'templateName', title: '考评模板', width: '10%'},
+                {field: 'planName', title: '计划名称', width: '8%'},
                 {field: 'planType', title: '计划类型', width: '8%',
                     formatter: function (value, row, index) {
                         var str = "";
@@ -154,6 +134,33 @@ require(["jquery", 'util', "transfer", "easyui","crossAPI","dateUtil"], function
                         return str;
                     }
                 },
+                {field: 'templateName', title: '考评模板', width: '8%'},
+                {field: 'pName', title: '抽取策略', width: '8%'},
+                {field: 'manOrAuto', title: '任务分派方式', width: '8%',
+                    formatter: function (value, row, index) {
+                        if (0 == value) {
+                            return "自动分派";
+                        } else if (1 == value) {
+                            return "人工分派";
+                        }
+                    }
+                },
+                {field: 'planRuntype', title: '执行方式', width: '8%',
+                    formatter: function (value, row, index) {
+                        if(0 == value){
+                            return "每天自动执行";
+                        }else if(1 == value){
+                            return "执行一次";
+                        }else if(2 == value){
+                            return  "手动执行";
+                        }
+                    }},
+                {field: 'planRuntime', title: '执行时间', width: '8%',
+                    formatter: function (value, row, index) {
+                        if(value){
+                            return DateUtil.formatDateTime(value,"hh:mm:ss");
+                        }
+                    }},
                 {field: 'haltFlag', title: '发布状态', width: '5%',
                     formatter: function (value, row, index) {
                         if(0 == value){
@@ -163,13 +170,15 @@ require(["jquery", 'util', "transfer", "easyui","crossAPI","dateUtil"], function
                         }
                     }
                 },
-                {field: 'createTime', title: '创建时间', width: '12%',
+
+                {field: 'planStarttime', title: '计划开始时间', width: '12%',
                     formatter: function (value, row, index) {
                         if(value){
                             return DateUtil.formatDateTime(value);
                         }
-                    }},
-                {field: 'modifiedTime', title: '修改时间', width: '12%',
+                    }
+                },
+                {field: 'planEndtime', title: '计划结束时间', width: '12%',
                     formatter: function (value, row, index) {
                         if(value){
                             return DateUtil.formatDateTime(value);
@@ -266,9 +275,32 @@ require(["jquery", 'util', "transfer", "easyui","crossAPI","dateUtil"], function
 
         //新增
         $("#addBtn").on("click", function(){
-            window.open("http://127.0.0.1:8080/qm/html/manage/qmPlanManageAdd.html");
+            var qmPlanManageAdda = new qmPlanManageAdd();
+
+            $('#add_window').show().window({
+                title: '新建计划',
+                width: 950,
+                height: 400,
+                cache: false,
+                content:qmPlanManageAdda.$el,
+                modal: true
+            });
         });
 
+        //修改
+        $("#page").on("click", "a.reviseBtn", function () {
+            var planId = $(this).attr('id');
+            var qmPlanManageAdda = new qmPlanManageAdd(planId);
+
+            $('#add_window').show().window({
+                title: '修改计划',
+                width: 950,
+                height: 400,
+                cache: false,
+                content:qmPlanManageAdda.$el,
+                modal: true
+            });
+        });
         //批量删除
         batchDelete();
         //批量启动

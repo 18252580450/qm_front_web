@@ -38,7 +38,7 @@ define(['Util',
                 height: 400, //对话框高度
                 skin: 'dialogSkin', //设置对话框额外的className参数
                 fixed: false, //是否开启固定定位 默认false不开启|true开启
-                quickClose: false, //点击空白处快速关闭 默认false不关闭|true关闭
+                quickClose: false //点击空白处快速关闭 默认false不关闭|true关闭
                 // modal:false   //是否开启模态框状态  默认false不开启|true开启,confirm默认状态为true
             });
         })

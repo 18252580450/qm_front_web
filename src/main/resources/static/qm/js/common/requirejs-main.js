@@ -76,6 +76,7 @@ var requirePath = {
     // 业务模块 开始
     "constants": "js/common/constants",
     "dateUtil": "js/common/dateUtil",
+    "commonAjax": "js/common/common-ajax",
     /* crossAPI */
     "crossAPI": "js/common/crossAPI"
 };

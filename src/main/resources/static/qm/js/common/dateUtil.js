@@ -2,7 +2,7 @@
  * 时间转换
  */
 var DateUtil = {
-    formatDateTime : function (inputTime) {
+    formatDateTime : function (inputTime,formatStr) {
         var date = new Date(inputTime);
         var y = date.getFullYear();
         var m = date.getMonth() + 1;
@@ -15,8 +15,15 @@ var DateUtil = {
         var second = date.getSeconds();
         minute = minute < 10 ? ('0' + minute) : minute;
         second = second < 10 ? ('0' + second) : second;
-        return y + '-' + m + '-' + d + ' ' + h + ':' + minute + ':' + second;
+        if(formatStr){
+            formatStr = formatStr.replace("yyyy",y).replace("MM",m).replace("dd",d);
+            formatStr = formatStr.replace("hh",h).replace("mm",minute).replace("ss",second);
+            return formatStr;
+        }else{
+            return y + '-' + m + '-' + d + ' ' + h + ':' + minute + ':' + second;
+        }
     }
+
 };
 
 
