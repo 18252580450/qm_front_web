@@ -19,7 +19,7 @@
         <div data-options="region:'center'" style='overflow: hidden;height: 100%'>
             <div id="page">
                 <div class='cl'>
-                    <div class='panel-tool-box cl'>
+                    <div class='panel-tool-box cl' style="background: #f5f5f5">
                         <div class='fl text-bold'>基本信息</div>
                     </div>
                     <div class='panel-search'>
@@ -99,10 +99,18 @@
                 </div>
 
                 <div class='cl'>
-                    <div class='panel-tool-box cl'>
+                    <div class='panel-tool-box cl' style="background: #f5f5f5">
                         <div class='fl text-bold'>处理过程浏览</div>
                     </div>
-                    <div class='panel-search'>
+                    <div class='panel-search' style='overflow: auto; height:300px;'>
+                        <!--左侧区域-->
+                        <div id="processLeftDiv" style="float:left ; width:10%; height:100%;">
+                            <div style="height: 12px"></div>
+                        </div>
+
+                        <!--右侧区域-->
+                        <div id="processRightDiv" style="float:right ; width:80%; height:100%; margin-right: 10%;">
+                        </div>
 
                     </div>
                 </div>
