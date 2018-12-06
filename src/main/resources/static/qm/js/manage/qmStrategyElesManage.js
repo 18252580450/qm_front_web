@@ -3,11 +3,13 @@ define([
     function ($, Util, Transfer,CommonAjax) {
     //调用初始化方法
     initialize();
-
+    var elementTypyes;
     function initialize() {
         initSearchForm();//初始化表单数据
         initGrid();//初始化列表
         initGlobalEvent();//初始化按钮事件
+        initWindowEvent();
+        initUpdateWindow();
     };
 
     //批量删除
@@ -59,7 +61,7 @@ define([
                     field: 'action', title: '操作', width: '8%',
                     formatter: function (value, row, index) {
                         var Action =
-                            "<a href='javascript:void(0);' class='reviseBtn' id =" + row.planId + " >编辑</a>";
+                            "<a href='javascript:void(0);' class='reviseBtn' id =" + row.elementId + " >编辑</a>";
                         return Action;
                     }
                 },
@@ -77,19 +79,16 @@ define([
                 },
                 {field: 'elementType', title: '字段类型', width: '8%',
                     formatter: function (value, row, index) {
-                        if ("001" == value) {
-                            return "字符串";
-                        } else if ("002" == value) {
-                            return "日期时间";
-                        }else if ("003" == value) {
-                            return "数字";
-                        }else if ("004" == value) {
-                            return "日期型";
-                        }else if ("005" == value) {
-                            return "时间型";
-                        }else if ("006" == value) {
-                            return "CLOB";
+                        var str = "";
+                        if(elementTypyes){
+                            $.each(elementTypyes,function(index, item){
+                                if(item.paramsCode == value){
+                                    str = item.paramsName;
+                                    return;
+                                }
+                            });
                         }
+                        return str;
                     }},
                 {field: 'isRegion', title: '区间值', width: '8%',
                     formatter: function (value, row, index) {
@@ -184,6 +183,13 @@ define([
             $("#searchForm").form('clear');
         });
 
+        //批量删除
+        batchDelete();
+
+    }
+
+    function initWindowEvent(){
+        $("#add_content").find('form.form').form('clear');  //初始化清空
         //新增
         $("#addBtn").on("click", function(){
             $('#add_window').show().window({
@@ -193,24 +199,140 @@ define([
                 cache: false,
                 modal: true
             });
+            $("#add_content").unbind("click");
+            /*
+             * 清除表单信息
+             */
+            $("#add_content").on("click", "#cancel", function () {
+                $("#add_content").find('form.form').form('clear');
+                $("#add_window").window("close");
+            });
+
+            $("#add_content").on("click", "#subBut", function () {
+                //禁用按钮，防止多次提交
+                $('#subBut').linkbutton({disabled: true});
+
+                var paramsTypeId = $("#paramsTypeId").combobox('getValue');
+                var elementType = $("#elementType").combobox('getValue');
+                var elementCode = $("#elementCode").val();
+                var elementName = $("#elementName").val();
+                var isRegion = $("input[name='isRegion']:checked").val();
+                var isNeed = $("input[name='isNeed']:checked").val();
+                var remark = $("#remark").val();
+
+                var params = {
+                    'tenantId': Util.constants.TENANT_ID,
+                    'paramsTypeId': paramsTypeId,
+                    'elementType': elementType,
+                    'elementCode':elementCode,
+                    'elementName':elementName,
+                    'isRegion':isRegion,
+                    'isNeed':isNeed,
+                    "remark":remark
+                };
+
+                if (paramsTypeId == null || paramsTypeId == "" || elementType == null || elementType == "" || elementCode == null
+                    || elementCode == "" ||elementName == null || elementName == "") {
+                    $.messager.alert('警告', '必填项不能为空。');
+
+                    $("#subBut").linkbutton({disabled: false});  //按钮可用
+                    return false;
+                }
+
+                Util.ajax.postJson(Util.constants.CONTEXT.concat(Util.constants.QM_STRATEGY_ELES_DNS).concat("/"), JSON.stringify(params), function (result) {
+
+                    $.messager.show({
+                        msg: result.RSP.RSP_DESC,
+                        timeout: 1000,
+                        style: {right: '', bottom: ''},     //居中显示
+                        showType: 'slide'
+                    });
+
+                    var rspCode = result.RSP.RSP_CODE;
+
+                    if (rspCode == "1") {
+                        $("#elesList").datagrid('reload'); //插入成功后，刷新页面
+                    }
+                });
+                //enable按钮
+                $("#subBut").linkbutton({disabled: false}); //按钮可用
+            });
         });
 
-        //修改
-        //$("#page").on("click", "a.reviseBtn", function () {
-        //    var planId = $(this).attr('id');
-        //
-        //    $('#add_window').show().window({
-        //        title: '修改策略元素',
-        //        width: 950,
-        //        height: 400,
-        //        cache: false,
-        //        //content:qmPlanManageAdda.$el,
-        //        modal: true
-        //    });
-        //});
-        //批量删除
-        batchDelete();
+    }
 
+    function initUpdateWindow(){
+        //修改
+        $("#page").on("click", "a.reviseBtn", function () {
+            $('#add_window').show().window({
+                title: '修改元素',
+                width: 950,
+                height: 400,
+                cache: false,
+                modal: true
+            });
+            var id = $(this).attr('id'); //获取选中行的数据
+            var bean;
+            Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.QM_STRATEGY_ELES_DNS + "/" + id, {}, function (result) {
+                var rspCode = result.RSP.RSP_CODE;
+                if (rspCode == "1" && result.RSP.DATA.length > 0) {
+                    bean = result.RSP.DATA[0];
+                    $("#paramsTypeId").combobox('setValue',bean.paramsTypeId);
+                    $("#elementType").combobox('setValue',bean.elementType);
+                    $("#elementCode").val(bean.elementCode);
+                    $("#elementName").val(bean.elementName);
+                    $("input[name='isRegion'][value='"+bean.isRegion+"']").attr("checked","checked");
+                    $("input[name='isNeed'][value='"+bean.isNeed+"']").attr("checked","checked");
+                    $("#remark").val(bean.remark);
+                }
+            });
+
+            $("#add_content").unbind("click");              //解绑事件
+
+            $("#add_content").on("click", "#cancel", function () {
+                $("#add_content").find('form.form').form('clear');
+                $("#add_window").window("close");
+            });
+
+            $("#add_content").on("click", "#subBut", function () {
+                var paramsTypeId = $("#paramsTypeId").combobox('getValue');
+                var elementType = $("#elementType").combobox('getValue');
+                var elementCode = $("#elementCode").val();
+                var elementName = $("#elementName").val();
+                var isRegion = $("input[name='isRegion']:checked").val();
+                var isNeed = $("input[name='isNeed']:checked").val();
+                var remark = $("#remark").val();
+                if (paramsTypeId == null || paramsTypeId == "" || elementType == null || elementType == "" || elementCode == null
+                    || elementCode == "" ||elementName == null || elementName == "") {
+                    $.messager.alert('警告', '必填项不能为空。');
+                    $("#subBut").linkbutton({disabled: false});  //按钮可用
+                    return false;
+                }
+                bean['paramsTypeId'] = paramsTypeId;
+                bean['elementType'] = elementType
+                bean['elementCode'] = elementCode;
+                bean['elementName'] = elementName;
+                bean['isRegion'] = isRegion;
+                bean['isNeed'] = isNeed;
+                bean['remark'] = remark;
+                Util.ajax.putJson(Util.constants.CONTEXT.concat(Util.constants.QM_STRATEGY_ELES_DNS).concat("/"), JSON.stringify(bean), function (result) {
+
+                    $.messager.show({
+                        msg: result.RSP.RSP_DESC,
+                        timeout: 1000,
+                        style: {right: '', bottom: ''},     //居中显示
+                        showType: 'slide'
+                    });
+
+                    var rspCode = result.RSP.RSP_CODE;
+
+                    if (rspCode == "1") {
+                        $("#elesList").datagrid('reload'); //修改成功后，刷新页面
+                    }
+
+                })
+            })
+        });
     }
 
     //初始化搜索表单
@@ -229,6 +351,18 @@ define([
                 });
                 $('#paramsTypeId').combobox({
                     data: datas,
+                    valueField: 'paramsCode',
+                    textField: 'paramsName',
+                    editable: false
+                });
+            }
+        });
+
+        CommonAjax.getStaticParams("ELEMENT_TYPE",function(datas){
+            if(datas){
+                elementTypyes = datas;
+                $('#elementType').combobox({
+                    data: elementTypyes,
                     valueField: 'paramsCode',
                     textField: 'paramsName',
                     editable: false
