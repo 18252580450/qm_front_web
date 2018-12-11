@@ -11,120 +11,134 @@
 
     <link href="../../css/style.min.css" rel="stylesheet">
 
-
 </head>
 <body>
 <div id="page_content" data-options="region:'center'" style="height:100%;">
     <div id='layout_content' class='easyui-layout' data-options="region:'center'" style='overflow: auto; height:100%;'>
-        <div data-options="region:'center'" style='overflow: hidden;height: 100%'>
+        <div data-options="region:'center'" style='background: #fff;overflow: hidden;height: 100%'>
             <div id="page">
-                <div class='panel-search ' title="">
-                    <form class='form form-horizontal'>
-                        <div class='row cl'>
-                            <label class='form-label col-2'>考评项名称：</label>
-                            <div class='formControls col-2'>
-                                <input id="checkItemName" type='text' class='easyui-textbox'
-                                       style='width:100%;height:30px'>
-                            </div>
-                            <label class='form-label col-2'>模板渠道：</label>
-                            <div class='formControls col-2'>
-                                <input id="tenantType" type='text' class='easyui-textbox'
-                                       style='width:100%;height:30px'>
-                            </div>
-                            <label class='form-label col-2'>父节点名称：</label>
-                            <div class='formControls col-2'>
-                                <input id="parentCheckItemName" type='text' class='easyui-textbox'
-                                       style='width:100%;height:30px'>
-                            </div>
-                        </div>
-                    </form>
-                    <form class='form form-horizontal'>
-                        <div class='row cl'>
-                            <label class='form-label col-2'>考评项类型：</label>
-                            <div class='formControls col-2'>
-                                <input id="checkItemType" type='text' class='easyui-textbox'
-                                       style='width:100%;height:30px'>
-                            </div>
-                            <div class='formControls col-1'>
-                            </div>
-                            <div class='formControls col-2'>
-                                <a href='javascript:void(0)' class='btn btn-green radius mt-l-20' id="queryBtn"><i
-                                        class='iconfont iconfont-search2'></i>查询</a>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-
-                <div class='cl'>
+                <!--左侧区域-->
+                <div style="float: left; width: 18%; height: 580px; overflow-y: auto; overflow-x: hidden;">
                     <div class='panel-tool-box cl'>
-                        <div class='fl text-bold'>人工考评项</div>
-                        <div class="formControls col-2" style="text-align: right;width: 90%">
-                            <a href='javascript:void(0)' class='btn btn-green radius mt-l-20' id="addBtn"><i
-                                    class='iconfont iconfont-add'></i>新增</a>
-                            <a href='javascript:void(0)' class='btn btn-default radius mt-l-20' id="delBtn"><i
-                                    class='iconfont iconfont-del2'></i>删除</a>
-                        </div>
+                        <div class='fl text-bold'>考评树</div>
                     </div>
-                    <table id='checkItemList' class='easyui-datagrid' style=' width:100%;'>
-                    </table>
+                    <div id="treeDiv" class="index-west">
+                        <ul id="checkItemTree" class="ztree" style="border:#fff;">
+                        </ul>
+                    </div>
                 </div>
 
-            </div>
-        </div>
-
-        <!-- 考评项配置（新增、修改）弹窗，默认隐藏  -->
-        <div id='checkItemDialog' style='display:none;'>
-            <div class='panel-search'>
-                <form id='checkItemConfig' method='POST' class='form form-horizontal'>
-                    <div class='row cl' style="margin-top: 10px">
-                        <div class='formControls col-1'>
-                        </div>
-                        <label class='form-label col-3'>考评项名称：</label>
-                        <div class='formControls col-6'>
-                            <input id='checkItemNameConfig' type='text' class='easyui-textbox'
-                                   style='width:100%;height:30px'/>
-                        </div>
+                <!--右侧区域-->
+                <div style="float:right ; width:82%; height:100%;">
+                    <div class='panel-search'>
+                        <form class='form form-horizontal'>
+                            <div class='row cl'>
+                                <label class='form-label col-2'>考评项名称：</label>
+                                <div class='formControls col-2'>
+                                    <input id="checkItemName" type='text' class='easyui-textbox'
+                                           style='width:100%;height:30px'>
+                                </div>
+                                <label class='form-label col-2'>模板渠道：</label>
+                                <div class='formControls col-2'>
+                                    <input id="tenantType" type='text' class='easyui-textbox'
+                                           style='width:100%;height:30px'>
+                                </div>
+                                <label class='form-label col-2'>父节点名称：</label>
+                                <div class='formControls col-2'>
+                                    <input id="parentCheckItemName" type='text' class='easyui-textbox'
+                                           style='width:100%;height:30px' readonly>
+                                </div>
+                            </div>
+                        </form>
+                        <form class='form form-horizontal'>
+                            <div class='row cl'>
+                                <label class='form-label col-2'>考评项类型：</label>
+                                <div class='formControls col-2'>
+                                    <input id="checkItemType" type='text' class='easyui-textbox'
+                                           style='width:100%;height:30px'>
+                                </div>
+                                <div class='formControls col-1'>
+                                </div>
+                                <div class='formControls col-2'>
+                                    <a href='javascript:void(0)' class='btn btn-green radius mt-l-20' id="queryBtn"><i
+                                            class='iconfont iconfont-search2'></i>查询</a>
+                                </div>
+                            </div>
+                        </form>
                     </div>
 
-                    <div class='row cl' style="margin-top: 5px">
-                        <div class='formControls col-1'>
+                    <div class='cl'>
+                        <div class='panel-tool-box cl'>
+                            <div class='fl text-bold'>人工考评项</div>
+                            <div class="formControls col-2" style="text-align: right;width: 90%">
+                                <a href='javascript:void(0)' class='btn btn-green radius mt-l-20' id="addBtn"><i
+                                        class='iconfont iconfont-add'></i>新增</a>
+                                <a href='javascript:void(0)' class='btn btn-default radius mt-l-20' id="delBtn"><i
+                                        class='iconfont iconfont-del2'></i>删除</a>
+                            </div>
                         </div>
-                        <label class='form-label col-3'>考评项类型：</label>
-                        <div class='formControls col-6'>
-                            <input id='checkItemTypeConfig' type='text' class='easyui-textbox'
-                                   style='width:100%;height:30px'/>
-                        </div>
+                        <table id='checkItemList' class='easyui-datagrid' style=' width:100%;'>
+                        </table>
                     </div>
 
-                    <div class="row cl" style="margin-top: 5px">
-                        <div class='formControls col-1'>
-                        </div>
-                        <label class='form-label col-3'>考评项致命类别：</label>
-                        <div class='formControls col-6'>
-                            <input id='checkItemVitalTypeConfig' type='text' class='easyui-textbox'
-                                   style='width:100%;height:30px'/>
-                        </div>
-                    </div>
+                    <!-- 考评项配置（新增、修改）弹窗，默认隐藏  -->
+                    <div id='checkItemDialog' style='display:none;'>
+                        <div class='panel-search'>
+                            <form id='checkItemConfig' method='POST' class='form form-horizontal'>
+                                <div class='row cl' style="margin-top: 10px">
+                                    <div class='formControls col-1'>
+                                    </div>
+                                    <label class='form-label col-3'>考评项名称：</label>
+                                    <div class='formControls col-6'>
+                                        <input id='checkItemNameConfig' type='text' class='easyui-textbox'
+                                               style='width:100%;height:30px'/>
+                                    </div>
+                                </div>
 
-                    <div class="row cl" style="margin-top: 5px">
-                        <div class='formControls col-1'>
-                        </div>
-                        <label class='form-label col-3'>考评项描述：</label>
-                        <div class='formControls col-6'>
-                            <input id='checkItemDescConfig' type='text' class='easyui-textbox'
-                                   style='width:100%;height:80px'/>
-                        </div>
-                    </div>
-                </form>
+                                <div class='row cl' style="margin-top: 5px">
+                                    <div class='formControls col-1'>
+                                    </div>
+                                    <label class='form-label col-3'>考评项类型：</label>
+                                    <div class='formControls col-6'>
+                                        <input id='checkItemTypeConfig' type='text' class='easyui-textbox'
+                                               style='width:100%;height:30px'/>
+                                    </div>
+                                </div>
 
-                <div class='mt-10 test-c' style="margin-top: 40px">
-                    <div class='formControls col-4'>
-                    </div>
-                    <div class='formControls col-2'>
-                        <a href='javascript:void(0)' class='btn btn-green radius mt-l-20' id="submitBtn">保存</a>
-                    </div>
-                    <div class='formControls col-2'>
-                        <a href='javascript:void(0)' class='btn btn-secondary radius mt-l-20' id="cancelBtn">取消</a>
+                                <div class="row cl" style="margin-top: 5px">
+                                    <div class='formControls col-1'>
+                                    </div>
+                                    <label class='form-label col-3'>考评项致命类别：</label>
+                                    <div class='formControls col-6'>
+                                        <input id='checkItemVitalTypeConfig' type='text' class='easyui-textbox'
+                                               style='width:100%;height:30px'/>
+                                    </div>
+                                </div>
+
+                                <div class="row cl" style="margin-top: 5px">
+                                    <div class='formControls col-1'>
+                                    </div>
+                                    <label class='form-label col-3'>考评项描述：</label>
+                                    <div class='formControls col-6'>
+                                        <input id='checkItemDescConfig' type='text' class='easyui-textbox'
+                                               style='width:100%;height:80px'/>
+                                    </div>
+                                </div>
+                            </form>
+
+                            <div class='mt-10 test-c' style="margin-top: 40px">
+                                <div class='formControls col-4'>
+                                </div>
+                                <div class='formControls col-2'>
+                                    <a href='javascript:void(0)' class='btn btn-green radius mt-l-20'
+                                       id="submitBtn">保存</a>
+                                </div>
+                                <div class='formControls col-2'>
+                                    <a href='javascript:void(0)' class='btn btn-secondary radius mt-l-20'
+                                       id="cancelBtn">取消</a>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
