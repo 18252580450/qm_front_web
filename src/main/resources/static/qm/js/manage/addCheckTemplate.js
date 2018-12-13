@@ -11,7 +11,6 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
     function initialize() {
         showTree();
         initGrid();
-        initGlobalEvent();
         delEvent();
         saveEvent();
     };
@@ -219,6 +218,8 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
         var maxAll = [];//所占分值
         var nAll = [];//扣分范围
         var loc;
+        var num = Math.random()*15000 + 800;//随机生成
+        num = parseInt(num, 10);
         $.each(rowsData, function (i)
         {
             var maxScore =  parseInt(rowsData[i].maxScore);
@@ -227,7 +228,7 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
             nAll.push(nodeScore);
             loc = {
                 "tenantId":Util.constants.TENANT_ID,
-                "templateId":i.toString(),
+                "templateId":num.toString(),
                 "nodeId":rowsData[i].nodeId,
                 "nodeName": rowsData[i].nodeName,
                 "maxScore": maxScore,
@@ -279,7 +280,7 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
             var templateDesc = $("#templateDesc").val();
 
             var params = {'tenantId': Util.constants.TENANT_ID,'templateName': templateName,
-                'templateStatus': templateStatus, 'operateType': '0','remark':templateDesc,'templateType':templateType,"templateId":i.toString()};
+                'templateStatus': templateStatus, 'operateType': '0','remark':templateDesc,'templateType':templateType,"templateId":num.toString()};
             Util.ajax.postJson(Util.constants.CONTEXT+ qmURI2 + "/insertCheckTemplate ", JSON.stringify(params), function (result) {
 
                 $.messager.show({
@@ -400,34 +401,34 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
             checkOnSelect: false,
             autoRowHeight: true,
             selectOnCheck: true,
-            loader: function (param, success) {
-                var start = (param.page - 1) * param.rows;
-                var pageNum = param.rows;
-                var reqParams = {
-                    "tenantId":Util.constants.TENANT_ID
-                };
-                var param = {
-                    "start": start,
-                    "pageNum": pageNum,
-                    "params":JSON.stringify(reqParams)
-                };
-
-                Util.ajax.getJson(Util.constants.CONTEXT + qmURI + "/selectByParams", param, function (result) {
-                    var data = Transfer.DataGrid.transfer(result);
-
-                    var rspCode = result.RSP.RSP_CODE;
-                    if (rspCode != "1") {
-
-                        $.messager.show({
-                            msg: result.RSP.RSP_DESC,
-                            timeout: 1000,
-                            style: {right: '', bottom: ''},     //居中显示
-                            showType: 'slide'
-                        });
-                    }
-                    success(data);
-                });
-            }
+            // loader: function (param, success) {
+            //     var start = (param.page - 1) * param.rows;
+            //     var pageNum = param.rows;
+            //     var reqParams = {
+            //         "tenantId":Util.constants.TENANT_ID
+            //     };
+            //     var param = {
+            //         "start": start,
+            //         "pageNum": pageNum,
+            //         "params":JSON.stringify(reqParams)
+            //     };
+            //
+            //     Util.ajax.getJson(Util.constants.CONTEXT + qmURI + "/selectByParams", param, function (result) {
+            //         var data = Transfer.DataGrid.transfer(result);
+            //
+            //         var rspCode = result.RSP.RSP_CODE;
+            //         if (rspCode != "1") {
+            //
+            //             $.messager.show({
+            //                 msg: result.RSP.RSP_DESC,
+            //                 timeout: 1000,
+            //                 style: {right: '', bottom: ''},     //居中显示
+            //                 showType: 'slide'
+            //             });
+            //         }
+            //         success(data);
+            //     });
+            // }
         });
 
         var tempIndex = null;
@@ -442,15 +443,6 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
             $('#peopleManage').datagrid('endEdit', tempIndex);//保存行
         });
 
-
-    }
-
-    //初始化事件
-    function initGlobalEvent() {
-        //查询
-        $("#searchForm").on("click", "#selectBut", function () {
-            $("#page").find("#checkTemplateManage").datagrid("load");
-        });
 
     }
 

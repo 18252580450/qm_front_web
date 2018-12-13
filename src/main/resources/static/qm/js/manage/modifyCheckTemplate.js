@@ -5,10 +5,23 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
     var qmURI3 = "/qm/configservice/tplOpLog/";//操作表
     var data = [];
     var i = 0;
+    var templateId=null;
     //调用初始化方法
     initialize();
 
     function initialize() {
+        //获取templateId传值
+        var url = location.search; //获取url中"?"符后的字串
+        var theRequest = new Object();
+        if(url.indexOf("?") != -1) {
+            var str = url.substr(1);
+            strs = str.split("&");
+            for(var i = 0; i < strs.length; i++) {
+                theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
+            }
+        }
+        templateId=theRequest;
+
         showTree();
         initGrid();
         initGlobalEvent();
@@ -404,7 +417,8 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
                 var start = (param.page - 1) * param.rows;
                 var pageNum = param.rows;
                 var reqParams = {
-                    "tenantId":Util.constants.TENANT_ID
+                    "tenantId":Util.constants.TENANT_ID,
+                    "templateId":templateId
                 };
                 var param = {
                     "start": start,

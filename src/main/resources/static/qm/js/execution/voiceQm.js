@@ -1,82 +1,70 @@
 require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, Transfer,easyui,dateUtil) {
-
+    var qmURI = "/qm/configservice/voicepool/";
     //初始化方法
     initialize();
 
     function initialize() {
         initPageInfo();
-        // initEvent();
+        initEvent();
     }
 
     //页面信息初始化
     function initPageInfo() {
         //是否分配下拉框
-        $("#isDis").combobox({
-            url: '../../data/isDistribution.json',
+        $("#isOperate").combobox({
+            url: '../../data/isOperate.json',
             method: "GET",
             valueField: 'codeValue',
             textField: 'codeName',
             panelHeight: 'auto',
             editable: false,
             onLoadSuccess: function () {
-                var isDis = $("#isDis");
-                var data = isDis.combobox('getData');
+                var isOperate = $("#isOperate");
+                var data = isOperate.combobox('getData');
                 if (data.length > 0) {
-                    isDis.combobox('select', data[0].codeValue);
+                    isOperate.combobox('select', data[0].codeValue);
                 }
             }
         });
 
         //时间控件初始化
-        var releaseStartTime = $('#releaseStartTime');
+        var startTime = $('#startTime');
         var beginDate = (DateUtil.formatDateTime(new Date() - 24 * 60 * 60 * 1000)).substr(0, 11) + "00:00:00";
-        releaseStartTime.datetimebox({
+        startTime.datetimebox({
             value: beginDate,
             onChange: function () {
-                checkTime();
+                check();
             }
         });
 
-        var releaseEndTime = $('#releaseEndTime');
+        var endTime = $('#endTime');
         var endDate = (DateUtil.formatDateTime(new Date())).substr(0,11) + "23:59:59";
-        releaseEndTime.datetimebox({
+        endTime.datetimebox({
             value: endDate,
             onChange: function () {
-                checkTime();
+                check();
             }
         });
 
-        //申诉流程列表
+        //质检信息
         $("#queryInfo").datagrid({
             columns: [[
                 {field: 'ck', checkbox: true, align: 'center'},
-                {field: 'processId', title: '工单流水', align: 'center', width: '15%',
-                    formater:function(value, row, index){
-                        var bean={};
-                        return "<a href='javascript:void(0);' class='processIdBtn' id =" + JSON.stringify(bean) + " >"+value+"</a>";
-                    }},
-                {field: 'processName', title: '计划名称', align: 'center', width: '10%'},
+                {field: 'inspectionId', title: '质检流水', align: 'center', width: '15%'},
+                {field: 'touchId', title: '语音流水', align: 'center', width: '10%'},
                 {
-                    field: 'createTime', title: '计划生成时间', align: 'center', width: '15%',
+                    field: 'checkedTime', title: '抽取时间', align: 'center', width: '15%',
                     formatter: function (value, row, index) { //格式化时间格式
-                        if (row.createTime != null) {
-                            var createTime = DateUtil.formatDateTime(row.createTime);
-                            return '<span title=' + createTime + '>' + createTime + '</span>';
-                        }
+                        return DateUtil.formatDateTime(value);
                     }
                 },
-                {field: 'createStaffId', title: '服务请求类型', align: 'center', width: '10%'},
-                {field: 'tenantId', title: '考评环节', align: 'center', width: '10%'},
-                {field: 'modifyStaffId', title: '质检员', align: 'center', width: '10%'},
-                {
-                    field: 'modifyTime', title: '分配时间', align: 'center', width: '15%',
+                {field: 'checkStaffName', title: '质检人员', align: 'center', width: '10%'},
+                {field: 'operateTime', title: '指派时间', align: 'center', width: '10%',
                     formatter: function (value, row, index) { //格式化时间格式
-                        if (row.modifyTime != null) {
-                            var modifyTime = DateUtil.formatDateTime(row.modifyTime)
-                            return '<span title=' + modifyTime + '>' + modifyTime + '</span>';
-                        }
-                    }
-                }
+                        return DateUtil.formatDateTime(value);
+                    }},
+                {field: 'checkedStaffName', title: '被检人员', align: 'center', width: '10%'},
+                {field: 'callingNumber', title: '主叫号码', align: 'center', width: '10%'}
             ]],
             fitColumns: true,
             width: '100%',
@@ -85,54 +73,79 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
             pageSize: 10,
             pageList: [5, 10, 20, 50],
             rownumbers: false,
-            // loader: function (param, success) {
-            //     var start = (param.page - 1) * param.rows;
-            //     var pageNum = param.rows;
-            //     var processId = $("#processId").val();
-            //     var processName = $("#processName").val();
-            //     var createStaffId = $("#createStaffName").val();
-            //     var tenantId = $("#tenantType").combobox("getValue");
-            //     var processStatus = $("#processStatus").combobox("getValue");
-            //     var createTimeBegin = $("#createTimeBegin").datetimebox("getValue");
-            //     var createTimeEnd = $("#createTimeEnd").datetimebox("getValue");
-            //     if (processStatus === "-1") {
-            //         processStatus = null;
-            //     }
-            //
-            //     var reqParams = {
-            //         "processId": processId,
-            //         "processName": processName,
-            //         "createStaffId": createStaffId,
-            //         "tenantId": tenantId,
-            //         "processStatus": processStatus,
-            //         "createTimeBegin": createTimeBegin,
-            //         "createTimeEnd": createTimeEnd
-            //     };
-            //     var params = $.extend({
-            //         "start": start,
-            //         "pageNum": pageNum,
-            //         "params": JSON.stringify(reqParams)
-            //     }, Util.PageUtil.getParams($("#searchForm")));
-            //
-            //     Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.APPEAL_PROCESS_CONFIG_DNS + "/queryAppealProcess", params, function (result) {
-            //         var data = Transfer.DataGrid.transfer(result);
-            //
-            //         var rspCode = result.RSP.RSP_CODE;
-            //         if (rspCode != null && rspCode !== "1") {
-            //             $.messager.show({
-            //                 msg: result.RSP.RSP_DESC,
-            //                 timeout: 1000,
-            //                 style: {right: '', bottom: ''},     //居中显示
-            //                 showType: 'show'
-            //             });
-            //         }
-            //         success(data);
-            //     });
-            // },
-            onLoadSuccess: function (data) {
-                //详情
-                $.each(data.rows, function (i, item) {
+            loader: function (param, success) {
+                var start = (param.page - 1) * param.rows;
+                var pageNum = param.rows;
+                var touchId = $("#touchId").val();
+                var planId = $("#planId").val();
+                var isOperate = $("#isOperate").combobox("getValue");
+                var startTime = $("#startTime").datetimebox("getValue");
+                var endTime = $("#endTime").datetimebox("getValue");
+                var checkStaffId = $("#checkStaffId").val();
+                var checkedStaffId = $("#checkedStaffId").val();
+                var hungupType = $("#hungupType").val();
+                var callType = $("#callType").val();
+                var voiceSatisfyExtent = $("#voiceSatisfyExtent").val();
+                var recordTimeMin = $("#recordTimeMin").val();
+                var recordTimeMax = $("#recordTimeMax").val();
+                if(parseInt(recordTimeMin)>parseInt(recordTimeMax)){
+                    $.messager.alert("提示", "最小值不可大于最大值!");
+                    return false;
+                }
+                var callingNumber = $("#callingNumber").val();
+                var calledNumber = $("#calledNumber").val();
+                var satisfyExtentType = $("#satisfyExtentType").val();
+                var vipSatisfyExtent = $("#vipSatisfyExtent").val();
+                var mediaType = $("#mediaType").val();
+                var srvReqstTypeId = $("#srvReqstTypeId").val();
+                var strategyInfo = $("#strategyInfo").val();
 
+                var reqParams = {
+                    "touchId": touchId,
+                    "planId": planId,
+                    "isOperate": isOperate,
+                    "startTime": startTime,
+                    "endTime": endTime,
+                    "checkStaffId": checkStaffId,
+                    "checkedStaffId":checkedStaffId,
+                    "hungupType":hungupType,
+                    "callType":callType,
+                    "voiceSatisfyExtent":voiceSatisfyExtent,
+                    "recordTimeMin":recordTimeMin,
+                    "recordTimeMax":recordTimeMax,
+                    "callingNumber":callingNumber,
+                    "calledNumber":calledNumber,
+                    "satisfyExtentType":satisfyExtentType,
+                    "vipSatisfyExtent":vipSatisfyExtent,
+                    "mediaType":mediaType,
+                    "srvReqstTypeId":srvReqstTypeId,
+                    "strategyName":strategyInfo
+                };
+                var params = $.extend({
+                    "start": start,
+                    "pageNum": pageNum,
+                    "params": JSON.stringify(reqParams)
+                }, Util.PageUtil.getParams($("#queryInfo")));
+
+                Util.ajax.getJson(Util.constants.CONTEXT + qmURI+ "/selectByParams", params, function (result) {
+                    var data = Transfer.DataGrid.transfer(result);
+                    var dataNew=[];
+                    for(var i=0;i<data.rows.length;i++){
+                        var map=data.rows[i];
+                        if(map.qmPlan!=null){
+                            dataNew.push(map);
+                        }
+                    }
+                    var rspCode = result.RSP.RSP_CODE;
+                    if (rspCode != null && rspCode !== "1") {
+                        $.messager.show({
+                            msg: result.RSP.RSP_DESC,
+                            timeout: 1000,
+                            style: {right: '', bottom: ''},     //居中显示
+                            showType: 'show'
+                        });
+                    }
+                    success(dataNew);
                 });
             }
         });
@@ -142,115 +155,105 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
     function initEvent() {
         //查询
         $("#queryBtn").on("click", function () {
-            $("#appealProcessList").datagrid("load");
+            $("#queryInfo").datagrid("load");
         });
 
-        //新增
-        $("#addBtn").on("click", function () {
-            addTabs("申诉流程-新增", Util.constants.URL_CONTEXT + "/qm/html/manage/appealProcessAdd.html")
+        //清空
+        $("#clearBtn").on("click", function () {
+            $("#page input").val("");
         });
 
-        //删除
-        $("#delBtn").on("click", function () {
-            showAppealProcessDeleteDialog();
+        //强制释放
+        $("#releaseBut").on("click", function () {
+            release();
         });
 
-        //启动
-        $("#startBtn").on("click", function () {
-            changeProcessStatus(Util.constants.PROCESS_STATUS_START);
-        });
-
-        //暂停
-        $("#stopBtn").on("click", function () {
-            changeProcessStatus(Util.constants.PROCESS_STATUS_STOP);
+        //明细分配
+        $("#detailBut").on("click", function () {
+            var selRows = $("#queryInfo").datagrid("getSelections");
+            if (selRows.length == 0) {
+                $.messager.alert("提示", "请至少选择一行数据!");
+                return false;
+            }
+            var ids = [];
+            for (var i = 0; i < selRows.length; i++) {
+                var id = selRows[i].touchId;
+                ids.push(id);
+            }
+            detail(ids);
         });
     }
 
     /**
-     * 删除申诉流程确认弹框
+     * 强制释放
      */
-    function showAppealProcessDeleteDialog() {
-        var delRows = $("#appealProcessList").datagrid("getSelections");
-        if (delRows.length === 0) {
+    function release(){
+        var selRows = $("#queryInfo").datagrid("getSelections");//选中多行
+        if (selRows.length == 0) {
             $.messager.alert("提示", "请至少选择一行数据!");
             return false;
         }
-        var delArr = [];
-        for (var i = 0; i < delRows.length; i++) {
-            var id = delRows[i].processId;
-            delArr.push(id);
-            if (delRows[i].processStatus === "1") {
-                $.messager.alert("提示", "删除失败！已启动的流程不能删除!");
-                return false;
-            }
+        var ids = [];
+        for (var i = 0; i < selRows.length; i++) {
+            var id = selRows[i].touchId;
+            ids.push(id);
         }
-        $.messager.confirm('确认删除弹窗', '确定要删除吗？', function (confirm) {
+
+        $.messager.confirm('确认弹窗', '确定要强制释放吗？', function (confirm) {
+
             if (confirm) {
-                Util.ajax.deleteJson(Util.constants.CONTEXT.concat(Util.constants.APPEAL_PROCESS_CONFIG_DNS).concat("/").concat(delArr), {}, function (result) {
+                Util.ajax.putJson(Util.constants.CONTEXT.concat(qmURI).concat("/").concat(ids), {}, function (result) {
+
                     $.messager.show({
                         msg: result.RSP.RSP_DESC,
                         timeout: 1000,
                         style: {right: '', bottom: ''},     //居中显示
-                        showType: 'show'
+                        showType: 'slide'
                     });
                     var rspCode = result.RSP.RSP_CODE;
-                    if (rspCode != null && rspCode === "1") {
-                        $("#appealProcessList").datagrid("load"); //删除成功后，刷新页面
+
+                    if (rspCode == "1") {
+                        $("#queryInfo").datagrid('reload'); //成功后，刷新页面
                     }
                 });
+
             }
         });
     }
 
-    //启动流程or暂停流程（针对主流程）
-    function changeProcessStatus(processStatus) {
-        var updateRows = $("#appealProcessList").datagrid("getSelections");
-        if (updateRows.length === 0) {
-            $.messager.alert("提示", "请至少选择一行数据!");
-            return false;
-        }
+    //明细分配
+    function detail(data){
+        var dataNew = data;
+        $('#add_window').show().window({
+            title: '质检人员信息',
+            width: 1000,
+            height: 650,
+            cache: false,
+            modal: true
+        });
+        addPageEvent();
+        //确定
+        $("#confirm").on("click", function () {
+            updateCheck(dataNew);
+        });
+        //关闭
+        $("#cancel").on("click", function () {
+            $("#add_window").window('close'); // 关闭窗口
+        });
+        //查询
+        $("#searchBtn").on("click", function () {
 
-        //剔除状态不需要更改的流程
-        for (var i = 0; i < updateRows.length; i++) {
-            if (updateRows[i].processStatus != null && updateRows[i].processStatus === processStatus) {
-                updateRows.splice(i, 1);
-                i--;
-            } else {
-                updateRows[i].processStatus = processStatus;
-            }
-        }
-
-        if (updateRows.length === 0) {
-            if (processStatus === "1") {
-                $.messager.alert("提示", "流程已启动!");
-            } else {
-                $.messager.alert("提示", "流程已暂停!");
-            }
-            return false;
-        }
-
-        Util.ajax.putJson(Util.constants.CONTEXT + Util.constants.APPEAL_PROCESS_CONFIG_DNS + "/changeProcessStatus", JSON.stringify(updateRows), function (result) {
-            $.messager.show({
-                msg: result.RSP.RSP_DESC,
-                timeout: 1000,
-                style: {right: '', bottom: ''},     //居中显示
-                showType: 'show'
-            });
-            var rspCode = result.RSP.RSP_CODE;
-            if (rspCode != null && rspCode === "1") {
-                $("#appealProcessList").datagrid('load'); //流程状态更新成功后，刷新页面
-            }
         });
     }
 
     //校验开始时间和终止时间
     function check() {
-        var releaseStartTime = $("#releaseStartTime").datetimebox("getValue");
-        var releaseEndTime = $("#releaseEndTime").datetimebox("getValue");
-        var d1 = new Date(releaseStartTime.replace(/-/g, "\/"));
-        var d2 = new Date(releaseEndTime.replace(/-/g, "\/"));
+        var startTime = $("#startTime").datetimebox("getValue");
+        var endTime = $("#endTime").datetimebox("getValue");
+        var d1 = new Date(startTime.replace(/-/g, "\/"));
+        var d2 = new Date(endTime.replace(/-/g, "\/"));
 
-        if (releaseStartTime !== "" && releaseEndTime !== "" && d1 > d2) {
+        if (startTime !== "" && endTime !== "" && d1 > d2) {
             $.messager.show({
                 msg: "开始时间不能大于结束时间!",
                 timeout: 1000,
@@ -264,19 +267,90 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
         }
     }
 
-    //添加一个选项卡面板
-    function addTabs(title, url) {
-        var jq = top.jQuery;
+    //新增页面
+    function addPageEvent(){
+        //质检人员信息
+        $("#checkStaffInfo").datagrid({
+            columns: [[
+                {field: 'ck', checkbox: true, align: 'center'},
+                {field: 'checkStaffId', title: '员工编码信息', align: 'center', width: '15%'},
+                {field: 'checkStaffCode', title: '员工CODE', align: 'center', width: '10%'},
+                {field: 'checkStaffId', title: '组织编码', align: 'center', width: '10%'},
+                {field: 'orgs', title: '员工组', align: 'center', width: '10%'}
+            ]],
+            fitColumns: true,
+            height: 420,
+            pagination: true,
+            pageSize: 10,
+            pageList: [5, 10, 20, 50],
+            rownumbers: false,
+            loader: function (param, success) {
+                // var start = (param.page - 1) * param.rows;
+                // var pageNum = param.rows;
+                // var checkStaffId = $("#checkStaffId").val();
+                //
+                // var reqParams = {
+                //     "checkStaffId": checkStaffId
+                // };
+                // var params = $.extend({
+                //     "start": start,
+                //     "pageNum": pageNum,
+                //     "params": JSON.stringify(reqParams)
+                // }, Util.PageUtil.getParams($("#queryInfo")));
+                //
+                // Util.ajax.getJson(Util.constants.CONTEXT + qmURI+ "/selectByParams", params, function (result) {
+                //     var data = Transfer.DataGrid.transfer(result);
+                //     var rspCode = result.RSP.RSP_CODE;
+                //     if (rspCode != null && rspCode !== "1") {
+                //         $.messager.show({
+                //             msg: result.RSP.RSP_DESC,
+                //             timeout: 1000,
+                //             style: {right: '', bottom: ''},     //居中显示
+                //             showType: 'show'
+                //         });
+                //     }
+                //     success(data);
+                // });
+                var data=[{'checkStaffId':'10001','checkStaffCode':'测试工号22','checkStaffId':'10000','orgs':'投诉专席工单处理1班'},
+                    {'checkStaffId':'10002','checkStaffCode':'测试工号23','checkStaffId':'10000','orgs':'投诉专席工单处理1班'},
+                    {'checkStaffId':'10003','checkStaffCode':'测试工号24','checkStaffId':'10000','orgs':'投诉专席工单处理1班'},
+                    {'checkStaffId':'10004','checkStaffCode':'测试工号25','checkStaffId':'10000','orgs':'投诉专席工单处理1班'},
+                    {'checkStaffId':'10005','checkStaffCode':'测试工号26','checkStaffId':'10000','orgs':'投诉专席工单处理1班'}];
+                success(data);
+            }
+        });
+    }
 
-        if (!jq('#tabs').tabs('exists', title)) {
-            jq('#tabs').tabs('add', {
-                title: title,
-                content: '<iframe src="' + url + '" frameBorder="0" border="0" scrolling="auto"  style="width: 100%; height: 100%;"/>',
-                closable: true
-            });
-        } else {
-            jq('#tabs').tabs('select', title);
+    function updateCheck(dataNew) {
+        var selRows = $("#checkStaffInfo").datagrid("getSelections");//选中多行
+        if (selRows.length == 0||selRows.length>1) {
+            $.messager.alert("提示", "请只选择一行数据!");
+            return false;
         }
+        var params=[];
+        for(var i=0;i<dataNew.length;i++){
+            var map = {};
+            var checkStaffId = selRows[0].checkStaffId;
+            var checkStaffCode = selRows[0].checkStaffCode;
+            map["checkStaffName"]=checkStaffCode;
+            map["checkStaffId"]=checkStaffId;
+            map["touchId"]=dataNew[i];
+            params.push(map);
+        }
+
+        Util.ajax.putJson(Util.constants.CONTEXT.concat(qmURI).concat("/updateCheck"), JSON.stringify(params), function (result) {
+            $.messager.show({
+                msg: result.RSP.RSP_DESC,
+                timeout: 1000,
+                style: {right: '', bottom: ''},     //居中显示
+                showType: 'slide'
+            });
+            var rspCode = result.RSP.RSP_CODE;
+            if (rspCode == "1") {
+                $('#add_window').window('close'); // 成功后，关闭窗口
+                $("#queryInfo").datagrid('reload'); //成功后，刷新页面
+            }
+        });
     }
 
     /**

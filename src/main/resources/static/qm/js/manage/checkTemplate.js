@@ -254,7 +254,31 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
 
     function modifyWindowEvent() {
         $("#page").on("click", "#modfBut", function(){
-            addTabs('修改考评模板', "http://127.0.0.1:8080/qm/html/manage/modifyCheckTemplate.html");
+            var selRows = $("#checkTemplateManage").datagrid("getSelections");//选中多行
+            if (selRows.length == 0||selRows.length>1) {
+                $.messager.alert("提示", "请只选择一行数据!");
+                return false;
+            }
+            //传值
+            var templateId = selRows[0].templateId;
+            var jq = top.jQuery;
+            var url = "http://127.0.0.1:8080/qm/html/manage/modifyCheckTemplate.html?templateId="+templateId;
+            if (!jq('#tabs').tabs('exists', '修改考评模板')) {
+                jq('#tabs').tabs('add', {
+                    title: '修改考评模板',
+                    content: '<iframe src="' + url + '" frameBorder="0" border="0" scrolling="auto"  style="width: 100%; height: 100%;"/>',
+                    closable: true
+                });
+            }else {//刷新tab页
+                jq('#tabs').tabs('select', '修改考评模板');
+                var tab = jq('#tabs').tabs('getSelected');
+                jq('#tabs').tabs('update', {
+                    tab : tab,
+                    options : {
+                        content: '<iframe src="' + url + '" frameBorder="0" border="0" scrolling="auto"  style="width: 100%; height: 100%;"/>',
+                    }
+                });
+            }
         });
     }
 
