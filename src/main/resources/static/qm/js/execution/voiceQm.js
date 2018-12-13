@@ -1,5 +1,4 @@
 require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, Transfer,easyui,dateUtil) {
-    var qmURI = "/qm/configservice/voicepool/";
     //初始化方法
     initialize();
 
@@ -104,8 +103,8 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
                     "touchId": touchId,
                     "planId": planId,
                     "isOperate": isOperate,
-                    "startTime": startTime,
-                    "endTime": endTime,
+                    "extractBeginTime": startTime,
+                    "extractEndTime": endTime,
                     "checkStaffId": checkStaffId,
                     "checkedStaffId":checkedStaffId,
                     "hungupType":hungupType,
@@ -127,7 +126,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
                     "params": JSON.stringify(reqParams)
                 }, Util.PageUtil.getParams($("#queryInfo")));
 
-                Util.ajax.getJson(Util.constants.CONTEXT + qmURI+ "/selectByParams", params, function (result) {
+                Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.VOICE_POOL_DNS + "/selectByParams", params, function (result) {
                     var data = Transfer.DataGrid.transfer(result);
                     var dataNew=[];
                     for(var i=0;i<data.rows.length;i++){
@@ -202,7 +201,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
         $.messager.confirm('确认弹窗', '确定要强制释放吗？', function (confirm) {
 
             if (confirm) {
-                Util.ajax.putJson(Util.constants.CONTEXT.concat(qmURI).concat("/").concat(ids), {}, function (result) {
+                Util.ajax.putJson(Util.constants.CONTEXT.concat(Util.constants.VOICE_POOL_DNS).concat("/").concat(ids), {}, function (result) {
 
                     $.messager.show({
                         msg: result.RSP.RSP_DESC,

@@ -1,8 +1,5 @@
 
 require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, Transfer,dateUtil) {
-    var qmURI = "/qm/configservice/checkTemplate";
-    var qmURI2 = "/qm/configservice/addCheckTemplate";//详情表
-    var qmURI3 = "/qm/configservice/tplOpLog/";//操作表
     //调用初始化方法
     initialize();
 
@@ -135,7 +132,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
                     "params": JSON.stringify(reqParams)
                 }, Util.PageUtil.getParams($("#searchForm")));
 
-                Util.ajax.getJson(Util.constants.CONTEXT + qmURI + "/selectByParams", params, function (result) {
+                Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.CHECK_TEMPLATE + "/selectByParams", params, function (result) {
                     var data = Transfer.DataGrid.transfer(result);
 
                     var rspCode = result.RSP.RSP_CODE;
@@ -187,7 +184,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
             $.messager.confirm('确认删除弹窗', '确定要删除吗？', function (confirm) {
 
                 if (confirm) {
-                    Util.ajax.deleteJson(Util.constants.CONTEXT.concat(qmURI).concat("/deleteByIds/").concat(ids), {}, function (result) {
+                    Util.ajax.deleteJson(Util.constants.CONTEXT.concat(Util.constants.CHECK_TEMPLATE).concat("/deleteByIds/").concat(ids), {}, function (result) {
 
                         $.messager.show({
                             msg: result.RSP.RSP_DESC,
@@ -203,7 +200,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
                     });
 
                     //根据templateId删除t_qm_templatedetail对应的数据
-                    // Util.ajax.putJson(Util.constants.CONTEXT.concat(qmURI2).concat("/deleteByIds/").concat(ids), {}, function (result) {
+                    // Util.ajax.putJson(Util.constants.CONTEXT.concat(Util.constants.ADD_CHECK_TEMPLATE).concat("/deleteByIds/").concat(ids), {}, function (result) {
                     //
                     //     $.messager.show({
                     //         msg: result.RSP.RSP_DESC,
@@ -215,7 +212,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
 
                     //将操作信息保存到考评模板操作日志表中
                     var params = {'operateType': '2',"templateId":JSON.stringify(ids)};
-                    Util.ajax.postJson(Util.constants.CONTEXT+ qmURI3 + "/insertTplOpLog ", JSON.stringify(params), function (result) {
+                    Util.ajax.postJson(Util.constants.CONTEXT+ Util.constants.TPL_OP_LOG + "/insertTplOpLog ", JSON.stringify(params), function (result) {
 
                         $.messager.show({
                             msg: result.RSP.RSP_DESC,
@@ -294,7 +291,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
             $.messager.confirm('确认', '确定更改模板状态吗？', function (confirm) {
 
                 if (confirm) {
-                    Util.ajax.putJson(Util.constants.CONTEXT.concat(qmURI).concat("/action"), JSON.stringify(sensjson), function (result) {
+                    Util.ajax.putJson(Util.constants.CONTEXT.concat(Util.constants.CHECK_TEMPLATE).concat("/action"), JSON.stringify(sensjson), function (result) {
 
                         $.messager.show({
                             msg: result.RSP.RSP_DESC,
@@ -333,7 +330,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
                 var name = selRows[0].templateName;
                 selRows[0].templateName = name +"(复制"+times+")";
                 selRows[0].templateStatus = "0";
-                Util.ajax.postJson(Util.constants.CONTEXT+ qmURI + "/copyTemplate", JSON.stringify(selRows[0]), function (result) {
+                Util.ajax.postJson(Util.constants.CONTEXT+ Util.constants.CHECK_TEMPLATE + "/copyTemplate", JSON.stringify(selRows[0]), function (result) {
                     $.messager.show({
                         msg: result.RSP.RSP_DESC,
                         timeout: 1000,

@@ -1,8 +1,5 @@
 
 require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], function ($, Util, Transfer,dateUtil) {
-    var qmURI = "/qm/configservice/addCheckTemplate";//详情表
-    var qmURI2 = "/qm/configservice/checkTemplate";//基本信息表
-    var qmURI3 = "/qm/configservice/tplOpLog/";//操作表
     var data = [];
     var i = 0;
     //调用初始化方法
@@ -58,7 +55,7 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
             "params": JSON.stringify(reqParams)
         };
 
-        Util.ajax.getJson(Util.constants.CONTEXT + qmURI + "/queryCheckItem", params, function (result) {
+        Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.ADD_CHECK_TEMPLATE + "/queryCheckItem", params, function (result) {
 
             for(var i=0;i<result.length;i++){
                 var nodeMap =
@@ -189,7 +186,7 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
             var id= row.templateId
             ids.push(id);
 
-            Util.ajax.putJson(Util.constants.CONTEXT.concat(qmURI).concat("/deleteByIds/").concat(ids), {}, function (result) {
+            Util.ajax.putJson(Util.constants.CONTEXT.concat(Util.constants.ADD_CHECK_TEMPLATE).concat("/deleteByIds/").concat(ids), {}, function (result) {
 
                 $.messager.show({
                     msg: result.RSP.RSP_DESC,
@@ -255,7 +252,7 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
         }
 
         var param =  {"params":json};
-        Util.ajax.postJson(Util.constants.CONTEXT.concat(qmURI).concat("/insertTempDetail"),JSON.stringify(param), function (result) {
+        Util.ajax.postJson(Util.constants.CONTEXT.concat(Util.constants.ADD_CHECK_TEMPLATE).concat("/insertTempDetail"),JSON.stringify(param), function (result) {
 
             $.messager.show({
                 msg: result.RSP.RSP_DESC,
@@ -281,7 +278,7 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
 
             var params = {'tenantId': Util.constants.TENANT_ID,'templateName': templateName,
                 'templateStatus': templateStatus, 'operateType': '0','remark':templateDesc,'templateType':templateType,"templateId":num.toString()};
-            Util.ajax.postJson(Util.constants.CONTEXT+ qmURI2 + "/insertCheckTemplate ", JSON.stringify(params), function (result) {
+            Util.ajax.postJson(Util.constants.CONTEXT+ Util.constants.CHECK_TEMPLATE + "/insertCheckTemplate ", JSON.stringify(params), function (result) {
 
                 $.messager.show({
                     msg: result.RSP.RSP_DESC,
@@ -299,7 +296,7 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
 
             //将操作信息保存到考评模板操作日志表中
             var params = {'operateType': '0',"templateId":i.toString()};
-            Util.ajax.postJson(Util.constants.CONTEXT+ qmURI3 + "/insertTplOpLog ", JSON.stringify(params), function (result) {
+            Util.ajax.postJson(Util.constants.CONTEXT+ Util.constants.TPL_OP_LOG + "/insertTplOpLog ", JSON.stringify(params), function (result) {
 
                 $.messager.show({
                     msg: result.RSP.RSP_DESC,
@@ -413,7 +410,7 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
             //         "params":JSON.stringify(reqParams)
             //     };
             //
-            //     Util.ajax.getJson(Util.constants.CONTEXT + qmURI + "/selectByParams", param, function (result) {
+            //     Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.ADD_CHECK_TEMPLATE + "/selectByParams", param, function (result) {
             //         var data = Transfer.DataGrid.transfer(result);
             //
             //         var rspCode = result.RSP.RSP_CODE;

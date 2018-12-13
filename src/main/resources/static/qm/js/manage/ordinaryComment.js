@@ -1,5 +1,5 @@
 require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, Transfer,dateUtil) {
-    var qmURI = "/qm/configservice/ordinaryComment";
+
     //调用初始化方法
     initialize();
 
@@ -88,7 +88,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
                 }, Util.PageUtil.getParams($("#searchForm")));
 
                 //查询
-                Util.ajax.getJson(Util.constants.CONTEXT + qmURI + "/selectByParams", params, function (result) {
+                Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.ORDINARY_COMMENT + "/selectByParams", params, function (result) {
                     var data = Transfer.DataGrid.transfer(result);
 
                     var rspCode = result.RSP.RSP_CODE;
@@ -139,7 +139,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
             $.messager.confirm('确认删除弹窗', '确定要删除吗？', function (confirm) {
 
                 if (confirm) {
-                    Util.ajax.deleteJson(Util.constants.CONTEXT.concat(qmURI).concat("/deleteByIds/").concat(ids), {}, function (result) {
+                    Util.ajax.deleteJson(Util.constants.CONTEXT.concat(Util.constants.ORDINARY_COMMENT).concat("/deleteByIds/").concat(ids), {}, function (result) {
 
                         $.messager.show({
                             msg: result.RSP.RSP_DESC,
@@ -206,7 +206,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
                    return false;
                }
 
-               Util.ajax.postJson(Util.constants.CONTEXT+ qmURI + "/insertComment", JSON.stringify(params), function (result) {
+               Util.ajax.postJson(Util.constants.CONTEXT+ Util.constants.ORDINARY_COMMENT + "/insertComment", JSON.stringify(params), function (result) {
 
                    $.messager.show({
                        msg: result.RSP.RSP_DESC,
@@ -272,7 +272,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
                    return false;
                }
 
-               Util.ajax.putJson(Util.constants.CONTEXT + qmURI + "/updateComment", JSON.stringify(params), function (result) {
+               Util.ajax.putJson(Util.constants.CONTEXT + Util.constants.ORDINARY_COMMENT + "/updateComment", JSON.stringify(params), function (result) {
 
                    $.messager.show({
                        msg: result.RSP.RSP_DESC,

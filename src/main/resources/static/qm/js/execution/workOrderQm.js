@@ -1,5 +1,4 @@
 require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, Transfer,easyui,dateUtil) {
-    var qmURI = "/qm/configservice/pool/";
     //初始化方法
     initialize();
 
@@ -136,7 +135,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
                     "params": JSON.stringify(reqParams)
                 }, Util.PageUtil.getParams($("#queryInfo")));
 
-                Util.ajax.getJson(Util.constants.CONTEXT + qmURI+ "/selectByParams", params, function (result) {
+                Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.ORDER_POOL_DNS+ "/selectByParams", params, function (result) {
                     var data = Transfer.DataGrid.transfer(result);
                     var dataNew=[];
                     for(var i=0;i<data.rows.length;i++){
@@ -202,7 +201,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
         }
         $.messager.confirm('确认删除弹窗', '确定要删除吗？', function (confirm) {
             if (confirm) {
-                Util.ajax.deleteJson(Util.constants.CONTEXT.concat(qmURI).concat("/").concat(delArr), {}, function (result) {
+                Util.ajax.deleteJson(Util.constants.CONTEXT.concat(Util.constants.ORDER_POOL_DNS).concat("/").concat(delArr), {}, function (result) {
                     $.messager.show({
                         msg: result.RSP.RSP_DESC,
                         timeout: 1000,
@@ -297,7 +296,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
         $.messager.confirm('确认弹窗', '确定要强制释放吗？', function (confirm) {
 
             if (confirm) {
-                Util.ajax.putJson(Util.constants.CONTEXT.concat(qmURI).concat("/update"), JSON.stringify(ids), function (result) {
+                Util.ajax.putJson(Util.constants.CONTEXT.concat(Util.constants.ORDER_POOL_DNS).concat("/update"), JSON.stringify(ids), function (result) {
 
                     $.messager.show({
                         msg: result.RSP.RSP_DESC,
