@@ -1,0 +1,63 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>语音申诉处理</title>
+    <link rel="stylesheet" type="text/css" href="../../assets/lib/easyui/themes/cmcui/cmcui.css"/>
+    <link rel="stylesheet" type="text/css" href="../../assets/lib/easyui/themes/cmcui/iconfont/iconfont.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../assets/lib/ztree/css/cmcStyle/tree.css"/>
+    <link rel="stylesheet" type="text/css" href="../../assets/components/rating/themes/fontawesome-stars.css"/>
+    <script src="../../assets/components/ckeditor/ckeditor.js"></script>
+
+    <link href="../../css/style.min.css" rel="stylesheet">
+
+
+</head>
+<body>
+<div id="page_content" data-options="region:'center'" style="height:100%;">
+    <div id='layout_content' class='easyui-layout' data-options="region:'center'" style='overflow: auto; height:100%;'>
+        <div data-options="region:'center'" style='overflow: hidden;height: 100%'>
+            <div id="page">
+                <div class='panel-search ' title="">
+                    <form class='form form-horizontal'>
+                        <div class='row cl'>
+                            <label class='form-label col-1'>质检流水</label>
+                            <div class='formControls col-2'>
+                                <input id="checkId" type='text' class='easyui-textbox'
+                                       style='width:100%;height:30px'>
+                            </div>
+                            <label class='form-label col-1'>申诉人</label>
+                            <div class='formControls col-2'>
+                                <input id="appealMember" type='text' class='easyui-searchbox'
+                                       style='width:100%;height:30px'>
+                            </div>
+                            <div class="formControls col-1">
+                            </div>
+                            <div class='formControls col-1'>
+                                <a href='javascript:void(0)' class='btn btn-green radius mt-l-20' id="queryBtn"><i
+                                        class='iconfont iconfont-search2'></i>查询</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div class='cl'>
+                    <div class='panel-tool-box cl'>
+                        <div class='fl text-bold'>查询信息</div>
+                    </div>
+                    <table id='appealCheckList' class='easyui-datagrid' style=' width:100%;'>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+</body>
+
+<script type="text/javascript" src="../../js/common/requirejs-main.js"></script>
+<script type="text/javascript" src="../../assets/lib/require/require.min.js"
+        data-main="js/execution/voiceAppeal.js"></script>
+
+</html>
