@@ -1,6 +1,6 @@
 require(["jquery", 'util', "transfer", "easyui"], function ($, Util) {
 
-    var appealCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/execution/appealCheckDetail.html";
+    var appealCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/execution/orderAppealDetail.html";
 
     initialize();
 
@@ -42,20 +42,22 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util) {
         $("#appealCheckList").datagrid({
             columns: [[
                 {
-                    field: 'orderId', title: '工单流水', width: '20%',
+                    field: 'orderId', title: '工单流水', width: '14%',
                     formatter: function (value, row, index) {
                         var detail = '<a href="javascript:void(0);" id = "orderFlow' + row.orderId + '">' + value + '</a>';
                     }
                 },
                 {
-                    field: 'checkId', title: '质检流水', width: '20%',
+                    field: 'checkId', title: '质检流水', width: '14%',
                     formatter: function (value, row, index) {
                         var detail = '<a href="javascript:void(0);" id = "checkFlow' + row.checkId + '">' + value + '</a>';
                     }
                 },
-                {field: 'planName', title: '计划名称', width: '20%'},
-                {field: 'checkLink', title: '考评环节', width: '15%'},
-                {field: 'appealTime', title: '申诉时间', width: '20%'}
+                {field: 'appealId', title: '申诉单号', width: '14%'},
+                {field: 'appealStaffName', title: '申诉人', width: '14%'},
+                {field: 'appealReason', title: '申诉原因', width: '14%'},
+                {field: 'appealTime', title: '申诉时间', width: '14%'},
+                {field: 'currentNode', title: '当前节点', width: '14%'}
             ]],
             fitColumns: true,
             width: '100%',
@@ -71,13 +73,13 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util) {
             onSelect: function (rowIndex, rowData) {
                 if (!IsCheckFlag) {
                     IsCheckFlag = true;
-                    $("#appealProcessList").datagrid("unselectRow", rowIndex);
+                    $("#appealCheckList").datagrid("unselectRow", rowIndex);
                 }
             },
             onUnselect: function (rowIndex, rowData) {
                 if (!IsCheckFlag) {
                     IsCheckFlag = true;
-                    $("#appealProcessList").datagrid("selectRow", rowIndex);
+                    $("#appealCheckList").datagrid("selectRow", rowIndex);
                 }
             },
             // loader: function (param, success) {

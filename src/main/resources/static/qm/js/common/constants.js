@@ -14,30 +14,26 @@ define(function () {
         //URI
         STATIC_PARAMS_DNS: "/qm/configservice/staticParams",//静态数据配置
         CHECK_ITEM_DNS:"/qm/configservice/checkItem",//考评项配置
+        CHECK_TEMPLATE_DETAIL_DNS: "/qm/configservice/checkTemplateDetail",//考评模版详细信息
         QM_PLAN_DNS: "/qm/configservice/qmPlan",//考评计划
         APPEAL_PROCESS_CONFIG_DNS:"/qm/configservice/appealProcess",//申诉流程（配置）
         QM_STRATEGY_DNS: "/qm/configservice/qmStrategy",//考评策略
         QM_STRATEGY_ELES_DNS: "/qm/configservice/qmStrategyEles",//策略元素
         APPEAL_NODE_CONFIG_DNS:"/qm/configservice/appealNode",//申诉节点（配置）
+        ORDER_POOL_DNS:"/qm/configservice/pool",//工单质检池
 
-        NGKM_ATOM_DATA_TYPE_CHAR: "1",//字符串
-        NGKM_ATOM_DATA_TYPE_RADIO: "2",//单选
-        NGKM_ATOM_DATA_TYPE_CHECK: "3",//多选
-        NGKM_ATOM_DATA_TYPE_RICH: "4",//富文本
-        NGKM_ATOM_DATA_TYPE_TIME: "5",//时间
-        NGKM_ATOM_DATA_TYPE_DATE: "6",//日期
-        NGKM_ATOM_DATA_TYPE_DATETIME: "7",//日期时间
-        NGKM_ATOM_DATA_TYPE_KNLWG: "8",//关联知识
-        NGKM_ATOM_DATA_TYPE_MEMORY: "9",//内存
-        NGKM_ATOM_DATA_TYPE_FILE: "10",//附件
-        NGKM_ATOM_DATA_TYPE_DATAUNIT: "11",//数据单元
-        NGKM_ATOM_DATA_TYPE_PRICE: "12",//价格/时间类型
-        NGKM_ATOM_DATA_TYPE_PIC: "13",//图片
-        NGKM_ATOM_DATA_TYPE_LLT: "14",//经纬度
-        NGKM_ATOM_DATA_TYPE_KNLWG_LIST: "15",//关系系列
-        NGKM_ATOM_DATA_TYPE_REGN: "16",//地区
-        NGKM_ATOM_DATA_TYPE_MEDIA: "17",//多媒体素材
-
+        //质检结果状态
+        CHECK_RESULT_NEW_BUILD:'0',     //质检新生成
+        CHECK_RESULT_TEMP_SAVE:'1',     //临时保存
+        CHECK_RESULT_ABANDON:'2',       //放弃
+        CHECK_RESULT_RECHECK:'3',       //复检
+        CHECK_RESULT_DEPART_CHECK:'4',  //分检
+        CHECK_RESULT_CHECKED:'5',       //被检人确认
+        CHECK_RESULT_SYS_CHECKED:'6',   //系统自确认
+        CHECK_RESULT_APPEALING:'7',     //申诉中
+        CHECK_RESULT_APPEAL_PASS:'8',   //申诉通过
+        CHECK_RESULT_APPEAL_DENY:'9',   //申诉驳回
+        CHECK_RESULT_SYS_DENY:'99',     //系统驳回
 
         STATUS: {
             "-1": "删除",

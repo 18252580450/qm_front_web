@@ -215,6 +215,7 @@ require(["jquery", 'util', "transfer", "easyui", "ztree-exedit"], function ($, U
                 }, Util.PageUtil.getParams($("#searchForm")));
 
                 Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.CHECK_ITEM_DNS + "/queryCheckItem", params, function (result) {
+                    var data = Transfer.DataGrid.transfer(result);
                     var rspCode = result.RSP.RSP_CODE;
                     if (rspCode != null && rspCode !== "1") {
                         $.messager.show({
@@ -223,8 +224,6 @@ require(["jquery", 'util', "transfer", "easyui", "ztree-exedit"], function ($, U
                             style: {right: '', bottom: ''},     //居中显示
                             showType: 'show'
                         });
-                    } else {
-                        var data = Transfer.DataGrid.transfer(result);
                     }
                     success(data);
                 });

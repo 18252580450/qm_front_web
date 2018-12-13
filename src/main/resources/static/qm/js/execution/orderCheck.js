@@ -1,4 +1,4 @@
-require(["jquery", 'util', "transfer", "easyui"], function ($, Util) {
+require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
 
     var orderCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/execution/orderCheckDetail.html";
 
@@ -18,7 +18,8 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util) {
             }
         );
         //分配开始时间选择框
-        var beginDate = (formatDateTime(new Date() - 24 * 60 * 60 * 1000)).substr(0, 11) + "00:00:00";
+        // var beginDate = (formatDateTime(new Date() - 24 * 60 * 60 * 1000)).substr(0, 11) + "00:00:00";
+        var beginDate = "2018-10-10 00:00:00";
         $("#assignBeginTime").datetimebox({
             value: beginDate,
             onChange: function () {
@@ -48,21 +49,48 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util) {
         $("#orderCheckList").datagrid({
             columns: [[
                 {
-                    field: 'orderId', title: '工单流水', width: '15%',
+                    field: 'workformId', title: '工单流水', width: '15%',
                     formatter: function (value, row, index) {
-                        var detail = '<a href="javascript:void(0);" id = "orderFlow' + row.orderId + '">' + value + '</a>';
+                        if(value != null){
+                            return '<a href="javascript:void(0);" id = "orderFlow' + row.workformId + '">' + value + '</a>';
+                        }
                     }
                 },
                 {
-                    field: 'checkId', title: '质检流水', width: '15%',
+                    field: 'touchId', title: '质检流水', width: '15%',
                     formatter: function (value, row, index) {
-                        var detail = '<a href="javascript:void(0);" id = "checkFlow' + row.checkId + '">' + value + '</a>';
+                        if(value != null){
+                            return '<a href="javascript:void(0);" id = "checkFlow' + row.touchId + '">' + value + '</a>';
+                        }
                     }
                 },
-                {field: 'requireType', title: '服务请求类型', width: '15%'},
-                {field: 'planName', title: '计划名称', width: '15%'},
-                {field: 'planTime', title: '计划生成时间', width: '15%'},
-                {field: 'assignTime', title: '分配时间', width: '15%'},
+                {field: 'srvReqstTypeNm', title: '服务请求类型', width: '15%'},
+                {
+                    field: 'planName', title: '计划名称', width: '15%',
+                    formatter: function (value, row, index) {
+                        debugger;
+                        if (row.qmPlan != null) {
+                            return row.qmPlan.planName;
+                        }
+                    }
+                },
+                {
+                    field: 'planCreateTime', title: '计划生成时间', width: '15%',
+                    formatter: function (value, row, index) {
+                        debugger;
+                        if (row.qmPlan != null && row.qmPlan.createTime != null) {
+                            return formatDateTime(row.qmPlan.createTime);
+                        }
+                    }
+                },
+                {
+                    field: 'operateTime', title: '分配时间', width: '15%',
+                    formatter: function (value, row, index) { //格式化时间格式
+                        if (row.operateTime != null) {
+                            return formatDateTime(row.operateTime);
+                        }
+                    }
+                },
                 {field: 'checkLink', title: '考评环节', width: '10%'}
             ]],
             fitColumns: true,
@@ -79,29 +107,65 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util) {
             onSelect: function (rowIndex, rowData) {
                 if (!IsCheckFlag) {
                     IsCheckFlag = true;
-                    $("#appealProcessList").datagrid("unselectRow", rowIndex);
+                    $("#orderCheckList").datagrid("unselectRow", rowIndex);
                 }
             },
             onUnselect: function (rowIndex, rowData) {
                 if (!IsCheckFlag) {
                     IsCheckFlag = true;
-                    $("#appealProcessList").datagrid("selectRow", rowIndex);
+                    $("#orderCheckList").datagrid("selectRow", rowIndex);
                 }
             },
-            // loader: function (param, success) {
-            //
-            // },
+            loader: function (param, success) {
+                var start = (param.page - 1) * param.rows;
+                var pageNum = param.rows;
+
+                var workformId = $("#orderId").val(),
+                    distStartTime = $("#assignBeginTime").datetimebox("getValue"),
+                    distEndTime = $("#assignEndTime").datetimebox("getValue"),
+                    checkLink = $("#checkLink").val(),
+                    planId = $("#qmPlanName").val();
+
+                var reqParams = {
+                    "workformId": workformId,
+                    "distStartTime": distStartTime,
+                    "distEndTime": distEndTime,
+                    "checkLink": checkLink,
+                    "planId": planId
+                };
+                var params = $.extend({
+                    "start": start,
+                    "pageNum": pageNum,
+                    "params": JSON.stringify(reqParams)
+                }, Util.PageUtil.getParams($("#searchForm")));
+
+                Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.ORDER_POOL_DNS + "/selectByParams", params, function (result) {
+                    var data = Transfer.DataGrid.transfer(result);
+
+                    var rspCode = result.RSP.RSP_CODE;
+                    if (rspCode != null && rspCode !== "1") {
+                        $.messager.show({
+                            msg: result.RSP.RSP_DESC,
+                            timeout: 1000,
+                            style: {right: '', bottom: ''},     //居中显示
+                            showType: 'show'
+                        });
+                    }
+                    success(data);
+                });
+            },
             onLoadSuccess: function (data) {
                 //工单详情
                 $.each(data.rows, function (i, item) {
-                    $("#orderFlow" + item.orderId).on("click", function () {
+                    $("#orderFlow" + item.workformId).on("click", function () {
                         // var url = createURL(processDetailUrl, item);
                         // showDialog(url, "流程详情", 900, 600, false);
                     });
                 });
                 //工单质检详情
                 $.each(data.rows, function (i, item) {
-                    $("#checkFlow" + item.checkId).on("click", function () {
+                    $("#checkFlow" + item.touchId).on("click", function () {
+                        showOrderCheckDetail();
                         // var url = createURL(processEditUrl, item);
                         // addTabs("申诉流程-修改", url);
                     });
@@ -112,9 +176,10 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util) {
 
     //事件初始化
     function initEvent() {
-        $("#showOrderCheckDetail").on("click",function () {
-            showOrderCheckDetail();
-        })
+        $("#queryBtn").on("click", function () {
+            debugger;
+            $("#orderCheckList").datagrid('reload');
+        });
     }
 
     //工单质检详情
@@ -126,7 +191,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util) {
     //拼接对象到url
     function createURL(url, param) {
         var urlLink = url;
-        if(param != null){
+        if (param != null) {
             $.each(param, function (item, value) {
                 urlLink += '&' + item + "=" + encodeURI(value);
             });
@@ -169,8 +234,8 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util) {
 
     //校验开始时间和终止时间
     function checkBeginEndTime() {
-        var beginTime = $("#createTimeBegin").datetimebox("getValue");
-        var endTime = $("#createTimeEnd").datetimebox("getValue");
+        var beginTime = $("#assignBeginTime").datetimebox("getValue");
+        var endTime = $("#assignEndTime").datetimebox("getValue");
         var d1 = new Date(beginTime.replace(/-/g, "\/"));
         var d2 = new Date(endTime.replace(/-/g, "\/"));
 
