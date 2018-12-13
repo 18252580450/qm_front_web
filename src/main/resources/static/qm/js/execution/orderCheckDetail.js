@@ -1,6 +1,7 @@
 require(["jquery", 'util', "transfer", "easyui"], function ($, Util) {
 
-    var dealProcessData = [0, 0];
+    var dealProcessData = [0, 0],
+        orderPool;
     initialize();
 
     function initialize() {
@@ -10,6 +11,10 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util) {
 
     //页面信息初始化
     function initPageInfo() {
+        //获取工单流水、质检流水等信息
+        orderPool = getRequestObj();
+
+        debugger;
         //工单受理内容
         $("#orderDealContent").textbox(
             {
@@ -43,8 +48,14 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util) {
                 {
                     field: 'scoreScope', title: '扣分区间', width: '20%',
                     formatter: function (value, row, index) {
-                        var min = '<input id="minScore' + row.nodeId + '" type="text" style="width: 80px;" class="easyui-textbox" value="' + row.minScore + '" readonly>',
+                        var min = '<input id="minScore' + row.nodeId + '" type="text" style="width: 80px;" class="easyui-textbox" value="0" readonly>',
+                            max = '<input id="minScore' + row.nodeId + '" type="text" style="width: 80px;" class="easyui-textbox" value="0" readonly>';
+                        if(row.minScore != null){
+                            min = '<input id="minScore' + row.nodeId + '" type="text" style="width: 80px;" class="easyui-textbox" value="' + row.minScore + '" readonly>';
+                        }
+                        if(row.maxScore != null){
                             max = '<input id="maxScore' + row.nodeId + '" type="text" style="width: 80px;" class="easyui-textbox" value="' + row.maxScore + '" readonly>';
+                        }
                         return min + "&nbsp;&nbsp;" + "-" + "&nbsp;&nbsp;" + max;
                     }
                 },
@@ -77,8 +88,8 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util) {
             },
             loader: function (param, success) {
                 var reqParams = {
-                    "tenantId": Util.constants.TENANT_ID,
-                    "templateId": '10010000'
+                    "tenantId": orderPool.tenantId,
+                    "templateId": orderPool.templateId
                 };
                 var params = $.extend({
                     "start": 0,
@@ -203,6 +214,20 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util) {
             '<div class="formControls col-12"><div class="fl text-small">处理意见：客户反馈XX地点信号不好造成使用不方便，请处理</div></div>' +
             '</div></form> </div>' +
             '</div>';
+    }
+
+    //获取url对象
+    function getRequestObj() {
+        var url = decodeURI(decodeURI(location.search)); //获取url中"?"符后的字串，使用了两次decodeRUI解码
+        var requestObj = {};
+        if (url.indexOf("?") > -1) {
+            var str = url.substr(1),
+                strArr = str.split("&");
+            for (var i = 0; i < strArr.length; i++) {
+                requestObj[strArr[i].split("=")[0]] = unescape(strArr[i].split("=")[1]);
+            }
+            return requestObj;
+        }
     }
 
     return {

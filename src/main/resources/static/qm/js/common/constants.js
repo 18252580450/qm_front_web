@@ -20,7 +20,8 @@ define(function () {
         QM_STRATEGY_DNS: "/qm/configservice/qmStrategy",//考评策略
         QM_STRATEGY_ELES_DNS: "/qm/configservice/qmStrategyEles",//策略元素
         APPEAL_NODE_CONFIG_DNS:"/qm/configservice/appealNode",//申诉节点（配置）
-        ORDER_POOL_DNS:"/qm/configservice/pool",//工单质检池
+        ORDER_POOL_DNS:"/qm/configservice/orderPool",//工单质检池
+        VOICE_POOL_DNS:"/qm/configservice/voicePool",//工单质检池
 
         //质检结果状态
         CHECK_RESULT_NEW_BUILD:'0',     //质检新生成

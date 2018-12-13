@@ -51,7 +51,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                 {
                     field: 'workformId', title: '工单流水', width: '15%',
                     formatter: function (value, row, index) {
-                        if(value != null){
+                        if (value != null) {
                             return '<a href="javascript:void(0);" id = "orderFlow' + row.workformId + '">' + value + '</a>';
                         }
                     }
@@ -59,7 +59,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                 {
                     field: 'touchId', title: '质检流水', width: '15%',
                     formatter: function (value, row, index) {
-                        if(value != null){
+                        if (value != null) {
                             return '<a href="javascript:void(0);" id = "checkFlow' + row.touchId + '">' + value + '</a>';
                         }
                     }
@@ -165,9 +165,8 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                 //工单质检详情
                 $.each(data.rows, function (i, item) {
                     $("#checkFlow" + item.touchId).on("click", function () {
-                        showOrderCheckDetail();
-                        // var url = createURL(processEditUrl, item);
-                        // addTabs("申诉流程-修改", url);
+                        var url = createURL(orderCheckDetail, item);
+                        addTabs("工单质检详情", url);
                     });
                 });
             }
@@ -180,12 +179,6 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
             debugger;
             $("#orderCheckList").datagrid('reload');
         });
-    }
-
-    //工单质检详情
-    function showOrderCheckDetail() {
-        var url = createURL(orderCheckDetail, null);
-        addTabs("工单质检详情", url);
     }
 
     //拼接对象到url

@@ -1,4 +1,4 @@
-require(["jquery", 'util', "transfer", "easyui"], function ($, Util) {
+require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
 
     var orderCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/execution/orderCheckDetail.html";
 
@@ -18,47 +18,49 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util) {
             }
         );
         //抽取开始时间选择框
-        var selectBeginDate = (formatDateTime(new Date() - 24 * 60 * 60 * 1000)).substr(0, 11) + "00:00:00";
-        $("#selectBeginTime").datetimebox({
-            value: selectBeginDate,
+        // var extractBeginDate = (formatDateTime(new Date() - 24 * 60 * 60 * 1000)).substr(0, 11) + "00:00:00";
+        var extractBeginDate = "2018-10-10 00:00:00";
+        $("#extractBeginTime").datetimebox({
+            value: extractBeginDate,
             onChange: function () {
-                var beginDate = $("#selectBeginTime").datetimebox("getValue"),
-                    endDate = $("#selectEndTime").datetimebox("getValue");
+                var beginDate = $("#extractBeginTime").datetimebox("getValue"),
+                    endDate = $("#extractEndTime").datetimebox("getValue");
                 checkBeginEndTime(beginDate, endDate);
             }
         });
 
         //抽取结束时间选择框
-        var selectEndDate = (formatDateTime(new Date())).substr(0, 11) + "00:00:00";
+        var extractEndDate = (formatDateTime(new Date())).substr(0, 11) + "00:00:00";
         // var endDate = (formatDateTime(new Date()-24*60*60*1000)).substr(0,11) + "23:59:59";
-        $('#selectEndTime').datetimebox({
-            value: selectEndDate,
+        $('#extractEndTime').datetimebox({
+            value: extractEndDate,
             onChange: function () {
-                var beginDate = $("#selectBeginTime").datetimebox("getValue"),
-                    endDate = $("#selectEndTime").datetimebox("getValue");
+                var beginDate = $("#extractBeginTime").datetimebox("getValue"),
+                    endDate = $("#extractEndTime").datetimebox("getValue");
                 checkBeginEndTime(beginDate, endDate);
             }
         });
 
         //分配开始时间选择框
-        var assignBeginDate = (formatDateTime(new Date() - 24 * 60 * 60 * 1000)).substr(0, 11) + "00:00:00";
-        $("#assignBeginTime").datetimebox({
-            value: assignBeginDate,
+        // var distributeBeginDate = (formatDateTime(new Date() - 24 * 60 * 60 * 1000)).substr(0, 11) + "00:00:00";
+        var distributeBeginDate = "2018-10-10 00:00:00";
+        $("#distributeBeginTime").datetimebox({
+            value: distributeBeginDate,
             onChange: function () {
-                var beginDate = $("#assignBeginTime").datetimebox("getValue"),
-                    endDate = $("#assignEndTime").datetimebox("getValue");
+                var beginDate = $("#distributeBeginTime").datetimebox("getValue"),
+                    endDate = $("#distributeEndTime").datetimebox("getValue");
                 checkBeginEndTime(beginDate, endDate);
             }
         });
 
         //分配结束时间选择框
-        var assignEndDate = (formatDateTime(new Date())).substr(0, 11) + "00:00:00";
+        var distributeEndDate = (formatDateTime(new Date())).substr(0, 11) + "00:00:00";
         // var endDate = (formatDateTime(new Date()-24*60*60*1000)).substr(0,11) + "23:59:59";
-        $('#assignEndTime').datetimebox({
-            value: assignEndDate,
+        $('#distributeEndTime').datetimebox({
+            value: distributeEndDate,
             onChange: function () {
-                var beginDate = $("#assignBeginTime").datetimebox("getValue"),
-                    endDate = $("#assignEndTime").datetimebox("getValue");
+                var beginDate = $("#distributeBeginTime").datetimebox("getValue"),
+                    endDate = $("#distributeEndTime").datetimebox("getValue");
                 checkBeginEndTime(beginDate, endDate);
             }
         });
@@ -68,23 +70,23 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util) {
         $("#voiceCheckList").datagrid({
             columns: [[
                 {
-                    field: 'orderId', title: '语音流水', width: '14%',
+                    field: 'touchId', title: '语音流水', width: '14%',
                     formatter: function (value, row, index) {
-                        var detail = '<a href="javascript:void(0);" id = "voiceFlow' + row.orderId + '">' + value + '</a>';
+                        return '<a href="javascript:void(0);" id = "voiceFlow' + row.touchId + '">' + value + '</a>';
                     }
                 },
                 {
-                    field: 'checkId', title: '质检流水', width: '14%',
+                    field: 'inspectionId', title: '质检流水', width: '14%',
                     formatter: function (value, row, index) {
-                        var detail = '<a href="javascript:void(0);" id = "checkFlow' + row.checkId + '">' + value + '</a>';
+                        return '<a href="javascript:void(0);" id = "checkFlow' + row.inspectionId + '">' + value + '</a>';
                     }
                 },
-                {field: 'selectTime', title: '抽取时间', width: '13%'},
-                {field: 'assignMember', title: '分派人员', width: '10%'},
-                {field: 'assignTime', title: '分派时间', width: '13%'},
-                {field: 'checkedMember', title: '被检人员', width: '10%'},
+                {field: 'checkedTime', title: '抽取时间', width: '13%'},
+                {field: 'distributeStaff', title: '分派人员', width: '10%'},
+                {field: 'operateTime', title: '分派时间', width: '13%'},
+                {field: 'checkedStaffName', title: '被检人员', width: '10%'},
                 {field: 'callingNumber', title: '主叫号码', width: '13%'},
-                {field: 'acceptNumber', title: '服务号码', width: '13%'}
+                {field: 'calledNumber', title: '服务号码', width: '13%'}
             ]],
             fitColumns: true,
             width: '100%',
@@ -109,9 +111,55 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util) {
                     $("#voiceCheckList").datagrid("selectRow", rowIndex);
                 }
             },
-            // loader: function (param, success) {
-            //
-            // },
+            loader: function (param, success) {
+                var start = (param.page - 1) * param.rows;
+                var pageNum = param.rows;
+
+                var touchId = $("#touchId").val(),
+                    planId = $("#qmPlanName").val(),
+                    callingNumber = $("#callingNumber").val(),
+                    calledNumber = $("#calledNumber").val(),
+                    extractBeginTime = $("#extractBeginTime").datetimebox("getValue"),
+                    extractEndTime = $("#extractEndTime").datetimebox("getValue"),
+                    distributeBeginTime = $("#distributeBeginTime").datetimebox("getValue"),
+                    distributeEndTime = $("#distributeEndTime").datetimebox("getValue"),
+                    minRecordTime = $("#minRecordTime").val(),
+                    maxRecordTime = $("#maxRecordTime").val();
+
+                var reqParams = {
+                    "touchId": touchId,
+                    "planId": planId,
+                    "callingNumber": callingNumber,
+                    "calledNumber": calledNumber,
+                    "extractBeginTime": extractBeginTime,
+                    "extractEndTime": extractEndTime,
+                    "distributeBeginTime": distributeBeginTime,
+                    "distributeEndTime": distributeEndTime,
+                    "minRecordTime": minRecordTime,
+                    "maxRecordTime": maxRecordTime
+                };
+                var params = $.extend({
+                    "start": start,
+                    "pageNum": pageNum,
+                    "params": JSON.stringify(reqParams)
+                }, Util.PageUtil.getParams($("#searchForm")));
+
+                Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.VOICE_POOL_DNS + "/selectByParams", params, function (result) {
+                    var data = Transfer.DataGrid.transfer(result);
+                    debugger;
+
+                    var rspCode = result.RSP.RSP_CODE;
+                    if (rspCode != null && rspCode !== "1") {
+                        $.messager.show({
+                            msg: result.RSP.RSP_DESC,
+                            timeout: 1000,
+                            style: {right: '', bottom: ''},     //居中显示
+                            showType: 'show'
+                        });
+                    }
+                    success(data);
+                });
+            },
             onLoadSuccess: function (data) {
                 //工单详情
                 $.each(data.rows, function (i, item) {
