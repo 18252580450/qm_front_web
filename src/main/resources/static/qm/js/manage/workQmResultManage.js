@@ -10,8 +10,8 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
 
     //页面信息初始化
     function initPageInfo() {
-        //是否分配下拉框
-        $("#isDis").combobox({
+        //差错类型
+        $("#errorType").combobox({
             url: '../../data/isDistribution.json',
             method: "GET",
             valueField: 'codeValue',
@@ -19,7 +19,23 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
             panelHeight: 'auto',
             editable: false,
             onLoadSuccess: function () {
-                var isDis = $("#isDis");
+                var isDis = $("#errorType");
+                var data = isDis.combobox('getData');
+                if (data.length > 0) {
+                    isDis.combobox('select', data[0].codeValue);
+                }
+            }
+        });
+        //申诉结果
+        $("#qmResult").combobox({
+            url: '../../data/isDistribution.json',
+            method: "GET",
+            valueField: 'codeValue',
+            textField: 'codeName',
+            panelHeight: 'auto',
+            editable: false,
+            onLoadSuccess: function () {
+                var isDis = $("#qmResult");
                 var data = isDis.combobox('getData');
                 if (data.length > 0) {
                     isDis.combobox('select', data[0].codeValue);
@@ -28,39 +44,21 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
         });
 
         //时间控件初始化
-        var planStartTime = $('#planStartTime');
+        var qmStartTime = $('#qmStartTime');
         var beginDate = (DateUtil.formatDateTime(new Date() - 24 * 60 * 60 * 1000)).substr(0, 11) + "00:00:00";
-        planStartTime.datetimebox({
+        qmStartTime.datetimebox({
             value: beginDate,
             onChange: function () {
                 checkTime();
             }
         });
 
-        var planEndTime = $('#planEndTime');
+        var qmEndTime = $('#qmEndTime');
         var endDate = (DateUtil.formatDateTime(new Date())).substr(0,11) + "23:59:59";
-        planEndTime.datetimebox({
+        qmEndTime.datetimebox({
             value: endDate,
             onChange: function () {
                 checkTime();
-            }
-        });
-
-        var distStartTime = $('#distStartTime');
-        var beginDate2 = (DateUtil.formatDateTime(new Date() - 24 * 60 * 60 * 1000)).substr(0, 11) + "00:00:00";
-        distStartTime.datetimebox({
-            value: beginDate2,
-            onChange: function () {
-                checkTime();
-            }
-        });
-
-        var distEndTime = $('#distEndTime');
-        var endDate2 = (DateUtil.formatDateTime(new Date())).substr(0,11) + "23:59:59";
-        distEndTime.datetimebox({
-            value: endDate2,
-                onChange: function () {
-                    checkTime();
             }
         });
 
@@ -68,30 +66,40 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
         $("#queryInfo").datagrid({
             columns: [[
                 {field: 'ck', checkbox: true, align: 'center'},
-                {field: 'workformId', title: '工单流水', align: 'center', width: '15%',
+                {
+                    field: 'action', title: '操作', width: '15%',
+
+                    formatter: function (value, row, index) {
+
+                        var bean = {//根据参数进行定位修改
+                            'commentName': row.commentName, 'commentId': row.commentId,
+                            'remark': row.remark,'crtTime': row.crtTime,'createStaffId': row.createStaffId
+                        };
+                        var beanStr = JSON.stringify(bean);   //转成字符串
+
+                        var Action =
+                            "<a href='javascript:void(0);' class='reviseBtn' id =" + beanStr + " >修改</a>";
+                        return Action;
+                    }
+                },
+                {field: 'workformId', title: '工单流水号', align: 'center', width: '15%',
                     formatter:function(value, row, index){
                         var bean={'workformId':row.workformId};
                         return "<a href='javascript:void(0);' style='color:blue;'class='workformIdBtn' id =" + JSON.stringify(bean) + " >"+value+"</a>";
                     }
                 },
-                {field: 'planName', title: '计划名称', align: 'center', width: '10%'},
-                {field: 'planId', title: '计划编码', align: 'center', width: '10%',hidden: true},
+                {field: 'planName', title: '质检流水号', align: 'center', width: '10%'},
+                {field: 'planId', title: '客户号码', align: 'center', width: '10%',hidden: true},
+                {field: 'srvReqstTypeNm', title: '考评环节', align: 'center', width: '10%'},
+                {field: 'checkLink', title: '质检计划名称', align: 'center', width: '10%'},
+                {field: 'poolStatus', title: '被质检人工号', align: 'center', width: '10%'},
+                {field: 'checkStaffName', title: '被质检人班组', align: 'center', width: '10%'},
+                {field: 'checkStaffName', title: '差错类型', align: 'center', width: '10%'},
+                {field: 'checkStaffName', title: '质检得分', align: 'center', width: '10%'},
+                {field: 'checkStaffName', title: '质检人工号', align: 'center', width: '10%'},
+                {field: 'checkStaffName', title: '申诉结果', align: 'center', width: '10%'},
                 {
-                    field: 'crtTime', title: '计划生成时间', align: 'center', width: '15%',
-                    formatter: function (value, row, index) { //格式化时间格式
-                            return DateUtil.formatDateTime(value);
-                    }
-                },
-                {field: 'srvReqstTypeNm', title: '服务请求类型', align: 'center', width: '10%'},
-                {field: 'checkLink', title: '考评环节', align: 'center', width: '10%'},
-                {field: 'poolStatus', title: '是否分配', align: 'center', width: '10%',
-                    formatter:function(value, row, index){
-                        return {'0':'待审核','1':'未分配','2':'已分配','3':'正在质检','4':'质检完成','5':'放弃'}[value];
-                    }
-                },
-                {field: 'checkStaffName', title: '质检员', align: 'center', width: '10%'},
-                {
-                    field: 'operateTime', title: '分配时间', align: 'center', width: '15%',
+                    field: 'operateTime', title: '质检时间', align: 'center', width: '15%',
                     formatter: function (value, row, index) { //格式化时间格式
                         return DateUtil.formatDateTime(value);
                     }
@@ -186,38 +194,6 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
         }
     }
 
-    /**
-     * 删除
-     */
-    function showCheckItemDeleteDialog() {
-        var delRows = $("#queryInfo").datagrid("getSelections");
-        if (delRows.length === 0) {
-            $.messager.alert("提示", "请至少选择一行数据!");
-            return false;
-        }
-        var delArr = [];
-        for (var i = 0; i < delRows.length; i++) {
-            var id = delRows[i].planId;
-            delArr.push(id);
-        }
-        $.messager.confirm('确认删除弹窗', '确定要删除吗？', function (confirm) {
-            if (confirm) {
-                Util.ajax.deleteJson(Util.constants.CONTEXT.concat(qmURI).concat("/").concat(delArr), {}, function (result) {
-                    $.messager.show({
-                        msg: result.RSP.RSP_DESC,
-                        timeout: 1000,
-                        style: {right: '', bottom: ''},     //居中显示
-                        showType: 'show'
-                    });
-                    var rspCode = result.RSP.RSP_CODE;
-                    if (rspCode != null && rspCode === "1") {
-                        $("#queryInfo").datagrid('reload'); //删除成功后，刷新页面
-                    }
-                });
-            }
-        });
-    }
-
     // 导出
     function dao(){
         var oXL = new ActiveXObject("Excel.Application");
@@ -253,14 +229,9 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
             $("#queryInfo").datagrid("load");
         });
 
-        //分配
-        $("#disBut").on("click", function () {
-            addTabs("申诉流程-新增", Util.constants.URL_CONTEXT + "/qm/html/manage/appealProcessAdd.html")
-        });
-
-        //删除
-        $("#delBut").on("click", function () {
-            showCheckItemDeleteDialog();
+        //申诉
+        $("#appealBut").on("click", function () {
+            appeal();
         });
 
         //导出
@@ -268,21 +239,12 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
             dao();
         });
 
-        //认领
-        $("#claimBut").on("click", function () {
-            changeProcessStatus(Util.constants.PROCESS_STATUS_STOP);
-        });
-
-        //强制释放
-        $("#releaseBut").on("click", function () {
-            release();
-        });
     }
 
     /**
-     * 强制释放
+     * 申诉
      */
-    function release(){
+    function appeal(){
         var selRows = $("#queryInfo").datagrid("getSelections");//选中多行
         if (selRows.length == 0) {
             $.messager.alert("提示", "请至少选择一行数据!");
@@ -317,20 +279,13 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
     }
 
     //校验开始时间和终止时间
-    function checkTime() {
-        var planStartTime = $("#planStartTime").datetimebox("getValue");
-        var planEndTime = $("#planEndTime").datetimebox("getValue");
-        checkBeginEndTime(planStartTime,planEndTime);
-        var distStartTime = $("#distStartTime").datetimebox("getValue");
-        var distEndTime = $("#distEndTime").datetimebox("getValue");
-        checkBeginEndTime(distStartTime,distEndTime);
-    }
+    function checkTime(){
+        var qmStartTime = $("#qmStartTime").datetimebox("getValue");
+        var qmEndTime = $("#qmEndTime").datetimebox("getValue");
+        var d1 = new Date(qmStartTime.replace(/-/g, "\/"));
+        var d2 = new Date(qmEndTime.replace(/-/g, "\/"));
 
-    function checkBeginEndTime(startTime,endTime){
-        var d1 = new Date(startTime.replace(/-/g, "\/"));
-        var d2 = new Date(endTime.replace(/-/g, "\/"));
-
-        if (startTime !== "" && endTime !== "" && d1 > d2) {
+        if (qmStartTime !== "" && qmEndTime !== "" && d1 > d2) {
             $.messager.show({
                 msg: "开始时间不能大于结束时间!",
                 timeout: 1000,
@@ -386,6 +341,27 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
                 $("#" + select).combobox('loadData', selectData);
             }
         });
+    }
+
+    //点击后添加页面
+    $("#page").on("click", "a.processIdBtn", function () {
+
+        addTabs("工单质检详情","");
+    });
+
+    //添加一个选项卡面板
+    function addTabs(title, url) {
+        var jq = top.jQuery;//顶层的window对象.取得整个父页面对象
+        //重写jndex.js中的方法
+        if (!jq('#tabs').tabs('exists', title)) {
+            jq('#tabs').tabs('add', {
+                title: title,
+                content: '<iframe src="' + url + '" frameBorder="0" border="0" scrolling="auto"  style="width: 100%; height: 100%;"/>',
+                closable: true
+            });
+        } else {
+            jq('#tabs').tabs('select', title);
+        }
     }
 
     return {

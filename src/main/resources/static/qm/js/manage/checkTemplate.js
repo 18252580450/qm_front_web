@@ -259,7 +259,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
                 $.messager.alert("提示", "请只选择一行数据!");
                 return false;
             }
-            //传值
+            //页面传值
             var templateId = selRows[0].templateId;
             var jq = top.jQuery;
             var url = "http://127.0.0.1:8080/qm/html/manage/modifyCheckTemplate.html?templateId="+templateId;
