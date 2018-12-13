@@ -343,21 +343,6 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
         }
     }
 
-    //添加一个选项卡面板
-    function addTabs(title, url) {
-        var jq = top.jQuery;
-
-        if (!jq('#tabs').tabs('exists', title)) {
-            jq('#tabs').tabs('add', {
-                title: title,
-                content: '<iframe src="' + url + '" frameBorder="0" border="0" scrolling="auto"  style="width: 100%; height: 100%;"/>',
-                closable: true
-            });
-        } else {
-            jq('#tabs').tabs('select', title);
-        }
-    }
-
     /**
      * 下拉框数据重载
      */
