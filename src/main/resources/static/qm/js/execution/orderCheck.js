@@ -176,7 +176,6 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
     //事件初始化
     function initEvent() {
         $("#queryBtn").on("click", function () {
-            debugger;
             $("#orderCheckList").datagrid('reload');
         });
     }

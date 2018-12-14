@@ -1,6 +1,6 @@
 require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
 
-    var orderCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/execution/orderCheckDetail.html";
+    var voiceCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/execution/voiceCheckDetail.html";
 
     initialize();
 
@@ -81,9 +81,23 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                         return '<a href="javascript:void(0);" id = "checkFlow' + row.inspectionId + '">' + value + '</a>';
                     }
                 },
-                {field: 'checkedTime', title: '抽取时间', width: '13%'},
+                {
+                    field: 'checkedTime', title: '抽取时间', width: '13%',
+                    formatter: function (value, row, index) { //格式化时间格式
+                        if (row.checkedTime != null) {
+                            return formatDateTime(row.operateTime);
+                        }
+                    }
+                },
                 {field: 'distributeStaff', title: '分派人员', width: '10%'},
-                {field: 'operateTime', title: '分派时间', width: '13%'},
+                {
+                    field: 'operateTime', title: '分派时间', width: '13%',
+                    formatter: function (value, row, index) { //格式化时间格式
+                        if (row.operateTime != null) {
+                            return formatDateTime(row.operateTime);
+                        }
+                    }
+                },
                 {field: 'checkedStaffName', title: '被检人员', width: '10%'},
                 {field: 'callingNumber', title: '主叫号码', width: '13%'},
                 {field: 'calledNumber', title: '服务号码', width: '13%'}
@@ -127,6 +141,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                     maxRecordTime = $("#maxRecordTime").val();
 
                 var reqParams = {
+                    "tenantId":Util.constants.TENANT_ID,
                     "touchId": touchId,
                     "planId": planId,
                     "callingNumber": callingNumber,
@@ -161,18 +176,18 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                 });
             },
             onLoadSuccess: function (data) {
-                //工单详情
+                //语音详情
                 $.each(data.rows, function (i, item) {
-                    $("#orderFlow" + item.orderId).on("click", function () {
+                    $("#voiceFlow" + item.touchId).on("click", function () {
                         // var url = createURL(processDetailUrl, item);
                         // showDialog(url, "流程详情", 900, 600, false);
                     });
                 });
-                //工单质检详情
+                //语音质检详情
                 $.each(data.rows, function (i, item) {
-                    $("#checkFlow" + item.checkId).on("click", function () {
-                        // var url = createURL(processEditUrl, item);
-                        // addTabs("申诉流程-修改", url);
+                    $("#checkFlow" + item.inspectionId).on("click", function () {
+                        var url = createURL(voiceCheckDetail, item);
+                        addTabs("语音质检详情", url);
                     });
                 });
             }
@@ -181,8 +196,8 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
 
     //事件初始化
     function initEvent() {
-        $("#showOrderCheckDetail").on("click", function () {
-            showOrderCheckDetail();
+        $("#queryBtn").on("click", function () {
+            $("#voiceCheckList").datagrid('reload');
         })
     }
 
