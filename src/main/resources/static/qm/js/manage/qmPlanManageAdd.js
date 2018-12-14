@@ -69,8 +69,17 @@ define([
             }
             var rspCode;
             if(planBean){
-                params.planId = planBean.planId;
-                Util.ajax.putJson(Util.constants.CONTEXT.concat(Util.constants.QM_PLAN_DNS).concat("/"), JSON.stringify(params), function (result) {
+                planBean.planName = planName;
+                planBean.planType = planType;
+                planBean.templateId = templateId;
+                planBean.pId = pId;
+                planBean.manOrAuto = manOrAuto;
+                planBean.planRuntype = planRuntype;
+                planBean.planRuntime = "2018-01-01 " + planRuntime;
+                planBean.planStarttime = planStarttime;
+                planBean.planEndtime = planEndtime
+                planBean.remark = remark;
+                Util.ajax.putJson(Util.constants.CONTEXT.concat(Util.constants.QM_PLAN_DNS).concat("/"), JSON.stringify(planBean), function (result) {
                     $.messager.show({
                         msg: result.RSP.RSP_DESC,
                         timeout: 1000,

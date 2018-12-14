@@ -218,6 +218,7 @@ define([
                 var elementName = $("#elementName").val();
                 var isRegion = $("input[name='isRegion']:checked").val();
                 var isNeed = $("input[name='isNeed']:checked").val();
+                var isValidate = $("input[name='isValidate']:checked").val();
                 var remark = $("#remark").val();
 
                 var params = {
@@ -228,6 +229,7 @@ define([
                     'elementName':elementName,
                     'isRegion':isRegion,
                     'isNeed':isNeed,
+                    'isValidate':isValidate,
                     "remark":remark
                 };
 
@@ -283,6 +285,7 @@ define([
                     $("#elementName").val(bean.elementName);
                     $("input[name='isRegion'][value='"+bean.isRegion+"']").attr("checked","checked");
                     $("input[name='isNeed'][value='"+bean.isNeed+"']").attr("checked","checked");
+                    $("input[name='isValidate'][value='"+bean.isValidate+"']").attr("checked","checked");
                     $("#remark").val(bean.remark);
                 }
             });
@@ -301,6 +304,7 @@ define([
                 var elementName = $("#elementName").val();
                 var isRegion = $("input[name='isRegion']:checked").val();
                 var isNeed = $("input[name='isNeed']:checked").val();
+                var isValidate = $("input[name='isValidate']:checked").val();
                 var remark = $("#remark").val();
                 if (paramsTypeId == null || paramsTypeId == "" || elementType == null || elementType == "" || elementCode == null
                     || elementCode == "" ||elementName == null || elementName == "") {
@@ -313,23 +317,20 @@ define([
                 bean['elementCode'] = elementCode;
                 bean['elementName'] = elementName;
                 bean['isRegion'] = isRegion;
+                bean['isValidate'] = isValidate;
                 bean['isNeed'] = isNeed;
                 bean['remark'] = remark;
                 Util.ajax.putJson(Util.constants.CONTEXT.concat(Util.constants.QM_STRATEGY_ELES_DNS).concat("/"), JSON.stringify(bean), function (result) {
-
                     $.messager.show({
                         msg: result.RSP.RSP_DESC,
                         timeout: 1000,
                         style: {right: '', bottom: ''},     //居中显示
                         showType: 'slide'
                     });
-
                     var rspCode = result.RSP.RSP_CODE;
-
                     if (rspCode == "1") {
                         $("#elesList").datagrid('reload'); //修改成功后，刷新页面
                     }
-
                 })
             })
         });
