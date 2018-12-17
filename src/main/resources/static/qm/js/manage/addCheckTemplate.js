@@ -205,15 +205,15 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
         });
     }
 
-    //保存操作。将表中的数据保存到数据库中
+    //保存操作。将表中的数据保存到数据库中（新增）
     function saveEvent(){
         $("#page").on("click", "#saveBut", function () {
          //将表中数据保存到详情信息表中
         //获取datagrid中的所有数据，将其拼接成json格式字符串数组
         var rowsData = $('#peopleManage').datagrid('getRows');
         var json = [];
-        var maxAll = [];//所占分值
-        var nAll = [];//扣分范围
+        var maxAll = [];// 扣分范围
+        var nAll = [];//所占分值
         var loc;
         var num = Math.random()*15000 + 800;//随机生成
         num = parseInt(num, 10);
@@ -246,8 +246,8 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
         nAll.forEach(function(i,index){
             nAllScore = nAllScore+i;
         });
-        if(maxAllScore!=100||nAllScore!=100){
-            $.messager.alert("提示", "所占分值总和以及扣分范围总和必须为100!");
+        if(nAllScore!=100||maxAllScore>=100){
+            $.messager.alert("提示", "所占分值总和必须为100以及扣分范围总和不得高于100!");
             return false;
         }
 
@@ -295,7 +295,7 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
             });
 
             //将操作信息保存到考评模板操作日志表中
-            var params = {'operateType': '0',"templateId":i.toString()};
+            var params = {'operateType': '0'};
             Util.ajax.postJson(Util.constants.CONTEXT+ Util.constants.TPL_OP_LOG + "/insertTplOpLog ", JSON.stringify(params), function (result) {
 
                 $.messager.show({

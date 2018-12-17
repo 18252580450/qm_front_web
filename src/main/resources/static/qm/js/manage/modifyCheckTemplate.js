@@ -3,6 +3,8 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
     var data = [];
     var i = 0;
     var templateId=null;
+    var templateName=null;
+    var createTime = null;
     //调用初始化方法
     initialize();
 
@@ -12,12 +14,15 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
         var theRequest = new Object();
         if(url.indexOf("?") != -1) {
             var str = url.substr(1);
-            strs = str.split("&");
-            for(var i = 0; i < strs.length; i++) {
-                theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
+            strs = decodeURI(str.split("&"));//解码
+            var data = strs.split(",")
+            for(var i = 0; i < data.length; i++) {
+                theRequest[data[i].split("=")[0]] = unescape(data[i].split("=")[1]);
             }
         }
-        templateId=theRequest;
+        templateId=theRequest["templateId"];
+        templateName=theRequest["templateName"];
+        createTime = theRequest["createTime"];
 
         showTree();
         initGrid();
@@ -157,7 +162,7 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
                         pNodeId:treeMap.pId,
                         errorType: treeMap.type,
                         nodeScore: '0',
-                        maxScore: '0'
+                        maxScore: '0',
                     }
                 });
                 i++;
@@ -180,7 +185,8 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
                     pNodeId: node.pId,
                     errorType: checkItemVitalType,
                     nodeScore: '0',
-                    maxScore: '0'
+                    maxScore: '0',
+                    flag:'0'//新增
                 }
             });
             i++;
@@ -219,34 +225,48 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
         });
     }
 
-    //保存操作。将表中的数据保存到数据库中
+    //保存操作。将表中的数据保存到数据库中（更新）
     function saveEvent(){
         $("#page").on("click", "#saveBut", function () {
             //将表中数据保存到详情信息表中
             //获取datagrid中的所有数据，将其拼接成json格式字符串数组
             var rowsData = $('#peopleManage').datagrid('getRows');
-            var json = [];
-            var maxAll = [];//所占分值
-            var nAll = [];//扣分范围
-            var loc;
+            var json = [];//更新数据
+            var jsonInsert = [];//插入数据
+            var maxAll = [];//扣分范围
+            var nAll = [];//所占分值
+            var loc;//更新
+            var locInsert;//插入
+            //随机生成数字
+            var num = Math.random()*15000 + 800;
+            num = parseInt(num, 10);
             $.each(rowsData, function (i)
             {
                 var maxScore =  parseInt(rowsData[i].maxScore);
                 maxAll.push(maxScore);
                 var nodeScore = parseInt(rowsData[i].nodeScore);
                 nAll.push(nodeScore);
-                loc = {
-                    "tenantId":Util.constants.TENANT_ID,
-                    "templateId":i.toString(),
-                    "nodeId":rowsData[i].nodeId,
-                    "nodeName": rowsData[i].nodeName,
-                    "maxScore": maxScore,
-                    "nodeScore": nodeScore,
-                    "errorType": rowsData[i].errorType,
-                    "nodeType": '3',
-                    "pNodeId":rowsData[i].pNodeId
-                };
-                json.push(loc);
+                if(rowsData[i].flag=='0'){//区分是新增操作还是更新操作
+                    locInsert = {
+                        "tenantId":Util.constants.TENANT_ID,
+                        "templateId":templateId,
+                        "nodeId":rowsData[i].nodeId,
+                        "nodeName": rowsData[i].nodeName,
+                        "maxScore": maxScore,
+                        "nodeScore": nodeScore,
+                        "errorType": rowsData[i].errorType,
+                        "nodeType": '3',
+                        "pNodeId":rowsData[i].pNodeId
+                    };
+                    jsonInsert.push(locInsert);
+                }else{//更新
+                    loc = {
+                        "nodeId":rowsData[i].nodeId,
+                        "maxScore": maxScore,
+                        "nodeScore": nodeScore,
+                    };
+                    json.push(loc);
+                }
             });
 
             //判断分值总和是否为100
@@ -258,56 +278,66 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
             nAll.forEach(function(i,index){
                 nAllScore = nAllScore+i;
             });
-            if(maxAllScore!=100||nAllScore!=100){
-                $.messager.alert("提示", "所占分值总和以及扣分范围总和必须为100!");
+            if(nAllScore!=100||maxAllScore>=100){
+                $.messager.alert("提示", "所占分值总和必须为100以及扣分范围总和不得高于100!");
                 return false;
             }
 
-            var param =  {"params":json};
-            Util.ajax.postJson(Util.constants.CONTEXT.concat(Util.constants.ADD_CHECK_TEMPLATE).concat("/insertTempDetail"),JSON.stringify(param), function (result) {
-
+            //更新
+            Util.ajax.putJson(Util.constants.CONTEXT.concat(Util.constants.ADD_CHECK_TEMPLATE).concat("/update"),JSON.stringify(json), function (result) {
                 $.messager.show({
                     msg: result.RSP.RSP_DESC,
                     timeout: 1000,
                     style: {right: '', bottom: ''},     //居中显示
                     showType: 'slide'
                 });
-
                 var rspCode = result.RSP.RSP_CODE;
-
                 if (rspCode == "1") {
                     $('#add_content').window('close'); // 关闭窗口
                     $("#peopleManage").datagrid('reload'); //插入成功后，刷新页面
                 }
             });
 
-            //将基本信息保存到基本信息表中
-            var templateName = $("#templateName").val();
-            var templatChannel = $("#templatChannel").combobox("getValue");//模板渠道
-            var templateType = $("#templateType").combobox("getValue");
-            var templateStatus = $("#templateStatus").combobox("getValue");
-            var templateDesc = $("#templateDesc").val();
-
-            var params = {'tenantId': Util.constants.TENANT_ID,'templateName': templateName,
-                'templateStatus': templateStatus, 'operateType': '0','remark':templateDesc,'templateType':templateType,"templateId":i.toString()};
-            Util.ajax.postJson(Util.constants.CONTEXT+ Util.constants.CHECK_TEMPLATE + "/insertCheckTemplate ", JSON.stringify(params), function (result) {
-
+            //插入
+            var param =  {"params":jsonInsert};
+            Util.ajax.postJson(Util.constants.CONTEXT.concat(Util.constants.ADD_CHECK_TEMPLATE).concat("/insertTempDetail"),JSON.stringify(param), function (result) {
                 $.messager.show({
                     msg: result.RSP.RSP_DESC,
                     timeout: 1000,
                     style: {right: '', bottom: ''},     //居中显示
                     showType: 'slide'
                 });
-
                 var rspCode = result.RSP.RSP_CODE;
-
                 if (rspCode == "1") {
-                    $("#checkTemplateManage").datagrid('reload'); //插入成功后，刷新页面
+                    $('#add_content').window('close'); // 关闭窗口
+                    $("#peopleManage").datagrid('reload'); //插入成功后，刷新页面
+                }
+            });
+
+            //将修改的基本信息更新到基本信息表中
+            var templateName = $("#templateName").val();
+            var templatChannel = $("#templatChannel").combobox("getValue");//模板渠道
+            var templateType = $("#templateType").combobox("getValue");
+            var templateStatus = $("#templateStatus").combobox("getValue");
+            var templateDesc = $("#templateDesc").val();
+
+            var params = {'createTime':createTime,'tenantId': Util.constants.TENANT_ID,'templateName': templateName,
+                'templateStatus': templateStatus, 'operateType': '1','remark':templateDesc,'templateType':templateType,"templateId":templateId};
+            Util.ajax.putJson(Util.constants.CONTEXT.concat(Util.constants.CHECK_TEMPLATE).concat("/action"), JSON.stringify(params), function (result) {
+                $.messager.show({
+                    msg: result.RSP.RSP_DESC,
+                    timeout: 1000,
+                    style: {right: '', bottom: ''},     //居中显示
+                    showType: 'slide'
+                });
+                var rspCode = result.RSP.RSP_CODE;
+                if (rspCode == "1") {
+                    $("#checkTemplateManage").datagrid('reload'); //修改成功后，刷新页面
                 }
             });
 
             //将操作信息保存到考评模板操作日志表中
-            var params = {'operateType': '1',"templateId":i.toString()};
+            var params = {'operateType': '1',"templateId":num.toString()};
             Util.ajax.postJson(Util.constants.CONTEXT+ Util.constants.TPL_OP_LOG + "/insertTplOpLog ", JSON.stringify(params), function (result) {
 
                 $.messager.show({
@@ -322,6 +352,9 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
 
     //初始化列表
     function initGrid() {
+
+        //模板名称输入框塞入传递过来的值
+        $("#templateName").val(templateName);
 
         //模板渠道下拉框
         $("#templatChannel").combobox({
@@ -397,7 +430,8 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
                         return {'0':'非致命性','1':'致命性'}[value];
                     }},
                 {field: 'nodeScore', title: '所占分值', width: '15%', editor:'numberbox'},
-                {field: 'maxScore', title: '扣分范围', width: '15%', editor:'numberbox'}
+                {field: 'maxScore', title: '扣分范围', width: '15%', editor:'numberbox'},
+                {field: 'flag', title: '新增(0)或更新(1)标识', width: '15%', hidden: true}
             ]],
             fitColumns: true,
             width: '100%',

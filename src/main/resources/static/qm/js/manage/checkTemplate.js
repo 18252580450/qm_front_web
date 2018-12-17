@@ -199,16 +199,16 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
                         }
                     });
 
-                    //根据templateId删除t_qm_templatedetail对应的数据
-                    // Util.ajax.putJson(Util.constants.CONTEXT.concat(Util.constants.ADD_CHECK_TEMPLATE).concat("/deleteByIds/").concat(ids), {}, function (result) {
-                    //
-                    //     $.messager.show({
-                    //         msg: result.RSP.RSP_DESC,
-                    //         timeout: 1000,
-                    //         style: {right: '', bottom: ''},     //居中显示
-                    //         showType: 'slide'
-                    //     });
-                    // })
+                    // 根据templateId删除t_qm_templatedetail对应的数据
+                    Util.ajax.putJson(Util.constants.CONTEXT.concat(Util.constants.ADD_CHECK_TEMPLATE).concat("/deleteByIds/").concat(ids), {}, function (result) {
+
+                        $.messager.show({
+                            msg: result.RSP.RSP_DESC,
+                            timeout: 1000,
+                            style: {right: '', bottom: ''},     //居中显示
+                            showType: 'slide'
+                        });
+                    })
 
                     //将操作信息保存到考评模板操作日志表中
                     var params = {'operateType': '2',"templateId":JSON.stringify(ids)};
@@ -258,8 +258,11 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
             }
             //页面传值
             var templateId = selRows[0].templateId;
+            var templateName = selRows[0].templateName;
+            var createTime = selRows[0].createTime;
             var jq = top.jQuery;
-            var url = "http://127.0.0.1:8080/qm/html/manage/modifyCheckTemplate.html?templateId="+templateId;
+            //编码，解决中文乱码问题
+            var url = encodeURI("http://127.0.0.1:8080/qm/html/manage/modifyCheckTemplate.html?templateId="+templateId+"&templateName="+templateName+"&createTime="+createTime);
             if (!jq('#tabs').tabs('exists', '修改考评模板')) {
                 jq('#tabs').tabs('add', {
                     title: '修改考评模板',
