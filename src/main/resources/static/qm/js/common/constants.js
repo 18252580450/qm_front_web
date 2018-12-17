@@ -26,6 +26,7 @@ define(function () {
         ADD_CHECK_TEMPLATE : "/qm/configservice/addCheckTemplate",//考评模板详情表
         CHECK_TEMPLATE : "/qm/configservice/checkTemplate",//考评模板
         ORDINARY_COMMENT:"/qm/configservice/ordinaryComment",//考评评语
+        WORK_QM_RESULT:"/qm/configservice/workQmResult",//工单质检结果
 
         //质检结果状态
         CHECK_RESULT_NEW_BUILD:'0',     //质检新生成

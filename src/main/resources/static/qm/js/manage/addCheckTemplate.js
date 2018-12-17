@@ -220,9 +220,13 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
         $.each(rowsData, function (i)
         {
             var maxScore =  parseInt(rowsData[i].maxScore);
-            maxAll.push(maxScore);
             var nodeScore = parseInt(rowsData[i].nodeScore);
+            if(nodeScore<maxScore){
+                $.messager.alert("提示", "扣分范围不能高于所占分值！");
+                return false;
+            }
             nAll.push(nodeScore);
+            maxAll.push(maxScore);
             loc = {
                 "tenantId":Util.constants.TENANT_ID,
                 "templateId":num.toString(),

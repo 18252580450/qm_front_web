@@ -1,5 +1,4 @@
 require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, Transfer,easyui,dateUtil) {
-    var qmURI = "/qm/configservice/pool/";
     //初始化方法
     initialize();
 
@@ -12,7 +11,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
     function initPageInfo() {
         //差错类型
         $("#errorType").combobox({
-            url: '../../data/isDistribution.json',
+            url: '../../data/errorType.json',
             method: "GET",
             valueField: 'codeValue',
             textField: 'codeName',
@@ -28,7 +27,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
         });
         //申诉结果
         $("#qmResult").combobox({
-            url: '../../data/isDistribution.json',
+            url: '../../data/releaseResult.json',
             method: "GET",
             valueField: 'codeValue',
             textField: 'codeName',
@@ -68,38 +67,27 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
                 {field: 'ck', checkbox: true, align: 'center'},
                 {
                     field: 'action', title: '操作', width: '15%',
-
                     formatter: function (value, row, index) {
-
                         var bean = {//根据参数进行定位修改
-                            'commentName': row.commentName, 'commentId': row.commentId,
-                            'remark': row.remark,'crtTime': row.crtTime,'createStaffId': row.createStaffId
+                            'commentName': row.commentName
                         };
                         var beanStr = JSON.stringify(bean);   //转成字符串
-
-                        var Action =
-                            "<a href='javascript:void(0);' class='reviseBtn' id =" + beanStr + " >修改</a>";
-                        return Action;
+                        return "<a href='javascript:void(0);' class='reviseBtn' id =" + beanStr + " >详情</a>";
                     }
                 },
-                {field: 'workformId', title: '工单流水号', align: 'center', width: '15%',
-                    formatter:function(value, row, index){
-                        var bean={'workformId':row.workformId};
-                        return "<a href='javascript:void(0);' style='color:blue;'class='workformIdBtn' id =" + JSON.stringify(bean) + " >"+value+"</a>";
-                    }
-                },
-                {field: 'planName', title: '质检流水号', align: 'center', width: '10%'},
-                {field: 'planId', title: '客户号码', align: 'center', width: '10%',hidden: true},
-                {field: 'srvReqstTypeNm', title: '考评环节', align: 'center', width: '10%'},
-                {field: 'checkLink', title: '质检计划名称', align: 'center', width: '10%'},
-                {field: 'poolStatus', title: '被质检人工号', align: 'center', width: '10%'},
-                {field: 'checkStaffName', title: '被质检人班组', align: 'center', width: '10%'},
-                {field: 'checkStaffName', title: '差错类型', align: 'center', width: '10%'},
-                {field: 'checkStaffName', title: '质检得分', align: 'center', width: '10%'},
-                {field: 'checkStaffName', title: '质检人工号', align: 'center', width: '10%'},
-                {field: 'checkStaffName', title: '申诉结果', align: 'center', width: '10%'},
+                {field: 'touchId', title: '工单流水号', align: 'center', width: '15%'},
+                {field: 'inspectionId', title: '质检流水号', align: 'center', width: '10%'},
+                {field: 'acceptNumber', title: '客户号码', align: 'center', width: '10%',hidden: true},
+                {field: 'checkLink', title: '考评环节', align: 'center', width: '10%'},
+                {field: 'planName', title: '质检计划名称', align: 'center', width: '10%'},
+                {field: 'checkedStaffId', title: '被质检人工号', align: 'center', width: '10%'},
+                {field: 'checkedDepartId', title: '被质检人班组', align: 'center', width: '10%'},
+                {field: 'errorRank', title: '差错类型', align: 'center', width: '10%'},
+                {field: 'finalScore', title: '质检得分', align: 'center', width: '10%'},
+                {field: 'checkStaffId', title: '质检人工号', align: 'center', width: '10%'},
+                {field: 'resultStatus', title: '申诉结果', align: 'center', width: '10%'},
                 {
-                    field: 'operateTime', title: '质检时间', align: 'center', width: '15%',
+                    field: 'checkStartTime', title: '质检时间', align: 'center', width: '15%',
                     formatter: function (value, row, index) { //格式化时间格式
                         return DateUtil.formatDateTime(value);
                     }
@@ -116,27 +104,37 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
                 var start = (param.page - 1) * param.rows;
                 var pageNum = param.rows;
                 var workOrderId = $("#workOrderId").val();
-                var planName = $("#planName").val();
-                var serviceType = $("#serviceType").val();
-                var isDis = $("#isDis").combobox("getValue");
-                var planStartTime = $("#planStartTime").datetimebox("getValue");
-                var distStartTime = $("#distStartTime").datetimebox("getValue");
-                var planEndTime = $("#planEndTime").datetimebox("getValue");
-                var distEndTime = $("#distEndTime").datetimebox("getValue");
-                var qmLink = $("#qmLink").val();
-                var qmPeople = $("#qmPeople").val();
+                var cusNumber = $("#cusNumber").val();
+                var qmStartTime = $("#qmStartTime").datetimebox("getValue");
+                var qmEndTime = $("#qmEndTime").datetimebox("getValue");
+                var qmDepart = $("#qmDepart").val();
+                var qmStaffId = $("#qmStaffId").val();
+                var qmedStaffId = $("#qmedStaffId").val();
+                var qmedTeam = $("#qmedTeam").val();
+                var reqTypeEndNode = $("#reqTypeEndNode").val();
+                var checkLink = $("#checkLink").val();
+                var minScore = $("#minScore").val();
+                var maxScore = $("#maxScore").val();
+                var qmResult = $("#qmResult").combobox("getValue");
+                var errorType = $("#errorType").combobox("getValue");
+                var qmPlanName = $("#qmPlanName").val();
 
                 var reqParams = {
-                    "workformId": workOrderId,
-                    "planId": planName,
-                    "srvReqstTypeId": serviceType,
-                    "poolStatus": isDis,
-                    "planStartTime": planStartTime,
-                    "distStartTime": distStartTime,
-                    "planEndTime": planEndTime,
-                    "distEndTime": distEndTime,
-                    "checkLink": qmLink,
-                    "checkStaffName":qmPeople
+                    "touchId": workOrderId,
+                    "acceptNumber": cusNumber,
+                    "checkDepartName": qmDepart,
+                    "checkStaffId": qmStaffId,
+                    "qmStartTime": qmStartTime,
+                    "qmEndTime": qmEndTime,
+                    "checkedStaffId": qmedStaffId,
+                    "checkedDepartName": qmedTeam,
+                    "checkLink": checkLink,
+                    "minScore":minScore,
+                    "maxScore":maxScore,
+                    "resultStatus":qmResult,
+                    "errorRank":errorType,
+                    "qmPlanName":qmPlanName,
+                    "qmPlanName":reqTypeEndNode,
                 };
                 var params = $.extend({
                     "start": start,
@@ -144,7 +142,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
                     "params": JSON.stringify(reqParams)
                 }, Util.PageUtil.getParams($("#queryInfo")));
 
-                Util.ajax.getJson(Util.constants.CONTEXT + qmURI+ "/selectByParams", params, function (result) {
+                Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.WORK_QM_RESULT+ "/selectByParams", params, function (result) {
                     var data = Transfer.DataGrid.transfer(result);
                     var dataNew=[];
                     for(var i=0;i<data.rows.length;i++){
