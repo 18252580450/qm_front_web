@@ -222,7 +222,6 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
             var maxScore =  parseInt(rowsData[i].maxScore);
             var nodeScore = parseInt(rowsData[i].nodeScore);
             if(nodeScore<maxScore){
-                $.messager.alert("提示", "扣分范围不能高于所占分值！");
                 return false;
             }
             nAll.push(nodeScore);
@@ -240,7 +239,10 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
             };
             json.push(loc);
         });
-
+        if(maxAll.length!=3||nAll.length!=3){
+            $.messager.alert("提示", "扣分范围不能高于所占分值！");
+            return false;
+        }
         //判断分值总和是否为100
         var maxAllScore = null;
         maxAll.forEach(function(i,index){
