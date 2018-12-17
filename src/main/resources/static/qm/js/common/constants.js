@@ -26,7 +26,23 @@ define(function () {
         ADD_CHECK_TEMPLATE : "/qm/configservice/addCheckTemplate",//考评模板详情表
         CHECK_TEMPLATE : "/qm/configservice/checkTemplate",//考评模板
         ORDINARY_COMMENT:"/qm/configservice/ordinaryComment",//考评评语
+        ORDER_CHECK_DNS:"/qm/configservice/orderCheck/",//工单待办区
+        VOICE_CHECK_DNS:"/qm/configservice/voiceCheck/",//语音待办区
         WORK_QM_RESULT:"/qm/configservice/workQmResult",//工单质检结果
+
+        //考评模版得分类型
+        SCORE_TYPE_COMMON:'0',          //合格
+        SCORE_TYPE_SCORE:'1',           //得分
+        SCORE_TYPE_DISCOUNT:'2',        //扣分
+
+        //质检类型
+        CHECK_TYPE_WITHIN_PLAN:'0',     //计划内质检
+        CHECK_TYPE_BEYOND_PLAN:'1',     //计划外质检
+
+        //质检池质检状态
+        CHECK_STATUS_CHECKED:'0',       //已质检
+        CHECK_STATUS_CHECK:'1',         //待质检
+        CHECK_STATUS_RECHECK:'2',       //待复检
 
         //质检结果状态
         CHECK_RESULT_NEW_BUILD:'0',     //质检新生成
