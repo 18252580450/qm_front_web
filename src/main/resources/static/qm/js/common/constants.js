@@ -40,9 +40,9 @@ define(function () {
         CHECK_TYPE_BEYOND_PLAN:'1',     //计划外质检
 
         //质检池质检状态
-        CHECK_STATUS_CHECKED:'0',       //已质检
-        CHECK_STATUS_CHECK:'1',         //待质检
-        CHECK_STATUS_RECHECK:'2',       //待复检
+        CHECK_STATUS_CHECK:'0',         //待质检
+        CHECK_STATUS_RECHECK:'1',       //待复检
+        CHECK_STATUS_CHECKED:'2',       //已质检
 
         //质检结果状态
         CHECK_RESULT_NEW_BUILD:'0',     //质检新生成

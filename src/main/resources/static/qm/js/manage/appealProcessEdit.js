@@ -936,7 +936,6 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
             $.messager.alert("提示", "未作任何修改!");
             return false;
         }
-        debugger;
         //更新主流程信息
         for (var i = 0; i < processUpdateData.length; i++) {
             if (processUpdateData[i].orderNo === 0) {

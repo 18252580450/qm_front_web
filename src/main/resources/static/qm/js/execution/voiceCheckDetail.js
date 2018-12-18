@@ -258,24 +258,25 @@ require(["jquery", "util", "dateUtil", "transfer", "easyui"], function ($, Util)
     function initEvent() {
         //保存
         $("#saveBtn").on("click", function () {
-
+            checkSubmit(Util.constants.CHECK_RESULT_TEMP_SAVE);
         });
         //提交
         $("#submitBtn").on("click", function () {
-            checkSubmit();
+            checkSubmit(Util.constants.CHECK_RESULT_NEW_BUILD);
         });
         //取消
         $("#cancelBtn").on("click", function () {
-
+            var jq = top.jQuery;
+            //关闭语音质检详情
+            jq('#tabs').tabs('close', "语音质检详情");
         });
         //案例收集
         $("#caseCollectBtn").on("click", function () {
-
+            $.messager.alert("提示", "该功能暂未开放!");
         });
     }
 
-    function checkSubmit() {
-        debugger;
+    function checkSubmit(checkStatus) {
         var currentTime = new Date(),
             checkTime = currentTime - startTime,
             finalScore = $("#checkScore").val(),
@@ -302,7 +303,7 @@ require(["jquery", "util", "dateUtil", "transfer", "easyui"], function ($, Util)
             "checkStartTime": checkStartTime,                        //质检开始时间（质检分配时间）
             "checkTime": checkTime,                                  //质检时长
             "scoreType": scoreType,                                  //分值类型
-            "resultStatus": Util.constants.CHECK_RESULT_NEW_BUILD,   //质检结果状态
+            "resultStatus": checkStatus,                             //质检结果状态（保存or提交）
             "finalScore": finalScore,                                //最终得分
             "checkComment": checkComment                             //考评评语
         };
@@ -311,14 +312,15 @@ require(["jquery", "util", "dateUtil", "transfer", "easyui"], function ($, Util)
             "voiceCheckResult": voiceCheckResult,
             "checkItemList": checkItemScoreList
         };
-
-        debugger;
+        Util.loading.showLoading();
         Util.ajax.postJson(Util.constants.CONTEXT.concat(Util.constants.VOICE_CHECK_DNS).concat("/"), JSON.stringify(params), function (result) {
+
+            Util.loading.destroyLoading();
             var rspCode = result.RSP.RSP_CODE;
             if (rspCode != null && rspCode === "1") {
                 $.messager.alert("提示", result.RSP.RSP_DESC, null, function () {
                     var jq = top.jQuery;
-                    //刷新申诉流程tab页
+                    //刷新语音质检待办区
                     jq('#tabs').tabs('close', "语音质检详情");
                     var tab = jq('#tabs').tabs('getTab', "质检待办区"),
                         iframe = jq(tab.panel('options').content),

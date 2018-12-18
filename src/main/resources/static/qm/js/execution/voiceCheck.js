@@ -141,9 +141,10 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                     maxRecordTime = $("#maxRecordTime").val();
 
                 var reqParams = {
-                    "tenantId":Util.constants.TENANT_ID,
+                    "tenantId": Util.constants.TENANT_ID,
                     "touchId": touchId,
                     "planId": planId,
+                    "checkStatus": Util.constants.CHECK_STATUS_CHECK,
                     "callingNumber": callingNumber,
                     "calledNumber": calledNumber,
                     "extractBeginTime": extractBeginTime,
@@ -159,6 +160,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                     "params": JSON.stringify(reqParams)
                 }, Util.PageUtil.getParams($("#searchForm")));
 
+                debugger;
                 Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.VOICE_POOL_DNS + "/selectByParams", params, function (result) {
                     var data = Transfer.DataGrid.transfer(result);
                     debugger;
