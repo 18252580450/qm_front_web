@@ -68,7 +68,6 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                 {
                     field: 'planName', title: '计划名称', width: '15%',
                     formatter: function (value, row, index) {
-                        debugger;
                         if (row.qmPlan != null) {
                             return row.qmPlan.planName;
                         }
@@ -77,7 +76,6 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                 {
                     field: 'planCreateTime', title: '计划生成时间', width: '15%',
                     formatter: function (value, row, index) {
-                        debugger;
                         if (row.qmPlan != null && row.qmPlan.createTime != null) {
                             return formatDateTime(row.qmPlan.createTime);
                         }
@@ -128,6 +126,8 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
 
                 var reqParams = {
                     "workformId": workformId,
+                    "poolStatus": Util.constants.ORDER_DISTRIBUTE,        //已分配
+                    "checkStatus": Util.constants.CHECK_STATUS_CHECK,     //待质检
                     "distStartTime": distStartTime,
                     "distEndTime": distEndTime,
                     "checkLink": checkLink,

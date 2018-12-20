@@ -144,7 +144,8 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                     "tenantId": Util.constants.TENANT_ID,
                     "touchId": touchId,
                     "planId": planId,
-                    "checkStatus": Util.constants.CHECK_STATUS_CHECK,
+                    "poolStatus": Util.constants.VOICE_DISTRIBUTE,        //已分配
+                    "checkStatus": Util.constants.CHECK_STATUS_CHECK,     //待质检
                     "callingNumber": callingNumber,
                     "calledNumber": calledNumber,
                     "extractBeginTime": extractBeginTime,
@@ -160,10 +161,8 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                     "params": JSON.stringify(reqParams)
                 }, Util.PageUtil.getParams($("#searchForm")));
 
-                debugger;
                 Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.VOICE_POOL_DNS + "/selectByParams", params, function (result) {
                     var data = Transfer.DataGrid.transfer(result);
-                    debugger;
 
                     var rspCode = result.RSP.RSP_CODE;
                     if (rspCode != null && rspCode !== "1") {

@@ -112,8 +112,15 @@
                             <div style="height: 12px"></div>
                         </div>
 
-                        <!--右侧区域-->
-                        <div id="processRightDiv" style="float:right ; width:80%; height:100%; margin-right: 10%;">
+                        <!--左侧区域-->
+                        <div id="processRightDiv" style="float:right ; width:90%; height:100%;">
+                            <!--右侧区域&处理过程-->
+                            <div id="processDiv" style="float:left ; width:90%; height:100%;">
+                            </div>
+
+                            <!--右侧区域&已质检标识-->
+                            <div id="checkFlagDiv" style="float:right ; width:10%; height:100%;">
+                            </div>
                         </div>
 
                     </div>
@@ -123,6 +130,10 @@
             <div class='cl'>
                 <div class='panel-tool-box cl'>
                     <div class='fl text-bold'>工作质量评价区</div>
+                    <div class="formControls col-2" style="text-align: right;width: 90%">
+                        <a href='javascript:void(0)' class='btn btn-green radius mt-l-20' id="checkLinkSave"><i
+                                class='iconfont iconfont-save'></i>保存</a>
+                    </div>
                 </div>
                 <div class='panel-search'>
                     <table id='checkItemList' class='easyui-datagrid' style=' width:100%;'>
@@ -130,9 +141,15 @@
 
                     <form class='form form-horizontal'>
                         <div class='row cl'>
+                            <label class='form-label col-1'>考评环节</label>
+                            <div class='formControls col-2'>
+                                <input id="checkLink" type='text' class='easyui-textbox'
+                                       style='width:100%;height:30px' readonly>
+                            </div>
+
                             <label class='form-label col-1'>得分</label>
                             <div class='formControls col-2'>
-                                <input id="checkScore" type='text' class='easyui-textbox'
+                                <input id="checkScore" type='text' class='easyui-textbox' value="100"
                                        style='width:100%;height:30px' readonly>
                             </div>
                         </div>
@@ -142,7 +159,7 @@
                         <div class='row cl'>
                             <label class='form-label col-1'>考评评语</label>
                             <div class='formControls col-8'>
-                                <input id="checkItemRemark" class='easyui-textarea' data-options="multiline:true"
+                                <input id="checkComment" class='easyui-textarea' data-options="multiline:true"
                                        style='width:100%;height:90px'>
                             </div>
                         </div>
@@ -153,7 +170,7 @@
                             <div class="formControls col-1">
                             </div>
                             <div class='formControls col-1'>
-                                <input id="messageInform" type="checkbox" style='height:30px'>&nbsp;&nbsp;短信通知
+                                <input id="messageInform" type="checkbox" style='height:30px' checked="checked">&nbsp;&nbsp;短信通知
                             </div>
 
                             <div class="formControls col-1">

@@ -39,6 +39,14 @@ define(function () {
         CHECK_TYPE_WITHIN_PLAN:'0',     //计划内质检
         CHECK_TYPE_BEYOND_PLAN:'1',     //计划外质检
 
+        //工单质检分配状态
+        VOICE_NO_DISTRIBUTE:"0",  //未分配
+        VOICE_DISTRIBUTE:"1",     //已分配
+
+        //工单质检分配状态
+        ORDER_NO_DISTRIBUTE:"1",  //未分配
+        ORDER_DISTRIBUTE:"2",     //已分配
+
         //质检池质检状态
         CHECK_STATUS_CHECK:'0',         //待质检
         CHECK_STATUS_RECHECK:'1',       //待复检

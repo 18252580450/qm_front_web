@@ -134,10 +134,8 @@ require(["jquery", "util", "dateUtil", "transfer", "easyui"], function ($, Util)
                             "params": JSON.stringify(templateReqParams)
                         }, Util.PageUtil.getParams($("#searchForm")));
 
-                        debugger;
                         Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.CHECK_TEMPLATE + "/selectByParams", templateParams, function (result) {
                             var data = result.RSP.DATA;
-                            debugger;
                             var rspCode = result.RSP.RSP_CODE;
                             if (rspCode != null && rspCode !== "1") {
                                 $.messager.show({
@@ -168,7 +166,6 @@ require(["jquery", "util", "dateUtil", "transfer", "easyui"], function ($, Util)
                         }, Util.PageUtil.getParams($("#searchForm")));
 
                         Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.CHECK_TEMPLATE_DETAIL_DNS + "/queryCheckTemplateDetail", params, function (result) {
-                            debugger;
                             var data = {
                                 rows: result.RSP.DATA
                             };
@@ -233,14 +230,12 @@ require(["jquery", "util", "dateUtil", "transfer", "easyui"], function ($, Util)
                         if (score === "") {
                             input.val("0");
                         }
-                        debugger;
                         //更新考评项评分列表
                         $.each(checkItemScoreList, function (i, data) {
                             if (item.nodeId === data.nodeId) {
                                 data.realScore = parseInt(item.nodeScore) - parseInt(score);
                             }
                         });
-                        debugger;
                     });
                 });
             }
@@ -286,8 +281,7 @@ require(["jquery", "util", "dateUtil", "transfer", "easyui"], function ($, Util)
             "tenantId": voicePool.tenantId,                          //租户id
             "callingNumber": voicePool.callingNumber,                //主叫号码
             "acceptNumber": voicePool.calledNumber,                  //受理号码
-            "inspectionId": voicePool.inspectionId,                  //质检流水
-            "originInspectionId": voicePool.inspectionId,            //原质检流水
+            "originInspectionId": "",                                //原质检流水
             "touchId": voicePool.touchId,                            //语音流水
             "planId": voicePool.planId,                              //考评计划
             "templateId": templateId,                                //考评模版ID

@@ -3518,11 +3518,20 @@ placeholder {
   background:#FFF
 }
 
+.panel-transparent-box {
+  padding: 0px 0px;
+  color: #666;
+  height: 40px;
+  line-height: 16px;
+  background: #E6E9F0;
+  background:#FFF
+}
+
 .panel-right {
   padding: 0px 0px;
   color: #666;
-  height: 114px;
-  line-height: 114px;
+  height: 118px;
+  line-height: 118px;
   background: #E6E9F0;
   border-right: solid 1px #e0e0e0;
   background:#FFF
