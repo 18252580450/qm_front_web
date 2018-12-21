@@ -1,4 +1,4 @@
-require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
+require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util, Transfer) {
 
     var orderCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/execution/orderCheckDetail.html";
 
@@ -18,7 +18,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
             }
         );
         //分配开始时间选择框
-        // var beginDate = (formatDateTime(new Date() - 24 * 60 * 60 * 1000)).substr(0, 11) + "00:00:00";
+        // var beginDate = (DateUtil.formatDateTime(new Date() - 24 * 60 * 60 * 1000)).substr(0, 11) + "00:00:00";
         var beginDate = "2018-10-10 00:00:00";
         $("#assignBeginTime").datetimebox({
             value: beginDate,
@@ -28,8 +28,8 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
         });
 
         //分配结束时间选择框
-        var endDate = (formatDateTime(new Date())).substr(0, 11) + "00:00:00";
-        // var endDate = (formatDateTime(new Date()-24*60*60*1000)).substr(0,11) + "23:59:59";
+        var endDate = (DateUtil.formatDateTime(new Date())).substr(0, 11) + "00:00:00";
+        // var endDate = (DateUtil.formatDateTime(new Date()-24*60*60*1000)).substr(0,11) + "23:59:59";
         $('#assignEndTime').datetimebox({
             value: endDate,
             onChange: function () {
@@ -77,7 +77,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                     field: 'planCreateTime', title: '计划生成时间', width: '15%',
                     formatter: function (value, row, index) {
                         if (row.qmPlan != null && row.qmPlan.createTime != null) {
-                            return formatDateTime(row.qmPlan.createTime);
+                            return DateUtil.formatDateTime(row.qmPlan.createTime);
                         }
                     }
                 },
@@ -85,7 +85,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                     field: 'operateTime', title: '分配时间', width: '15%',
                     formatter: function (value, row, index) { //格式化时间格式
                         if (row.operateTime != null) {
-                            return formatDateTime(row.operateTime);
+                            return DateUtil.formatDateTime(row.operateTime);
                         }
                     }
                 },
@@ -205,23 +205,6 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
         } else {
             jq('#tabs').tabs('select', title);
         }
-    }
-
-    //时间格式化
-    function formatDateTime(inputDate) {
-        var date = new Date(inputDate);
-        var y = date.getFullYear();
-        var m = date.getMonth() + 1;
-        m = m < 10 ? ('0' + m) : m;
-        var d = date.getDate();
-        d = d < 10 ? ('0' + d) : d;
-        var h = date.getHours();
-        h = h < 10 ? ('0' + h) : h;
-        var minute = date.getMinutes();
-        var second = date.getSeconds();
-        minute = minute < 10 ? ('0' + minute) : minute;
-        second = second < 10 ? ('0' + second) : second;
-        return y + '-' + m + '-' + d + ' ' + h + ':' + minute + ':' + second;
     }
 
     //校验开始时间和终止时间

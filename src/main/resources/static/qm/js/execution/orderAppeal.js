@@ -1,4 +1,4 @@
-require(["jquery", 'util', "transfer", "easyui"], function ($, Util) {
+require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util) {
 
     var appealCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/execution/orderAppealDetail.html";
 
@@ -12,7 +12,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util) {
     //页面信息初始化
     function initPageInfo() {
         //申诉开始时间选择框
-        var beginDate = (formatDateTime(new Date() - 24 * 60 * 60 * 1000)).substr(0, 11) + "00:00:00";
+        var beginDate = (DateUtil.formatDateTime(new Date() - 24 * 60 * 60 * 1000)).substr(0, 11) + "00:00:00";
         $("#appealBeginTime").datetimebox({
             value: beginDate,
             onChange: function () {
@@ -20,9 +20,9 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util) {
             }
         });
 
-        //分配结束时间选择框
-        var endDate = (formatDateTime(new Date())).substr(0, 11) + "00:00:00";
-        // var endDate = (formatDateTime(new Date()-24*60*60*1000)).substr(0,11) + "23:59:59";
+        //申诉结束时间选择框
+        var endDate = (DateUtil.formatDateTime(new Date())).substr(0, 11) + "00:00:00";
+        // var endDate = (DateUtil.formatDateTime(new Date()-24*60*60*1000)).substr(0,11) + "23:59:59";
         $('#appealEndTime').datetimebox({
             value: endDate,
             onChange: function () {
@@ -30,8 +30,8 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util) {
             }
         });
 
-        //考评环节搜索框
-        $("#checkLink").searchbox({
+        //申诉人
+        $("#appealStaffId").searchbox({
                 searcher: function () {
                 }
             }
@@ -105,14 +105,14 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util) {
     }
 
     //事件初始化
-    function initEvent(){
-        $("#showAppealDetail").on("click",function () {
+    function initEvent() {
+        $("#showAppealDetail").on("click", function () {
             showAppealDetail();
         })
     }
 
     //申诉处理详情
-    function showAppealDetail(){
+    function showAppealDetail() {
         var url = createURL(appealCheckDetail, null);
         addTabs("申诉处理详情", url);
     }
@@ -120,7 +120,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util) {
     //拼接对象到url
     function createURL(url, param) {
         var urlLink = url;
-        if(param != null){
+        if (param != null) {
             $.each(param, function (item, value) {
                 urlLink += '&' + item + "=" + encodeURI(value);
             });
@@ -142,23 +142,6 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util) {
         } else {
             jq('#tabs').tabs('select', title);
         }
-    }
-
-    //时间格式化
-    function formatDateTime(inputDate) {
-        var date = new Date(inputDate);
-        var y = date.getFullYear();
-        var m = date.getMonth() + 1;
-        m = m < 10 ? ('0' + m) : m;
-        var d = date.getDate();
-        d = d < 10 ? ('0' + d) : d;
-        var h = date.getHours();
-        h = h < 10 ? ('0' + h) : h;
-        var minute = date.getMinutes();
-        var second = date.getSeconds();
-        minute = minute < 10 ? ('0' + minute) : minute;
-        second = second < 10 ? ('0' + second) : second;
-        return y + '-' + m + '-' + d + ' ' + h + ':' + minute + ':' + second;
     }
 
     //校验开始时间和终止时间

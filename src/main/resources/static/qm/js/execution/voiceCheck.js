@@ -1,4 +1,4 @@
-require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
+require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util, Transfer) {
 
     var voiceCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/execution/voiceCheckDetail.html";
 
@@ -18,7 +18,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
             }
         );
         //抽取开始时间选择框
-        // var extractBeginDate = (formatDateTime(new Date() - 24 * 60 * 60 * 1000)).substr(0, 11) + "00:00:00";
+        // var extractBeginDate = (DateUtil.formatDateTime(new Date() - 24 * 60 * 60 * 1000)).substr(0, 11) + "00:00:00";
         var extractBeginDate = "2018-10-10 00:00:00";
         $("#extractBeginTime").datetimebox({
             value: extractBeginDate,
@@ -30,8 +30,8 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
         });
 
         //抽取结束时间选择框
-        var extractEndDate = (formatDateTime(new Date())).substr(0, 11) + "00:00:00";
-        // var endDate = (formatDateTime(new Date()-24*60*60*1000)).substr(0,11) + "23:59:59";
+        var extractEndDate = (DateUtil.formatDateTime(new Date())).substr(0, 11) + "00:00:00";
+        // var endDate = (DateUtil.formatDateTime(new Date()-24*60*60*1000)).substr(0,11) + "23:59:59";
         $('#extractEndTime').datetimebox({
             value: extractEndDate,
             onChange: function () {
@@ -42,7 +42,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
         });
 
         //分配开始时间选择框
-        // var distributeBeginDate = (formatDateTime(new Date() - 24 * 60 * 60 * 1000)).substr(0, 11) + "00:00:00";
+        // var distributeBeginDate = (DateUtil.formatDateTime(new Date() - 24 * 60 * 60 * 1000)).substr(0, 11) + "00:00:00";
         var distributeBeginDate = "2018-10-10 00:00:00";
         $("#distributeBeginTime").datetimebox({
             value: distributeBeginDate,
@@ -54,8 +54,8 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
         });
 
         //分配结束时间选择框
-        var distributeEndDate = (formatDateTime(new Date())).substr(0, 11) + "00:00:00";
-        // var endDate = (formatDateTime(new Date()-24*60*60*1000)).substr(0,11) + "23:59:59";
+        var distributeEndDate = (DateUtil.formatDateTime(new Date())).substr(0, 11) + "00:00:00";
+        // var endDate = (DateUtil.formatDateTime(new Date()-24*60*60*1000)).substr(0,11) + "23:59:59";
         $('#distributeEndTime').datetimebox({
             value: distributeEndDate,
             onChange: function () {
@@ -85,7 +85,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                     field: 'checkedTime', title: '抽取时间', width: '13%',
                     formatter: function (value, row, index) { //格式化时间格式
                         if (row.checkedTime != null) {
-                            return formatDateTime(row.operateTime);
+                            return DateUtil.formatDateTime(row.operateTime);
                         }
                     }
                 },
@@ -94,7 +94,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                     field: 'operateTime', title: '分派时间', width: '13%',
                     formatter: function (value, row, index) { //格式化时间格式
                         if (row.operateTime != null) {
-                            return formatDateTime(row.operateTime);
+                            return DateUtil.formatDateTime(row.operateTime);
                         }
                     }
                 },
@@ -233,23 +233,6 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
         } else {
             jq('#tabs').tabs('select', title);
         }
-    }
-
-    //时间格式化
-    function formatDateTime(inputDate) {
-        var date = new Date(inputDate);
-        var y = date.getFullYear();
-        var m = date.getMonth() + 1;
-        m = m < 10 ? ('0' + m) : m;
-        var d = date.getDate();
-        d = d < 10 ? ('0' + d) : d;
-        var h = date.getHours();
-        h = h < 10 ? ('0' + h) : h;
-        var minute = date.getMinutes();
-        var second = date.getSeconds();
-        minute = minute < 10 ? ('0' + minute) : minute;
-        second = second < 10 ? ('0' + second) : second;
-        return y + '-' + m + '-' + d + ' ' + h + ':' + minute + ':' + second;
     }
 
     //校验开始时间和终止时间

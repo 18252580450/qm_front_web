@@ -1,4 +1,4 @@
-require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
+require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util, Transfer) {
 
     var processStatusData = [],   //流程状态下拉框静态数据
         processDetailUrl = Util.constants.URL_CONTEXT + "/qm/html/manage/appealProcessDetail.html",
@@ -58,7 +58,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
 
         //时间控件初始化
         var beginDateBox = $('#createTimeBegin');
-        var beginDate = (formatDateTime(new Date() - 24 * 60 * 60 * 1000)).substr(0, 11) + "00:00:00";
+        var beginDate = (DateUtil.formatDateTime(new Date() - 24 * 60 * 60 * 1000)).substr(0, 11) + "00:00:00";
         beginDateBox.datetimebox({
             value: beginDate,
             onChange: function () {
@@ -67,8 +67,8 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
         });
 
         var endDateBox = $('#createTimeEnd');
-        var endDate = (formatDateTime(new Date())).substr(0, 11) + "00:00:00";
-        // var endDate = (formatDateTime(new Date()-24*60*60*1000)).substr(0,11) + "23:59:59";
+        var endDate = (DateUtil.formatDateTime(new Date())).substr(0, 11) + "00:00:00";
+        // var endDate = (DateUtil.formatDateTime(new Date()-24*60*60*1000)).substr(0,11) + "23:59:59";
         endDateBox.datetimebox({
             value: endDate,
             onChange: function () {
@@ -95,7 +95,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                     field: 'createTime', title: '创建时间', width: '15%',
                     formatter: function (value, row, index) { //格式化时间格式
                         if (row.createTime != null) {
-                            var createTime = formatDateTime(row.createTime);
+                            var createTime = DateUtil.formatDateTime(row.createTime);
                             return '<span title=' + createTime + '>' + createTime + '</span>';
                         }
                     }
@@ -106,7 +106,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                     field: 'modifyTime', title: '修改时间', width: '15%',
                     formatter: function (value, row, index) { //格式化时间格式
                         if (row.modifyTime != null) {
-                            var modifyTime = formatDateTime(row.modifyTime);
+                            var modifyTime = DateUtil.formatDateTime(row.modifyTime);
                             return '<span title=' + modifyTime + '>' + modifyTime + '</span>';
                         }
                     }
@@ -329,23 +329,6 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                 });
             }
         });
-    }
-
-    //时间格式化
-    function formatDateTime(inputDate) {
-        var date = new Date(inputDate);
-        var y = date.getFullYear();
-        var m = date.getMonth() + 1;
-        m = m < 10 ? ('0' + m) : m;
-        var d = date.getDate();
-        d = d < 10 ? ('0' + d) : d;
-        var h = date.getHours();
-        h = h < 10 ? ('0' + h) : h;
-        var minute = date.getMinutes();
-        var second = date.getSeconds();
-        minute = minute < 10 ? ('0' + minute) : minute;
-        second = second < 10 ? ('0' + second) : second;
-        return y + '-' + m + '-' + d + ' ' + h + ':' + minute + ':' + second;
     }
 
     //校验开始时间和终止时间

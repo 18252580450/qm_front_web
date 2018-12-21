@@ -1,4 +1,4 @@
-require(["jquery", 'util', "easyui"], function ($, Util) {
+require(["jquery", 'util', "dateUtil", "easyui"], function ($, Util) {
 
     var checkTypeData = [],    //质检类型静态数据
         subNodeData = [];      //子节点数据
@@ -67,7 +67,7 @@ require(["jquery", 'util', "easyui"], function ($, Util) {
                     field: 'createTime', title: '创建时间', width: '20%',
                     formatter: function (value, row, index) { //格式化时间格式
                         if (row.createTime != null) {
-                            var createTime = formatDateTime(row.createTime);
+                            var createTime = DateUtil.formatDateTime(row.createTime);
                             return '<span title=' + createTime + '>' + createTime + '</span>';
                         }
                     }
@@ -129,8 +129,8 @@ require(["jquery", 'util', "easyui"], function ($, Util) {
             },
             onClickRow: function (index, data) {
                 //刷新子节点列表
-                for(var i = 0; i < subNodeData.length; i++){
-                    if(subNodeData[i].processId === data.processId && subNodeData[i].subNodeList != null){
+                for (var i = 0; i < subNodeData.length; i++) {
+                    if (subNodeData[i].processId === data.processId && subNodeData[i].subNodeList != null) {
                         refreshSubNodeList(subNodeData[i].subNodeList);
                         return;
                     }
@@ -211,23 +211,6 @@ require(["jquery", 'util', "easyui"], function ($, Util) {
         });
     }
 
-    //时间格式化
-    function formatDateTime(inputDate) {
-        var date = new Date(inputDate);
-        var y = date.getFullYear();
-        var m = date.getMonth() + 1;
-        m = m < 10 ? ('0' + m) : m;
-        var d = date.getDate();
-        d = d < 10 ? ('0' + d) : d;
-        var h = date.getHours();
-        h = h < 10 ? ('0' + h) : h;
-        var minute = date.getMinutes();
-        var second = date.getSeconds();
-        minute = minute < 10 ? ('0' + minute) : minute;
-        second = second < 10 ? ('0' + second) : second;
-        return y + '-' + m + '-' + d + ' ' + h + ':' + minute + ':' + second;
-    }
-
     //获取url对象
     function getRequestObj() {
         var url = decodeURI(decodeURI(location.search)); //获取url中"?"符后的字串，使用了两次decodeRUI解码
@@ -260,7 +243,7 @@ require(["jquery", 'util', "easyui"], function ($, Util) {
                 userNameStr = userNameStr + subNodeList[j].userName + " ";
             } else {
                 showData = {
-                    "processId":subNodeList[j - 1].processId,
+                    "processId": subNodeList[j - 1].processId,
                     "orderNo": subNodeList[j - 1].orderNo,
                     "nodeName": subNodeList[j - 1].nodeName,
                     "userName": userNameStr
@@ -273,7 +256,7 @@ require(["jquery", 'util', "easyui"], function ($, Util) {
             }
         }
         showData = {
-            "processId":subNodeList[j - 1].processId,
+            "processId": subNodeList[j - 1].processId,
             "orderNo": subNodeList[subNodeList.length - 1].orderNo,
             "nodeName": subNodeList[subNodeList.length - 1].nodeName,
             "userName": userNameStr
