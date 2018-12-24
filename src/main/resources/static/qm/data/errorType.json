@@ -1,0 +1,18 @@
+[
+  {
+    "codeType": "CHECK_ITEM_TYPE@CS_IR",
+    "codeValue": "0",
+    "codeName": "无错误",
+    "codeDesc": "无错误",
+    "sortId": 0,
+    "state": "1"
+  },
+  {
+    "codeType": "CHECK_ITEM_TYPE@CS_IR",
+    "codeValue": "1",
+    "codeName": "绝对错误",
+    "codeDesc": "绝对错误",
+    "sortId": 1,
+    "state": "1"
+  }
+]

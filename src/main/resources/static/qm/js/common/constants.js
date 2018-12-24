@@ -29,6 +29,7 @@ define(function () {
         ORDER_CHECK_DNS: "/qm/configservice/orderCheck/",//工单待办区
         VOICE_CHECK_DNS: "/qm/configservice/voiceCheck/",//语音待办区
         WORK_QM_RESULT: "/qm/configservice/workQmResult",//工单质检结果
+        VOICE_QM_RESULT:"/qm/configservice/voiceQmResult",//语音质检结果
 
         //考评项目录类型
         CHECK_ITEM_PARENT: "0",    //目录

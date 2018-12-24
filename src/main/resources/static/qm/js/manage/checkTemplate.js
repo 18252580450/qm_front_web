@@ -74,13 +74,22 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
                         return action1+"&nbsp;&nbsp;"+action2+"&nbsp;&nbsp;"+action3;
                       }
                 },
-                {field: 'templateName', title: '模板名称', width: '20%'},
-                {field: 'tenantId', title: '渠道名称', width: '20%'},
+                {field: 'templateName', title: '模板名称', width: '20%',
+                    formatter: function (value) {//鼠标悬浮显示全部内容
+                        return "<span title='" + value + "'>" + value + "</span>";
+                    }},
+                {field: 'tenantId', title: '渠道名称', width: '20%',
+                    formatter: function (value) {
+                        return "<span title='" + value + "'>" + value + "</span>";
+                    }},
                 {field: 'templateStatus', title: '模板状态', width: '15%',
                     formatter:function(value,row,index){
                         return {'0':'未发布','1':'发布','2':'暂停','3':'删除'}[value];
                     }},
-                {field: 'remark', title: '备注', width: '20%'},
+                {field: 'remark', title: '备注', width: '20%',
+                    formatter: function (value) {
+                        return "<span title='" + value + "'>" + value + "</span>";
+                    }},
                 {field: 'createTime', title: '创建时间', width: '20%',
                     formatter:function(value,row,index){
                         return DateUtil.formatDateTime(value);
@@ -315,10 +324,9 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
     }
 
     /**
-     * 复制事件
+     * 复制考评模板，将复制后的信息插入到模板表中，并且将与其绑定的考评项插入到考评模板详细信息表中
      */
     function copyEvent() {
-        var times = 0;
         $("#page").on("click", "#copyBut", function () {
                 var selRows = $("#checkTemplateManage").datagrid("getSelections");//选中一行
                 if (selRows.length == 0||selRows.length>1) {
@@ -329,10 +337,8 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
                     $.messager.alert("提示", "复制的考评模板不可再次复制!");
                     return false;
                 }
-                times = times + 1;
-                var name = selRows[0].templateName;
-                selRows[0].templateName = name +"(复制"+times+")";
-                selRows[0].templateStatus = "0";
+
+                selRows[0].templateStatus = "0";//未发布
                 Util.ajax.postJson(Util.constants.CONTEXT+ Util.constants.CHECK_TEMPLATE + "/copyTemplate", JSON.stringify(selRows[0]), function (result) {
                     $.messager.show({
                         msg: result.RSP.RSP_DESC,

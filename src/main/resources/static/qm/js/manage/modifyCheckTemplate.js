@@ -71,21 +71,23 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
             "tenantId":Util.constants.TENANT_ID,
         };
         var params = {
+            "start": "0",
+            "pageNum": "10",
             "params": JSON.stringify(reqParams)
         };
 
-        Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.ADD_CHECK_TEMPLATE + "/queryCheckItem", params, function (result) {
-
-            for(var i=0;i<result.length;i++){
+        Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.CHECK_ITEM_DNS + "/queryCheckItem", params, function (result) {
+            var resultNew = Transfer.DataGrid.transfer(result).rows;
+            for(var i=0;i<resultNew.length;i++){
                 var nodeMap =
-                    {id: result[i].checkItemId, pId: result[i].parentCheckItemId, name: result[i].checkItemName}
+                    {id: resultNew[i].checkItemId, pId: resultNew[i].parentCheckItemId, name: resultNew[i].checkItemName}
                 zNodes.push(nodeMap);
 
                 var map = {};
-                map['id'] = result[i].checkItemId;
-                map['text'] = result[i].checkItemName;
-                map['type'] = result[i].checkItemVitalType;
-                map['pId'] = result[i].parentCheckItemId;
+                map['id'] = resultNew[i].checkItemId;
+                map['text'] = resultNew[i].checkItemName;
+                map['type'] = resultNew[i].checkItemVitalType;
+                map['pId'] = resultNew[i].parentCheckItemId;
                 data.push(map);
             }
             $.fn.zTree.init($("#tree"), setting, zNodes);
@@ -306,19 +308,21 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
 
             //插入
             var param =  {"params":jsonInsert};
-            Util.ajax.postJson(Util.constants.CONTEXT.concat(Util.constants.ADD_CHECK_TEMPLATE).concat("/insertTempDetail"),JSON.stringify(param), function (result) {
-                $.messager.show({
-                    msg: result.RSP.RSP_DESC,
-                    timeout: 1000,
-                    style: {right: '', bottom: ''},     //居中显示
-                    showType: 'slide'
+            if(jsonInsert.length!=0){
+                Util.ajax.postJson(Util.constants.CONTEXT.concat(Util.constants.ADD_CHECK_TEMPLATE).concat("/insertTempDetail"),JSON.stringify(param), function (result) {
+                    $.messager.show({
+                        msg: result.RSP.RSP_DESC,
+                        timeout: 1000,
+                        style: {right: '', bottom: ''},     //居中显示
+                        showType: 'slide'
+                    });
+                    var rspCode = result.RSP.RSP_CODE;
+                    if (rspCode == "1") {
+                        $('#add_content').window('close'); // 关闭窗口
+                        $("#peopleManage").datagrid('reload'); //插入成功后，刷新页面
+                    }
                 });
-                var rspCode = result.RSP.RSP_CODE;
-                if (rspCode == "1") {
-                    $('#add_content').window('close'); // 关闭窗口
-                    $("#peopleManage").datagrid('reload'); //插入成功后，刷新页面
-                }
-            });
+            }
 
             //将修改的基本信息更新到基本信息表中
             var templateName = $("#templateName").val();
@@ -427,7 +431,10 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
                         return action+"&nbsp;&nbsp;"+action2;
                     }
                 },
-                {field: 'nodeName', title: '考评项名称', width: '20%'},
+                {field: 'nodeName', title: '考评项名称', width: '20%',
+                    formatter: function (value) {
+                        return "<span title='" + value + "'>" + value + "</span>";
+                    }},
                 {field: 'templateId', title: '考评模板编码', width: '20%', hidden: true},
                 {field: 'pNodeId', title: '父节点编码', width: '20%', hidden: true},
                 {field: 'nodeId', title: '考评项编码', width: '20%', hidden: true},

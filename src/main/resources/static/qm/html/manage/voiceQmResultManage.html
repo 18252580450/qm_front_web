@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8"/>
-    <title>工单质检池</title>
+    <title>语音质检结果管理</title>
     <link rel="stylesheet" type="text/css" href="../../assets/lib/easyui/themes/cmcui/cmcui.css"/>
     <link rel="stylesheet" type="text/css" href="../../assets/lib/easyui/themes/cmcui/iconfont/iconfont.min.css"/>
     <link rel="stylesheet" type="text/css" href="../../assets/lib/ztree/css/cmcStyle/tree.css"/>
@@ -22,82 +22,115 @@
                 <div class='panel-search ' title="">
                     <form class='form form-horizontal'>
                         <div class='row cl'>
-                            <label class='form-label col-1'>工单流水</label>
+                            <label class='form-label col-2'>语音流水号</label>
                             <div class='formControls col-2'>
-                                <input id="workOrderId" type='text' class='easyui-textbox' style='width:100%;height:30px'>
+                                <input id="touchId" type='text' class='easyui-textbox' style='width:100%;height:30px'>
                             </div>
-                            <label class='form-label col-1'>计划名称</label>
+                            <label class='form-label col-2'>质检人工号</label>
                             <div class='formControls col-2'>
-                                <input id="planName" type='text' class='easyui-textbox'
+                                <input id="checkStaffId" type='text' class='easyui-textbox'
                                        style='width:100%;height:30px'>
                             </div>
-                            <label class='form-label col-1'>服务请求类型</label>
+                            <label class='form-label col-2'>被质检人工号</label>
                             <div class='formControls col-2'>
-                                <input id="serviceType" type='text' class='easyui-textbox'
-                                       style='width:100%;height:30px'>
-                            </div>
-                            <label class='form-label col-1'>计划开始时间</label>
-                            <div class='formControls col-2'>
-                                <input id="planStartTime" class='easyui-datetimebox' style='width:100%;height:30px'>
-                            </div>
-                        </div>
-                    </form>
-                    <form class='form form-horizontal'>
-                        <div class='row cl'>
-                            <label class='form-label col-1'>计划结束时间</label>
-                            <div class='formControls col-2'>
-                                <input id="planEndTime" class='easyui-datetimebox' style='width:100%;height:30px'>
-                            </div>
-                            <label class='form-label col-1'>分配开始时间</label>
-                            <div class='formControls col-2'>
-                                <input id="distStartTime" class='easyui-datetimebox' style='width:100%;height:30px'>
-                            </div>
-                            <label class='form-label col-1'>分配结束时间</label>
-                            <div class='formControls col-2'>
-                                <input id="distEndTime" class="easyui-datetimebox" style='width:100%;height:30px'>
-                            </div>
-                            <label class='form-label col-1'>质检员</label>
-                            <div class='formControls col-2'>
-                                <input id="qmPeople" type='text' class='easyui-textbox'
+                                <input id="checkedStaffId" type='text' class='easyui-textbox'
                                        style='width:100%;height:30px'>
                             </div>
                         </div>
                     </form>
                     <form class='form form-horizontal'>
                         <div class='row cl'>
-                            <label class='form-label col-1'>是否分配</label>
+                            <label class='form-label col-2'>质检流水号</label>
                             <div class='formControls col-2'>
-                                <input id="isDis" type='text' class='easyui-textbox'
+                                <input id="inspectionId" type='text' class='easyui-textbox'
                                        style='width:100%;height:30px'>
                             </div>
-                            <label class='form-label col-1'>考评环节</label>
+                            <label class='form-label col-2'>质检开始时间</label>
+                            <div class='formControls col-2'>
+                                <input id="startTime" class='easyui-datetimebox' style='width:100%;height:30px'>
+                            </div>
+                            <label class='form-label col-2'>质检结束时间</label>
+                            <div class='formControls col-2'>
+                                <input id="endTime" class="easyui-datetimebox" style='width:100%;height:30px'>
+                            </div>
+                        </div>
+                    </form>
+                    <form class='form form-horizontal'>
+                        <div class='row cl'>
+                            <label class='form-label col-2'>计划质检标志</label>
                             <div class='formControls col-2'>
                                 <input id="qmLink" type='text' class='easyui-textbox'
                                        style='width:100%;height:30px'>
                             </div>
-                            <div class="formControls col-1">
+                            <label class='form-label col-2'>计划信息</label>
+                            <div class='formControls col-2'>
+                                <input id="w" type='text' class='easyui-textbox'
+                                       style='width:100%;height:30px'>
                             </div>
-                            <div class='formControls col-1'>
-                            <a href='javascript:void(0)' class='btn btn-green radius mt-l-20' id="queryBtn"><i
-                            class='iconfont iconfont-search2'></i>查询</a>
+                            <label class='form-label col-2'>状态</label>
+                            <div class='formControls col-2'>
+                                <input id="resultStatus" type='text' class='easyui-textbox'
+                                       style='width:100%;height:30px'>
                             </div>
                         </div>
                     </form>
+                    <form class='form form-horizontal'>
+                        <div class='row cl'>
+                            <label class='form-label col-2'>是否回访</label>
+                            <div class='formControls col-2'>
+                                <input id="22" type='text' class='easyui-textbox'
+                                       style='width:100%;height:30px'>
+                            </div>
+                            <label class='form-label col-2'></label>
+                            <div class='formControls col-2'>
+                                <a href='javascript:void(0)' class='btn btn-green radius mt-l-20' id="queryBtn"><i
+                                        class='iconfont iconfont-search2'></i>查询</a>
+                            </div>
+                            <label class='form-label col-2'></label>
+                            <div class='formControls col-2'>
+                                <a href='javascript:void(0)' class='btn btn-green radius mt-l-20' id="clearBtn"><i
+                                        class='iconfont iconfont-zhongzuo'></i>重置</a>
+                            </div>
+                        </div>
+                    </form>
+
                 </div>
 
                 <div class='cl'>
                     <div class='panel-tool-box cl'>
                         <div class='fl text-bold'>查询信息</div>
                         <div class="formControls col-2" style="text-align: right;width: 83.2%">
-                            <a href='javascript:void(0)' class='btn btn-green radius mt-l-20' id="delBut">删除</a>
                             <a href='javascript:void(0)' class='btn btn-green radius mt-l-20' id="daoBut">导出</a>
-                            <a href='javascript:void(0)' class='btn btn-green radius mt-l-20' id="claimBut">认领</a>
-                            <a href='javascript:void(0)' class='btn btn-green radius mt-l-20' id="disBut">分配</a>
-                            <a href='javascript:void(0)' class='btn btn-green radius mt-l-20' style="width:100px" id="releaseBut">强制释放</a>
+                            <a href='javascript:void(0)' class='btn btn-green radius mt-l-20' id="releaseBut">申诉</a>
+                            <!--<a href='javascript:void(0)' class='btn btn-green radius mt-l-20' id="modifyBut">修改</a>-->
+                            <!--<a href='javascript:void(0)' class='btn btn-green radius mt-l-20' style="width:100px" id="claimBut">典型案例</a>-->
+                            <!--<a href='javascript:void(0)' class='btn btn-green radius mt-l-20' id="arrangeBut">整理</a>-->
+                            <!--<a href='javascript:void(0)' class='btn btn-green radius mt-l-20' style="width:100px" id="qmBut">质检员考评</a>-->
                         </div>
                     </div>
                     <table id='queryInfo' class='easyui-datagrid' style=' width:100%;'>
                     </table>
+                </div>
+            </div>
+        </div>
+        <!-- 增加弹窗，默认隐藏  -->
+        <div  id='add_window' style='display:none;'>
+            <div id='add_content' style='overflow:auto'>
+                <div class='panel-search'>
+                    <form id='createSkillConfig' method='POST' class='form form-horizontal'>
+                        <div class='row cl'>
+                            <label class='form-label col-2'>申诉原因</label>
+                            <div class='formControls col-10'>
+                                <input id="orderDealContent" class='easyui-textarea' data-options="multiline:true"
+                                       style='width:100%;height:90px'>
+                            </div>
+                        </div>
+                    </form>
+                    <div class='mt-10 test-c'>
+                        <label class='form-label col-5'></label>
+                        <a href='javascript:void(0)' id='global' class='btn btn-green radius  mt-l-20'>提交</a>
+                        <a href='javascript:void(0)' id='cancel' class='btn btn-secondary radius  mt-l-20'>取消</a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -107,6 +140,6 @@
 
 <script type="text/javascript" src="../../js/common/requirejs-main.js"></script>
 <script type="text/javascript" src="../../assets/lib/require/require.min.js"
-        data-main="js/execution/workOrderQm"></script>
+        data-main="js/manage/voiceQmResultManage"></script>
 
 </html>

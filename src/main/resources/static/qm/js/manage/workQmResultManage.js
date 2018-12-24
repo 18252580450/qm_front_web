@@ -1,7 +1,7 @@
 require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, Transfer,easyui,dateUtil) {
     //初始化方法
     initialize();
-
+    var reqParams=null;
     function initialize() {
         initPageInfo();
         initEvent();
@@ -82,12 +82,20 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
                 {field: 'planName', title: '质检计划名称', align: 'center', width: '10%'},
                 {field: 'checkedStaffId', title: '被质检人工号', align: 'center', width: '10%'},
                 {field: 'checkedDepartId', title: '被质检人班组', align: 'center', width: '10%'},
-                {field: 'errorRank', title: '差错类型', align: 'center', width: '10%'},
+                {field: 'errorRank', title: '差错类型', align: 'center', width: '10%',
+                    formatter:function(value, row, index){
+                        return {'0':'无错误','1':'绝对错误'}[value];
+                    }
+                },
                 {field: 'finalScore', title: '质检得分', align: 'center', width: '10%'},
                 {field: 'checkStaffId', title: '质检人工号', align: 'center', width: '10%'},
-                {field: 'resultStatus', title: '申诉结果', align: 'center', width: '10%'},
+                {field: 'resultStatus', title: '申诉结果', align: 'center', width: '10%',
+                    formatter:function(value, row, index){
+                        return {'0':'质检新生成','1':'临时保存','2':'放弃','3':'复检','4':'分检','5':'被检人确认'
+                            ,'6':'系统自确认','7':'申诉中','8':'申诉通过','9':'申诉驳回','99':'系统驳回'}[value];
+                    }},
                 {
-                    field: 'checkStartTime', title: '质检时间', align: 'center', width: '15%',
+                    field: 'checkEndTime', title: '质检时间', align: 'center', width: '15%',
                     formatter: function (value, row, index) { //格式化时间格式
                         return DateUtil.formatDateTime(value);
                     }
@@ -115,11 +123,15 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
                 var checkLink = $("#checkLink").val();
                 var minScore = $("#minScore").val();
                 var maxScore = $("#maxScore").val();
+                if(parseInt(maxScore)<parseInt(minScore)){
+                    $.messager.alert("提示", "质检评分最小值不能高于最大值！");
+                    return false;
+                }
                 var qmResult = $("#qmResult").combobox("getValue");
                 var errorType = $("#errorType").combobox("getValue");
-                var qmPlanName = $("#qmPlanName").val();
+                var qmPlanId = $("#qmPlanName").val();
 
-                var reqParams = {
+                reqParams = {
                     "touchId": workOrderId,
                     "acceptNumber": cusNumber,
                     "checkDepartName": qmDepart,
@@ -133,8 +145,8 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
                     "maxScore":maxScore,
                     "resultStatus":qmResult,
                     "errorRank":errorType,
-                    "qmPlanName":qmPlanName,
-                    "qmPlanName":reqTypeEndNode,
+                    "planId":qmPlanId,
+                    "reqTypeEndNode":reqTypeEndNode
                 };
                 var params = $.extend({
                     "start": start,
@@ -192,32 +204,24 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
         }
     }
 
-    // 导出
+    //后端导出
     function dao(){
-        var oXL = new ActiveXObject("Excel.Application");
-        var oWB = oXL.Workbooks.add();
-        var oSheet = oWB.ActiveSheet;
-        var headTable = $(".datagrid-header").find('table')[1];
-        var dataTable = $(".datagrid-body").find('table')[0];
-        var headDate = headTable.rows(0);
-        var hang = dataTable.rows.length;
-        var lie = dataTable.rows(0).cells.length;
-        for(var l = 0;l<lie;l++){
-            oSheet.Cells(1,l + 1).NumberFormatLocal = "@";
-            oSheet.Cells(1,l + 1).Font.Bold = true;
-            oSheet.Cells(1,l + 1).Font.Size = 10;
-            oSheet.Cells(1,l + 1).value = headDate.cells(l).innerText;
-        }
-        for(i = 1; i <= hang; i++){
-            for(j = 0; j < lie; j++){
-                oSheet.Cells(i + 1,j + 1).NumberFormatLocal = "@";
-                oSheet.Cells(i + 1,j + 1).Font.Bold = true;
-                oSheet.Cells(i + 1,j + 1).Font.Size = 10;
-                oSheet.Cells(i + 1,j + 1).value = dataTable.rows(i-1).cells(j).innerText;
-            }
-        }
-        oXL.Visible = true;
-        oXL.UserControl = true;
+        var fields = $('#queryInfo').datagrid('getColumnFields'); //获取datagrid的所有fields
+        var titles=[];
+        fields.forEach(function(value,index,array){
+            var title = $('#queryInfo').datagrid('getColumnOption',value).title;//获取datagrid的title
+            title = (title!=null)?title:"";
+            titles.push(title);
+        });
+        var params = {
+            "start": 0,
+            "pageNum": 0,
+            "fields":JSON.stringify(fields),
+            "titles":JSON.stringify(titles),
+            "params": JSON.stringify(reqParams)
+        };
+        // 采用encodeURI两次编码,防止乱码
+        window.location.href = Util.constants.CONTEXT + Util.constants.WORK_QM_RESULT+"/export?params="+encodeURI(encodeURI(JSON.stringify(params)));
     }
 
     //事件初始化
@@ -229,6 +233,12 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
 
         //申诉
         $("#appealBut").on("click", function () {
+            $("#add_content").show().window({   //弹框
+                width: 950,
+                height: 400,
+                modal: true,
+                title: "申诉"
+            });
             appeal();
         });
 
@@ -271,7 +281,6 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
                         $("#queryInfo").datagrid('reload'); //成功后，刷新页面
                     }
                 });
-
             }
         });
     }
@@ -294,21 +303,6 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
                     bottom: ''
                 }
             });
-        }
-    }
-
-    //添加一个选项卡面板
-    function addTabs(title, url) {
-        var jq = top.jQuery;
-
-        if (!jq('#tabs').tabs('exists', title)) {
-            jq('#tabs').tabs('add', {
-                title: title,
-                content: '<iframe src="' + url + '" frameBorder="0" border="0" scrolling="auto"  style="width: 100%; height: 100%;"/>',
-                closable: true
-            });
-        } else {
-            jq('#tabs').tabs('select', title);
         }
     }
 
@@ -346,21 +340,6 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
 
         addTabs("工单质检详情","");
     });
-
-    //添加一个选项卡面板
-    function addTabs(title, url) {
-        var jq = top.jQuery;//顶层的window对象.取得整个父页面对象
-        //重写jndex.js中的方法
-        if (!jq('#tabs').tabs('exists', title)) {
-            jq('#tabs').tabs('add', {
-                title: title,
-                content: '<iframe src="' + url + '" frameBorder="0" border="0" scrolling="auto"  style="width: 100%; height: 100%;"/>',
-                closable: true
-            });
-        } else {
-            jq('#tabs').tabs('select', title);
-        }
-    }
 
     return {
         initialize: initialize

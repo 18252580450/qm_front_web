@@ -1,0 +1,90 @@
+[
+  {
+    "codeType": "CHECK_ITEM_TYPE@CS_IR",
+    "codeValue": "0",
+    "codeName": "质检新生成",
+    "codeDesc": "质检新生成",
+    "sortId": 0,
+    "state": "1"
+  },
+  {
+    "codeType": "CHECK_ITEM_TYPE@CS_IR",
+    "codeValue": "1",
+    "codeName": "临时保存",
+    "codeDesc": "临时保存",
+    "sortId": 1,
+    "state": "1"
+  },
+  {
+    "codeType": "CHECK_ITEM_TYPE@CS_IR",
+    "codeValue": "2",
+    "codeName": "放弃",
+    "codeDesc": "放弃",
+    "sortId": 2,
+    "state": "1"
+  },
+  {
+    "codeType": "CHECK_ITEM_TYPE@CS_IR",
+    "codeValue": "3",
+    "codeName": "复检",
+    "codeDesc": "复检",
+    "sortId": 3,
+    "state": "1"
+  },
+  {
+    "codeType": "CHECK_ITEM_TYPE@CS_IR",
+    "codeValue": "4",
+    "codeName": "分检",
+    "codeDesc": "分检",
+    "sortId": 4,
+    "state": "1"
+  },
+  {
+    "codeType": "CHECK_ITEM_TYPE@CS_IR",
+    "codeValue": "5",
+    "codeName": "被检人确认",
+    "codeDesc": "被检人确认",
+    "sortId": 5,
+    "state": "1"
+  },
+  {
+    "codeType": "CHECK_ITEM_TYPE@CS_IR",
+    "codeValue": "6",
+    "codeName": "系统自确认",
+    "codeDesc": "系统自确认",
+    "sortId": 6,
+    "state": "1"
+  },
+  {
+    "codeType": "CHECK_ITEM_TYPE@CS_IR",
+    "codeValue": "7",
+    "codeName": "申诉中",
+    "codeDesc": "申诉中",
+    "sortId": 7,
+    "state": "1"
+  },
+  {
+    "codeType": "CHECK_ITEM_TYPE@CS_IR",
+    "codeValue": "8",
+    "codeName": "申诉通过",
+    "codeDesc": "申诉通过",
+    "sortId": 8,
+    "state": "1"
+  },
+  {
+    "codeType": "CHECK_ITEM_TYPE@CS_IR",
+    "codeValue": "9",
+    "codeName": "申诉驳回",
+    "codeDesc": "申诉驳回",
+    "sortId": 9,
+    "state": "1"
+  },
+  {
+    "codeType": "CHECK_ITEM_TYPE@CS_IR",
+    "codeValue": "99",
+    "codeName": "系统驳回",
+    "codeDesc": "系统驳回",
+    "sortId": 99,
+    "state": "1"
+  }
+]

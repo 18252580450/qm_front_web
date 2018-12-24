@@ -1,7 +1,8 @@
 require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, Transfer,easyui,dateUtil) {
     //初始化方法
     initialize();
-
+    var reqParams=null;
+    var i = 0;//播放按钮点击次数
     function initialize() {
         initPageInfo();
         initEvent();
@@ -49,7 +50,6 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
         $("#queryInfo").datagrid({
             columns: [[
                 {field: 'ck', checkbox: true, align: 'center'},
-                {field: 'inspectionId', title: '质检流水', align: 'center', width: '15%'},
                 {field: 'touchId', title: '语音流水', align: 'center', width: '10%'},
                 {
                     field: 'checkedTime', title: '抽取时间', align: 'center', width: '15%',
@@ -63,6 +63,16 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
                         return DateUtil.formatDateTime(value);
                     }},
                 {field: 'checkedStaffName', title: '被检人员', align: 'center', width: '10%'},
+                {field: 'reserve1', title: '是否质检', align: 'center', width: '10%',
+                    formatter:function(value, row, index){
+                        return {'0':'待质检','1':'待复检','2':'已质检'}[value];
+                    }
+                },
+                {field: 'isOperate', title: '是否分派', align: 'center', width: '10%',
+                    formatter:function(value, row, index){
+                        return {'0':'未分派','1':'已分派'}[value];
+                    }
+                },
                 {field: 'callingNumber', title: '主叫号码', align: 'center', width: '10%'}
             ]],
             fitColumns: true,
@@ -99,7 +109,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
                 var srvReqstTypeId = $("#srvReqstTypeId").val();
                 var strategyInfo = $("#strategyInfo").val();
 
-                var reqParams = {
+                reqParams = {
                     "touchId": touchId,
                     "planId": planId,
                     "isOperate": isOperate,
@@ -162,6 +172,33 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
             $("#page input").val("");
         });
 
+        //后台导出
+        $("#daoBut").on("click", function () {
+            dao();
+        });
+
+        //删除
+        $("#delBut").on("click", function () {
+            deleteCheck();
+        });
+
+        var daxiao = "../../data/voice.mp3";
+        var daxiao = new Audio(daxiao);
+        //播放
+        $("#playBut").on("click", function () {
+            if(i++%2==0){
+                document.getElementById('playBut').text='语音播放';
+                daxiao.play(); //播放
+            }else{
+                document.getElementById('playBut').text='语音暂停';
+                //暂停
+                daxiao.pause();
+            }
+
+
+
+        });
+
         //强制释放
         $("#releaseBut").on("click", function () {
             release();
@@ -173,6 +210,12 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
             if (selRows.length == 0) {
                 $.messager.alert("提示", "请至少选择一行数据!");
                 return false;
+            }
+            for(var i=0;i<selRows.length;i++){
+                if (selRows[i].isOperate=="1"||selRows[i].reserve1=="2") {
+                    $.messager.alert("提示", "已分派或已质检后不可操作!");
+                    return false;
+                }
             }
             var ids = [];
             for (var i = 0; i < selRows.length; i++) {
@@ -191,6 +234,12 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
         if (selRows.length == 0) {
             $.messager.alert("提示", "请至少选择一行数据!");
             return false;
+        }
+        for(var i=0;i<selRows.length;i++){
+            if (selRows[i].reserve1=="2") {
+                $.messager.alert("提示", "已质检后不可操作!");
+                return false;
+            }
         }
         var ids = [];
         for (var i = 0; i < selRows.length; i++) {
@@ -336,8 +385,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
             map["touchId"]=dataNew[i];
             params.push(map);
         }
-
-        Util.ajax.putJson(Util.constants.CONTEXT.concat(qmURI).concat("/updateCheck"), JSON.stringify(params), function (result) {
+        Util.ajax.putJson(Util.constants.CONTEXT.concat(Util.constants.VOICE_POOL_DNS).concat("/updateCheck"), JSON.stringify(params), function (result) {
             $.messager.show({
                 msg: result.RSP.RSP_DESC,
                 timeout: 1000,
@@ -352,36 +400,70 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
         });
     }
 
-    /**
-     * 下拉框数据重载
-     */
-    function reloadSelectData(paramsType, select, showAll) {
-        var reqParams = {
-            "tenantId": Util.constants.TENANT_ID,
-            "paramsTypeId": paramsType
-        };
-        var params = {
-            "start": 0,
-            "pageNum": 0,
-            "params": JSON.stringify(reqParams)
-        };
-        Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.STATIC_PARAMS_DNS + "/selectByParams", params, function (result) {
-            var rspCode = result.RSP.RSP_CODE;
-            if (rspCode === "1") {
-                var selectData = result.RSP.DATA;
-                if (showAll) {
-                    var data = {
-                        "paramsCode": "-1",
-                        "paramsName": "全部"
-                    };
-                    selectData.unshift(data);
-                }
-                $("#" + select).combobox('loadData', selectData);
+    //删除
+    function deleteCheck(){
+        var delRows = $("#queryInfo").datagrid("getSelections");
+        if (delRows.length === 0) {
+            $.messager.alert("提示", "请至少选择一行数据!");
+            return false;
+        }
+        var delArr = [];
+        for (var i = 0; i < delRows.length; i++) {
+            var id = delRows[i].touchId;
+            delArr.push(id);
+        }
+        $.messager.confirm('确认删除弹窗', '确定要删除吗？', function (confirm) {
+            if (confirm) {
+                Util.ajax.deleteJson(Util.constants.CONTEXT.concat(Util.constants.VOICE_POOL_DNS).concat("/").concat(delArr), {}, function (result) {
+                    $.messager.show({
+                        msg: result.RSP.RSP_DESC,
+                        timeout: 1000,
+                        style: {right: '', bottom: ''},     //居中显示
+                        showType: 'show'
+                    });
+                    var rspCode = result.RSP.RSP_CODE;
+                    if (rspCode != null && rspCode === "1") {
+                        $("#queryInfo").datagrid('reload'); //删除成功后，刷新页面
+                    }
+                });
             }
         });
     }
 
+    /**
+     * 后台导出
+     */
+    function dao(){
+        var fields = $('#queryInfo').datagrid('getColumnFields'); //获取datagrid的所有fields
+        var titles=[];
+        fields.forEach(function(value,index,array){
+            var title = $('#queryInfo').datagrid('getColumnOption',value).title;//获取datagrid的title
+            title = (title!=null)?title:"";
+            titles.push(title);
+        });
+        var params = {
+            "start": 0,
+            "pageNum": 0,
+            "fields":JSON.stringify(fields),
+            "titles":JSON.stringify(titles),
+            "params": JSON.stringify(reqParams)
+        };
+        // 采用encodeURI两次编码,防止乱码
+        window.location.href = Util.constants.CONTEXT + Util.constants.VOICE_POOL_DNS+"/export?params="+encodeURI(encodeURI(JSON.stringify(params)));
+    }
     return {
         initialize: initialize
     };
+
+    //获取音频文件
+    function  getVoice(){
+        Util.ajax.deleteJson(Util.constants.CONTEXT.concat(Util.constants.VOICE_POOL_DNS).concat("/").concat(delArr), {}, function (result) {
+
+            var rspCode = result.RSP.RSP_CODE;
+            if (rspCode != null && rspCode === "1") {
+                $.messager.alert("提示", "获取音频文件失败!");
+            }
+        });
+        return null;
+    }
 });
