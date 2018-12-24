@@ -39,6 +39,7 @@ require(["jquery", 'util', "transfer", "easyui", "ztree-exedit"], function ($, U
             },
             onSelect: function () {
                 $("#checkItemList").datagrid('reload');
+                refreshTree();  //刷新左侧考评树
             }
         });
         //考评项类型下拉框
@@ -89,6 +90,7 @@ require(["jquery", 'util', "transfer", "easyui", "ztree-exedit"], function ($, U
                     checkNode.isParent = node.isParent;
                     if (node.isParent) {
                         $("#parentCheckItemName").val(node.name);
+                        $("#parentCheckItemId").val(node.id);
                         $("#checkItemList").datagrid('reload');
                     } else {
                         var data = [];
@@ -98,23 +100,11 @@ require(["jquery", 'util', "transfer", "easyui", "ztree-exedit"], function ($, U
                             }
                             if (node.pId === item.checkItemId) {
                                 $("#parentCheckItemName").val(item.checkItemName);
+                                $("#parentCheckItemId").val(item.checkItemId);
                             }
                         });
                         $("#checkItemList").datagrid('loadData', data);
                     }
-
-                    // if (node.isParent) {//父节点
-                    //     $("#page").off("click", "#addTemplate");//解决点击多次ztree之后再点击按钮后，被多次调用
-                    //     $("#page").on("click", "#addTemplate", function () {//点击父节点,然后跳出弹出框，右侧新增
-                    //         addWindowEvent(node, true);
-                    //     });
-                    //
-                    // } else {//点击子节点，右侧直接新增
-                    //     $("#page").off("click", "#addTemplate");
-                    //     $("#page").on("click", "#addTemplate", function () {//点击子节点,然后右侧新增
-                    //         addWindowEvent(node, false);
-                    //     });
-                    // }
                 }
             }
         };
@@ -126,7 +116,7 @@ require(["jquery", 'util', "transfer", "easyui", "ztree-exedit"], function ($, U
             columns: [[
                 {field: 'checkItemId', title: '考评项ID', hidden: true},
                 {field: 'ck', checkbox: true, align: 'center'},
-                {field: 'checkItemName', title: '考评项名称', width: '20%'},
+                {field: 'checkItemName', title: '考评项名称', width: '25%'},
                 {
                     field: 'checkItemType', title: '考评项类型', width: '20%',
                     formatter: function (value, row, index) {
@@ -143,7 +133,7 @@ require(["jquery", 'util', "transfer", "easyui", "ztree-exedit"], function ($, U
                     }
                 },
                 {
-                    field: 'checkItemVitalType', title: '致命类别', width: '13%',
+                    field: 'checkItemVitalType', title: '致命类别', width: '15%',
                     formatter: function (value, row, index) {
                         var vitalType = null;
                         if (value != null && value === "0") {
@@ -157,7 +147,7 @@ require(["jquery", 'util', "transfer", "easyui", "ztree-exedit"], function ($, U
                 },
                 {field: 'remark', title: '考评项描述', width: '30%'},
                 {
-                    field: 'action', title: '操作', width: '13%',
+                    field: 'action', title: '操作', width: '10%',
                     formatter: function (value, row, index) {
                         return '<a href="javascript:void(0);" id = "checkItem' + row.checkItemId + '">修改</a>';
                     }
@@ -256,9 +246,14 @@ require(["jquery", 'util', "transfer", "easyui", "ztree-exedit"], function ($, U
             }
         });
 
+        //新增类别
+        $("#addCatalogBtn").on("click", function () {
+            showCheckItemCreateDialog(Util.constants.CHECK_ITEM_PARENT);
+        });
+
         //新增
         $("#addBtn").on("click", function () {
-            showCheckItemCreateDialog();
+            showCheckItemCreateDialog(Util.constants.CHECK_ITEM_CHILDREN);
         });
 
         //删除
@@ -270,11 +265,7 @@ require(["jquery", 'util', "transfer", "easyui", "ztree-exedit"], function ($, U
     /**
      * 新增考评项弹框
      */
-    function showCheckItemCreateDialog() {
-        if (!checkNode.isParent) {
-            $.messager.alert("提示", "请选择目录!");
-            return false;
-        }
+    function showCheckItemCreateDialog(catalogFlag) {
         $("#checkItemConfig").form('clear');  //清空表单
         var disableSubmit = false;  //禁用提交按钮标志
         $("#checkItemDialog").show().window({
@@ -343,10 +334,15 @@ require(["jquery", 'util', "transfer", "easyui", "ztree-exedit"], function ($, U
             submitBtn.linkbutton({disabled: true});  //禁用提交按钮（样式）
 
             var tenantId = $("#tenantType").combobox("getValue"),
+                parentCheckItemId = $("#parentCheckItemId").val(),
                 checkItemName = $("#checkItemNameConfig").val(),
                 checkItemType = $("#checkItemTypeConfig").combobox("getValue"),
                 checkItemVitalType = $("#checkItemVitalTypeConfig").combobox("getValue"),
-                checkItemDesc = $("#checkItemDescConfig").val();
+                checkItemDesc = $("#checkItemDescConfig").val(),
+                orderNo = checkNode.level;
+            if (checkNode.isParent) {
+                orderNo = checkNode.level + 1;
+            }
 
             if (checkItemName == null || checkItemName === "") {
                 $.messager.alert("提示", "考评项名称不能为空!");
@@ -356,13 +352,13 @@ require(["jquery", 'util', "transfer", "easyui", "ztree-exedit"], function ($, U
             }
             var params = {
                 "tenantId": tenantId,
-                "parentCheckItemId": checkNode.id,
+                "parentCheckItemId": parentCheckItemId,
                 "checkItemName": checkItemName,
                 "checkItemType": checkItemType,
                 "checkItemVitalType": checkItemVitalType,
                 "remark": checkItemDesc,
-                "catalogFlag": 1,
-                "orderNo": checkNode.level + 1
+                "catalogFlag": catalogFlag,
+                "orderNo": orderNo
             };
             Util.ajax.postJson(Util.constants.CONTEXT.concat(Util.constants.CHECK_ITEM_DNS).concat("/"), JSON.stringify(params), function (result) {
                 $.messager.show({
@@ -546,7 +542,8 @@ require(["jquery", 'util', "transfer", "easyui", "ztree-exedit"], function ($, U
             tenantId = Util.constants.TENANT_ID;
         }
         var reqParams = {
-            "tenantId": tenantId
+            "tenantId": tenantId,
+            "parentCheckItemId":"0"
         };
         var params = $.extend({
             "start": 0,
@@ -554,15 +551,25 @@ require(["jquery", 'util', "transfer", "easyui", "ztree-exedit"], function ($, U
             "params": JSON.stringify(reqParams)
         }, Util.PageUtil.getParams($("#searchForm")));
 
+        debugger;
         Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.CHECK_ITEM_DNS + "/queryCheckItem", params, function (result) {
             var data = result.RSP.DATA;
+            debugger;
             checkItemListData = data;
             for (var i = 0; i < data.length; i++) {
                 var nodeMap =
-                    {id: data[i].checkItemId, pId: data[i].parentCheckItemId, name: data[i].checkItemName};
+                    {
+                        id: data[i].checkItemId,
+                        pId: data[i].parentCheckItemId,
+                        name: data[i].checkItemName,
+                        catalogFlag: data[i].catalogFlag
+                    };
                 zNodes.push(nodeMap);
             }
+            debugger;
             $.fn.zTree.init($("#checkItemTree"), setting, zNodes);
+            fixIcon();  //将空文件夹显示为文件夹图标
+
             if (data.length > 0) {
                 //父节点名称
                 checkNode.id = data[0].checkItemId;
@@ -570,9 +577,22 @@ require(["jquery", 'util', "transfer", "easyui", "ztree-exedit"], function ($, U
                 checkNode.name = data[0].checkItemName;
                 checkNode.level = 0;
                 checkNode.isParent = true;
-                $("#parentCheckItemName").val(checkNode.name)
+                $("#parentCheckItemName").val(checkNode.name);
+                $("#parentCheckItemId").val(checkNode.id);
             }
         });
+    }
+
+    function fixIcon() {
+        var treeObj = $.fn.zTree.getZTreeObj("checkItemTree");
+        //通过catalogFlag字段筛选出目录节点
+        var folderNode = treeObj.getNodesByFilter(function (node) {
+            return node.catalogFlag === Util.constants.CHECK_ITEM_PARENT;
+        });
+        for (var i = 0; i < folderNode.length; i++) {  //遍历目录节点，设置isParent属性为true;
+            folderNode[i].isParent = true;
+        }
+        treeObj.refresh();
     }
 
     //下拉框数据重载
