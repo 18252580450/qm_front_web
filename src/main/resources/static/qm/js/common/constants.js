@@ -7,7 +7,7 @@ define(function () {
         CONTEXT: "http://localhost:9002",
         URL_CONTEXT: "http://127.0.0.1:8080",
         TENANT_ID: "10010000",
-        PARENT_CHECK_ITEM_ID: "1",
+        STAFF_ID:"121",   //模拟工号
         PROCESS_STATUS_START: "1", //申诉主流程启动状态
         PROCESS_STATUS_STOP: "2",
 

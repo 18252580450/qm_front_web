@@ -12,7 +12,7 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
     //页面信息初始化
     function initPageInfo() {
         //申诉开始时间选择框
-        var beginDate = (formatDateTime(new Date() - 24 * 60 * 60 * 1000)).substr(0, 11) + "00:00:00";
+        var beginDate = (DateUtil.formatDateTime(new Date() - 24 * 60 * 60 * 1000)).substr(0, 11) + "00:00:00";
         $("#appealBeginTime").datetimebox({
             value: beginDate,
             onChange: function () {
@@ -21,7 +21,7 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
         });
 
         //申诉结束时间选择框
-        var endDate = (formatDateTime(new Date())).substr(0, 11) + "00:00:00";
+        var endDate = (DateUtil.formatDateTime(new Date())).substr(0, 11) + "00:00:00";
         // var endDate = (formatDateTime(new Date()-24*60*60*1000)).substr(0,11) + "23:59:59";
         $('#appealEndTime').datetimebox({
             value: endDate,

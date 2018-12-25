@@ -1,4 +1,4 @@
-require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util) {
+require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util, Transfer) {
 
     var appealCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/execution/orderAppealDetail.html";
 
@@ -42,22 +42,29 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
         $("#appealCheckList").datagrid({
             columns: [[
                 {
-                    field: 'orderId', title: '工单流水', width: '14%',
+                    field: 'touchId', title: '工单流水', width: '14%',
                     formatter: function (value, row, index) {
-                        var detail = '<a href="javascript:void(0);" id = "orderFlow' + row.orderId + '">' + value + '</a>';
+                        return '<a href="javascript:void(0);" id = "orderFlow_' + row.touchId + '">' + value + '</a>';
                     }
                 },
                 {
-                    field: 'checkId', title: '质检流水', width: '14%',
+                    field: 'inspectionId', title: '质检流水', width: '14%',
                     formatter: function (value, row, index) {
-                        var detail = '<a href="javascript:void(0);" id = "checkFlow' + row.checkId + '">' + value + '</a>';
+                        return '<a href="javascript:void(0);" id = "checkFlow_' + row.inspectionId + '">' + value + '</a>';
                     }
                 },
                 {field: 'appealId', title: '申诉单号', width: '14%'},
                 {field: 'appealStaffName', title: '申诉人', width: '14%'},
                 {field: 'appealReason', title: '申诉原因', width: '14%'},
-                {field: 'appealTime', title: '申诉时间', width: '14%'},
-                {field: 'currentNode', title: '当前节点', width: '14%'}
+                {
+                    field: 'appealTime', title: '申诉时间', width: '14%',
+                    formatter: function (value, row, index) { //格式化时间格式
+                        if (value) {
+                            return DateUtil.formatDateTime(value);
+                        }
+                    }
+                },
+                {field: 'currentNodeName', title: '当前节点', width: '14%'}
             ]],
             fitColumns: true,
             width: '100%',
@@ -82,9 +89,47 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
                     $("#appealCheckList").datagrid("selectRow", rowIndex);
                 }
             },
-            // loader: function (param, success) {
-            //
-            // },
+            loader: function (param, success) {
+                var start = (param.page - 1) * param.rows;
+                var pageNum = param.rows;
+
+                var inspectionId = $("#inspectionId").val(),
+                    appealTimeBegin = $("#appealBeginTime").datetimebox("getValue"),
+                    appealTimeEnd = $("#appealEndTime").datetimebox("getValue"),
+                    appealStaffId = $("#appealStaffId").val(),
+                    appealId = $("#appealId").val();
+
+                var reqParams = {
+                    "staffId": Util.constants.STAFF_ID,
+                    "checkType": Util.constants.CHECK_TYPE_ORDER,
+                    "inspectionId": inspectionId,
+                    "appealTimeBegin": appealTimeBegin,
+                    "appealTimeEnd": appealTimeEnd,
+                    "appealStaffId": appealStaffId,
+                    "appealId": appealId
+                };
+                var params = $.extend({
+                    "start": start,
+                    "pageNum": pageNum,
+                    "params": JSON.stringify(reqParams)
+                }, Util.PageUtil.getParams($("#searchForm")));
+
+                Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.APPEAL_DEAL_DNS + "/queryAppealDeal", params, function (result) {
+                    debugger;
+                    var data = Transfer.DataGrid.transfer(result);
+
+                    var rspCode = result.RSP.RSP_CODE;
+                    if (rspCode != null && rspCode !== "1") {
+                        $.messager.show({
+                            msg: result.RSP.RSP_DESC,
+                            timeout: 1000,
+                            style: {right: '', bottom: ''},     //居中显示
+                            showType: 'show'
+                        });
+                    }
+                    success(data);
+                });
+            },
             onLoadSuccess: function (data) {
                 //工单详情
                 $.each(data.rows, function (i, item) {
@@ -106,9 +151,9 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
 
     //事件初始化
     function initEvent() {
-        $("#showAppealDetail").on("click", function () {
-            showAppealDetail();
-        })
+        $("#queryBtn").on("click", function () {
+            $("#appealCheckList").datagrid("reload");
+        });
     }
 
     //申诉处理详情
@@ -146,8 +191,8 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
 
     //校验开始时间和终止时间
     function checkBeginEndTime() {
-        var beginTime = $("#createTimeBegin").datetimebox("getValue");
-        var endTime = $("#createTimeEnd").datetimebox("getValue");
+        var beginTime = $("#appealBeginTime").datetimebox("getValue");
+        var endTime = $("#appealEndTime").datetimebox("getValue");
         var d1 = new Date(beginTime.replace(/-/g, "\/"));
         var d2 = new Date(endTime.replace(/-/g, "\/"));
 
