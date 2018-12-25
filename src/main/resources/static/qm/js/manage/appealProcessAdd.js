@@ -479,7 +479,9 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
         var params = {
             "appealProcess": appealProcessData
         };
+        Util.loading.showLoading();
         Util.ajax.postJson(Util.constants.CONTEXT.concat(Util.constants.APPEAL_PROCESS_CONFIG_DNS).concat("/"), JSON.stringify(params), function (result) {
+            Util.loading.destroyLoading();
             var rspCode = result.RSP.RSP_CODE;
             if (rspCode != null && rspCode === "1") {   //新增成功
                 $.messager.alert("提示", result.RSP.RSP_DESC, null, function () {

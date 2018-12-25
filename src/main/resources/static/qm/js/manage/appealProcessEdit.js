@@ -958,9 +958,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
             "nodeUpdateData": nodeUpdateData
         };
         Util.loading.showLoading();
-
         Util.ajax.putJson(Util.constants.CONTEXT.concat(Util.constants.APPEAL_PROCESS_CONFIG_DNS).concat("/"), JSON.stringify(params), function (result) {
-
             Util.loading.destroyLoading();
             var rspCode = result.RSP.RSP_CODE;
             if (rspCode != null && rspCode === "1") {   //修改成功

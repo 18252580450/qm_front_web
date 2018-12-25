@@ -30,10 +30,11 @@ define(function () {
         VOICE_CHECK_DNS: "/qm/configservice/voiceCheck/",//语音待办区
         WORK_QM_RESULT: "/qm/configservice/workQmResult",//工单质检结果
         VOICE_QM_RESULT:"/qm/configservice/voiceQmResult",//语音质检结果
+        APPEAL_DEAL_DNS: "/qm/configservice/appealDeal",//申诉待办
 
         //考评项目录类型
-        CHECK_ITEM_PARENT: "0",    //目录
-        CHECK_ITEM_CHILDREN: "1",  //非目录
+        CHECK_ITEM_PARENT: "0",          //目录
+        CHECK_ITEM_CHILDREN: "1",        //非目录
 
         //考评模版得分类型
         SCORE_TYPE_COMMON: '0',          //合格
@@ -44,13 +45,17 @@ define(function () {
         CHECK_TYPE_WITHIN_PLAN: '0',     //计划内质检
         CHECK_TYPE_BEYOND_PLAN: '1',     //计划外质检
 
-        //工单质检分配状态
-        VOICE_NO_DISTRIBUTE: "0",  //未分配
-        VOICE_DISTRIBUTE: "1",     //已分配
+        //质检类别
+        CHECK_TYPE_VOICE:"0",            //语音质检
+        CHECK_TYPE_ORDER:"1",            //工单质检
 
         //工单质检分配状态
-        ORDER_NO_DISTRIBUTE: "1",  //未分配
-        ORDER_DISTRIBUTE: "2",     //已分配
+        VOICE_NO_DISTRIBUTE: "0",        //未分配
+        VOICE_DISTRIBUTE: "1",           //已分配
+
+        //工单质检分配状态
+        ORDER_NO_DISTRIBUTE: "1",        //未分配
+        ORDER_DISTRIBUTE: "2",           //已分配
 
         //质检池质检状态
         CHECK_STATUS_CHECK: '0',         //待质检

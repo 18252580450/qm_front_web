@@ -1,4 +1,4 @@
-require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, Transfer,easyui,dateUtil) {
+require(["jquery", 'util', "transfer", "easyui", "dateUtil"], function ($, Util, Transfer, easyui, dateUtil) {
     //初始化方法
     initialize();
     var reqParams=null;
@@ -53,7 +53,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
         });
 
         var qmEndTime = $('#qmEndTime');
-        var endDate = (DateUtil.formatDateTime(new Date())).substr(0,11) + "23:59:59";
+        var endDate = (DateUtil.formatDateTime(new Date())).substr(0, 11) + "23:59:59";
         qmEndTime.datetimebox({
             value: endDate,
             onChange: function () {
@@ -62,22 +62,25 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
         });
 
         //申诉流程列表
+        var IsCheckFlag = true; //标示是否是勾选复选框选中行的，true - 是 , false - 否
         $("#queryInfo").datagrid({
             columns: [[
                 {field: 'ck', checkbox: true, align: 'center'},
                 {
-                    field: 'action', title: '操作', width: '15%',
+                    field: 'action', title: '操作', width: '10%',
                     formatter: function (value, row, index) {
                         var bean = {//根据参数进行定位修改
                             'commentName': row.commentName
                         };
                         var beanStr = JSON.stringify(bean);   //转成字符串
-                        return "<a href='javascript:void(0);' class='reviseBtn' id =" + beanStr + " >详情</a>";
+                        var detail = "<a href='javascript:void(0);' class='reviseBtn' id =" + beanStr + " >详情</a>",
+                            appeal = "<a href='javascript:void(0);' id='resultAppeal_" + row.inspectionId + "_" + row.checkLink + "'>申诉</a>";
+                        return detail + "&nbsp;&nbsp;" + appeal;
                     }
                 },
                 {field: 'touchId', title: '工单流水号', align: 'center', width: '15%'},
-                {field: 'inspectionId', title: '质检流水号', align: 'center', width: '10%'},
-                {field: 'acceptNumber', title: '客户号码', align: 'center', width: '10%',hidden: true},
+                {field: 'inspectionId', title: '质检流水号', align: 'center', width: '15%'},
+                {field: 'acceptNumber', title: '客户号码', align: 'center', width: '10%', hidden: true},
                 {field: 'checkLink', title: '考评环节', align: 'center', width: '10%'},
                 {field: 'planName', title: '质检计划名称', align: 'center', width: '10%'},
                 {field: 'checkedStaffId', title: '被质检人工号', align: 'center', width: '10%'},
@@ -108,6 +111,21 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
             pageSize: 10,
             pageList: [5, 10, 20, 50],
             rownumbers: false,
+            onClickCell: function (rowIndex, field, value) {
+                IsCheckFlag = false;
+            },
+            onSelect: function (rowIndex, rowData) {
+                if (!IsCheckFlag) {
+                    IsCheckFlag = true;
+                    $("#queryInfo").datagrid("unselectRow", rowIndex);
+                }
+            },
+            onUnselect: function (rowIndex, rowData) {
+                if (!IsCheckFlag) {
+                    IsCheckFlag = true;
+                    $("#queryInfo").datagrid("selectRow", rowIndex);
+                }
+            },
             loader: function (param, success) {
                 var start = (param.page - 1) * param.rows;
                 var pageNum = param.rows;
@@ -154,13 +172,13 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
                     "params": JSON.stringify(reqParams)
                 }, Util.PageUtil.getParams($("#queryInfo")));
 
-                Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.WORK_QM_RESULT+ "/selectByParams", params, function (result) {
+                Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.WORK_QM_RESULT + "/selectByParams", params, function (result) {
                     var data = Transfer.DataGrid.transfer(result);
-                    var dataNew=[];
-                    for(var i=0;i<data.rows.length;i++){
-                        var map=data.rows[i];
-                        if(map.qmPlan!=null){
-                            map["planName"]=map.qmPlan.planName;
+                    var dataNew = [];
+                    for (var i = 0; i < data.rows.length; i++) {
+                        var map = data.rows[i];
+                        if (map.qmPlan != null) {
+                            map["planName"] = map.qmPlan.planName;
                             dataNew.push(map);
                         }
                     }
@@ -185,7 +203,90 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
 
                     addTabs("工单质检详情", "http://127.0.0.1:8080/qm/html/execution/orderCheckDetail.html");
                 });
+                //申诉
+                $.each(data.rows, function (i, item) {
+                    $("#resultAppeal_" + item.inspectionId + "_" + item.checkLink).on("click", function () {
+                        //判断是否已有申诉流程
+                        if (item.appealId != null) {
+                            $.messager.alert("提示", "已存在申诉流程：" + item.appealId + "!");
+                            return;
+                        }
+                        showAppealDialog(item);
+                    });
+                });
             }
+        });
+    }
+
+    //申诉
+    function showAppealDialog(data) {
+        $("#appealConfig").form('clear');  //清空表单
+        var disableSubmit = false;  //禁用提交按钮标志
+        $("#appealDialog").show().window({
+            width: 600,
+            height: 350,
+            modal: true,
+            title: "质检结果申诉"
+        });
+
+        //申诉原因
+        $("#appealReason").textbox(
+            {
+                multiline: true
+            }
+        );
+
+        //取消
+        var cancelBtn = $("#cancelBtn");
+        cancelBtn.unbind("click");
+        cancelBtn.on("click", function () {
+            $("#appealConfig").form('clear');  //清空表单
+            $("#appealDialog").window("close");
+        });
+        //提交
+        var submitBtn = $("#submitBtn");
+        submitBtn.unbind("click");
+        submitBtn.on("click", function () {
+            if (disableSubmit) {
+                return false;
+            }
+            disableSubmit = true;   //防止多次提交
+            submitBtn.linkbutton({disabled: true});  //禁用提交按钮（样式）
+
+            var appealReason = $("#appealReason").val();
+
+            if (appealReason == null || appealReason === "") {
+                $.messager.alert("提示", "申诉原因不能为空!");
+                disableSubmit = false;
+                submitBtn.linkbutton({disabled: false});  //取消提交禁用
+                return false;
+            }
+            var params = {
+                "departmentId": data.checkedDepartId,
+                "checkType": Util.constants.CHECK_TYPE_ORDER,
+                "touchId": data.touchId,
+                "inspectionId": data.inspectionId,
+                "appealStaffId": data.checkedStaffId,
+                "appealStaffName": data.checkedStaffName,
+                "appealReason": appealReason
+            };
+            Util.loading.showLoading();
+            Util.ajax.postJson(Util.constants.CONTEXT.concat(Util.constants.APPEAL_DEAL_DNS).concat("/submit"), JSON.stringify(params), function (result) {
+                Util.loading.destroyLoading();
+                $.messager.show({
+                    msg: result.RSP.RSP_DESC,
+                    timeout: 1000,
+                    style: {right: '', bottom: ''},     //居中显示
+                    showType: 'show'
+                });
+                var rspCode = result.RSP.RSP_CODE;
+                if (rspCode != null && rspCode === "1") {
+                    $("#appealDialog").window("close");  //关闭对话框
+                    $("#queryInfo").datagrid("reload"); //刷新列表
+                }
+                disableSubmit = false;
+                submitBtn.linkbutton({disabled: false});  //取消提交禁用
+            });
         });
     }
 
@@ -252,7 +353,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
     /**
      * 申诉
      */
-    function appeal(){
+    function appeal() {
         var selRows = $("#queryInfo").datagrid("getSelections");//选中多行
         if (selRows.length == 0) {
             $.messager.alert("提示", "请至少选择一行数据!");
@@ -286,7 +387,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
     }
 
     //校验开始时间和终止时间
-    function checkTime(){
+    function checkTime() {
         var qmStartTime = $("#qmStartTime").datetimebox("getValue");
         var qmEndTime = $("#qmEndTime").datetimebox("getValue");
         var d1 = new Date(qmStartTime.replace(/-/g, "\/"));
@@ -338,7 +439,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
     //点击后添加页面
     $("#page").on("click", "a.processIdBtn", function () {
 
-        addTabs("工单质检详情","");
+        addTabs("工单质检详情", "");
     });
 
     return {
