@@ -7,7 +7,8 @@ define(function () {
         CONTEXT: "http://localhost:9002",
         URL_CONTEXT: "http://127.0.0.1:8080",
         TENANT_ID: "10010000",
-        STAFF_ID:"121",   //模拟工号
+        STAFF_ID: "121",       //模拟工号
+        STAFF_NAME: "王程",    //模拟员工姓名
         PROCESS_STATUS_START: "1", //申诉主流程启动状态
         PROCESS_STATUS_STOP: "2",
 
@@ -29,7 +30,7 @@ define(function () {
         ORDER_CHECK_DNS: "/qm/configservice/orderCheck/",//工单待办区
         VOICE_CHECK_DNS: "/qm/configservice/voiceCheck/",//语音待办区
         WORK_QM_RESULT: "/qm/configservice/workQmResult",//工单质检结果
-        VOICE_QM_RESULT:"/qm/configservice/voiceQmResult",//语音质检结果
+        VOICE_QM_RESULT: "/qm/configservice/voiceQmResult",//语音质检结果
         APPEAL_DEAL_DNS: "/qm/configservice/appealDeal",//申诉待办
 
         //考评项目录类型
@@ -46,8 +47,8 @@ define(function () {
         CHECK_TYPE_BEYOND_PLAN: '1',     //计划外质检
 
         //质检类别
-        CHECK_TYPE_VOICE:"0",            //语音质检
-        CHECK_TYPE_ORDER:"1",            //工单质检
+        CHECK_TYPE_VOICE: "0",            //语音质检
+        CHECK_TYPE_ORDER: "1",            //工单质检
 
         //工单质检分配状态
         VOICE_NO_DISTRIBUTE: "0",        //未分配
@@ -74,6 +75,10 @@ define(function () {
         CHECK_RESULT_APPEAL_PASS: '8',   //申诉通过
         CHECK_RESULT_APPEAL_DENY: '9',   //申诉驳回
         CHECK_RESULT_SYS_DENY: '99',     //系统驳回
+
+        //审批通过状态
+        APPROVE_STATUS_PASS: "0",         //通过
+        APPROVE_STATUS_DENY: "1",         //驳回
 
         STATUS: {
             "-1": "删除",

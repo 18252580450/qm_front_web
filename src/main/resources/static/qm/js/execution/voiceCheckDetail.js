@@ -279,8 +279,8 @@ require(["jquery", "util", "dateUtil", "transfer", "easyui"], function ($, Util)
             checkComment = $("#checkComment").val();
         var voiceCheckResult = {
             "tenantId": voicePool.tenantId,                          //租户id
-            "callingNumber": voicePool.callingNumber,                //主叫号码
-            "acceptNumber": voicePool.calledNumber,                  //受理号码
+            "callingNumber": voicePool.staffNumber,                  //主叫号码
+            "acceptNumber": voicePool.customerNumber,                //受理号码
             "originInspectionId": "",                                //原质检流水
             "touchId": voicePool.touchId,                            //语音流水
             "planId": voicePool.planId,                              //考评计划

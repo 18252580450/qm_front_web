@@ -42,6 +42,14 @@ require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util,
         $("#appealCheckList").datagrid({
             columns: [[
                 {
+                    field: 'operate', title: '操作', width: '8%',
+                    formatter: function (value, row, index) {
+                        var detail = '<a href="javascript:void(0);" id = "appealDetail_' + row.appealId + '">详情</a>';
+                        var deal = '<a href="javascript:void(0);" id = "appealDeal_' + row.appealId + '">审批</a>';
+                        return detail + "&nbsp;&nbsp;" + deal;
+                    }
+                },
+                {
                     field: 'touchId', title: '工单流水', width: '14%',
                     formatter: function (value, row, index) {
                         return '<a href="javascript:void(0);" id = "orderFlow_' + row.touchId + '">' + value + '</a>';
@@ -131,18 +139,17 @@ require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util,
                 });
             },
             onLoadSuccess: function (data) {
-                //工单详情
+                //申诉详情
                 $.each(data.rows, function (i, item) {
-                    $("#orderFlow" + item.orderId).on("click", function () {
+                    $("#appealDetail_" + item.appealId).on("click", function () {
                         // var url = createURL(processDetailUrl, item);
                         // showDialog(url, "流程详情", 900, 600, false);
                     });
                 });
-                //申诉处理详情
+                //申诉审批
                 $.each(data.rows, function (i, item) {
-                    $("#checkFlow" + item.checkId).on("click", function () {
-                        // var url = createURL(processEditUrl, item);
-                        // addTabs("申诉流程-修改", url);
+                    $("#appealDeal_" + item.appealId).on("click", function () {
+                        showAppealDealDialog(item);
                     });
                 });
             }
@@ -156,10 +163,85 @@ require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util,
         });
     }
 
-    //申诉处理详情
-    function showAppealDetail() {
-        var url = createURL(appealCheckDetail, null);
-        addTabs("申诉处理详情", url);
+    //申诉审批弹框
+    function showAppealDealDialog(data) {
+        $("#appealDealConfig").form('clear');  //清空表单
+        var disableSubmit = false;  //禁用提交按钮标志
+        $("#appealDealDialog").show().window({
+            width: 600,
+            height: 350,
+            modal: true,
+            title: "审批"
+        });
+
+        //审批意见
+        $("#appealDealComment").textbox(
+            {
+                multiline: true
+            }
+        );
+
+        //取消
+        var cancelBtn = $("#cancelBtn");
+        cancelBtn.unbind("click");
+        cancelBtn.on("click", function () {
+            $("#appealDealConfig").form('clear');  //清空表单
+            $("#appealDealDialog").window("close");
+        });
+        //提交
+        var submitBtn = $("#submitBtn");
+        submitBtn.unbind("click");
+        submitBtn.on("click", function () {
+            if (disableSubmit) {
+                return false;
+            }
+            disableSubmit = true;   //防止多次提交
+            submitBtn.linkbutton({disabled: true});  //禁用提交按钮（样式）
+
+            var approveSuggestion = $("#appealDealComment").val(),
+                approveStatus = $('input[name="appealResult"]:checked').val();
+
+            debugger;
+            if (approveStatus === Util.constants.APPROVE_STATUS_DENY && approveSuggestion === "") {
+                $.messager.alert("提示", "请填写审批意见!");
+                disableSubmit = false;
+                submitBtn.linkbutton({disabled: false});  //取消提交禁用
+                return false;
+            }
+            var params = {
+                "checkType": Util.constants.CHECK_TYPE_ORDER,
+                "touchId":data.touchId,
+                "inspectionId":data.inspectionId,
+                "appealId":data.appealId,
+                "mainProcessId":data.mainProcessId,
+                "currentProcessId":data.currentProcessId,
+                "currentNodeId":data.currentNodeId,
+                "currentNodeName":data.currentNodeName,
+                "nextProcessId":data.nextProcessId,
+                "nextNodeId":data.nextNodeId,
+                "approveStatus":approveStatus,
+                "approveSuggestion":approveSuggestion,
+                "staffId": Util.constants.STAFF_ID,
+                "staffName": Util.constants.STAFF_NAME
+            };
+            Util.loading.showLoading();
+            Util.ajax.postJson(Util.constants.CONTEXT.concat(Util.constants.APPEAL_DEAL_DNS).concat("/"), JSON.stringify(params), function (result) {
+                Util.loading.destroyLoading();
+                $.messager.show({
+                    msg: result.RSP.RSP_DESC,
+                    timeout: 1000,
+                    style: {right: '', bottom: ''},     //居中显示
+                    showType: 'show'
+                });
+                var rspCode = result.RSP.RSP_CODE;
+                if (rspCode != null && rspCode === "1") {
+                    $("#appealDealDialog").window("close");  //关闭对话框
+                    $("#appealCheckList").datagrid("reload"); //刷新列表
+                }
+                disableSubmit = false;
+                submitBtn.linkbutton({disabled: false});  //取消提交禁用
+            });
+        });
     }
 
     //拼接对象到url
