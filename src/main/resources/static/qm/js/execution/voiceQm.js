@@ -51,6 +51,9 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
             columns: [[
                 {field: 'ck', checkbox: true, align: 'center'},
                 {field: 'touchId', title: '语音流水', align: 'center', width: '10%'},
+                {field: 'staffNumber', title: '坐席号码', align: 'center', width: '10%'},
+                {field: 'customerNumber', title: '客户号码', align: 'center', width: '10%'},
+                {field: 'callType', title: '呼叫类型', align: 'center', width: '10%'},
                 {
                     field: 'checkedTime', title: '抽取时间', align: 'center', width: '15%',
                     formatter: function (value, row, index) { //格式化时间格式
@@ -72,8 +75,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
                     formatter:function(value, row, index){
                         return {'0':'未分派','1':'已分派'}[value];
                     }
-                },
-                {field: 'callingNumber', title: '主叫号码', align: 'center', width: '10%'}
+                }
             ]],
             fitColumns: true,
             width: '100%',
@@ -94,20 +96,17 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
                 var checkedStaffId = $("#checkedStaffId").val();
                 var hungupType = $("#hungupType").val();
                 var callType = $("#callType").val();
-                var voiceSatisfyExtent = $("#voiceSatisfyExtent").val();
                 var recordTimeMin = $("#recordTimeMin").val();
                 var recordTimeMax = $("#recordTimeMax").val();
                 if(parseInt(recordTimeMin)>parseInt(recordTimeMax)){
                     $.messager.alert("提示", "最小值不可大于最大值!");
                     return false;
                 }
-                var callingNumber = $("#callingNumber").val();
-                var calledNumber = $("#calledNumber").val();
+                var staffNumber = $("#staffNumber").val();
+                var customerNumber = $("#customerNumber").val();
                 var satisfyExtentType = $("#satisfyExtentType").val();
-                var vipSatisfyExtent = $("#vipSatisfyExtent").val();
                 var mediaType = $("#mediaType").val();
                 var srvReqstTypeId = $("#srvReqstTypeId").val();
-                var strategyInfo = $("#strategyInfo").val();
 
                 reqParams = {
                     "touchId": touchId,
@@ -119,16 +118,13 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
                     "checkedStaffId":checkedStaffId,
                     "hungupType":hungupType,
                     "callType":callType,
-                    "voiceSatisfyExtent":voiceSatisfyExtent,
                     "recordTimeMin":recordTimeMin,
                     "recordTimeMax":recordTimeMax,
-                    "callingNumber":callingNumber,
-                    "calledNumber":calledNumber,
+                    "staffNumber":staffNumber,
+                    "customerNumber":customerNumber,
                     "satisfyExtentType":satisfyExtentType,
-                    "vipSatisfyExtent":vipSatisfyExtent,
                     "mediaType":mediaType,
                     "srvReqstTypeId":srvReqstTypeId,
-                    "strategyName":strategyInfo
                 };
                 var params = $.extend({
                     "start": start,
@@ -182,21 +178,22 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
             deleteCheck();
         });
 
-        var daxiao = "../../data/voice.mp3";
-        var daxiao = new Audio(daxiao);
-        //播放
+        // var daxiao = "../../data/voice.mp3";
+        // var daxiao = new Audio(daxiao);
+        // //播放
+        // $("#playBut").on("click", function () {
+        //     if(i++%2==0){
+        //         document.getElementById('playBut').text='语音播放';
+        //         daxiao.play(); //播放
+        //     }else{
+        //         document.getElementById('playBut').text='语音暂停';
+        //         //暂停
+        //         daxiao.pause();
+        //     }
+        // });
+
         $("#playBut").on("click", function () {
-            if(i++%2==0){
-                document.getElementById('playBut').text='语音播放';
-                daxiao.play(); //播放
-            }else{
-                document.getElementById('playBut').text='语音暂停';
-                //暂停
-                daxiao.pause();
-            }
-
-
-
+            getVoice();
         });
 
         //强制释放
@@ -457,13 +454,12 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
 
     //获取音频文件
     function  getVoice(){
-        Util.ajax.deleteJson(Util.constants.CONTEXT.concat(Util.constants.VOICE_POOL_DNS).concat("/").concat(delArr), {}, function (result) {
+        Util.ajax.postJson(Util.constants.CONTEXT.concat(Util.constants.VOICE_POOL_DNS).concat("/playVoice"),{}, function (result) {
 
             var rspCode = result.RSP.RSP_CODE;
             if (rspCode != null && rspCode === "1") {
                 $.messager.alert("提示", "获取音频文件失败!");
             }
         });
-        return null;
     }
 });

@@ -307,8 +307,8 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
             });
 
             //插入
-            var param =  {"params":jsonInsert};
             if(jsonInsert.length!=0){
+                var param =  {"params":jsonInsert};
                 Util.ajax.postJson(Util.constants.CONTEXT.concat(Util.constants.ADD_CHECK_TEMPLATE).concat("/insertTempDetail"),JSON.stringify(param), function (result) {
                     $.messager.show({
                         msg: result.RSP.RSP_DESC,
