@@ -1,7 +1,7 @@
 define([
-    "js/manage/qmPlanManageAdd",
+    "js/manage/qmPlanManageAdd","commonAjax",
     "jquery", 'util', "transfer", "easyui","crossAPI","dateUtil"],
-    function (qmPlanManageAdd,$, Util, Transfer,crossAPI) {
+    function (qmPlanManageAdd,CommonAjax,$, Util, Transfer,crossAPI) {
     //调用初始化方法
     initialize();
     var planTypes = [];
@@ -279,7 +279,7 @@ define([
 
             $('#add_window').show().window({
                 title: '新建计划',
-                width: 950,
+                width: 1250,
                 height: 400,
                 cache: false,
                 content:qmPlanManageAdda.$el,
@@ -308,19 +308,6 @@ define([
         //批量暂停
         $("#batchStop").on("click",batchUpdate);
     }
-
-    //添加一个选项卡面板
-    //function addTabs(title, url, icon) {
-    //    if (!$('#tabs').tabs('exists', title)) {
-    //        $('#tabs').tabs('add', {
-    //            title: title,
-    //            content: '<iframe src="' + url + '" frameBorder="0" border="0" scrolling="auto"  style="width: 100%; height: 100%;"/>',
-    //            closable: true
-    //        });
-    //    } else {
-    //        $('#tabs').tabs('select', title);
-    //    }
-    //}
 
     //初始化搜索表单
     function initSearchForm() {
@@ -361,20 +348,10 @@ define([
                 }
             ]
         });
-        var reqParams = {
-            "tenantId":Util.constants.TENANT_ID,
-            "paramsTypeId": "PLAN_TYPE"
-        };
-        var params = {
-            "start": 0,
-            "pageNum": 0,
-            "params": JSON.stringify(reqParams)
-        };
 
-        Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.STATIC_PARAMS_DNS + "/selectByParams", params, function (result) {
-            var rspCode = result.RSP.RSP_CODE;
-            if (rspCode == "1") {
-                planTypes = result.RSP.DATA;
+        CommonAjax.getStaticParams("PLAN_TYPE",function(datas){
+            if(datas){
+                planTypes = datas;
                 $('#planTypeq').combobox({
                     data: planTypes,
                     valueField: 'paramsCode',

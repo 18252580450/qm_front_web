@@ -4,7 +4,7 @@
             <div id = "page">
                 <div class='panel-search' title="基本信息">
                     <div class='title'>基本信息</div>
-                    <form class='form form-horizontal' id="mainForm">
+                    <form class='form form-horizontal' id="qryCheckTemplate_mainForm">
                         <div class='row cl'>
                             <label class='form-label col-3'>计划名称</label>
                             <div class='formControls col-3'>
@@ -18,11 +18,13 @@
                         <div class='row cl'>
                             <label class='form-label col-3'>考评模板</label>
                             <div class='formControls col-3'>
-                                <input id="templateId" type="easyui-textbox" style='width:100%;height:30px' >
+                                <input id="templateId" hidden="hidden" >
+                                <input id="template" class="easyui-searchbox" style='width:100%;height:30px' >
                             </div>
-                            <label class='form-label col-3'>抽取策略</label>
+                            <label class='form-label col-3'>考评策略</label>
                             <div class='formControls col-3'>
-                                <input id="pId" type="easyui-textbox" style='width:100%;height:30px' >
+                                <input id="pId" hidden="hidden" >
+                                <input id="strategy" class="easyui-searchbox" style='width:100%;height:30px' >
                             </div>
                         </div>
                         <div class='row cl'>
@@ -67,6 +69,11 @@
         <!--删除弹窗，默认隐藏-->
         <div  id='pop_window' style='display:none;'>
             <div id='win_content' style='overflow:auto'>
+            </div>
+        </div>
+        <!--查询弹窗，默认隐藏-->
+        <div  id='qry_window' style='display:none;'>
+            <div id='qry_content' style='overflow:auto'>
             </div>
         </div>
     </div>

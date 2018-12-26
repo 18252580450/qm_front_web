@@ -1,7 +1,9 @@
 define([
         "text!html/manage/qmPlanManageAdd.tpl",
-        "jquery", 'util', "transfer", "easyui","crossAPI","dateUtil",'ztree-exedit'],
-    function (tpl,$, Util, Transfer,crossAPI,dateUtil) {
+        "js/manage/qryCheckTemplate",
+        "js/manage/qryStrategy",
+        "jquery", 'commonAjax','util', "transfer", "easyui","crossAPI","dateUtil",'ztree-exedit'],
+    function (tpl,QryCheckTemplate,QryStrategy,$,CommonAjax, Util, Transfer,crossAPI,dateUtil) {
     //调用初始化方法
 
     var planTypes = [];
@@ -171,21 +173,40 @@ define([
             ],
             editable: false
         });
+        var qryCheckTemplate = new QryCheckTemplate();
+        $('#template',$el).searchbox({
+            searcher: function(value){
+                var qryCheckTemplate = new QryCheckTemplate();
 
-        var reqParams = {
-            "tenantId":Util.constants.TENANT_ID,
-            "paramsTypeId": "PLAN_TYPE"
-        };
-        var params = {
-            "start": 0,
-            "pageNum": 0,
-            "params": JSON.stringify(reqParams)
-        };
+                $('#qry_window').show().window({
+                    title: '查询模板',
+                    width: 1000,
+                    height: 550,
+                    cache: false,
+                    content:qryCheckTemplate.$el,
+                    modal: true
+                });
+            }
+        });
 
-        Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.STATIC_PARAMS_DNS + "/selectByParams", params, function (result) {
-            var rspCode = result.RSP.RSP_CODE;
-            if (rspCode == "1") {
-                planTypes = result.RSP.DATA;
+        $('#strategy',$el).searchbox({
+            searcher: function(value){
+                var qryCheckTemplate = new QryCheckTemplate();
+
+                $('#qry_window').show().window({
+                    title: '查询考评策略',
+                    width: 1000,
+                    height: 550,
+                    cache: false,
+                    content:qryCheckTemplate.$el,
+                    modal: true
+                });
+            }
+        });
+
+        CommonAjax.getStaticParams("PLAN_TYPE",function(datas){
+            if(datas){
+                planTypes = datas;
                 $('#planType',$el).combobox({
                     data: planTypes,
                     valueField: 'paramsCode',
@@ -197,6 +218,7 @@ define([
                 }
             }
         });
+
         $('#planType',$el).combobox({
             data: planTypes,
             editable: false
@@ -222,5 +244,9 @@ define([
             $('#remark',$el).val(planBean.remark);
         }
     }
+        function doSearch(value){
+            alert(value);
+        }
+
     return initialize;
 });
