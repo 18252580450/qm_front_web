@@ -141,7 +141,8 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                     "appealTimeBegin": appealTimeBegin,
                     "appealTimeEnd": appealTimeEnd,
                     "appealStaffId": appealStaffId,
-                    "appealId": appealId
+                    "appealId": appealId,
+                    "appealStatus":"0"  //申诉中
                 };
                 var params = $.extend({
                     "start": start,
