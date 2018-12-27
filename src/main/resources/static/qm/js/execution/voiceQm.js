@@ -178,22 +178,18 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
             deleteCheck();
         });
 
-        // var daxiao = "../../data/voice.mp3";
-        // var daxiao = new Audio(daxiao);
-        // //播放
-        // $("#playBut").on("click", function () {
-        //     if(i++%2==0){
-        //         document.getElementById('playBut').text='语音播放';
-        //         daxiao.play(); //播放
-        //     }else{
-        //         document.getElementById('playBut').text='语音暂停';
-        //         //暂停
-        //         daxiao.pause();
-        //     }
-        // });
-
+        var voicePath = "../../data/voice.mp3";
+        var voice = new Audio(voicePath);
+        //播放
         $("#playBut").on("click", function () {
-            getVoice();
+            if(i++%2==0){
+                document.getElementById('playBut').text='语音播放';
+                voice.play(); //播放
+            }else{
+                document.getElementById('playBut').text='语音暂停';
+                //暂停
+                voice.pause();
+            }
         });
 
         //强制释放
@@ -451,15 +447,4 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
     return {
         initialize: initialize
     };
-
-    //获取音频文件
-    function  getVoice(){
-        Util.ajax.postJson(Util.constants.CONTEXT.concat(Util.constants.VOICE_POOL_DNS).concat("/playVoice"),{}, function (result) {
-
-            var rspCode = result.RSP.RSP_CODE;
-            if (rspCode != null && rspCode === "1") {
-                $.messager.alert("提示", "获取音频文件失败!");
-            }
-        });
-    }
 });

@@ -332,6 +332,11 @@ require(["jquery", 'util', "transfer", "easyui", "dateUtil"], function ($, Util,
             $("#queryInfo").datagrid("load");
         });
 
+        //清空
+        $("#clearBtn").on("click", function () {
+            $("#page input").val("");
+        });
+
         //申诉
         $("#appealBut").on("click", function () {
             $("#add_content").show().window({   //弹框

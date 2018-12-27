@@ -26,6 +26,23 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
             }
         });
 
+        //是否质检下拉框
+        $("#poolStatus").combobox({
+            url: '../../data/poolStatus.json',
+            method: "GET",
+            valueField: 'codeValue',
+            textField: 'codeName',
+            panelHeight: 'auto',
+            editable: false,
+            onLoadSuccess: function () {
+                var poolStatus = $("#poolStatus");
+                var data = poolStatus.combobox('getData');
+                if (data.length > 0) {
+                    poolStatus.combobox('select', data[0].codeValue);
+                }
+            }
+        });
+
         //时间控件初始化
         var planStartTime = $('#planStartTime');
         var beginDate = (DateUtil.formatDateTime(new Date() - 24 * 60 * 60 * 1000)).substr(0, 11) + "00:00:00";
@@ -67,29 +84,38 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
         $("#queryInfo").datagrid({
             columns: [[
                 {field: 'ck', checkbox: true, align: 'center'},
-                {field: 'workformId', title: '工单流水', align: 'center', width: '15%',
+                {field: 'wrkfmShowSwftno', title: '工单流水', align: 'center', width: '15%',
                     formatter:function(value, row, index){
-                        var bean={'workformId':row.workformId};
+                        var bean={'wrkfmShowSwftno':row.wrkfmShowSwftno};
                         return "<a href='javascript:void(0);' style='color:blue;'class='workformIdBtn' id =" + JSON.stringify(bean) + " >"+value+"</a>";
                     }
                 },
+                {field: 'bizTitle', title: '工单标题', align: 'center', width: '10%'},
                 {field: 'planName', title: '计划名称', align: 'center', width: '10%'},
+                {field: 'srvReqstTypeNm', title: '问题分类', align: 'center', width: '10%'},
+                {field: 'custEmail', title: '客户账号', align: 'center', width: '10%'},
+                {field: 'custName', title: '客户名称', align: 'center', width: '10%'},
+                {field: 'custNum', title: '客户号码', align: 'center', width: '10%'},
+                {field: 'crtTime', title: '提交时间', align: 'center', width: '10%',
+                    formatter: function (value, row, index) { //格式化时间格式
+                        return DateUtil.formatDateTime(value);
+                    }},
+                {field: 'arcTime', title: '完成时间', align: 'center', width: '10%',
+                    formatter: function (value, row, index) { //格式化时间格式
+                        return DateUtil.formatDateTime(value);
+                    }},
+                {field: 'acptStaffId', title: '立单人', align: 'center', width: '10%'},
+                {field: 'dspsComplteStaffId', title: '领取人', align: 'center', width: '10%'},
+
                 {field: 'handleDuration', title: '处理时长', align: 'center', width: '10%'},
                 {field: 'planId', title: '计划编码', align: 'center', width: '10%',hidden: true},
-                {
-                    field: 'crtTime', title: '计划生成时间', align: 'center', width: '15%',
-                    formatter: function (value, row, index) { //格式化时间格式
-                            return DateUtil.formatDateTime(value);
-                    }
-                },
-                {field: 'srvReqstTypeNm', title: '服务请求类型', align: 'center', width: '10%'},
                 {field: 'checkLink', title: '考评环节', align: 'center', width: '10%'},
-                {field: 'poolStatus', title: '是否分配', align: 'center', width: '10%',
+                {field: 'isOperate', title: '是否分配', align: 'center', width: '10%',
                     formatter:function(value, row, index){
-                        return {'0':'待审核','1':'未分配','2':'已分配','3':'正在质检','4':'质检完成','5':'放弃'}[value];
+                        return {'0':'未分配','1':'已分配'}[value];
                     }
                 },
-                {field: 'reserve1', title: '是否质检', align: 'center', width: '10%',
+                {field: 'poolStatus', title: '是否质检', align: 'center', width: '10%',
                     formatter:function(value, row, index){
                         return {'0':'待质检','1':'待复检','2':'已质检'}[value];
                     }
@@ -113,22 +139,22 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
             loader: function (param, success) {
                 var start = (param.page - 1) * param.rows;
                 var pageNum = param.rows;
-                var workOrderId = $("#workOrderId").val();
+                var wrkfmShowSwftno = $("#workOrderId").val();
                 var planName = $("#planName").val();
                 var serviceType = $("#serviceType").val();
-                var isDis = $("#isDis").combobox("getValue");
+                var isOperate = $("#isDis").combobox("getValue");
+                var poolStatus = $("#poolStatus").combobox("getValue");
                 var planStartTime = $("#planStartTime").datetimebox("getValue");
-                var distStartTime = $("#distStartTime").datetimebox("getValue");
                 var planEndTime = $("#planEndTime").datetimebox("getValue");
-                var distEndTime = $("#distEndTime").datetimebox("getValue");
                 var qmLink = $("#qmLink").val();
                 var qmPeople = $("#qmPeople").val();
 
                 reqParams = {
-                    "workformId": workOrderId,
+                    "wrkfmShowSwftno": wrkfmShowSwftno,
                     "planId": planName,
                     "srvReqstTypeId": serviceType,
-                    "poolStatus": isDis,
+                    "poolStatus": poolStatus,
+                    "isOperate":isOperate,
                     "planStartTime": planStartTime,
                     "distStartTime": distStartTime,
                     "planEndTime": planEndTime,
@@ -188,7 +214,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
         }
         var delArr = [];
         for (var i = 0; i < delRows.length; i++) {
-            var id = delRows[i].touchId;
+            var id = delRows[i].wrkfmShowSwftno;
             delArr.push(id);
         }
         $.messager.confirm('确认删除弹窗', '确定要删除吗？', function (confirm) {
@@ -267,7 +293,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
                 return false;
             }
             for(var i=0;i<selRows.length;i++){
-                if (selRows[i].poolStatus == "2"||selRows[i].reserve1=="2") {
+                if (selRows[i].poolStatus == "2"||selRows[i].isOperate=="1") {
                     $.messager.alert("提示", "已分配或已质检后不可操作!");
                     return false;
                 }
@@ -291,14 +317,14 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
                 return false;
             }
             for(var i=0;i<selRows.length;i++){
-                if (selRows[i].poolStatus == "2"||selRows[i].reserve1=="2") {
+                if (selRows[i].poolStatus == "2"||selRows[i].isOperate=="1") {
                     $.messager.alert("提示", "已分配或已质检后不可操作!");
                     return false;
                 }
             }
             var ids = [];
             for (var i = 0; i < selRows.length; i++) {
-                var id = selRows[i].touchId;
+                var id = selRows[i].wrkfmShowSwftno;
                 ids.push(id);
             }
             distribute(ids);//分配操作
@@ -327,7 +353,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
             var map = {};
             map["checkStaffName"]="开心";//质检员信息先写死
             map["checkStaffId"]="112233";
-            map["touchId"]=dataNew[i];
+            map["wrkfmShowSwftno"]=dataNew[i];
             params.push(map);
         }
 
@@ -371,7 +397,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
                 var checkStaffCode = selRows[0].checkStaffCode;
                 map["checkStaffName"]=checkStaffCode;
                 map["checkStaffId"]=checkStaffId;
-                map["touchId"]=ids[i];
+                map["wrkfmShowSwftno"]=ids[i];
                 params.push(map);
             }
             Util.ajax.putJson(Util.constants.CONTEXT.concat(Util.constants.ORDER_POOL_DNS).concat("/updateCheck"), JSON.stringify(params), function (result) {
@@ -400,14 +426,14 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
             return false;
         }
         for(var i=0;i<selRows.length;i++){
-            if (selRows[i].reserve1=="2") {
+            if (selRows[i].poolStatus=="2") {
                 $.messager.alert("提示", "已质检后不可操作!");
                 return false;
             }
         }
         var ids = [];
         for (var i = 0; i < selRows.length; i++) {
-            var id = selRows[i].touchId;
+            var id = selRows[i].wrkfmShowSwftno;
             ids.push(id);
         }
 
@@ -512,9 +538,6 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
         var planStartTime = $("#planStartTime").datetimebox("getValue");
         var planEndTime = $("#planEndTime").datetimebox("getValue");
         checkBeginEndTime(planStartTime,planEndTime);
-        var distStartTime = $("#distStartTime").datetimebox("getValue");
-        var distEndTime = $("#distEndTime").datetimebox("getValue");
-        checkBeginEndTime(distStartTime,distEndTime);
     }
 
     function checkBeginEndTime(startTime,endTime){
