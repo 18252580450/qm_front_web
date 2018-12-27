@@ -49,24 +49,24 @@ require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util,
         $("#orderCheckList").datagrid({
             columns: [[
                 {
-                    field: 'workformId', title: '工单流水', width: '15%',
+                    field: 'wrkfmId', title: '工单流水', width: '20%',
                     formatter: function (value, row, index) {
                         if (value != null) {
-                            return '<a href="javascript:void(0);" id = "orderFlow' + row.workformId + '">' + value + '</a>';
+                            return '<a href="javascript:void(0);" id = "orderFlow' + row.wrkfmId + '">' + value + '</a>';
                         }
                     }
                 },
-                {
-                    field: 'touchId', title: '质检流水', width: '15%',
-                    formatter: function (value, row, index) {
-                        if (value != null) {
-                            return '<a href="javascript:void(0);" id = "checkFlow' + row.touchId + '">' + value + '</a>';
-                        }
-                    }
-                },
+                // {
+                //     field: 'touchId', title: '质检流水', width: '15%',
+                //     formatter: function (value, row, index) {
+                //         if (value != null) {
+                //             return '<a href="javascript:void(0);" id = "checkFlow' + row.touchId + '">' + value + '</a>';
+                //         }
+                //     }
+                // },
                 {field: 'srvReqstTypeNm', title: '服务请求类型', width: '15%'},
                 {
-                    field: 'planName', title: '计划名称', width: '15%',
+                    field: 'planName', title: '计划名称', width: '20%',
                     formatter: function (value, row, index) {
                         if (row.qmPlan != null) {
                             return row.qmPlan.planName;
@@ -89,7 +89,7 @@ require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util,
                         }
                     }
                 },
-                {field: 'checkLink', title: '考评环节', width: '10%'}
+                {field: 'checkLink', title: '考评环节', width: '15%'}
             ]],
             fitColumns: true,
             width: '100%',
@@ -118,18 +118,18 @@ require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util,
                 var start = (param.page - 1) * param.rows;
                 var pageNum = param.rows;
 
-                var workformId = $("#orderId").val(),
+                var wrkfmId = $("#orderId").val(),
                     distStartTime = $("#assignBeginTime").datetimebox("getValue"),
                     distEndTime = $("#assignEndTime").datetimebox("getValue"),
                     checkLink = $("#checkLink").val(),
                     planId = $("#qmPlanName").val();
 
                 var reqParams = {
-                    "workformId": workformId,
-                    "poolStatus": Util.constants.ORDER_DISTRIBUTE,        //已分配
-                    "checkStatus": Util.constants.CHECK_STATUS_CHECK,     //待质检
-                    "distStartTime": distStartTime,
-                    "distEndTime": distEndTime,
+                    "wrkfmId": wrkfmId,
+                    "isOperate": Util.constants.ORDER_DISTRIBUTE,        //已分配
+                    "poolStatus": Util.constants.CHECK_STATUS_CHECK,     //待质检
+                    "operateTimeBegin": distStartTime,
+                    "operateTimeEnd": distEndTime,
                     "checkLink": checkLink,
                     "planId": planId
                 };
@@ -155,20 +155,18 @@ require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util,
                 });
             },
             onLoadSuccess: function (data) {
-                //工单详情
-                $.each(data.rows, function (i, item) {
-                    $("#orderFlow" + item.workformId).on("click", function () {
-                        // var url = createURL(processDetailUrl, item);
-                        // showDialog(url, "流程详情", 900, 600, false);
-                    });
-                });
                 //工单质检详情
                 $.each(data.rows, function (i, item) {
-                    $("#checkFlow" + item.touchId).on("click", function () {
+                    $("#orderFlow" + item.wrkfmId).on("click", function () {
                         var url = createURL(orderCheckDetail, item);
                         addTabs("工单质检详情", url);
                     });
                 });
+                // //工单详情
+                // $.each(data.rows, function (i, item) {
+                //     $("#checkFlow" + item.touchId).on("click", function () {
+                //     });
+                // });
             }
         });
     }

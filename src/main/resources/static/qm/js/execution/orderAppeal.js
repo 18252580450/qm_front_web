@@ -1,4 +1,4 @@
-require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util, Transfer) {
+require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], function ($, Util, Transfer, CommonAjax) {
 
     var appealCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/execution/orderAppealDetail.html";
 
@@ -37,6 +37,32 @@ require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util,
             }
         );
 
+        //质检类型下拉框
+        $("#checkType").combobox({
+            url: '../../data/select_init_data.json',
+            method: "GET",
+            valueField: 'paramsCode',
+            textField: 'paramsName',
+            panelHeight: 'auto',
+            editable: false,
+            onLoadSuccess: function () {
+                var tenantType = $("#checkType");
+                var data = tenantType.combobox('getData');
+                if (data.length > 0) {
+                    tenantType.combobox('select', data[0].paramsCode);
+                }
+            },
+            onSelect: function () {
+                $("#appealCheckList").datagrid("load");
+            }
+        });
+        CommonAjax.getStaticParams("CHECK_TYPE", function (datas) {
+            debugger;
+            if (datas) {
+                $("#checkType").combobox('loadData', datas);
+            }
+        });
+
         //申诉处理列表
         var IsCheckFlag = true; //标示是否是勾选复选框选中行的，true - 是 , false - 否
         $("#appealCheckList").datagrid({
@@ -49,12 +75,12 @@ require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util,
                         return detail + "&nbsp;&nbsp;" + deal;
                     }
                 },
-                {
-                    field: 'touchId', title: '工单流水', width: '14%',
-                    formatter: function (value, row, index) {
-                        return '<a href="javascript:void(0);" id = "orderFlow_' + row.touchId + '">' + value + '</a>';
-                    }
-                },
+                // {
+                //     field: 'touchId', title: '工单流水', width: '14%',
+                //     formatter: function (value, row, index) {
+                //         return '<a href="javascript:void(0);" id = "orderFlow_' + row.touchId + '">' + value + '</a>';
+                //     }
+                // },
                 {
                     field: 'inspectionId', title: '质检流水', width: '14%',
                     formatter: function (value, row, index) {
@@ -105,11 +131,12 @@ require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util,
                     appealTimeBegin = $("#appealBeginTime").datetimebox("getValue"),
                     appealTimeEnd = $("#appealEndTime").datetimebox("getValue"),
                     appealStaffId = $("#appealStaffId").val(),
-                    appealId = $("#appealId").val();
+                    appealId = $("#appealId").val(),
+                    checkType = $("#checkType").combobox("getValue");
 
                 var reqParams = {
                     "staffId": Util.constants.STAFF_ID,
-                    "checkType": Util.constants.CHECK_TYPE_ORDER,
+                    "checkType": checkType,
                     "inspectionId": inspectionId,
                     "appealTimeBegin": appealTimeBegin,
                     "appealTimeEnd": appealTimeEnd,
@@ -198,10 +225,10 @@ require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util,
             disableSubmit = true;   //防止多次提交
             submitBtn.linkbutton({disabled: true});  //禁用提交按钮（样式）
 
-            var approveSuggestion = $("#appealDealComment").val(),
+            var checkType = $("#checkType").combobox("getValue"),
+                approveSuggestion = $("#appealDealComment").val(),
                 approveStatus = $('input[name="appealResult"]:checked').val();
 
-            debugger;
             if (approveStatus === Util.constants.APPROVE_STATUS_DENY && approveSuggestion === "") {
                 $.messager.alert("提示", "请填写审批意见!");
                 disableSubmit = false;
@@ -209,18 +236,18 @@ require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util,
                 return false;
             }
             var params = {
-                "checkType": Util.constants.CHECK_TYPE_ORDER,
-                "touchId":data.touchId,
-                "inspectionId":data.inspectionId,
-                "appealId":data.appealId,
-                "mainProcessId":data.mainProcessId,
-                "currentProcessId":data.currentProcessId,
-                "currentNodeId":data.currentNodeId,
-                "currentNodeName":data.currentNodeName,
-                "nextProcessId":data.nextProcessId,
-                "nextNodeId":data.nextNodeId,
-                "approveStatus":approveStatus,
-                "approveSuggestion":approveSuggestion,
+                "checkType": checkType,
+                "touchId": data.touchId,
+                "inspectionId": data.inspectionId,
+                "appealId": data.appealId,
+                "mainProcessId": data.mainProcessId,
+                "currentProcessId": data.currentProcessId,
+                "currentNodeId": data.currentNodeId,
+                "currentNodeName": data.currentNodeName,
+                "nextProcessId": data.nextProcessId,
+                "nextNodeId": data.nextNodeId,
+                "approveStatus": approveStatus,
+                "approveSuggestion": approveSuggestion,
                 "staffId": Util.constants.STAFF_ID,
                 "staffName": Util.constants.STAFF_NAME
             };

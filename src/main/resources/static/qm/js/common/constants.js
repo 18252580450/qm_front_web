@@ -7,8 +7,8 @@ define(function () {
         CONTEXT: "http://localhost:9002",
         URL_CONTEXT: "http://127.0.0.1:8080",
         TENANT_ID: "10010000",
-        STAFF_ID: "121",       //模拟工号
-        STAFF_NAME: "王程",    //模拟员工姓名
+        STAFF_ID: "123",       //模拟工号
+        STAFF_NAME: "石莹",    //模拟员工姓名
         PROCESS_STATUS_START: "1", //申诉主流程启动状态
         PROCESS_STATUS_STOP: "2",
 
@@ -55,8 +55,8 @@ define(function () {
         VOICE_DISTRIBUTE: "1",           //已分配
 
         //工单质检分配状态
-        ORDER_NO_DISTRIBUTE: "1",        //未分配
-        ORDER_DISTRIBUTE: "2",           //已分配
+        ORDER_NO_DISTRIBUTE: "0",        //未分配
+        ORDER_DISTRIBUTE: "1",           //已分配
 
         //质检池质检状态
         CHECK_STATUS_CHECK: '0',         //待质检

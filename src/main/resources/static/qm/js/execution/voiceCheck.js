@@ -70,19 +70,19 @@ require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util,
         $("#voiceCheckList").datagrid({
             columns: [[
                 {
-                    field: 'touchId', title: '语音流水', width: '14%',
+                    field: 'touchId', title: '语音流水', width: '20%',
                     formatter: function (value, row, index) {
                         return '<a href="javascript:void(0);" id = "voiceFlow' + row.touchId + '">' + value + '</a>';
                     }
                 },
+                // {
+                //     field: 'inspectionId', title: '质检流水', width: '14%',
+                //     formatter: function (value, row, index) {
+                //         return '<a href="javascript:void(0);" id = "checkFlow' + row.inspectionId + '">' + value + '</a>';
+                //     }
+                // },
                 {
-                    field: 'inspectionId', title: '质检流水', width: '14%',
-                    formatter: function (value, row, index) {
-                        return '<a href="javascript:void(0);" id = "checkFlow' + row.inspectionId + '">' + value + '</a>';
-                    }
-                },
-                {
-                    field: 'checkedTime', title: '抽取时间', width: '13%',
+                    field: 'checkedTime', title: '抽取时间', width: '15%',
                     formatter: function (value, row, index) { //格式化时间格式
                         if (row.checkedTime != null) {
                             return DateUtil.formatDateTime(row.operateTime);
@@ -91,16 +91,16 @@ require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util,
                 },
                 {field: 'distributeStaff', title: '分派人员', width: '10%'},
                 {
-                    field: 'operateTime', title: '分派时间', width: '13%',
+                    field: 'operateTime', title: '分派时间', width: '15%',
                     formatter: function (value, row, index) { //格式化时间格式
                         if (row.operateTime != null) {
                             return DateUtil.formatDateTime(row.operateTime);
                         }
                     }
                 },
-                {field: 'checkedStaffName', title: '被检人员', width: '10%'},
-                {field: 'callingNumber', title: '主叫号码', width: '13%'},
-                {field: 'calledNumber', title: '服务号码', width: '13%'}
+                {field: 'checkedStaffName', title: '被检人员', width: '15%'},
+                {field: 'staffNumber', title: '主叫号码', width: '15%'},
+                {field: 'customerNumber', title: '服务号码', width: '15%'}
             ]],
             fitColumns: true,
             width: '100%',
@@ -144,10 +144,10 @@ require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util,
                     "tenantId": Util.constants.TENANT_ID,
                     "touchId": touchId,
                     "planId": planId,
-                    "poolStatus": Util.constants.VOICE_DISTRIBUTE,        //已分配
-                    "checkStatus": Util.constants.CHECK_STATUS_CHECK,     //待质检
-                    "callingNumber": callingNumber,
-                    "calledNumber": calledNumber,
+                    "isOperate": Util.constants.VOICE_DISTRIBUTE,        //已分配
+                    "poolStatus": Util.constants.CHECK_STATUS_CHECK,     //待质检
+                    "staffNumber": callingNumber,
+                    "customerNumber": calledNumber,
                     "extractBeginTime": extractBeginTime,
                     "extractEndTime": extractEndTime,
                     "distributeBeginTime": distributeBeginTime,
@@ -177,20 +177,19 @@ require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util,
                 });
             },
             onLoadSuccess: function (data) {
-                //语音详情
-                $.each(data.rows, function (i, item) {
-                    $("#voiceFlow" + item.touchId).on("click", function () {
-                        // var url = createURL(processDetailUrl, item);
-                        // showDialog(url, "流程详情", 900, 600, false);
-                    });
-                });
                 //语音质检详情
                 $.each(data.rows, function (i, item) {
-                    $("#checkFlow" + item.inspectionId).on("click", function () {
+                    $("#voiceFlow" + item.touchId).on("click", function () {
                         var url = createURL(voiceCheckDetail, item);
                         addTabs("语音质检详情", url);
                     });
                 });
+                // //语音详情
+                // $.each(data.rows, function (i, item) {
+                //     $("#checkFlow" + item.inspectionId).on("click", function () {
+                //
+                //     });
+                // });
             }
         });
     }
