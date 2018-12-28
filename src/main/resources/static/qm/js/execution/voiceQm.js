@@ -53,6 +53,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
                 {field: 'touchId', title: '语音流水', align: 'center', width: '10%'},
                 {field: 'staffNumber', title: '坐席号码', align: 'center', width: '10%'},
                 {field: 'customerNumber', title: '客户号码', align: 'center', width: '10%'},
+                {field: 'planName', title: '计划名称', align: 'center', width: '10%'},
                 {field: 'callType', title: '呼叫类型', align: 'center', width: '10%'},
                 {
                     field: 'checkedTime', title: '抽取时间', align: 'center', width: '15%',
@@ -63,7 +64,11 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
                 {field: 'checkStaffName', title: '质检人员', align: 'center', width: '10%'},
                 {field: 'operateTime', title: '指派时间', align: 'center', width: '10%',
                     formatter: function (value, row, index) { //格式化时间格式
+                    if(value!=null){
                         return DateUtil.formatDateTime(value);
+                    }else{
+                        return null;
+                    }
                     }},
                 {field: 'checkedStaffName', title: '被检人员', align: 'center', width: '10%'},
                 {field: 'reserve1', title: '是否质检', align: 'center', width: '10%',
@@ -138,6 +143,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
                     for(var i=0;i<data.rows.length;i++){
                         var map=data.rows[i];
                         if(map.qmPlan!=null){
+                            map["planName"]=map.qmPlan.planName;
                             dataNew.push(map);
                         }
                     }

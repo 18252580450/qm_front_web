@@ -62,24 +62,6 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
             }
         });
 
-        var distStartTime = $('#distStartTime');
-        var beginDate2 = (DateUtil.formatDateTime(new Date() - 24 * 60 * 60 * 1000)).substr(0, 11) + "00:00:00";
-        distStartTime.datetimebox({
-            value: beginDate2,
-            onChange: function () {
-                checkTime();
-            }
-        });
-
-        var distEndTime = $('#distEndTime');
-        var endDate2 = (DateUtil.formatDateTime(new Date())).substr(0,11) + "23:59:59";
-        distEndTime.datetimebox({
-            value: endDate2,
-                onChange: function () {
-                    checkTime();
-            }
-        });
-
         //列表
         $("#queryInfo").datagrid({
             columns: [[
@@ -125,7 +107,11 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
                 {
                     field: 'operateTime', title: '分配时间', align: 'center', width: '15%',
                     formatter: function (value, row, index) { //格式化时间格式
-                        return DateUtil.formatDateTime(value);
+                        if(value!=null){
+                            return DateUtil.formatDateTime(value);
+                        }else{
+                            return null;
+                        }
                     }
                 }
             ]],
@@ -156,9 +142,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
                     "poolStatus": poolStatus,
                     "isOperate":isOperate,
                     "planStartTime": planStartTime,
-                    "distStartTime": distStartTime,
                     "planEndTime": planEndTime,
-                    "distEndTime": distEndTime,
                     "checkLink": qmLink,
                     "checkStaffName":qmPeople
                 };
@@ -556,35 +540,6 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
                 }
             });
         }
-    }
-
-    /**
-     * 下拉框数据重载
-     */
-    function reloadSelectData(paramsType, select, showAll) {
-        var reqParams = {
-            "tenantId": Util.constants.TENANT_ID,
-            "paramsTypeId": paramsType
-        };
-        var params = {
-            "start": 0,
-            "pageNum": 0,
-            "params": JSON.stringify(reqParams)
-        };
-        Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.STATIC_PARAMS_DNS + "/selectByParams", params, function (result) {
-            var rspCode = result.RSP.RSP_CODE;
-            if (rspCode === "1") {
-                var selectData = result.RSP.DATA;
-                if (showAll) {
-                    var data = {
-                        "paramsCode": "-1",
-                        "paramsName": "全部"
-                    };
-                    selectData.unshift(data);
-                }
-                $("#" + select).combobox('loadData', selectData);
-            }
-        });
     }
 
     return {
