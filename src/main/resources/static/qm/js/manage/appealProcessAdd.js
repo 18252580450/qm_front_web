@@ -84,9 +84,11 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                 if (orderNo === "00") {
                     $("#tenantType").combobox('enable');
                     $("#checkType").combobox('enable');
+                    $("#maxAppealNum").attr("readOnly", false)
                 } else {
                     $("#tenantType").combobox('disable');
                     $("#checkType").combobox('disable');
+                    $("#maxAppealNum").attr("readOnly", true);
                 }
                 //切换子流程时同时刷新子节点列表
                 if (orderNo === "-1" || orderNo === "00" || parseInt(orderNo) >= appealProcessData.length) {
@@ -317,7 +319,8 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
     function addProcess() {
         var orderNoSelect = $("#orderNo"),
             orderNo = orderNoSelect.combobox("getValue"),
-            orderName = orderNoSelect.combobox("getText");
+            orderName = orderNoSelect.combobox("getText"),
+            maxAppealNum = $("#maxAppealNum").val();
         //判断主流程是否已添加
         if (appealProcessData.length === 0 && parseInt(orderNo) > 0) {
             $.messager.alert("提示", "请先添加主流程!");
@@ -340,14 +343,14 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
             return false;
         }
 
-        var processName = $("#processName").val();
-        var tenantType = $("#tenantType");
-        var tenantId = tenantType.combobox("getValue");
-        var tenantName = tenantType.combobox("getText");
-        var departmentId = $("#departmentId").val();
-        var departmentName = $("#departmentName").val();
-        var checkType = $("#checkType").combobox("getValue");
-        var mainProcessFlag = "0";
+        var processName = $("#processName").val(),
+            tenantType = $("#tenantType"),
+            tenantId = tenantType.combobox("getValue"),
+            tenantName = tenantType.combobox("getText"),
+            departmentId = $("#departmentId").val(),
+            departmentName = $("#departmentName").val(),
+            checkType = $("#checkType").combobox("getValue"),
+            mainProcessFlag = "0";
         if (parseInt(orderNo) > 0) {
             //更新主流程的子流程数
             appealProcessData[0].subProcessNum = parseInt(orderNo);
@@ -371,6 +374,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
             "departmentName": departmentName,
             "checkType": checkType,
             "mainProcessFlag": mainProcessFlag,
+            "maxAppealNum": maxAppealNum,
             "orderNo": orderNo,
             "orderName": orderName,
             "subProcessNum": 0,
@@ -473,6 +477,11 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
         //判断主流程是否添加
         if (appealProcessData.length === 0 || appealProcessData[0] == null) {
             $.messager.alert("提示", "请添加主流程!");
+            return false;
+        }
+        var maxAppealNum = $("#maxAppealNum").val();
+        if (parseInt(maxAppealNum) > 3) {
+            $.messager.alert("提示", "最大申诉次数不能超过3!");
             return false;
         }
 

@@ -208,7 +208,7 @@ require(["jquery", 'util', "transfer", "easyui", "dateUtil"], function ($, Util,
                     $("#resultAppeal_" + item.inspectionId + "_" + item.checkLink).on("click", function () {
                         //判断是否已有申诉流程
                         if (item.appealId != null && item.resultStatus === Util.constants.CHECK_RESULT_APPEALING) {
-                            $.messager.alert("提示", "已存在申诉流程：" + item.appealId + "!");
+                            $.messager.alert("提示", "申诉中！申诉单号：" + item.appealId + "!");
                             return;
                         }
                         showAppealDialog(item);

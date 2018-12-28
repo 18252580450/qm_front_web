@@ -1,6 +1,7 @@
 require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], function ($, Util, Transfer, CommonAjax) {
 
-    var appealCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/execution/orderAppealDetail.html";
+    var appealCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/execution/orderAppealDetail.html",
+        checkTypeData = [];  //质检类型静态数据
 
     initialize();
 
@@ -59,6 +60,12 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
         CommonAjax.getStaticParams("CHECK_TYPE", function (datas) {
             debugger;
             if (datas) {
+                checkTypeData = datas;
+                var data = {
+                    "paramsCode": "-1",
+                    "paramsName": "全部"
+                };
+                datas.unshift(data);
                 $("#checkType").combobox('loadData', datas);
             }
         });
@@ -73,6 +80,16 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                         var detail = '<a href="javascript:void(0);" id = "appealDetail_' + row.appealId + '">详情</a>';
                         var deal = '<a href="javascript:void(0);" id = "appealDeal_' + row.appealId + '">审批</a>';
                         return detail + "&nbsp;&nbsp;" + deal;
+                    }
+                },
+                {
+                    field: 'checkType', title: '质检类型', width: '10%',
+                    formatter: function (value, row, index) {
+                        for (var i = 0; i < checkTypeData.length; i++) {
+                            if (checkTypeData[i].paramsCode === value) {
+                                return checkTypeData[i].paramsName;
+                            }
+                        }
                     }
                 },
                 // {
@@ -133,6 +150,9 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                     appealStaffId = $("#appealStaffId").val(),
                     appealId = $("#appealId").val(),
                     checkType = $("#checkType").combobox("getValue");
+                if (checkType === "-1") {
+                    checkType = "";
+                }
 
                 var reqParams = {
                     "staffId": Util.constants.STAFF_ID,
@@ -142,7 +162,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                     "appealTimeEnd": appealTimeEnd,
                     "appealStaffId": appealStaffId,
                     "appealId": appealId,
-                    "appealStatus":"0"  //申诉中
+                    "appealStatus": "0"  //申诉中
                 };
                 var params = $.extend({
                     "start": start,

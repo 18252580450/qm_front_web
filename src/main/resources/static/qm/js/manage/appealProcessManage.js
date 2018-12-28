@@ -1,6 +1,7 @@
-require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util, Transfer) {
+require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], function ($, Util, Transfer, CommonAjax) {
 
     var processStatusData = [],   //流程状态下拉框静态数据
+        checkTypeData = [],       //质检类型静态数据
         processDetailUrl = Util.constants.URL_CONTEXT + "/qm/html/manage/appealProcessDetail.html",
         processAddUrl = Util.constants.URL_CONTEXT + "/qm/html/manage/appealProcessAdd.html",
         processEditUrl = Util.constants.URL_CONTEXT + "/qm/html/manage/appealProcessEdit.html";
@@ -34,6 +35,38 @@ require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util,
             }
         });
 
+        //质检类型下拉框
+        $("#checkType").combobox({
+            url: '../../data/select_init_data.json',
+            method: "GET",
+            valueField: 'paramsCode',
+            textField: 'paramsName',
+            panelHeight: 'auto',
+            editable: false,
+            onLoadSuccess: function () {
+                var checkType = $("#checkType");
+                var data = checkType.combobox('getData');
+                if (data.length > 0) {
+                    checkType.combobox('select', data[0].paramsCode);
+                }
+            },
+            onSelect: function () {
+                $("#appealProcessList").datagrid("load");
+            }
+        });
+        //重载下拉框数据
+        CommonAjax.getStaticParams("CHECK_TYPE", function (datas) {
+            if (datas) {
+                checkTypeData = datas;
+                var data = {
+                    "paramsCode": "-1",
+                    "paramsName": "全部"
+                };
+                datas.unshift(data);
+                $("#checkType").combobox('loadData', datas);
+            }
+        });
+
         //流程状态下拉框
         $("#processStatus").combobox({
             url: '../../data/select_init_data.json',
@@ -54,7 +87,17 @@ require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util,
             }
         });
         //重载下拉框数据
-        reloadSelectData("PROCESS_STATUS", "processStatus", true);
+        CommonAjax.getStaticParams("PROCESS_STATUS", function (datas) {
+            if (datas) {
+                processStatusData = datas;
+                var data = {
+                    "paramsCode": "-1",
+                    "paramsName": "全部"
+                };
+                datas.unshift(data);
+                $("#processStatus").combobox('loadData', datas);
+            }
+        });
 
         //时间控件初始化
         var beginDateBox = $('#createTimeBegin');
@@ -89,8 +132,18 @@ require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util,
                         return detail + "&nbsp;&nbsp;" + edit;
                     }
                 },
+                {
+                    field: 'checkType', title: '质检类型', width: '10%',
+                    formatter: function (value, row, index) {
+                        for (var i = 0; i < checkTypeData.length; i++) {
+                            if (checkTypeData[i].paramsCode === value) {
+                                return checkTypeData[i].paramsName;
+                            }
+                        }
+                    }
+                },
                 {field: 'processId', title: '流程编码', width: '15%'},
-                {field: 'processName', title: '流程名称', width: '10%'},
+                {field: 'processName', title: '流程名称', width: '15%'},
                 {
                     field: 'createTime', title: '创建时间', width: '15%',
                     formatter: function (value, row, index) { //格式化时间格式
@@ -152,17 +205,21 @@ require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util,
                 }
             },
             loader: function (param, success) {
-                var start = (param.page - 1) * param.rows;
-                var pageNum = param.rows;
-                var processId = $("#processId").val();
-                var processName = $("#processName").val();
-                var createStaffId = $("#createStaffName").val();
-                var tenantId = $("#tenantType").combobox("getValue");
-                var processStatus = $("#processStatus").combobox("getValue");
-                var createTimeBegin = $("#createTimeBegin").datetimebox("getValue");
-                var createTimeEnd = $("#createTimeEnd").datetimebox("getValue");
+                var start = (param.page - 1) * param.rows,
+                    pageNum = param.rows,
+                    processId = $("#processId").val(),
+                    processName = $("#processName").val(),
+                    createStaffId = $("#createStaffName").val(),
+                    tenantId = $("#tenantType").combobox("getValue"),
+                    checkType = $("#checkType").combobox("getValue"),
+                    processStatus = $("#processStatus").combobox("getValue"),
+                    createTimeBegin = $("#createTimeBegin").datetimebox("getValue"),
+                    createTimeEnd = $("#createTimeEnd").datetimebox("getValue");
+                if (checkType === "-1") {
+                    checkType = "";
+                }
                 if (processStatus === "-1") {
-                    processStatus = null;
+                    processStatus = "";
                 }
 
                 var reqParams = {
@@ -171,6 +228,7 @@ require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util,
                     "processName": processName,
                     "createStaffId": createStaffId,
                     "tenantId": tenantId,
+                    "checkType": checkType,
                     "processStatus": processStatus,
                     "createTimeBegin": createTimeBegin,
                     "createTimeEnd": createTimeEnd
@@ -394,36 +452,6 @@ require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util,
         });
         urlLink = url + "?" + urlLink.substr(1);
         return urlLink.replace(' ', '');
-    }
-
-    //下拉框数据重载
-    function reloadSelectData(paramsType, select, showAll) {
-        var reqParams = {
-            "tenantId": Util.constants.TENANT_ID,
-            "paramsTypeId": paramsType
-        };
-        var params = {
-            "start": 0,
-            "pageNum": 0,
-            "params": JSON.stringify(reqParams)
-        };
-        Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.STATIC_PARAMS_DNS + "/selectByParams", params, function (result) {
-            var rspCode = result.RSP.RSP_CODE;
-            if (rspCode === "1") {
-                var selectData = result.RSP.DATA;
-                if (showAll) {
-                    var data = {
-                        "paramsCode": "-1",
-                        "paramsName": "全部"
-                    };
-                    selectData.unshift(data);
-                }
-                if (paramsType === "PROCESS_STATUS") {
-                    processStatusData = selectData;
-                }
-                $("#" + select).combobox('loadData', selectData);
-            }
-        });
     }
 
     return {
