@@ -1,9 +1,10 @@
-require(["jquery", 'util', "transfer", "easyui", "ztree-exedit"], function ($, Util, Transfer) {
+require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], function ($, Util, Transfer, CommonAjax) {
 
     var setting,               //ztree配置
         checkTypeData = [],    //考评项下拉框静态数据
         checkItemListData = [],//所有考评项
         checkItemData = [],    //新增考评项下拉框静态数据
+        checkLinkData = [],    //工单考评环节静态数据
         vitalTypeData = [],    //新增致命类别下拉框静态数据
         checkNode = {          //左侧考评树选中节点
             id: "",
@@ -31,8 +32,8 @@ require(["jquery", 'util', "transfer", "easyui", "ztree-exedit"], function ($, U
             panelHeight: 'auto',
             editable: false,
             onLoadSuccess: function () {
-                var tenantType = $("#tenantType");
-                var data = tenantType.combobox('getData');
+                var tenantType = $("#tenantType"),
+                    data = tenantType.combobox('getData');
                 if (data.length > 0) {
                     tenantType.combobox('select', data[0].codeValue);
                 }
@@ -51,8 +52,8 @@ require(["jquery", 'util', "transfer", "easyui", "ztree-exedit"], function ($, U
             panelHeight: 'auto',
             editable: false,
             onLoadSuccess: function () {
-                var checkItemType = $('#checkItemType');
-                var data = checkItemType.combobox('getData');
+                var checkItemType = $('#checkItemType'),
+                    data = checkItemType.combobox('getData');
                 if (data.length > 0) {
                     checkItemType.combobox('select', data[0].paramsCode);
                 }
@@ -62,7 +63,10 @@ require(["jquery", 'util', "transfer", "easyui", "ztree-exedit"], function ($, U
             }
         });
         //重载下拉框数据
-        reloadSelectData("CHECK_ITEM_TYPE", "checkItemType", true);
+        getSelectData("CHECK_ITEM_TYPE", true, function (data) {
+            checkTypeData = data;
+            $("#checkItemType").combobox('loadData', data);
+        });
 
         //初始化考评树
         setting = {
@@ -116,20 +120,15 @@ require(["jquery", 'util', "transfer", "easyui", "ztree-exedit"], function ($, U
             columns: [[
                 {field: 'checkItemId', title: '考评项ID', hidden: true},
                 {field: 'ck', checkbox: true, align: 'center'},
-                {field: 'checkItemName', title: '考评项名称', width: '25%'},
+                {field: 'checkItemName', title: '考评项名称', width: '20%'},
                 {
-                    field: 'checkItemType', title: '考评项类型', width: '20%',
+                    field: 'checkItemType', title: '考评项类型', width: '15%',
                     formatter: function (value, row, index) {
-                        var itemType = "";
-                        if (checkTypeData.length !== 0) {
-                            for (var i = 0; i < checkTypeData.length; i++) {
-                                if (checkTypeData[i].paramsCode === value) {
-                                    itemType = checkTypeData[i].paramsName;
-                                    break;
-                                }
+                        for (var i = 0; i < checkTypeData.length; i++) {
+                            if (checkTypeData[i].paramsCode === value) {
+                                return checkTypeData[i].paramsName;
                             }
                         }
-                        return itemType;
                     }
                 },
                 {
@@ -145,7 +144,18 @@ require(["jquery", 'util', "transfer", "easyui", "ztree-exedit"], function ($, U
                         return vitalType;
                     }
                 },
-                {field: 'remark', title: '考评项描述', width: '30%'},
+                {field: 'remark', title: '考评项描述', width: '25%'},
+                {
+                    field: 'nodeTypeCode', title: '考评环节', width: '15%',
+                    formatter: function (value, row, index) {
+                        for (var i = 0; i < checkLinkData.length; i++) {
+                            if (checkLinkData[i].paramsCode === value) {
+                                return checkLinkData[i].paramsName;
+                            }
+                        }
+
+                    }
+                },
                 {
                     field: 'action', title: '操作', width: '10%',
                     formatter: function (value, row, index) {
@@ -177,11 +187,11 @@ require(["jquery", 'util', "transfer", "easyui", "ztree-exedit"], function ($, U
                 }
             },
             loader: function (param, success) {
-                var parentCheckItemId = checkNode.id;
-                var start = (param.page - 1) * param.rows;
-                var pageNum = param.rows;
-                var checkItemName = $("#checkItemName").val();
-                var tenantId = $("#tenantType").combobox("getValue");
+                var parentCheckItemId = checkNode.id,
+                    start = (param.page - 1) * param.rows,
+                    pageNum = param.rows,
+                    checkItemName = $("#checkItemName").val(),
+                    tenantId = $("#tenantType").combobox("getValue");
                 if (tenantId === "") {
                     tenantId = Util.constants.TENANT_ID;
                 }
@@ -205,8 +215,8 @@ require(["jquery", 'util', "transfer", "easyui", "ztree-exedit"], function ($, U
                 }, Util.PageUtil.getParams($("#searchForm")));
 
                 Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.CHECK_ITEM_DNS + "/queryCheckItem", params, function (result) {
-                    var data = Transfer.DataGrid.transfer(result);
-                    var rspCode = result.RSP.RSP_CODE;
+                    var data = Transfer.DataGrid.transfer(result),
+                        rspCode = result.RSP.RSP_CODE;
                     if (rspCode != null && rspCode !== "1") {
                         $.messager.show({
                             msg: result.RSP.RSP_DESC,
@@ -215,7 +225,14 @@ require(["jquery", 'util', "transfer", "easyui", "ztree-exedit"], function ($, U
                             showType: 'show'
                         });
                     }
-                    success(data);
+                    if (checkLinkData.length > 0) {
+                        success(data);
+                    } else {
+                        getSelectData("WRKFM_NODE_TYPE", false, function (datas) {
+                            checkLinkData = datas;
+                            success(data);
+                        });
+                    }
                 });
             },
             onLoadSuccess: function (data) {
@@ -270,7 +287,7 @@ require(["jquery", 'util', "transfer", "easyui", "ztree-exedit"], function ($, U
         var disableSubmit = false;  //禁用提交按钮标志
         $("#checkItemDialog").show().window({
             width: 600,
-            height: 350,
+            height: 400,
             modal: true,
             title: "考评项新增"
         });
@@ -283,16 +300,27 @@ require(["jquery", 'util', "transfer", "easyui", "ztree-exedit"], function ($, U
             panelHeight: 'auto',
             editable: false,
             onLoadSuccess: function () {
-                var checkItemType = $('#checkItemTypeConfig');
-                var data = checkItemType.combobox('getData');
+                var checkItemType = $('#checkItemTypeConfig'),
+                    data = checkItemType.combobox('getData');
                 if (data.length > 0) {
                     checkItemType.combobox('select', data[0].paramsCode);
+                }
+            },
+            onSelect: function () {
+                var checkType = $("#checkItemTypeConfig").combobox("getValue");
+                if (checkType === Util.constants.CHECK_TYPE_ORDER) {
+                    showCheckLink();
+                } else {
+                    $("#checkLinkSelect").hide();
                 }
             }
         });
         //重载下拉框数据
         if (checkItemData.length === 0) {
-            reloadSelectData("CHECK_ITEM_TYPE", "checkItemTypeConfig", false);
+            getSelectData("CHECK_ITEM_TYPE", false, function (data) {
+                checkItemData = data;
+                $("#checkItemTypeConfig").combobox('loadData', data);
+            });
         }
 
         //考评项致命类别下拉框
@@ -304,8 +332,8 @@ require(["jquery", 'util', "transfer", "easyui", "ztree-exedit"], function ($, U
             panelHeight: 'auto',
             editable: false,
             onLoadSuccess: function () {
-                var checkItemVitalType = $('#checkItemVitalTypeConfig');
-                var data = checkItemVitalType.combobox('getData');
+                var checkItemVitalType = $('#checkItemVitalTypeConfig'),
+                    data = checkItemVitalType.combobox('getData');
                 if (data.length > 0) {
                     checkItemVitalType.combobox('select', data[0].paramsCode);
                 }
@@ -313,7 +341,10 @@ require(["jquery", 'util', "transfer", "easyui", "ztree-exedit"], function ($, U
         });
         //重载下拉框数据
         if (vitalTypeData.length === 0) {
-            reloadSelectData("CHECK_VITAL_TYPE", "checkItemVitalTypeConfig", false);
+            getSelectData("CHECK_VITAL_TYPE", false, function (data) {
+                vitalTypeData = data;
+                $("#checkItemVitalTypeConfig").combobox('loadData', data);
+            });
         }
 
         //取消
@@ -328,7 +359,7 @@ require(["jquery", 'util', "transfer", "easyui", "ztree-exedit"], function ($, U
         submitBtn.unbind("click");
         submitBtn.on("click", function () {
             if (disableSubmit) {
-                return false;
+                return;
             }
             disableSubmit = true;   //防止多次提交
             submitBtn.linkbutton({disabled: true});  //禁用提交按钮（样式）
@@ -339,22 +370,27 @@ require(["jquery", 'util', "transfer", "easyui", "ztree-exedit"], function ($, U
                 checkItemType = $("#checkItemTypeConfig").combobox("getValue"),
                 checkItemVitalType = $("#checkItemVitalTypeConfig").combobox("getValue"),
                 checkItemDesc = $("#checkItemDescConfig").val(),
+                nodeTypeCode = "",
                 orderNo = checkNode.level;
             if (checkNode.isParent) {
                 orderNo = checkNode.level + 1;
+            }
+            if (checkItemType === Util.constants.CHECK_TYPE_ORDER) {
+                nodeTypeCode = $("#checkLinkConfig").combobox("getValue");
             }
 
             if (checkItemName == null || checkItemName === "") {
                 $.messager.alert("提示", "考评项名称不能为空!");
                 disableSubmit = false;
                 submitBtn.linkbutton({disabled: false});  //取消提交禁用
-                return false;
+                return;
             }
             var params = {
                 "tenantId": tenantId,
                 "parentCheckItemId": parentCheckItemId,
                 "checkItemName": checkItemName,
                 "checkItemType": checkItemType,
+                "nodeTypeCode": nodeTypeCode,   //工单考评环节
                 "checkItemVitalType": checkItemVitalType,
                 "remark": checkItemDesc,
                 "catalogFlag": catalogFlag,
@@ -387,10 +423,15 @@ require(["jquery", 'util', "transfer", "easyui", "ztree-exedit"], function ($, U
         var disableSubmit = false;  //禁用提交按钮标志
         $("#checkItemDialog").show().window({
             width: 600,
-            height: 350,
+            height: 400,
             modal: true,
             title: "考评项修改"
         });
+        if (item.checkItemType === Util.constants.CHECK_TYPE_ORDER) {
+            showCheckLink(item);
+        } else {
+            $("#checkLinkSelect").hide();
+        }
         //自动填入待修改考评项名称
         $("#checkItemNameConfig").val(item.checkItemName);
         //自动填入待修改考评项描述
@@ -408,11 +449,22 @@ require(["jquery", 'util', "transfer", "easyui", "ztree-exedit"], function ($, U
                 if (checkItemData.length !== 0) {
                     $('#checkItemTypeConfig').combobox('setValue', item.checkItemType);
                 }
+            },
+            onSelect: function () {
+                var checkType = $("#checkItemTypeConfig").combobox("getValue");
+                if (checkType === Util.constants.CHECK_TYPE_ORDER) {
+                    showCheckLink(item);
+                } else {
+                    $("#checkLinkSelect").hide();
+                }
             }
         });
         //重载下拉框数据
         if (checkItemData.length === 0) {
-            reloadSelectData("CHECK_ITEM_TYPE", "checkItemTypeConfig", false);
+            getSelectData("CHECK_ITEM_TYPE", false, function (data) {
+                checkItemData = data;
+                $("#checkItemTypeConfig").combobox('loadData', data);
+            });
         }
 
         //考评项致命类别下拉框
@@ -432,7 +484,10 @@ require(["jquery", 'util', "transfer", "easyui", "ztree-exedit"], function ($, U
         });
         //重载下拉框数据
         if (vitalTypeData.length === 0) {
-            reloadSelectData("CHECK_VITAL_TYPE", "checkItemVitalTypeConfig", false);
+            getSelectData("CHECK_VITAL_TYPE", false, function (data) {
+                vitalTypeData = data;
+                $("#checkItemVitalTypeConfig").combobox('loadData', data);
+            });
         }
 
         //取消
@@ -447,36 +502,49 @@ require(["jquery", 'util', "transfer", "easyui", "ztree-exedit"], function ($, U
         submitBtn.unbind("click");
         submitBtn.on("click", function () {
             if (disableSubmit) {
-                return false;
+                return;
             }
             disableSubmit = true;   //防止多次提交
             submitBtn.linkbutton({disabled: true});  //禁用提交按钮（样式）
 
-            var checkItemName = $("#checkItemNameConfig").val();
-            var checkItemType = $("#checkItemTypeConfig").combobox("getValue");
-            var checkItemVitalType = $("#checkItemVitalTypeConfig").combobox("getValue");
-            var checkItemDesc = $("#checkItemDescConfig").val();
+            var checkItemName = $("#checkItemNameConfig").val(),
+                checkItemType = $("#checkItemTypeConfig").combobox("getValue"),
+                nodeTypeCode = "",
+                checkItemVitalType = $("#checkItemVitalTypeConfig").combobox("getValue"),
+                checkItemDesc = $("#checkItemDescConfig").val();
 
+            if (checkItemType === Util.constants.CHECK_TYPE_ORDER) {
+                nodeTypeCode = $("#checkLinkConfig").combobox("getValue");
+            }
             if (checkItemName == null || checkItemName === "") {
                 $.messager.alert("提示", "考评项名称不能为空!");
                 disableSubmit = false;
                 submitBtn.linkbutton({disabled: false});  //取消提交禁用
-                return false;
+                return;
             }
-            if (checkItemName === item.checkItemName && checkItemType === item.checkItemType && checkItemVitalType === item.checkItemVitalType && checkItemDesc === item.remark) {
+            if (nodeTypeCode == null || nodeTypeCode === "") {
+                $.messager.alert("提示", "请选择考评环节!");
+                disableSubmit = false;
+                submitBtn.linkbutton({disabled: false});  //取消提交禁用
+                return;
+            }
+            if (checkItemName === item.checkItemName && checkItemType === item.checkItemType && nodeTypeCode === item.nodeTypeCode && checkItemVitalType === item.checkItemVitalType && checkItemDesc === item.remark) {
                 $.messager.alert("提示", "没有作任何修改!", null, function () {
                     $("#checkItemConfig").form('clear');    //清空表单
                     $("#checkItemDialog").window("close");
                 });
                 disableSubmit = false;
                 submitBtn.linkbutton({disabled: false});  //取消提交禁用
-                return false;
+                return;
             }
 
             item.checkItemName = checkItemName;
             item.remark = checkItemDesc;
             if (checkItemType != null && checkItemType !== "") {
                 item.checkItemType = checkItemType;
+            }
+            if (nodeTypeCode != null && nodeTypeCode !== "") {
+                item.nodeTypeCode = nodeTypeCode;
             }
             if (checkItemVitalType != null && checkItemVitalType !== "") {
                 item.checkItemVitalType = checkItemVitalType;
@@ -508,7 +576,7 @@ require(["jquery", 'util', "transfer", "easyui", "ztree-exedit"], function ($, U
         var delRows = $("#checkItemList").datagrid("getSelections");
         if (delRows.length === 0) {
             $.messager.alert("提示", "请至少选择一行数据!");
-            return false;
+            return;
         }
         var delArr = [];
         for (var i = 0; i < delRows.length; i++) {
@@ -536,14 +604,14 @@ require(["jquery", 'util', "transfer", "easyui", "ztree-exedit"], function ($, U
 
     //刷新考评树
     function refreshTree() {
-        var zNodes = [];
-        var tenantId = $("#tenantType").combobox("getValue");
+        var zNodes = [],
+            tenantId = $("#tenantType").combobox("getValue");
         if (tenantId === "") {
             tenantId = Util.constants.TENANT_ID;
         }
         var reqParams = {
             "tenantId": tenantId,
-            "parentCheckItemId":"0"
+            "parentCheckItemId": "0"
         };
         var params = $.extend({
             "start": 0,
@@ -551,10 +619,8 @@ require(["jquery", 'util', "transfer", "easyui", "ztree-exedit"], function ($, U
             "params": JSON.stringify(reqParams)
         }, Util.PageUtil.getParams($("#searchForm")));
 
-        debugger;
         Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.CHECK_ITEM_DNS + "/queryCheckItem", params, function (result) {
             var data = result.RSP.DATA;
-            debugger;
             checkItemListData = data;
             for (var i = 0; i < data.length; i++) {
                 var nodeMap =
@@ -566,7 +632,6 @@ require(["jquery", 'util', "transfer", "easyui", "ztree-exedit"], function ($, U
                     };
                 zNodes.push(nodeMap);
             }
-            debugger;
             $.fn.zTree.init($("#checkItemTree"), setting, zNodes);
             fixIcon();  //将空文件夹显示为文件夹图标
 
@@ -595,40 +660,44 @@ require(["jquery", 'util', "transfer", "easyui", "ztree-exedit"], function ($, U
         treeObj.refresh();
     }
 
-    //下拉框数据重载
-    function reloadSelectData(paramsType, select, showAll) {
-        var reqParams = {
-            "tenantId": Util.constants.TENANT_ID,
-            "paramsTypeId": paramsType
-        };
-        var params = {
-            "start": 0,
-            "pageNum": 0,
-            "params": JSON.stringify(reqParams)
-        };
-        Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.STATIC_PARAMS_DNS + "/selectByParams", params, function (result) {
-            var rspCode = result.RSP.RSP_CODE;
-            if (rspCode === "1") {
-                var selectData = result.RSP.DATA;
+    //显示考评环
+    function showCheckLink(item) {
+        $("#checkLinkSelect").show();
+        //工单环节下拉框
+        $("#checkLinkConfig").combobox({
+            data: checkLinkData,
+            method: "GET",
+            valueField: 'paramsCode',
+            textField: 'paramsName',
+            panelHeight: 'auto',
+            editable: false,
+            onLoadSuccess: function () {
+                if (item != null && item.nodeTypeCode != null) {
+                    $("#checkLinkConfig").combobox('setValue', item.nodeTypeCode);
+                }
+            }
+        });
+        //重载下拉框数据
+        if (checkLinkData.length === 0) {
+            getSelectData("WRKFM_NODE_TYPE", false, function (data) {
+                checkLinkData = data;
+                $("#checkLinkConfig").combobox('loadData', data);
+            });
+        }
+    }
+
+    //获取下拉框数据
+    function getSelectData(paramsType, showAll, callback) {
+        CommonAjax.getStaticParams(paramsType, function (datas) {
+            if (datas) {
                 if (showAll) {
                     var data = {
                         "paramsCode": "-1",
                         "paramsName": "全部"
                     };
-                    selectData.unshift(data);
+                    datas.unshift(data);
                 }
-                //下拉框静态数据更新
-                if (paramsType === "CHECK_ITEM_TYPE" && showAll) {
-                    checkTypeData = selectData;
-                }
-                if (paramsType === "CHECK_ITEM_TYPE" && !showAll) {
-                    checkItemData = selectData;
-                }
-                if (paramsType === "CHECK_VITAL_TYPE") {
-                    vitalTypeData = selectData;
-                }
-                //重载下拉框数据
-                $("#" + select).combobox('loadData', selectData);
+                callback(datas);
             }
         });
     }
