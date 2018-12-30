@@ -165,6 +165,7 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
                         errorType: treeMap.type,
                         nodeScore: '0',
                         maxScore: '0',
+                        flag:'0'//新增
                     }
                 });
                 i++;
@@ -234,7 +235,7 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
             //获取datagrid中的所有数据，将其拼接成json格式字符串数组
             var rowsData = $('#peopleManage').datagrid('getRows');
             var json = [];//更新数据
-            var jsonInsert = [];//插入数据
+            var jsonInsert = [];//需要插入的数据
             var maxAll = [];//扣分范围
             var nAll = [];//所占分值
             var loc;//更新
@@ -273,7 +274,7 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
                     json.push(loc);
                 }
             });
-            if(maxAll.length!=3||nAll.length!=3){
+            if(maxAll.length!=rowsData.length||nAll.length!=rowsData.length){
                 $.messager.alert("提示", "扣分范围不能高于所占分值！");
                 return false;
             }
@@ -444,7 +445,7 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
                     }},
                 {field: 'nodeScore', title: '所占分值', width: '15%', editor:'numberbox'},
                 {field: 'maxScore', title: '扣分范围', width: '15%', editor:'numberbox'},
-                {field: 'flag', title: '新增(0)或更新(1)标识', width: '15%', hidden: true}
+                {field: 'flag', title: '新增(0)标识', width: '15%', hidden: true}
             ]],
             fitColumns: true,
             width: '100%',
