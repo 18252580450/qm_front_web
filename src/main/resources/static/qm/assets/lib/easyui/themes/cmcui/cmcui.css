@@ -3518,6 +3518,15 @@ placeholder {
   background:#FFF
 }
 
+.panel-transparent-20 {
+  padding: 0px 0px;
+  color: #666;
+  height: 20px;
+  line-height: 16px;
+  background: #E6E9F0;
+  background:#FFF
+}
+
 .panel-transparent-box {
   padding: 0px 0px;
   color: #666;
@@ -3532,6 +3541,16 @@ placeholder {
   color: #666;
   height: 118px;
   line-height: 118px;
+  background: #E6E9F0;
+  border-right: solid 1px #e0e0e0;
+  background:#FFF
+}
+
+.appeal-process-line {
+  padding: 0px 0px;
+  color: #666;
+  height: 94px;
+  line-height: 94px;
   background: #E6E9F0;
   border-right: solid 1px #e0e0e0;
   background:#FFF
