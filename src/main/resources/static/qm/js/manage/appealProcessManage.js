@@ -159,8 +159,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                     field: 'modifyTime', title: '修改时间', width: '15%',
                     formatter: function (value, row, index) { //格式化时间格式
                         if (row.modifyTime != null) {
-                            var modifyTime = DateUtil.formatDateTime(row.modifyTime);
-                            return '<span title=' + modifyTime + '>' + modifyTime + '</span>';
+                            return DateUtil.formatDateTime(row.modifyTime);
                         }
                     }
                 },

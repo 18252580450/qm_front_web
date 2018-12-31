@@ -1,6 +1,7 @@
-require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util, Transfer) {
+require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], function ($, Util, Transfer, CommonAjax) {
 
-    var orderCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/execution/orderCheckDetail.html";
+    var orderCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/execution/orderCheckDetail.html",
+        poolStatusData = [];  //质检状态下拉框静态数据（待质检、待复检）
 
     initialize();
 
@@ -11,12 +12,6 @@ require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util,
 
     //页面信息初始化
     function initPageInfo() {
-        //计划名称搜索框
-        $("#qmPlanName").searchbox({
-                searcher: function () {
-                }
-            }
-        );
         //分配开始时间选择框
         // var beginDate = (DateUtil.formatDateTime(new Date() - 24 * 60 * 60 * 1000)).substr(0, 11) + "00:00:00";
         var beginDate = "2018-10-10 00:00:00";
@@ -44,12 +39,51 @@ require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util,
             }
         );
 
+        //计划名称搜索框
+        $("#qmPlanName").searchbox({
+                searcher: function () {
+                }
+            }
+        );
+
+        //质检状态下拉框
+        $("#poolStatus").combobox({
+            url: '../../data/select_init_data.json',
+            method: "GET",
+            valueField: 'paramsCode',
+            textField: 'paramsName',
+            panelHeight: 'auto',
+            editable: false,
+            onLoadSuccess: function () {
+                var poolStatus = $("#poolStatus"),
+                    data = poolStatus.combobox('getData');
+                if (data.length > 0) {
+                    poolStatus.combobox('select', data[0].paramsCode);
+                }
+            },
+            onSelect: function () {
+                $("#orderCheckList").datagrid("load");
+            }
+        });
+        CommonAjax.getStaticParams("POOL_STATUS", function (datas) {
+            if (datas) {
+                poolStatusData = datas;
+                $("#poolStatus").combobox('loadData', datas);
+            }
+        });
+
         //待质检工单列表
         var IsCheckFlag = true; //标示是否是勾选复选框选中行的，true - 是 , false - 否
         $("#orderCheckList").datagrid({
             columns: [[
                 {
-                    field: 'wrkfmId', title: '工单流水', width: '20%',
+                    field: 'operate', title: '操作', width: '8%',
+                    formatter: function (value, row, index) {
+                        return '<a href="javascript:void(0);" id = "orderCheck_' + row.wrkfmId + '" style="color: deepskyblue;">质检</a>';
+                    }
+                },
+                {
+                    field: 'wrkfmId', title: '工单流水', width: '15%',
                     formatter: function (value, row, index) {
                         if (value != null) {
                             return '<a href="javascript:void(0);" id = "orderFlow' + row.wrkfmId + '">' + value + '</a>';
@@ -66,21 +100,21 @@ require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util,
                 // },
                 {field: 'srvReqstTypeNm', title: '服务请求类型', width: '15%'},
                 {
-                    field: 'planName', title: '计划名称', width: '20%',
+                    field: 'planName', title: '计划名称', width: '15%',
                     formatter: function (value, row, index) {
                         if (row.qmPlan != null) {
                             return row.qmPlan.planName;
                         }
                     }
                 },
-                {
-                    field: 'planCreateTime', title: '计划生成时间', width: '15%',
-                    formatter: function (value, row, index) {
-                        if (row.qmPlan != null && row.qmPlan.createTime != null) {
-                            return DateUtil.formatDateTime(row.qmPlan.createTime);
-                        }
-                    }
-                },
+                // {
+                //     field: 'planCreateTime', title: '计划生成时间', width: '15%',
+                //     formatter: function (value, row, index) {
+                //         if (row.qmPlan != null && row.qmPlan.createTime != null) {
+                //             return DateUtil.formatDateTime(row.qmPlan.createTime);
+                //         }
+                //     }
+                // },
                 {
                     field: 'operateTime', title: '分配时间', width: '15%',
                     formatter: function (value, row, index) { //格式化时间格式
@@ -89,7 +123,18 @@ require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util,
                         }
                     }
                 },
-                {field: 'checkLink', title: '考评环节', width: '15%'}
+                {field: 'checkedStaffName', title: '被检人员', width: '15%'},
+                {field: 'checkLink', title: '考评环节', width: '15%'},
+                {
+                    field: 'poolStatus', title: '状态', width: '15%',
+                    formatter: function (value, row, index) {
+                        for (var i = 0; i < poolStatusData.length; i++) {
+                            if (parseInt(poolStatusData[i].paramsCode) === value) {
+                                return poolStatusData[i].paramsName;
+                            }
+                        }
+                    }
+                }
             ]],
             fitColumns: true,
             width: '100%',
@@ -122,12 +167,17 @@ require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util,
                     distStartTime = $("#assignBeginTime").datetimebox("getValue"),
                     distEndTime = $("#assignEndTime").datetimebox("getValue"),
                     checkLink = $("#checkLink").val(),
-                    planId = $("#qmPlanName").val();
+                    planId = $("#qmPlanName").val(),
+                    poolStatus = $("#poolStatus").combobox("getValue");
 
+                if (poolStatus === "-1") {
+                    poolStatus = "";
+                }
                 var reqParams = {
+                    "checkStaffId": Util.constants.STAFF_ID,
                     "wrkfmId": wrkfmId,
                     "isOperate": Util.constants.ORDER_DISTRIBUTE,        //已分配
-                    "poolStatus": Util.constants.CHECK_STATUS_CHECK,     //待质检
+                    "poolStatus": poolStatus,
                     "operateTimeBegin": distStartTime,
                     "operateTimeEnd": distEndTime,
                     "checkLink": checkLink,
@@ -151,13 +201,22 @@ require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util,
                             showType: 'show'
                         });
                     }
-                    success(data);
+                    if (poolStatusData.length > 0) {
+                        success(data);
+                    } else {
+                        CommonAjax.getStaticParams("POOL_STATUS", function (datas) {
+                            if (datas) {
+                                poolStatusData = datas;
+                                success(data);
+                            }
+                        });
+                    }
                 });
             },
             onLoadSuccess: function (data) {
                 //工单质检详情
                 $.each(data.rows, function (i, item) {
-                    $("#orderFlow" + item.wrkfmId).on("click", function () {
+                    $("#orderCheck_" + item.wrkfmId).on("click", function () {
                         var url = createURL(orderCheckDetail, item);
                         addTabs("工单质检详情", url);
                     });

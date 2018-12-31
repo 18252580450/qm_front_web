@@ -153,7 +153,6 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
                                 return checkLinkData[i].paramsName;
                             }
                         }
-
                     }
                 },
                 {

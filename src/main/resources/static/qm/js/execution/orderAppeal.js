@@ -47,8 +47,8 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                 panelHeight: 'auto',
                 editable: false,
                 onLoadSuccess: function () {
-                    var tenantType = $("#checkType");
-                    var data = tenantType.combobox('getData');
+                    var tenantType = $("#checkType"),
+                        data = tenantType.combobox('getData');
                     if (data.length > 0) {
                         tenantType.combobox('select', data[0].paramsCode);
                     }
@@ -212,6 +212,8 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
 
         //审批记录弹框
         function showAppealRecordDialog(data) {
+            $("#appealLeftDiv").empty();
+            $("#appealRightDiv").empty();
             $("#appealRecordDialog").show().window({
                 width: 600,
                 height: 350,
@@ -219,7 +221,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                 title: "审批记录"
             });
             var reqParams = {
-                "appealId": data.appealId,
+                "appealId": data.appealId
             };
             var params = $.extend({
                 "start": 0,
@@ -355,10 +357,10 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
 
         //校验开始时间和终止时间
         function checkBeginEndTime() {
-            var beginTime = $("#appealBeginTime").datetimebox("getValue");
-            var endTime = $("#appealEndTime").datetimebox("getValue");
-            var d1 = new Date(beginTime.replace(/-/g, "\/"));
-            var d2 = new Date(endTime.replace(/-/g, "\/"));
+            var beginTime = $("#appealBeginTime").datetimebox("getValue"),
+                endTime = $("#appealEndTime").datetimebox("getValue"),
+                d1 = new Date(beginTime.replace(/-/g, "\/")),
+                d2 = new Date(endTime.replace(/-/g, "\/"));
 
             if (beginTime !== "" && endTime !== "" && d1 > d2) {
                 $.messager.show({
@@ -390,7 +392,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
         //左侧操作区域
         function getLeftDiv(item) {
             return '<div class="panel-transparent"><form class="form form-horizontal"><div class="cl">' +
-                '<div class="formControls col-8"><div class="fl text-small">操作1</div></div>' +
+                '<div class="formControls col-8"><div class="fl text-small"></div></div>' +
                 '<div class="formControls col-4"><div class="circle"></div></div>' +
                 '</div></form></div>';
         }
@@ -404,18 +406,24 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
 
         //右侧流程处理过程列表
         function getRightDiv(item) {
+            var approveStatus = "";
+            if (item.approveStatus === Util.constants.APPROVE_STATUS_PASS) {
+                approveStatus = "通过";
+            } else {
+                approveStatus = "驳回";
+            }
             return '<div style="margin-bottom:30px;">' +
                 '<div class="panel-transparent-20 cl"><form class="form form-horizontal"><div class="cl">' +
                 '<div class="formControls col-12"><div class="fl text-small">审批人：' + item.approveStaffName + '</div></div>' +
                 '</div></form></div>' +
                 '<div class="panel-transparent-20 cl"><form class="form form-horizontal"><div class="cl">' +
-                '<div class="formControls col-12"><div class="fl text-small">审批结果：' + item.approveStaffName + '</div></div>' +
+                '<div class="formControls col-12"><div class="fl text-small">审批结果：' + approveStatus + '</div></div>' +
                 '</div></form></div>' +
                 '<div class="panel-transparent-20 cl"><form class="form form-horizontal"><div class="cl">' +
                 '<div class="formControls col-12"><div class="fl text-small">审批意见：' + item.approveSuggestion + '</div></div>' +
                 '</div></form></div>' +
                 '<div class="panel-transparent-20 cl"><form class="form form-horizontal"><div class="cl">' +
-                '<div class="formControls col-12"><div class="fl text-small">审批时间：' + item.approveTime + '</div></div>' +
+                '<div class="formControls col-12"><div class="fl text-small">审批时间：' + DateUtil.formatDateTime(item.approveTime) + '</div></div>' +
                 '</div></form> </div>' +
                 '</div>';
         }
