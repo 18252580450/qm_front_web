@@ -71,7 +71,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
                         var action1 = "<a href='javascript:void(0);' class='previewBtn' id =" + JSON.stringify(bean) + " >预览</a>";
                         var action2="<a href='javascript:void(0);' class='actionBtn' id =" + JSON.stringify(beanRr) + " >发布</a>";
                         var action3="<a href='javascript:void(0);' class='actionBtn' id =" + JSON.stringify(beanSt) + " >暂停</a>";
-                        return action1+"&nbsp;&nbsp;"+action2+"&nbsp;&nbsp;"+action3;
+                        return action2+"&nbsp;&nbsp;"+action3;
                       }
                 },
                 {field: 'templateName', title: '模板名称', width: '20%',
