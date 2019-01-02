@@ -257,7 +257,11 @@ require(["jquery", "util", "dateUtil", "transfer", "easyui"], function ($, Util)
         });
         //提交
         $("#submitBtn").on("click", function () {
-            checkSubmit(Util.constants.CHECK_RESULT_NEW_BUILD);
+            if (voicePool.poolStatus === Util.constants.CHECK_STATUS_RECHECK) {
+                checkSubmit(Util.constants.CHECK_RESULT_RECHECK);  //复检
+            } else {
+                checkSubmit(Util.constants.CHECK_RESULT_NEW_BUILD);
+            }
         });
         //取消
         $("#cancelBtn").on("click", function () {
@@ -281,7 +285,6 @@ require(["jquery", "util", "dateUtil", "transfer", "easyui"], function ($, Util)
             "tenantId": voicePool.tenantId,                          //租户id
             "callingNumber": voicePool.staffNumber,                  //主叫号码
             "acceptNumber": voicePool.customerNumber,                //受理号码
-            "originInspectionId": "",                                //原质检流水
             "touchId": voicePool.touchId,                            //语音流水
             "planId": voicePool.planId,                              //考评计划
             "templateId": templateId,                                //考评模版ID

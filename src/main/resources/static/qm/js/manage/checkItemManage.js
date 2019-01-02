@@ -249,12 +249,12 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
     function initEvent() {
         //查询
         $("#queryBtn").on("click", function () {
-            if (node.isParent) {
+            if (checkNode.isParent) {
                 $("#checkItemList").datagrid('reload');
             } else {
                 var data = [];
                 $.each(checkItemListData, function (i, item) {
-                    if (node.id === item.checkItemId) {
+                    if (checkNode.id === item.checkItemId) {
                         data.push(item);
                     }
                 });
@@ -289,6 +289,9 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
             height: 400,
             modal: true,
             title: "考评项新增"
+        });
+        $('#checkItemNameConfig').validatebox({
+            required: true
         });
         //考评项类型下拉框
         $("#checkItemTypeConfig").combobox({
@@ -426,13 +429,17 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
             modal: true,
             title: "考评项修改"
         });
+        var checkItemNameInput = $('#checkItemNameConfig');
+        checkItemNameInput.validatebox({
+            required: true
+        });
         if (item.checkItemType === Util.constants.CHECK_TYPE_ORDER) {
             showCheckLink(item);
         } else {
             $("#checkLinkSelect").hide();
         }
         //自动填入待修改考评项名称
-        $("#checkItemNameConfig").val(item.checkItemName);
+        checkItemNameInput.val(item.checkItemName);
         //自动填入待修改考评项描述
         $("#checkItemDescConfig").val(item.remark);
         //考评项类型下拉框

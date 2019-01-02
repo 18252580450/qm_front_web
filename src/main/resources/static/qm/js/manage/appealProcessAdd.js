@@ -12,6 +12,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
 
     //页面信息初始化
     function initPageInfo() {
+        $("#processName").validatebox();
         //模板渠道下拉框
         $("#tenantType").combobox({
             url: '../../data/tenant_type.json',
@@ -33,11 +34,13 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
         });
 
         //部门搜索框
-        $("#departmentName").searchbox({
+        var department = $("#departmentName");
+        department.searchbox({
                 searcher: function () {
                 }
             }
         );
+        department.validatebox();
 
         //质检类型下拉框
         $("#checkType").combobox({
@@ -397,10 +400,12 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
             modal: true,
             title: "添加节点"
         });
+        $("#subNodeName").validatebox();
         //显示子流程名称
         $("#subProcessName").val(subProcessObj.processName);
         //审批角色下拉框
-        $("#userName").combotree({
+        var userNameSelect = $("#userName");
+        userNameSelect.combotree({
             url: '../../data/process_user.json',
             method: "GET",
             textField: "text",
@@ -412,6 +417,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                 // $('#userName').combotree("tree").tree("options").url = "../../data/process_user.json";
             }
         });
+        userNameSelect.validatebox();
         //取消
         var cancelBtn = $("#subNodeCancelBtn");
         cancelBtn.unbind("click");

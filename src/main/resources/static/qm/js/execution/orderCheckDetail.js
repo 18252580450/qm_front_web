@@ -215,7 +215,11 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
         });
         //提交
         $("#submitBtn").on("click", function () {
-            checkSubmit(Util.constants.CHECK_RESULT_NEW_BUILD);
+            if (orderPool.poolStatus === Util.constants.CHECK_STATUS_RECHECK) {
+                checkSubmit(Util.constants.CHECK_RESULT_RECHECK);  //复检
+            } else {
+                checkSubmit(Util.constants.CHECK_RESULT_NEW_BUILD);
+            }
         });
         //取消
         $("#cancelBtn").on("click", function () {
@@ -336,7 +340,7 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
         }
 
         //针对提交，提交时需要对所有（必检）环节进行考评，现在默认需要对所有环节进行考评
-        if (checkStatus === Util.constants.CHECK_RESULT_NEW_BUILD) {
+        if (checkStatus === Util.constants.CHECK_RESULT_NEW_BUILD || checkStatus === Util.constants.CHECK_RESULT_RECHECK) {
             var allCheck = false;
             for (var i = 0; i < dealProcessData.length; i++) {
                 allCheck = false;
@@ -360,10 +364,9 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
         //工单质检基本信息
         var orderCheckInfo = {
             "tenantId": orderPool.tenantId,                          //租户id
-            "callingNumber": orderPool.callingNumber,                //主叫号码
-            "acceptNumber": orderPool.calledNumber,                  //受理号码
-            "originInspectionId": "",                                //原质检流水
-            "touchId": orderPool.workformId,                         //工单流水
+            "callingNumber": orderPool.acptStaffNum,                 //主叫号码
+            "acceptNumber": orderPool.custNum,                       //受理号码
+            "touchId": orderPool.wrkfmId,                            //工单流水
             "planId": orderPool.planId,                              //考评计划
             "templateId": orderPool.templateId,                      //考评模版ID
             "checkModel": Util.constants.CHECK_TYPE_WITHIN_PLAN,     //质检模式、计划内质检
@@ -378,7 +381,7 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
             "checkStartTime": checkStartTime,                        //质检开始时间（质检分配时间）
             "checkTime": checkTime,                                  //质检时长
             "scoreType": scoreType,                                  //分值类型
-            "resultStatus": checkStatus                              //质检结果状态（保存or提交）
+            "resultStatus": checkStatus                              //质检结果状态（暂存、质检、复检）
         };
 
         var params = {

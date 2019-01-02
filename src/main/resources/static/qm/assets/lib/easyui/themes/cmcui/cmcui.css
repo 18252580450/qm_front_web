@@ -3050,6 +3050,17 @@ a.btn:hover, a.btn:focus, a.btn:active, a.btn.active, a.btn.disabled, a.btn[disa
   width:75px
 
 }
+.btn-secondary-large {
+  /*color: #fff;*/
+  /*background-color: #00c484;*/
+  /*border-color: #00c484;*/
+
+  color:#3e7ac0;
+  background-color: #fff;
+  border-color: #3e7ac0;
+  width:85px
+
+}
 .easyui-checkbox{ height:30px !important;border-radius:3px; 	border: solid 1px #ccc;
  
   padding-left:5px; width:118px}
