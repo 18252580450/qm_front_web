@@ -231,6 +231,8 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
     //保存操作。将表中的数据保存到数据库中（更新）
     function saveEvent(){
         $("#page").on("click", "#saveBut", function () {
+            $('#templateName').validatebox({required:true});//非空校验
+            $('#templateDesc').validatebox({required:true});//非空校验
             //将表中数据保存到详情信息表中
             //获取datagrid中的所有数据，将其拼接成json格式字符串数组
             var rowsData = $('#peopleManage').datagrid('getRows');

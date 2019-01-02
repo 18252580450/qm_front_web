@@ -189,6 +189,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
                // if ($(this).textbox({disabled : true})) {
                //     return;
                // }
+               $('#name').validatebox({required:true});//非空校验
                //禁用按钮，防止多次提交
                $('#global').linkbutton({disabled: true});
 
