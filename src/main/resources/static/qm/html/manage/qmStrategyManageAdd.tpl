@@ -31,8 +31,8 @@
                     <div class='panel-tool-box cl' >
                         <div class='fl text-bold'>策略元素</div>
                         <div class="formControls col-2" style="text-align: right;width: 90%">
-                            <a href='javascript:void(0)' class='btn btn-green radius mt-l-20' id="addElesBtn"><i class='iconfont iconfont-add4'></i>新增</a>
-                            <a href='javascript:void(0)' class='btn btn-green radius mt-l-20' id="delElesBut"><i class='iconfont iconfont-del2'></i>删除</a>
+                            <a href='javascript:void(0)' class='btn btn-green radius mt-l-20' id="addElesBtn"><i class='iconfont iconfont-add'></i>新增</a>
+                            <a href='javascript:void(0)' class='btn btn-secondary radius mt-l-20' id="delElesBut"><i class='iconfont iconfont-del2'></i>删除</a>
                         </div>
                     </div>
                     <table id='newElesList' class='easyui-datagrid'  style=' width:100%;'>

@@ -108,7 +108,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
         });
 
         //重置
-        $("#searchForm").on("click", "a.btn-default", function () {
+        $("#searchForm").on("click", "#btn-default", function () {
             $("#searchForm").form('clear');
         });
 

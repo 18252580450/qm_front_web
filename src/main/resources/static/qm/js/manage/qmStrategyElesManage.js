@@ -45,7 +45,7 @@ define([
     }
 
     function addToolsDom() {
-        $(["<td><a href='javascript:void(0)' id='batchDelete' class='btn btn-green radius  mt-l-20'"+
+        $(["<td><a href='javascript:void(0)' id='batchDelete' class='btn btn-secondary radius  mt-l-20'"+
             " style='height: 24px;line-height: 1.42857;padding: 2px 6px;'>删除</a></td>"].join("")
         ).appendTo($(".datagrid .datagrid-pager > table > tbody > tr"));
     }
@@ -179,7 +179,7 @@ define([
         });
 
         //重置
-        $("#searchForm").on("click", "a.btn-default", function () {
+        $("#searchForm").on("click", "#btn-default", function () {
             $("#searchForm").form('clear');
         });
 
