@@ -184,7 +184,8 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
             deleteCheck();
         });
 
-        var voicePath = "../../data/voice.mp3";
+        // var voicePath = "../../data/voice.mp3";
+        var voicePath = "../../data/voice2.wav";
         var voice = new Audio(voicePath);
         //播放
         $("#playBut").on("click", function () {

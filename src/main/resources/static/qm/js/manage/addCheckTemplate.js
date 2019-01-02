@@ -242,7 +242,7 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
             };
             json.push(loc);
         });
-        if(maxAll.length!=3||nAll.length!=3){
+        if(maxAll.length!=rowsData.length||nAll.length!=rowsData.length){
             $.messager.alert("提示", "扣分范围不能高于所占分值！");
             return false;
         }

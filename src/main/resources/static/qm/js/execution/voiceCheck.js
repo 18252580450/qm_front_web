@@ -1,4 +1,4 @@
-require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util, Transfer) {
+require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], function ($, Util, Transfer, CommonAjax) {
 
     var voiceCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/execution/voiceCheckDetail.html";
 
@@ -65,22 +65,48 @@ require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util,
             }
         });
 
+        //质检状态下拉框
+        $("#poolStatus").combobox({
+            url: '../../data/select_init_data.json',
+            method: "GET",
+            valueField: 'paramsCode',
+            textField: 'paramsName',
+            panelHeight: 'auto',
+            editable: false,
+            onLoadSuccess: function () {
+                var poolStatus = $("#poolStatus"),
+                    data = poolStatus.combobox('getData');
+                if (data.length > 0) {
+                    poolStatus.combobox('select', data[0].paramsCode);
+                }
+            },
+            onSelect: function () {
+                $("#voiceCheckList").datagrid("load");
+            }
+        });
+        CommonAjax.getStaticParams("POOL_STATUS", function (datas) {
+            if (datas) {
+                poolStatusData = datas;
+                $("#poolStatus").combobox('loadData', datas);
+            }
+        });
+
         //待质检语音列表
         var IsCheckFlag = true; //标示是否是勾选复选框选中行的，true - 是 , false - 否
         $("#voiceCheckList").datagrid({
             columns: [[
                 {
-                    field: 'touchId', title: '语音流水', width: '20%',
+                    field: 'operate', title: '操作', width: '8%',
+                    formatter: function (value, row, index) {
+                        return '<a href="javascript:void(0);" id = "voiceCheck_' + row.touchId + '" style="color: deepskyblue">质检</a>';
+                    }
+                },
+                {
+                    field: 'touchId', title: '语音流水', width: '15%',
                     formatter: function (value, row, index) {
                         return '<a href="javascript:void(0);" id = "voiceFlow' + row.touchId + '">' + value + '</a>';
                     }
                 },
-                // {
-                //     field: 'inspectionId', title: '质检流水', width: '14%',
-                //     formatter: function (value, row, index) {
-                //         return '<a href="javascript:void(0);" id = "checkFlow' + row.inspectionId + '">' + value + '</a>';
-                //     }
-                // },
                 {
                     field: 'checkedTime', title: '抽取时间', width: '15%',
                     formatter: function (value, row, index) { //格式化时间格式
@@ -138,14 +164,19 @@ require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util,
                     distributeBeginTime = $("#distributeBeginTime").datetimebox("getValue"),
                     distributeEndTime = $("#distributeEndTime").datetimebox("getValue"),
                     minRecordTime = $("#minRecordTime").val(),
-                    maxRecordTime = $("#maxRecordTime").val();
+                    maxRecordTime = $("#maxRecordTime").val(),
+                    poolStatus = $("#poolStatus").combobox("getValue");
+
+                if (poolStatus === "-1") {
+                    poolStatus = "";
+                }
 
                 var reqParams = {
                     "tenantId": Util.constants.TENANT_ID,
                     "touchId": touchId,
                     "planId": planId,
                     "isOperate": Util.constants.VOICE_DISTRIBUTE,        //已分配
-                    "poolStatus": Util.constants.CHECK_STATUS_CHECK,     //待质检
+                    "poolStatus": poolStatus,
                     "staffNumber": callingNumber,
                     "customerNumber": calledNumber,
                     "extractBeginTime": extractBeginTime,
@@ -179,7 +210,7 @@ require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util,
             onLoadSuccess: function (data) {
                 //语音质检详情
                 $.each(data.rows, function (i, item) {
-                    $("#voiceFlow" + item.touchId).on("click", function () {
+                    $("#voiceCheck_" + item.touchId).on("click", function () {
                         var url = createURL(voiceCheckDetail, item);
                         addTabs("语音质检详情", url);
                     });
