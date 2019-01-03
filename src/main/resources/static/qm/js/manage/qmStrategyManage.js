@@ -59,8 +59,8 @@ define([
                     field: 'action', title: '操作', width: '15%',
                     formatter: function (value, row, index) {
                         var Action =
-                            "<a href='javascript:void(0);' class='reviseBtn' id =" + row.pId + " >编辑</a>" +
-                            " | <a href='javascript:void(0);' class='qryDetail' id =" + row.pId + " >查看明细</a>";
+                            "<a href='javascript:void(0);' class='reviseBtn' id =" + row.pId + " >编辑</a>";
+                            //" | <a href='javascript:void(0);' class='qryDetail' id =" + row.pId + " >查看明细</a>";
                         return Action;
                     }
                 },
@@ -206,6 +206,7 @@ define([
         CommonAjax.getStaticParams("STRATEGY_ELE_TYPE",function(datas){
             if(datas){
                 paramsType = datas;
+                paramsType.unshift({paramsCode:"",paramsName:"- 请选择 -"});
                 $('#paramsType').combobox({
                     data: datas,
                     valueField: 'paramsCode',

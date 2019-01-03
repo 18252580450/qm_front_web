@@ -8,39 +8,39 @@
                         <div class='row cl'>
                             <label class='form-label col-3'>计划名称</label>
                             <div class='formControls col-3'>
-                                <input id="planName" type="easyui-textbox" style='width:100%;height:30px' >
+                                <input id="planName" type='text' class="easyui-textbox easyui-validatebox" data-options="required:true" style='width:100%;height:30px' >
                             </div>
                             <label class='form-label col-3'>计划类型</label>
                             <div class='formControls col-3'>
-                                <input id="planType" type='text' class='easyui-textbox' style='width:100%;height:30px' >
+                                <input id="planType" type='text' class='easyui-textbox easyui-validatebox' data-options="required:true" style='width:100%;height:30px' >
                             </div>
                         </div>
                         <div class='row cl'>
                             <label class='form-label col-3'>考评模板</label>
                             <div class='formControls col-3'>
                                 <input id="templateId" hidden="hidden" >
-                                <input id="template" class="easyui-searchbox" style='width:100%;height:30px' >
+                                <input id="template" type='text' class="easyui-searchbox easyui-validatebox" data-options="required:true" style='width:100%;height:30px' >
                             </div>
                             <label class='form-label col-3'>考评策略</label>
                             <div class='formControls col-3'>
                                 <input id="pId" hidden="hidden" >
-                                <input id="strategy" class="easyui-searchbox" style='width:100%;height:30px' >
+                                <input id="strategy" type='text' class="easyui-searchbox easyui-validatebox" data-options="required:true" style='width:100%;height:30px' >
                             </div>
                         </div>
                         <div class='row cl'>
                             <label class='form-label col-3'>任务分派方式</label>
                             <div class='formControls col-3'>
-                                <input id="manOrAuto" type='text' class='easyui-textbox' style='width:100%;height:30px' >
+                                <input id="manOrAuto" type='text' class="easyui-textbox easyui-validatebox" data-options="required:true" style='width:100%;height:30px' >
                             </div>
                             <label class='form-label col-3'>任务执行方式</label>
                             <div class='formControls col-3'>
-                                <input id="planRuntype" type='text' class='easyui-textbox' style='width:100%;height:30px' >
+                                <input id="planRuntype" type='text' class="easyui-textbox easyui-validatebox" data-options="required:true" style='width:100%;height:30px' >
                             </div>
                         </div>
                         <div class='row cl'>
                             <label class='form-label col-3'>任务执行时间</label>
                             <div class='formControls col-3'>
-                                <input id="planRuntime" type='text' class='easyui-textbox' style='width:100%;height:30px' >
+                                <input id="planRuntime" type='text' class="easyui-textbox easyui-validatebox" data-options="required:true" style='width:100%;height:30px' >
                             </div>
                             <label class='form-label col-3'>计划开始时间</label>
                             <div class='formControls col-3'>
@@ -54,7 +54,7 @@
                             </div>
                             <label class='form-label col-3'>计划描述</label>
                             <div class='formControls col-3'>
-                                <input id="remark" type="easyui-textbox" style='width:100%;height:30px'>
+                                <input id="remark" type='text' class="easyui-textbox" style='width:100%;height:30px'>
                             </div>
                         </div>
                     </form>

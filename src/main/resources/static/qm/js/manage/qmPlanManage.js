@@ -114,8 +114,8 @@ define([
                     field: 'action', title: '操作', width: '8%',
                     formatter: function (value, row, index) {
                         var Action =
-                            "<a href='javascript:void(0);' class='reviseBtn' id =" + row.planId + " >编辑</a>"+
-                            " | <a href='javascript:void(0);' class='qryDetailBtn' id =" + row.planId + " >详情</a>";
+                            "<a href='javascript:void(0);' class='reviseBtn' id =" + row.planId + " >编辑</a>";
+                            //" | <a href='javascript:void(0);' class='qryDetailBtn' id =" + row.planId + " >详情</a>";
                         return Action;
                     }
                 },
@@ -339,6 +339,10 @@ define([
             editable: false,
             data:[
                 {
+                    label: '全部',
+                    value: ''
+                },
+                {
                     label: '暂停',
                     value: '0'
                 },
@@ -352,6 +356,7 @@ define([
         CommonAjax.getStaticParams("PLAN_TYPE",function(datas){
             if(datas){
                 planTypes = datas;
+                planTypes.unshift({paramsCode:"",paramsName:"全部"});
                 $('#planTypeq').combobox({
                     data: planTypes,
                     valueField: 'paramsCode',

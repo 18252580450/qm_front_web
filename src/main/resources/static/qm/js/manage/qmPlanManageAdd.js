@@ -63,7 +63,8 @@ define([
                 'remark':remark
             };
 
-            if (planName == null || planName == "" || planType == null || planType == "" ) {
+            if (planName == null || planName == "" || planType == null || planType == "" || templateId == null || templateId == ""
+                || pId == null || pId == "" || manOrAuto == null || manOrAuto == "" || planRuntype == null || planRuntype == "") {
                 $.messager.alert('警告', '必填项不能为空。');
 
                 $("#addPlan",$el).linkbutton({disabled: false});  //按钮可用
@@ -156,6 +157,7 @@ define([
             ],
             editable: false
         });
+        $('#manOrAuto',$el).combobox("setValue","0");
         $('#planRuntype',$el).combobox({
             data: [
                 {
@@ -173,6 +175,7 @@ define([
             ],
             editable: false
         });
+        $('#planRuntype',$el).combobox("setValue","0");
         var qryCheckTemplate = new QryCheckTemplate();
         $('#template',$el).searchbox({
             searcher: function(value){
@@ -207,6 +210,7 @@ define([
         CommonAjax.getStaticParams("PLAN_TYPE",function(datas){
             if(datas){
                 planTypes = datas;
+                planTypes.unshift({paramsCode:"",paramsName:"全部"});
                 $('#planType',$el).combobox({
                     data: planTypes,
                     valueField: 'paramsCode',
@@ -218,16 +222,13 @@ define([
                 }
             }
         });
-
         $('#planType',$el).combobox({
             data: planTypes,
             editable: false
         });
         //修改
         if(planBean){
-            $("#planName",$el).val("44444");
-            //$("#planName",$el).val(planBean.planName);
-            //alert($("#planName",$el).val());
+            $("#planName",$el).val(planBean.planName);
             $("#templateId",$el).val(planBean.templateName);
             $("#pId",$el).val(planBean.pId);
             $("#manOrAuto",$el).combobox('setValue',planBean.manOrAuto);
@@ -244,9 +245,6 @@ define([
             $('#remark',$el).val(planBean.remark);
         }
     }
-        function doSearch(value){
-            alert(value);
-        }
 
     return initialize;
 });

@@ -189,6 +189,8 @@ define([
     }
 
     function initWindowEvent(){
+        $("#elementCode").validatebox({required: true});
+        $("#elementName").validatebox({required: true});
         $("#add_content").find('form.form').form('clear');  //初始化清空
         //新增
         $("#addBtn").on("click", function(){
@@ -340,18 +342,22 @@ define([
     function initSearchForm() {
         $('#paramsType').combobox({
             data: [],
-            editable: false
+            editable: false,
+            required: true
         });
         CommonAjax.getStaticParams("STRATEGY_ELE_TYPE",function(datas){
             if(datas){
+                datas.unshift({paramsCode:"",paramsName:"- 请选择 -"});
                 $('#paramsType').combobox({
                     data: datas,
+                    required: true,
                     valueField: 'paramsCode',
                     textField: 'paramsName',
                     editable: false
                 });
                 $('#paramsTypeId').combobox({
                     data: datas,
+                    required: true,
                     valueField: 'paramsCode',
                     textField: 'paramsName',
                     editable: false
@@ -362,6 +368,7 @@ define([
         CommonAjax.getStaticParams("ELEMENT_TYPE",function(datas){
             if(datas){
                 elementTypyes = datas;
+                elementTypyes.unshift({paramsCode:"",paramsName:"- 请选择 -"});
                 $('#elementType').combobox({
                     data: elementTypyes,
                     valueField: 'paramsCode',

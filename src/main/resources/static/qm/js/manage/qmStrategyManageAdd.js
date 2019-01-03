@@ -392,6 +392,7 @@ define([
 
         //初始化搜索表单
         function initSearchForm(paramsType,bean) {
+            $("#pName",$el).validatebox({required: true});
             if(paramsType){
                 $('#paramsTypeId',$el).combobox({
                     data: paramsType,

@@ -24,7 +24,6 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                 {field: 'paramsName', title: '参数名称', width: '20%'},
                 {
                     field: 'action', title: '操作', width: '20%',
-
                     formatter: function (value, row, index) {
                         var bean = {
                             'tenantId': row.tenantId,
@@ -33,7 +32,6 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                             'paramsTypeName': row.paramsTypeName
                         };
                         var beanStr = JSON.stringify(bean);   //转成字符串
-
                         var Action =
                             "<a href='javascript:void(0);' class='reviseBtn' id =" + beanStr + " >修改</a>";
                         return Action;
@@ -79,13 +77,10 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                     "pageNum": pageNum,
                     "params": JSON.stringify(reqParams)
                 }, Util.PageUtil.getParams($("#searchForm")));
-
                 Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.STATIC_PARAMS_DNS + "/selectByParams", params, function (result) {
                     var data = Transfer.DataGrid.transfer(result);
-
                     var rspCode = result.RSP.RSP_CODE;
                     if (rspCode != "1") {
-
                         $.messager.show({
                             msg: result.RSP.RSP_DESC,
                             timeout: 1000,
@@ -93,7 +88,6 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                             showType: 'slide'
                         });
                     }
-
                     success(data);
                 });
             }
@@ -152,6 +146,8 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
      * 增加弹出窗口事件
      */
     function initWindowEvent() {
+        $("#paramsCode").validatebox({required: true});
+        $("#paramsName").validatebox({required: true});
         /*
          * 弹出添加窗口
          */
@@ -175,8 +171,11 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
             Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.STATIC_PARAMS_DNS + "/selectAllTypes", reqparams, function (result) {
                 var rspCode = result.RSP.RSP_CODE;
                 if (rspCode == "1") {
+                    var data = result.RSP.DATA;
+                    data.unshift({paramsTypeId:"",paramsTypeName:"- 请选择 -"});
                     $("#typeList").combobox({
-                        data : result.RSP.DATA,
+                        data : data,
+                        required: true,
                         valueField:'paramsTypeId',
                         textField:'paramsTypeName'
                     });
@@ -211,7 +210,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                 };
 
                 if (paramsCode == null || paramsCode == "" || paramsName == null || paramsName == "" || paramsTypeId == null
-                    || paramsTypeId == "") {
+                    || paramsTypeId == "" ) {
                     $.messager.alert('警告', '必填项不能为空。');
 
                     $("#subTypeBut").linkbutton({disabled: false});  //按钮可用
@@ -243,6 +242,10 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
      * 增加类型弹出窗口事件
      */
     function initTypeWindowEvent() {
+        $("#paramsCodet").validatebox({required: true});
+        $("#paramsNamet").validatebox({required: true});
+        $("#paramsTypeIdt").validatebox({required: true});
+        $("#paramsTypeNamet").validatebox({required: true});
         /*
          * 弹出添加窗口
          */
