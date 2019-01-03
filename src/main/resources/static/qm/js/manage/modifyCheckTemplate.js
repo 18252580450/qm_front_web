@@ -233,6 +233,10 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
         $("#page").on("click", "#saveBut", function () {
             $('#templateName').validatebox({required:true});//非空校验
             $('#templateDesc').validatebox({required:true});//非空校验
+            if($("#templateName").val()==""||$("#templateDesc").val()==""){
+                $.messager.alert('警告', '必填项不可为空!');
+                return false;
+            }
             //将表中数据保存到详情信息表中
             //获取datagrid中的所有数据，将其拼接成json格式字符串数组
             var rowsData = $('#peopleManage').datagrid('getRows');
@@ -269,6 +273,7 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
                     jsonInsert.push(locInsert);
                 }else{//更新
                     loc = {
+                        "templateId":templateId,
                         "nodeId":rowsData[i].nodeId,
                         "maxScore": maxScore,
                         "nodeScore": nodeScore,
