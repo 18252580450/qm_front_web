@@ -5,6 +5,28 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
     function initialize() {
         initPageInfo();
         initEvent();
+
+        var param = {
+            provCode :'00030000',
+            wrkfmId:'1812041617580000045'
+        }
+
+        $.ajax({
+            url: "http://203.57.227.53:8082/tcwf/detail/getDetailMess",
+            dataType: 'json',
+            type: "POST",
+            data: param,
+            success: function (data) {
+
+            var items = $.map(data.rsp.data, function (item, index) {
+                return {
+                    codeValue: item["bizCode"],
+                    codeName: item["codeNm"]
+                };
+            });
+            success(items);
+        }
+    });
     }
 
     //页面信息初始化

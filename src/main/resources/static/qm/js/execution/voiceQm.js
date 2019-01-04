@@ -43,6 +43,23 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
             }
         });
 
+        //是否质检下拉框
+        $("#poolStatus").combobox({
+            url: '../../data/poolStatus.json',
+            method: "GET",
+            valueField: 'codeValue',
+            textField: 'codeName',
+            panelHeight: 'auto',
+            editable: false,
+            onLoadSuccess: function () {
+                var poolStatus = $("#poolStatus");
+                var data = poolStatus.combobox('getData');
+                if (data.length > 0) {
+                    poolStatus.combobox('select', data[0].codeValue);
+                }
+            }
+        });
+
         //时间控件初始化
         var startTime = $('#startTime');
         var beginDate = (DateUtil.formatDateTime(new Date() - 24 * 60 * 60 * 1000)).substr(0, 11) + "00:00:00";
@@ -87,7 +104,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
                     }
                     }},
                 {field: 'checkedStaffName', title: '被检人员', align: 'center', width: '10%'},
-                {field: 'reserve1', title: '是否质检', align: 'center', width: '10%',
+                {field: 'poolStatus', title: '是否质检', align: 'center', width: '10%',
                     formatter:function(value, row, index){
                         return {'0':'待质检','1':'待复检','2':'已质检'}[value];
                     }
@@ -128,6 +145,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
                 var satisfyExtentType = $("#satisfyExtentType").val();
                 var mediaType = $("#mediaType").val();
                 var srvReqstTypeId = $("#srvReqstTypeId").val();
+                var poolStatus = $("#poolStatus").combobox("getValue");
 
                 reqParams = {
                     "touchId": touchId,
@@ -146,6 +164,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
                     "satisfyExtentType":satisfyExtentType,
                     "mediaType":mediaType,
                     "srvReqstTypeId":srvReqstTypeId,
+                    "poolStatus": poolStatus,
                 };
                 var params = $.extend({
                     "start": start,
@@ -228,7 +247,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
                 return false;
             }
             for(var i=0;i<selRows.length;i++){
-                if (selRows[i].isOperate=="1"||selRows[i].reserve1=="2") {
+                if (selRows[i].isOperate=="1"||selRows[i].poolStatus=="2") {
                     $.messager.alert("提示", "已分派或已质检后不可操作!");
                     return false;
                 }
@@ -252,7 +271,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
             return false;
         }
         for(var i=0;i<selRows.length;i++){
-            if (selRows[i].reserve1=="2") {
+            if (selRows[i].poolStatus=="2") {
                 $.messager.alert("提示", "已质检后不可操作!");
                 return false;
             }
