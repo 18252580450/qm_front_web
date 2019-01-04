@@ -40,8 +40,8 @@
                         <div class='row cl'>
                             <label class='form-label col-2'>抽取计划</label>
                             <div class='formControls col-2'>
-                                <input id="planId" type='text' class='easyui-textbox'
-                                       style='width:100%;height:30px'>
+                                <input id="planId" hidden="hidden" >
+                                <input id="planName" type='text' class="easyui-searchbox easyui-validatebox" data-options="required:true" style='width:100%;height:30px' >
                             </div>
                             <label class='form-label col-2'>质检人员</label>
                             <div class='formControls col-2'>
@@ -186,6 +186,12 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <!--查询弹窗，默认隐藏-->
+        <div  id='qry_window' style='display:none;'>
+            <div id='qry_content' style='overflow:auto'>
             </div>
         </div>
     </div>

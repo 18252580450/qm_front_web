@@ -1,4 +1,4 @@
-require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, Transfer,easyui,dateUtil) {
+require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPlan"], function ($, Util, Transfer,easyui,dateUtil,QueryQmPlan) {
     //初始化方法
     initialize();
     var reqParams=null;
@@ -10,6 +10,22 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
 
     //页面信息初始化
     function initPageInfo() {
+
+        $('#planName').searchbox({//输入框点击查询事件
+            searcher: function(value){
+                var queryQmPlan = new QueryQmPlan();
+
+                $('#qry_window').show().window({
+                    title: '查询考评计划',
+                    width: 1000,
+                    height: 550,
+                    cache: false,
+                    content:queryQmPlan.$el,
+                    modal: true
+                });
+            }
+        });
+
         //是否分配下拉框
         $("#isOperate").combobox({
             url: '../../data/isOperate.json',

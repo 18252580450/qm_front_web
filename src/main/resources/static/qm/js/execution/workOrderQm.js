@@ -1,4 +1,4 @@
-require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, Transfer,easyui,dateUtil) {
+require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPlan"], function ($, Util, Transfer,easyui,dateUtil,QueryQmPlan) {
     //初始化方法
     initialize();
     var reqParams=null;
@@ -9,6 +9,22 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
 
     //页面信息初始化
     function initPageInfo() {
+
+        $('#planName').searchbox({//输入框点击查询事件
+            searcher: function(value){
+                var queryQmPlan = new QueryQmPlan();
+
+                $('#qry_window').show().window({
+                    title: '查询考评计划',
+                    width: 1000,
+                    height: 550,
+                    cache: false,
+                    content:queryQmPlan.$el,
+                    modal: true
+                });
+            }
+        });
+
         //是否分配下拉框
         $("#isDis").combobox({
             url: '../../data/isDistribution.json',
@@ -126,7 +142,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
                 var start = (param.page - 1) * param.rows;
                 var pageNum = param.rows;
                 var wrkfmShowSwftno = $("#workOrderId").val();
-                var planName = $("#planName").val();
+                var planId = $("#planId").val();
                 var serviceType = $("#serviceType").val();
                 var isOperate = $("#isDis").combobox("getValue");
                 var poolStatus = $("#poolStatus").combobox("getValue");
@@ -137,7 +153,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
 
                 reqParams = {
                     "wrkfmShowSwftno": wrkfmShowSwftno,
-                    "planId": planName,
+                    "planId": planId,
                     "srvReqstTypeId": serviceType,
                     "poolStatus": poolStatus,
                     "isOperate":isOperate,
