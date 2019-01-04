@@ -1,7 +1,7 @@
 require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], function ($, Util, Transfer, CommonAjax) {
 
-        var appealCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/execution/orderAppealDetail.html",
-            checkTypeData = [];  //质检类型静态数据
+        var checkTypeData = [],      //质检类型静态数据
+            appealStatusData = [];   //申诉状态静态数据
 
         initialize();
 
@@ -32,15 +32,21 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                 }
             });
 
-            //申诉人
+            //申诉发起人
             $("#appealStaffId").searchbox({
                     searcher: function () {
                     }
                 }
             );
 
-            //质检类型下拉框
-            $("#checkType").combobox({
+            //申诉处理人
+            $("#appealDealStaffId").searchbox({
+                    searcher: function () {
+                    }
+                }
+            );
+            //申诉状态下拉框
+            $("#appealStatus").combobox({
                 url: '../../data/select_init_data.json',
                 method: "GET",
                 valueField: 'paramsCode',
@@ -48,25 +54,25 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                 panelHeight: 'auto',
                 editable: false,
                 onLoadSuccess: function () {
-                    var checkTypeSelect = $("#checkType"),
-                        data = checkTypeSelect.combobox('getData');
+                    var appealStatusSelect = $("#appealStatus"),
+                        data = appealStatusSelect.combobox('getData');
                     if (data.length > 0) {
-                        checkTypeSelect.combobox('select', data[0].paramsCode);
+                        appealStatusSelect.combobox('select', data[0].paramsCode);
                     }
                 },
                 onSelect: function () {
                     $("#appealCheckList").datagrid("load");
                 }
             });
-            CommonAjax.getStaticParams("CHECK_TYPE", function (datas) {
+            CommonAjax.getStaticParams("APPEAL_STATUS", function (datas) {
                 if (datas) {
-                    checkTypeData = datas;
+                    appealStatusData = datas;
                     var data = {
                         "paramsCode": "-1",
                         "paramsName": "全部"
                     };
                     datas.unshift(data);
-                    $("#checkType").combobox('loadData', datas);
+                    $("#appealStatus").combobox('loadData', datas);
                 }
             });
 
@@ -75,11 +81,9 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
             $("#appealCheckList").datagrid({
                 columns: [[
                     {
-                        field: 'operate', title: '操作', width: '8%',
+                        field: 'operate', title: '操作', width: '5%',
                         formatter: function (value, row, index) {
-                            var detail = '<a href="javascript:void(0);" id = "appealRecord_' + row.appealId + '">详情</a>';
-                            var deal = '<a href="javascript:void(0);" id = "appealDeal_' + row.appealId + '">审批</a>';
-                            return detail + "&nbsp;&nbsp;" + deal;
+                            return '<a href="javascript:void(0);" id = "appealRecord_' + row.appealId + '">详情</a>';
                         }
                     },
                     {
@@ -105,7 +109,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                         }
                     },
                     {field: 'appealId', title: '申诉单号', width: '14%'},
-                    {field: 'appealStaffName', title: '申诉人', width: '14%'},
+                    {field: 'appealStaffName', title: '申诉人', width: '10%'},
                     {field: 'appealReason', title: '申诉原因', width: '14%'},
                     {
                         field: 'appealTime', title: '申诉时间', width: '14%',
@@ -115,7 +119,17 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                             }
                         }
                     },
-                    {field: 'currentNodeName', title: '当前节点', width: '14%'}
+                    {field: 'currentNodeName', title: '当前节点', width: '14%'},
+                    {
+                        field: 'appealStatus', title: '申诉状态', width: '10%',
+                        formatter: function (value, row, index) {
+                            for (var i = 0; i < appealStatusData.length; i++) {
+                                if (appealStatusData[i].paramsCode === value) {
+                                    return appealStatusData[i].paramsName;
+                                }
+                            }
+                        }
+                    }
                 ]],
                 fitColumns: true,
                 width: '100%',
@@ -149,20 +163,19 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                         appealTimeEnd = $("#appealEndTime").datetimebox("getValue"),
                         appealStaffId = $("#appealStaffId").val(),
                         appealId = $("#appealId").val(),
-                        checkType = $("#checkType").combobox("getValue");
-                    if (checkType === "-1") {
-                        checkType = "";
+                        appealStatus = $("#appealStatus").combobox("getValue");
+                    if (appealStatus === "-1") {
+                        appealStatus = "";
                     }
 
                     var reqParams = {
                         "staffId": Util.constants.STAFF_ID,
-                        "checkType": checkType,
                         "inspectionId": inspectionId,
                         "appealTimeBegin": appealTimeBegin,
                         "appealTimeEnd": appealTimeEnd,
                         "appealStaffId": appealStaffId,
                         "appealId": appealId,
-                        "appealStatus": "0"  //申诉中
+                        "appealStatus": appealStatus
                     };
                     var params = $.extend({
                         "start": start,
@@ -182,7 +195,17 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                                 showType: 'show'
                             });
                         }
-                        success(data);
+                        if (checkTypeData.length > 0) {
+                            success(data);
+                        } else {
+                            CommonAjax.getStaticParams("CHECK_TYPE", function (datas) {
+                                if (datas) {
+                                    checkTypeData = datas;
+                                    success(data);
+                                }
+                            });
+                        }
+
                     });
                 },
                 onLoadSuccess: function (data) {
@@ -190,12 +213,6 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                     $.each(data.rows, function (i, item) {
                         $("#appealRecord_" + item.appealId).on("click", function () {
                             showAppealRecordDialog(item);
-                        });
-                    });
-                    //申诉审批
-                    $.each(data.rows, function (i, item) {
-                        $("#appealDeal_" + item.appealId).on("click", function () {
-                            showAppealDealDialog(item);
                         });
                     });
                 }
@@ -243,113 +260,6 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                     showAppealDealProcess(record);
                 }
             });
-        }
-
-        //申诉审批弹框
-        function showAppealDealDialog(data) {
-            $("#appealDealConfig").form('clear');  //清空表单
-            var disableSubmit = false;  //禁用提交按钮标志
-            $("#appealDealDialog").show().window({
-                width: 600,
-                height: 350,
-                modal: true,
-                title: "审批"
-            });
-
-            //审批意见
-            $("#appealDealComment").textbox(
-                {
-                    multiline: true
-                }
-            );
-
-            //取消
-            var cancelBtn = $("#cancelBtn");
-            cancelBtn.unbind("click");
-            cancelBtn.on("click", function () {
-                $("#appealDealConfig").form('clear');  //清空表单
-                $("#appealDealDialog").window("close");
-            });
-            //提交
-            var submitBtn = $("#submitBtn");
-            submitBtn.unbind("click");
-            submitBtn.on("click", function () {
-                if (disableSubmit) {
-                    return false;
-                }
-                disableSubmit = true;   //防止多次提交
-                submitBtn.linkbutton({disabled: true});  //禁用提交按钮（样式）
-
-                var approveSuggestion = $("#appealDealComment").val(),
-                    approveStatus = $('input[name="appealResult"]:checked').val();
-
-                if (approveStatus === Util.constants.APPROVE_STATUS_DENY && approveSuggestion === "") {
-                    $.messager.alert("提示", "请填写审批意见!");
-                    disableSubmit = false;
-                    submitBtn.linkbutton({disabled: false});  //取消提交禁用
-                    return false;
-                }
-                var params = {
-                    "checkType": data.checkType,
-                    "touchId": data.touchId,
-                    "inspectionId": data.inspectionId,
-                    "appealId": data.appealId,
-                    "mainProcessId": data.mainProcessId,
-                    "currentProcessId": data.currentProcessId,
-                    "currentNodeId": data.currentNodeId,
-                    "currentNodeName": data.currentNodeName,
-                    "nextProcessId": data.nextProcessId,
-                    "nextNodeId": data.nextNodeId,
-                    "approveStatus": approveStatus,
-                    "approveSuggestion": approveSuggestion,
-                    "staffId": Util.constants.STAFF_ID,
-                    "staffName": Util.constants.STAFF_NAME
-                };
-                Util.loading.showLoading();
-                Util.ajax.postJson(Util.constants.CONTEXT.concat(Util.constants.APPEAL_DEAL_DNS).concat("/"), JSON.stringify(params), function (result) {
-                    Util.loading.destroyLoading();
-                    $.messager.show({
-                        msg: result.RSP.RSP_DESC,
-                        timeout: 1000,
-                        style: {right: '', bottom: ''},     //居中显示
-                        showType: 'show'
-                    });
-                    var rspCode = result.RSP.RSP_CODE;
-                    if (rspCode != null && rspCode === "1") {
-                        $("#appealDealDialog").window("close");  //关闭对话框
-                        $("#appealCheckList").datagrid("reload"); //刷新列表
-                    }
-                    disableSubmit = false;
-                    submitBtn.linkbutton({disabled: false});  //取消提交禁用
-                });
-            });
-        }
-
-        //拼接对象到url
-        function createURL(url, param) {
-            var urlLink = url;
-            if (param != null) {
-                $.each(param, function (item, value) {
-                    urlLink += '&' + item + "=" + encodeURI(value);
-                });
-                urlLink = url + "?" + urlLink.substr(1);
-            }
-            return urlLink.replace(' ', '');
-        }
-
-        //添加一个选项卡面板
-        function addTabs(title, url) {
-            var jq = top.jQuery;
-
-            if (!jq('#tabs').tabs('exists', title)) {
-                jq('#tabs').tabs('add', {
-                    title: title,
-                    content: '<iframe src="' + url + '" frameBorder="0" border="0" scrolling="auto"  style="width: 100%; height: 100%;"/>',
-                    closable: true
-                });
-            } else {
-                jq('#tabs').tabs('select', title);
-            }
         }
 
         //校验开始时间和终止时间
