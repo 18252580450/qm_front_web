@@ -170,8 +170,8 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                     planId = $("#qmPlanName").val(),
                     poolStatus = $("#poolStatus").combobox("getValue");
 
-                if (poolStatus === "-1") {
-                    poolStatus = "";
+                if (poolStatus === "") {
+                    poolStatus = "0";
                 }
                 var reqParams = {
                     "checkStaffId": Util.constants.STAFF_ID,

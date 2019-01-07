@@ -167,8 +167,8 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                     maxRecordTime = $("#maxRecordTime").val(),
                     poolStatus = $("#poolStatus").combobox("getValue");
 
-                if (poolStatus === "-1") {
-                    poolStatus = "";
+                if (poolStatus === "") {
+                    poolStatus = "0";
                 }
 
                 var reqParams = {
