@@ -85,7 +85,7 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui", "dateUt
             columns: [[
                 {field: 'ck', checkbox: true, align: 'center'},
                 {
-                    field: 'action', title: '操作', width: '10%',
+                    field: 'action', title: '操作', width: '5%',
                     formatter: function (value, row, index) {
                         var bean = {//根据参数进行定位修改
                             'commentName': row.commentName

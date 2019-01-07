@@ -113,6 +113,37 @@
                     <table id='queryInfo' class='easyui-datagrid' style=' width:100%;'>
                     </table>
                 </div>
+
+                <!-- 申诉弹窗，默认隐藏  -->
+                <div id='appealDialog' style='display:none;'>
+                    <div class='panel-search'>
+                        <form id='appealConfig' method='POST' class='form form-horizontal'>
+                            <div class='row cl' style="margin-top: 10px">
+                                <div class='formControls col-1'>
+                                </div>
+                                <label class='form-label col-2'>申诉原因：</label>
+                                <div class='formControls col-8'>
+                                    <input id='appealReason' type='text' class='easyui-textarea' data-options="multiline:true"
+                                           style='width:100%;height:120px'/>
+                                </div>
+                            </div>
+                        </form>
+
+                        <div class='mt-10 test-c' style="margin-top: 40px">
+                            <div class='formControls col-4'>
+                            </div>
+                            <div class='formControls col-2'>
+                                <a href='javascript:void(0)' class='btn btn-green radius mt-l-20'
+                                   id="submitBtn">保存</a>
+                            </div>
+                            <div class='formControls col-2'>
+                                <a href='javascript:void(0)' class='btn btn-secondary radius mt-l-20'
+                                   id="cancelBtn">取消</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
         <!-- 增加弹窗，默认隐藏  -->
