@@ -94,8 +94,8 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui","dateUti
 
                 $('#qry_window').show().window({
                     title: '查询考评计划',
-                    width: 1000,
-                    height: 550,
+                    width: 1150,
+                    height: 600,
                     cache: false,
                     content:queryQmPlan.$el,
                     modal: true
@@ -172,19 +172,17 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui","dateUti
 
         //时间控件初始化
         var planStartTime = $('#planStartTime');
-        var beginDate = (DateUtil.formatDateTime(new Date() - 24 * 60 * 60 * 1000)).substr(0, 11) + "00:00:00";
         planStartTime.datetimebox({
-            value: beginDate,
+            onShowPanel:function(){
+                $(this).datetimebox("spinner").timespinner("setValue","00:00:00");
+            },
             onChange: function () {
                 checkTime();
             }
         });
 
         var planEndTime = $('#planEndTime');
-        var endDate = (DateUtil.formatDateTime(new Date())).substr(0,11) + "23:59:59";
         planEndTime.datetimebox({
-            value:endDate,
-            required : false,
             onShowPanel:function(){
                 $(this).datetimebox("spinner").timespinner("setValue","23:59:59");
             },

@@ -1,4 +1,4 @@
-require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], function ($, Util, Transfer, CommonAjax) {
+require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], function (QueryQmPlan,$, Util, Transfer, CommonAjax) {
 
     var orderCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/execution/orderCheckDetail.html",
         poolStatusData = [];  //质检状态下拉框静态数据（待质检、待复检）
@@ -12,6 +12,22 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
 
     //页面信息初始化
     function initPageInfo() {
+
+        $('#planName').searchbox({//输入框点击查询事件
+            searcher: function(value){
+                var queryQmPlan = new QueryQmPlan();
+
+                $('#qry_window').show().window({
+                    title: '查询考评计划',
+                    width: 1150,
+                    height: 600,
+                    cache: false,
+                    content:queryQmPlan.$el,
+                    modal: true
+                });
+            }
+        });
+
         //分配开始时间选择框
         // var beginDate = (DateUtil.formatDateTime(new Date() - 24 * 60 * 60 * 1000)).substr(0, 11) + "00:00:00";
         var beginDate = "2018-10-10 00:00:00";
@@ -167,7 +183,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                     distStartTime = $("#assignBeginTime").datetimebox("getValue"),
                     distEndTime = $("#assignEndTime").datetimebox("getValue"),
                     checkLink = $("#checkLink").val(),
-                    planId = $("#qmPlanName").val(),
+                    planId = $("#planId").val(),
                     poolStatus = $("#poolStatus").combobox("getValue");
 
                 if (poolStatus === "") {

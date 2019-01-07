@@ -46,10 +46,10 @@
                     </form>
                     <form class='form form-horizontal'>
                         <div class='row cl'>
-                            <label class='form-label col-1'>计划名称</label>
+                            <label class='form-label col-1'>考评计划</label>
                             <div class='formControls col-2'>
-                                <input id="qmPlanName" type='text' class='easyui-searchbox'
-                                       style='width:100%;height:30px'>
+                                <input id="planId" hidden="hidden" >
+                                <input id="planName" type='text' class="easyui-searchbox easyui-validatebox" data-options="required:true" style='width:100%;height:30px' >
                             </div>
                             <label class='form-label col-1'>质检状态</label>
                             <div class='formControls col-2'>
@@ -74,6 +74,12 @@
                     </table>
                 </div>
 
+            </div>
+        </div>
+
+        <!--查询弹窗，默认隐藏-->
+        <div  id='qry_window' style='display:none;'>
+            <div id='qry_content' style='overflow:auto'>
             </div>
         </div>
 

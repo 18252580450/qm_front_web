@@ -1,4 +1,4 @@
-require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], function ($, Util, Transfer, CommonAjax) {
+require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], function (QueryQmPlan,$, Util, Transfer, CommonAjax) {
 
     var voiceCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/execution/voiceCheckDetail.html";
 
@@ -11,6 +11,22 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
 
     //页面信息初始化
     function initPageInfo() {
+
+        $('#planName').searchbox({//输入框点击查询事件
+            searcher: function(value){
+                var queryQmPlan = new QueryQmPlan();
+
+                $('#qry_window').show().window({
+                    title: '查询考评计划',
+                    width: 1150,
+                    height: 600,
+                    cache: false,
+                    content:queryQmPlan.$el,
+                    modal: true
+                });
+            }
+        });
+
         //计划名称搜索框
         $("#qmPlanName").searchbox({
                 searcher: function () {
@@ -156,7 +172,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                 var pageNum = param.rows;
 
                 var touchId = $("#touchId").val(),
-                    planId = $("#qmPlanName").val(),
+                    planId = $("#planId").val(),
                     callingNumber = $("#callingNumber").val(),
                     calledNumber = $("#calledNumber").val(),
                     extractBeginTime = $("#extractBeginTime").datetimebox("getValue"),
