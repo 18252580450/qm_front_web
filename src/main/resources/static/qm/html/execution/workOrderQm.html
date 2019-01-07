@@ -33,8 +33,8 @@
                             </div>
                             <label class='form-label col-1'>服务请求类型</label>
                             <div class='formControls col-2'>
-                                <input id="serviceType" type='text' class='easyui-textbox'
-                                       style='width:100%;height:30px'>
+                                <input id="serviceTypeId" hidden="hidden" >
+                                <input id="serviceTypeName" type='text' class="easyui-searchbox easyui-validatebox" data-options="required:true" style='width:100%;height:30px' >
                             </div>
                             <label class='form-label col-1'>开始时间</label>
                             <div class='formControls col-2'>
@@ -145,6 +145,17 @@
         <!--查询弹窗，默认隐藏-->
         <div  id='qry_window' style='display:none;'>
             <div id='qry_content' style='overflow:auto'>
+            </div>
+        </div>
+
+        <!--查询服务请求弹窗，默认隐藏-->
+        <div id='qry_service_window' style='display:none;'>
+            <div class='panel-tool-box cl' >
+                <div class='fl text-bold'>服务请求类型</div>
+            </div>
+            <div id="treeDiv" class="index-west">
+                <ul id="tree" class="ztree" style="border:#fff solid 0px;">
+                </ul>
             </div>
         </div>
     </div>

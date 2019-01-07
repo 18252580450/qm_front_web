@@ -1,35 +1,91 @@
-require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPlan"], function ($, Util, Transfer,easyui,dateUtil,QueryQmPlan) {
+require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui","dateUtil","ztree-exedit"], function (QueryQmPlan,$, Util, Transfer,easyui,dateUtil) {
     //初始化方法
     initialize();
     var reqParams=null;
+    var isCheckParent=false;//设置父节点是否可被选 true 可选 false不可选 默认可选
+    var isChoice=false; //节点是否区分可选标志 true区分 false不区分 默认不区分(节点是否可被选)
+    var isVisual=true; // 节点是否区分可见性标志 true区分 false不区分 默认不区分
     function initialize() {
         initPageInfo();
         initEvent();
-
-        var param = {
-            provCode :'00030000',
-            wrkfmId:'1812041617580000045'
-        }
-
-        $.ajax({
-            url: "http://203.57.227.53:8082/tcwf/detail/getDetailMess",
-            dataType: 'json',
-            type: "POST",
-            data: param,
-            success: function (data) {
-
-            var items = $.map(data.rsp.data, function (item, index) {
-                return {
-                    codeValue: item["bizCode"],
-                    codeName: item["codeNm"]
-                };
-            });
-            success(items);
-        }
-    });
     }
 
-    //页面信息初始化
+    /**
+     * 过滤数据
+     */
+    function filterData(datas) {
+        if (isEmpty(datas)) {
+            return;
+        }
+        for (var index in datas) {
+            datas[index].isParent = datas[index].parent;
+            datas[index].children = [];
+            if (!isCheckParent && datas[index].isParent) {
+                //父节点不可选
+                datas[index].chkDisabled = true;
+            }
+            if (isChoice && datas[index].optnlFlag == "0") {
+                //表示节点不可选
+                datas[index].chkDisabled = true;
+            }
+            if (isVisual && datas[index].vsblFlag == "0") {
+                //隐藏节点
+                datas[index].isHidden = true;
+            }
+        }
+    }
+
+    function initTree(data) {
+        var url = "http://203.57.227.53:8082/tcwf/servReqTypeManage/srvReqTypeRedisTree";
+        var setting = {
+            async: {
+                dataType: "json",
+                type: "POST",
+                enable: true,
+                url: url,
+                autoParam: ["srvReqstTypeId=suprSrvReqstTypeId"],
+                otherParam: {
+                    "provCode": Util.constants.PROVCODE
+                },
+                dataFilter : filter
+            },
+            data: {
+                key: {
+                    name: "srvReqstTypeNm"
+                },
+                simpleData: {
+                    enable: true,
+                    idKey: "srvReqstTypeId",
+                    pIdKey: "suprSrvReqstTypeId",
+                    rootPId: 1
+                }
+            },
+            callback : {
+                onClick: function (e, id, node) {//点击事件
+                    $('#serviceTypeName').searchbox("setValue",node.srvReqstTypeNm);
+                    $('#serviceTypeId').val(node.srvReqstTypeId);
+                    $("#qry_service_window").window('close'); // 关闭窗口
+                }
+            }
+        };
+            function filter(treeId, parentNode, json) {
+                var childNodes = json.rsp.datas;
+                if (!childNodes) {
+                    return;
+                }
+                filterData(childNodes);
+                return childNodes;
+            }
+
+            var newNode = data.rsp.datas;
+            filterData(newNode);
+            $(document).ready(function () {
+                zTreeObj = $.fn.zTree.init($("#tree"), setting, newNode);
+            });
+        }
+
+
+        //页面信息初始化
     function initPageInfo() {
 
         $('#planName').searchbox({//输入框点击查询事件
@@ -43,6 +99,39 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
                     cache: false,
                     content:queryQmPlan.$el,
                     modal: true
+                });
+            }
+        });
+
+        $('#serviceTypeName').searchbox({//服务请求类型输入框点击查询事件
+            searcher: function(value){
+                $('#qry_service_window').show().window({
+                    title: '查询服务请求类型',
+                    width: 300,
+                    height: 500,
+                    cache: false,
+                    modal: true
+                });
+                var zNodes = [];
+                $.ajax({
+                    url:"http://203.57.227.53:8082/tcwf/servReqTypeManage/srvReqTypeRedisTree",
+                    dataType:'json',
+                    type:"POST",
+                    data:{
+                        suprSrvReqstTypeId:0,
+                        provCode: Util.constants.PROVCODE
+                    },
+                    success:function(data){
+                        initTree(data);
+                    },
+                    error:function(){
+                        $.messager.show({
+                            title: "Error",
+                            msg: "获取服务请求树失败!",
+                            timeout: 2000,
+                            style: {}
+                        });
+                    }
                 });
             }
         });
@@ -94,7 +183,11 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
         var planEndTime = $('#planEndTime');
         var endDate = (DateUtil.formatDateTime(new Date())).substr(0,11) + "23:59:59";
         planEndTime.datetimebox({
-            value: endDate,
+            value:endDate,
+            required : false,
+            onShowPanel:function(){
+                $(this).datetimebox("spinner").timespinner("setValue","23:59:59");
+            },
             onChange: function () {
                 checkTime();
             }
@@ -165,7 +258,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
                 var pageNum = param.rows;
                 var wrkfmShowSwftno = $("#workOrderId").val();
                 var planId = $("#planId").val();
-                var serviceType = $("#serviceType").val();
+                var serviceTypeId = $("#serviceTypeId").val();
                 var isOperate = $("#isDis").combobox("getValue");
                 var poolStatus = $("#poolStatus").combobox("getValue");
                 var planStartTime = $("#planStartTime").datetimebox("getValue");
@@ -176,7 +269,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
                 reqParams = {
                     "wrkfmShowSwftno": wrkfmShowSwftno,
                     "planId": planId,
-                    "srvReqstTypeId": serviceType,
+                    "srvReqstTypeId": serviceTypeId,
                     "poolStatus": poolStatus,
                     "isOperate":isOperate,
                     "planStartTime": planStartTime,
@@ -577,6 +670,15 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
                     bottom: ''
                 }
             });
+        }
+    }
+
+    //判断字符是否为空的方法
+    function isEmpty(obj){
+        if(typeof obj == "undefined" || obj == null || obj == ""){
+            return true;
+        }else{
+            return false;
         }
     }
 

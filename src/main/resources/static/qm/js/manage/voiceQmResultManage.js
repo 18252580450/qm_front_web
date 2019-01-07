@@ -1,4 +1,4 @@
-require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, Transfer,easyui,dateUtil) {
+require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui","dateUtil"], function (QueryQmPlan,$, Util, Transfer,easyui,dateUtil) {
     //初始化方法
     initialize();
     var reqParams=null;
@@ -9,6 +9,22 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
 
     //页面信息初始化
     function initPageInfo() {
+
+        $('#planName').searchbox({//输入框点击查询事件
+            searcher: function(value){
+                var queryQmPlan = new QueryQmPlan();
+
+                $('#qry_window').show().window({
+                    title: '查询考评计划',
+                    width: 1000,
+                    height: 550,
+                    cache: false,
+                    content:queryQmPlan.$el,
+                    modal: true
+                });
+            }
+        });
+
         //差错类型
         $("#errorType").combobox({
             url: '../../data/errorType.json',
@@ -67,6 +83,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
                 {field: 'ck', checkbox: true, align: 'center'},
                 {field: 'touchId', title: '语音质检流水', align: 'center', width: '15%'},
                 {field: 'callingNumber', title: '主叫号码', align: 'center', width: '10%'},
+                {field: 'planName', title: '计划名称', align: 'center', width: '10%'},
                 {field: 'acceptNumber', title: '服务号码', align: 'center', width: '10%',hidden: true},
                 {field: 'checkStaffName', title: '质检人', align: 'center', width: '10%'},
                 {field: 'checkedStaffName', title: '被质检人', align: 'center', width: '10%'},
@@ -104,6 +121,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
                 var checkedStaffId = $("#checkedStaffId").val();
                 var inspectionId = $("#inspectionId").val();
                 var resultStatus = $("#resultStatus").val();
+                var planId = $("#planId").val();
 
                 reqParams = {
                     "touchId": touchId,
@@ -113,6 +131,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
                     "endTime": endTime,
                     "inspectionId": inspectionId,
                     "resultStatus": resultStatus,
+                    "planId":planId
                 };
                 var params = $.extend({
                     "start": start,
@@ -122,14 +141,14 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
 
                 Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.VOICE_QM_RESULT+ "/selectByParams", params, function (result) {
                     var data = Transfer.DataGrid.transfer(result);
-                    // var dataNew=[];
-                    // for(var i=0;i<data.rows.length;i++){
-                    //     var map=data.rows[i];
-                    //     if(map.qmPlan!=null){
-                    //         map["planName"]=map.qmPlan.planName;
-                    //         dataNew.push(map);
-                    //     }
-                    // }
+                    var dataNew=[];
+                    for(var i=0;i<data.rows.length;i++){
+                        var map=data.rows[i];
+                        if(map.qmPlan!=null){
+                            map["planName"]=map.qmPlan.planName;
+                            dataNew.push(map);
+                        }
+                    }
                     var rspCode = result.RSP.RSP_CODE;
                     if (rspCode != null && rspCode !== "1") {
                         $.messager.show({
@@ -139,7 +158,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
                             showType: 'show'
                         });
                     }
-                    success(data);
+                    success(dataNew);
                 });
             }
         });

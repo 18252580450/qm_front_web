@@ -11,6 +11,7 @@ define(function () {
         STAFF_NAME: "石莹",    //模拟员工姓名
         PROCESS_STATUS_START: "1", //申诉主流程启动状态
         PROCESS_STATUS_STOP: "2",
+        PROVCODE: "00030000",//省份编码
 
         //URI
         STATIC_PARAMS_DNS: "/qm/configservice/staticParams",//静态数据配置

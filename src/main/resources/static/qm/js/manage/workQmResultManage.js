@@ -1,4 +1,4 @@
-require(["jquery", 'util', "transfer", "easyui", "dateUtil"], function ($, Util, Transfer, easyui, dateUtil) {
+require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui", "dateUtil"], function (QueryQmPlan,$, Util, Transfer, easyui, dateUtil) {
     //初始化方法
     initialize();
     var reqParams=null;
@@ -9,6 +9,22 @@ require(["jquery", 'util', "transfer", "easyui", "dateUtil"], function ($, Util,
 
     //页面信息初始化
     function initPageInfo() {
+
+        $('#planName').searchbox({//输入框点击查询事件
+            searcher: function(value){
+                var queryQmPlan = new QueryQmPlan();
+
+                $('#qry_window').show().window({
+                    title: '查询考评计划',
+                    width: 1000,
+                    height: 550,
+                    cache: false,
+                    content:queryQmPlan.$el,
+                    modal: true
+                });
+            }
+        });
+
         //差错类型
         $("#errorType").combobox({
             url: '../../data/errorType.json',
@@ -82,7 +98,7 @@ require(["jquery", 'util', "transfer", "easyui", "dateUtil"], function ($, Util,
                 {field: 'inspectionId', title: '质检流水号', align: 'center', width: '15%'},
                 {field: 'acceptNumber', title: '客户号码', align: 'center', width: '10%', hidden: true},
                 {field: 'checkLink', title: '考评环节', align: 'center', width: '10%'},
-                {field: 'planName', title: '质检计划名称', align: 'center', width: '10%'},
+                {field: 'planName', title: '计划名称', align: 'center', width: '10%'},
                 {field: 'checkedStaffId', title: '被质检人工号', align: 'center', width: '10%'},
                 {field: 'checkedDepartId', title: '被质检人班组', align: 'center', width: '10%'},
                 {field: 'errorRank', title: '差错类型', align: 'center', width: '10%',
@@ -147,7 +163,7 @@ require(["jquery", 'util', "transfer", "easyui", "dateUtil"], function ($, Util,
                 }
                 var qmResult = $("#qmResult").combobox("getValue");
                 var errorType = $("#errorType").combobox("getValue");
-                var qmPlanId = $("#qmPlanName").val();
+                var planId = $("#planId").val();
 
                 reqParams = {
                     "touchId": workOrderId,
@@ -163,7 +179,7 @@ require(["jquery", 'util', "transfer", "easyui", "dateUtil"], function ($, Util,
                     "maxScore":maxScore,
                     "resultStatus":qmResult,
                     "errorRank":errorType,
-                    "planId":qmPlanId,
+                    "planId":planId,
                     "reqTypeEndNode":reqTypeEndNode
                 };
                 var params = $.extend({
