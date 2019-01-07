@@ -1,4 +1,4 @@
-require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPlan"], function ($, Util, Transfer,easyui,dateUtil,QueryQmPlan) {
+require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPlan","js/execution/queryQmPeople"], function ($, Util, Transfer,easyui,dateUtil,QueryQmPlan,QueryQmPeople) {
     //初始化方法
     initialize();
     var reqParams=null;
@@ -93,7 +93,11 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
                 {
                     field: 'checkedTime', title: '抽取时间', align: 'center', width: '15%',
                     formatter: function (value, row, index) { //格式化时间格式
-                        return DateUtil.formatDateTime(value);
+                        if(value!=null){
+                            return DateUtil.formatDateTime(value);
+                        }else{
+                            return null;
+                        }
                     }
                 },
                 {field: 'checkStaffName', title: '质检人员', align: 'center', width: '10%'},
@@ -104,7 +108,8 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
                     }else{
                         return null;
                     }
-                    }},
+                  }
+                },
                 {field: 'checkedStaffName', title: '被检人员', align: 'center', width: '10%'},
                 {field: 'poolStatus', title: '是否质检', align: 'center', width: '10%',
                     formatter:function(value, row, index){
@@ -241,7 +246,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
             release();
         });
 
-        //明细分配
+        //分配
         $("#detailBut").on("click", function () {
             var selRows = $("#queryInfo").datagrid("getSelections");
             if (selRows.length == 0) {
@@ -259,7 +264,16 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
                 var id = selRows[i].touchId;
                 ids.push(id);
             }
-            detail(ids);
+            var queryQmPeople = new QueryQmPeople(ids);
+
+            $('#qry_people_window').show().window({
+                title: '查询质检人员信息',
+                width: 1150,
+                height: 600,
+                cache: false,
+                content:queryQmPeople.$el,
+                modal: true
+            });
         });
     }
 
@@ -303,31 +317,6 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
                 });
 
             }
-        });
-    }
-
-    //明细分配
-    function detail(data){
-        var dataNew = data;
-        $('#add_window').show().window({
-            title: '质检人员信息',
-            width: 1000,
-            height: 650,
-            cache: false,
-            modal: true
-        });
-        addPageEvent();
-        //确定
-        $("#confirm").on("click", function () {
-            updateCheck(dataNew);
-        });
-        //关闭
-        $("#cancel").on("click", function () {
-            $("#add_window").window('close'); // 关闭窗口
-        });
-        //查询
-        $("#searchBtn").on("click", function () {
-
         });
     }
 
