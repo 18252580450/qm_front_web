@@ -413,6 +413,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
                 var rspCode = result.RSP.RSP_CODE;
                 if (rspCode != null && rspCode === "1") {
                     $("#checkItemDialog").window("close");  //关闭对话框
+                    checkNode.id = "";  //展示所有考评项
                     $("#checkItemList").datagrid('reload'); //插入成功后，刷新页面
                     refreshTree(); //刷新考评树
                 }
@@ -533,7 +534,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
                 submitBtn.linkbutton({disabled: false});  //取消提交禁用
                 return;
             }
-            if (nodeTypeCode == null || nodeTypeCode === "") {
+            if (checkItemType === Util.constants.CHECK_TYPE_ORDER && nodeTypeCode === "") {
                 $.messager.alert("提示", "请选择考评环节!");
                 disableSubmit = false;
                 submitBtn.linkbutton({disabled: false});  //取消提交禁用
@@ -570,6 +571,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
                 });
                 var rspCode = result.RSP.RSP_CODE;
                 if (rspCode != null && rspCode === "1") {
+                    checkNode.id = "";  //展示所有考评项
                     $("#checkItemDialog").window("close");  //关闭对话框
                     $("#checkItemList").datagrid('reload'); //插入成功后，刷新页面
                     refreshTree(); //刷新考评树
@@ -605,6 +607,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
                     });
                     var rspCode = result.RSP.RSP_CODE;
                     if (rspCode != null && rspCode === "1") {
+                        checkNode.id = "";  //展示所有考评项
                         $("#checkItemList").datagrid('reload'); //删除成功后，刷新页面
                         refreshTree(); //刷新考评树
                     }
