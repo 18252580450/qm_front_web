@@ -371,7 +371,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
         }
         var data = {
             "processName": processName,
-            "tenantId": tenantId,
+            "tenantId": Util.constants.TENANT_ID,
             "tenantName": tenantName,
             "departmentId": departmentId,
             "departmentName": departmentName,
@@ -451,7 +451,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
             var subNodeList = subProcessObj.subNodeList;
             for (var i = 0; i < userIdArr.length; i++) {
                 var data = {
-                    "tenantId": tenantId,
+                    "tenantId": Util.constants.TENANT_ID,
                     "processId": processOrder,
                     "processName": processOrderName,
                     "nodeId": subNodeNum + 1,

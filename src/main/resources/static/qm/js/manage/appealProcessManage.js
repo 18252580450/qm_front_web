@@ -226,7 +226,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                     "processId": processId,
                     "processName": processName,
                     "createStaffId": createStaffId,
-                    "tenantId": tenantId,
+                    "tenantId": Util.constants.TENANT_ID,
                     "checkType": checkType,
                     "processStatus": processStatus,
                     "createTimeBegin": createTimeBegin,

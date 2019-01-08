@@ -204,7 +204,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
                 var reqParams = {
                     "parentCheckItemId": parentCheckItemId,
                     "checkItemName": checkItemName,
-                    "tenantId": tenantId,
+                    "tenantId": Util.constants.TENANT_ID,
                     "checkItemType": checkItemType
                 };
                 var params = $.extend({
@@ -393,7 +393,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
                 return;
             }
             var params = {
-                "tenantId": tenantId,
+                "tenantId": Util.constants.TENANT_ID,
                 "parentCheckItemId": parentCheckItemId,
                 "checkItemName": checkItemName,
                 "checkItemType": checkItemType,
@@ -624,7 +624,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
             tenantId = Util.constants.TENANT_ID;
         }
         var reqParams = {
-            "tenantId": tenantId
+            "tenantId": Util.constants.TENANT_ID
         };
         var params = $.extend({
             "start": 0,
