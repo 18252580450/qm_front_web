@@ -1,4 +1,4 @@
-require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui","dateUtil","ztree-exedit"], function (QueryQmPlan,$, Util, Transfer,easyui,dateUtil) {
+require(["js/execution/queryQmPeople","js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui","dateUtil","ztree-exedit"], function (QueryQmPeople,QueryQmPlan,$, Util, Transfer,easyui,dateUtil) {
     //初始化方法
     initialize();
     var reqParams=null;
@@ -415,7 +415,7 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui","dateUti
                 if (confirm) {
                     var ids = [];
                     for (var i = 0; i < selRows.length; i++) {
-                        var id = selRows[i].touchId;
+                        var id = selRows[i].wrkfmShowSwftno;
                         ids.push(id);
                     }
                     claim(ids);
@@ -424,6 +424,7 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui","dateUti
 
         //分配(管理员分配质检员)
         $("#disBut").on("click", function () {
+            var flag = true;//工单分配标志
             var selRows = $("#queryInfo").datagrid("getSelections");
             if (selRows.length == 0) {
                 $.messager.alert("提示", "请至少选择一行数据!");
@@ -440,14 +441,15 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui","dateUti
                 var id = selRows[i].wrkfmShowSwftno;
                 ids.push(id);
             }
-            distribute(ids);//分配操作
-            //关闭
-            $("#cancel").on("click", function () {
-                $("#add_window").window('close'); // 关闭窗口
-            });
-            //查询
-            $("#searchBtn").on("click", function () {
+            var queryQmPeople = new QueryQmPeople(ids,flag);
 
+            $('#qry_people_window').show().window({
+                title: '查询质检人员信息',
+                width: 1150,
+                height: 600,
+                cache: false,
+                content:queryQmPeople.$el,
+                modal: true
             });
         });
 
@@ -481,51 +483,6 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui","dateUti
             if (rspCode == "1") {
                 $("#queryInfo").datagrid('reload'); //成功后，刷新页面
             }
-        });
-    }
-
-    /**
-     * 分配
-     */
-    function distribute(ids){
-        $('#add_window').show().window({
-            title: '质检人员信息',
-            width: 1000,
-            height: 650,
-            cache: false,
-            modal: true
-        });
-        addPageEvent();
-        //确定
-        $("#confirm").on("click", function () {
-            var selRows = $("#checkStaffInfo").datagrid("getSelections");//选中多行
-            if (selRows.length == 0||selRows.length>1) {
-                $.messager.alert("提示", "请只选择一行数据!");
-                return false;
-            }
-            var params=[];
-            for(var i=0;i<ids.length;i++){
-                var map = {};
-                var checkStaffId = selRows[0].checkStaffId;
-                var checkStaffCode = selRows[0].checkStaffCode;
-                map["checkStaffName"]=checkStaffCode;
-                map["checkStaffId"]=checkStaffId;
-                map["wrkfmShowSwftno"]=ids[i];
-                params.push(map);
-            }
-            Util.ajax.putJson(Util.constants.CONTEXT.concat(Util.constants.ORDER_POOL_DNS).concat("/updateCheck"), JSON.stringify(params), function (result) {
-                $.messager.show({
-                    msg: result.RSP.RSP_DESC,
-                    timeout: 1000,
-                    style: {right: '', bottom: ''},     //居中显示
-                    showType: 'slide'
-                });
-                var rspCode = result.RSP.RSP_CODE;
-                if (rspCode == "1") {
-                    $('#add_window').window('close'); // 成功后，关闭窗口
-                    $("#queryInfo").datagrid('reload'); //成功后，刷新页面
-                }
-            });
         });
     }
 
@@ -590,60 +547,6 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui","dateUti
         };
         // 采用encodeURI两次编码,防止乱码
         window.location.href = Util.constants.CONTEXT + Util.constants.ORDER_POOL_DNS+"/export?params="+encodeURI(encodeURI(JSON.stringify(params)));
-    }
-
-    //新增页面
-    function addPageEvent(){
-        //质检人员信息
-        $("#checkStaffInfo").datagrid({
-            columns: [[
-                {field: 'ck', checkbox: true, align: 'center'},
-                {field: 'checkStaffId', title: '员工编码信息', align: 'center', width: '15%'},
-                {field: 'checkStaffCode', title: '员工CODE', align: 'center', width: '10%'},
-                {field: 'checkStaffId', title: '组织编码', align: 'center', width: '10%'},
-                {field: 'orgs', title: '员工组', align: 'center', width: '10%'}
-            ]],
-            fitColumns: true,
-            height: 420,
-            pagination: true,
-            pageSize: 10,
-            pageList: [5, 10, 20, 50],
-            rownumbers: false,
-            loader: function (param, success) {
-                // var start = (param.page - 1) * param.rows;
-                // var pageNum = param.rows;
-                // var checkStaffId = $("#checkStaffId").val();
-                //
-                // var reqParams = {
-                //     "checkStaffId": checkStaffId
-                // };
-                // var params = $.extend({
-                //     "start": start,
-                //     "pageNum": pageNum,
-                //     "params": JSON.stringify(reqParams)
-                // }, Util.PageUtil.getParams($("#queryInfo")));
-                //
-                // Util.ajax.getJson(Util.constants.CONTEXT + qmURI+ "/selectByParams", params, function (result) {
-                //     var data = Transfer.DataGrid.transfer(result);
-                //     var rspCode = result.RSP.RSP_CODE;
-                //     if (rspCode != null && rspCode !== "1") {
-                //         $.messager.show({
-                //             msg: result.RSP.RSP_DESC,
-                //             timeout: 1000,
-                //             style: {right: '', bottom: ''},     //居中显示
-                //             showType: 'show'
-                //         });
-                //     }
-                //     success(data);
-                // });
-                var data=[{'checkStaffId':'10001','checkStaffCode':'测试工号22','checkStaffId':'10000','orgs':'投诉专席工单处理1班'},
-                    {'checkStaffId':'10002','checkStaffCode':'测试工号23','checkStaffId':'10000','orgs':'投诉专席工单处理1班'},
-                    {'checkStaffId':'10003','checkStaffCode':'测试工号24','checkStaffId':'10000','orgs':'投诉专席工单处理1班'},
-                    {'checkStaffId':'10004','checkStaffCode':'测试工号25','checkStaffId':'10000','orgs':'投诉专席工单处理1班'},
-                    {'checkStaffId':'10005','checkStaffCode':'测试工号26','checkStaffId':'10000','orgs':'投诉专席工单处理1班'}];
-                success(data);
-            }
-        });
     }
 
     //校验开始时间和终止时间

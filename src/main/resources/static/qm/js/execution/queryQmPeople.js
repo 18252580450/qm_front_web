@@ -5,9 +5,11 @@ define([
     var planTypes = [];
     var $el;
     var dataNew;
-    function initialize(ids) {
+    var flagNew;
+    function initialize(ids,flag) {
         $el = $(qryQmPeopleTpl);
         dataNew = ids;
+        flagNew = flag;
         initGrid();//初始化列表
         initGlobalEvent();
         showTree();
@@ -146,22 +148,42 @@ define([
             var checkStaffCode = selRows[0].checkStaffCode;
             map["checkStaffName"]=checkStaffCode;
             map["checkStaffId"]=checkStaffId;
-            map["touchId"]=dataNew[i];
+            if(flagNew){
+                map["wrkfmShowSwftno"]=dataNew[i];
+            }else{
+                map["touchId"]=dataNew[i];
+            }
             params.push(map);
         }
-        Util.ajax.putJson(Util.constants.CONTEXT.concat(Util.constants.VOICE_POOL_DNS).concat("/updateCheck"), JSON.stringify(params), function (result) {
-            $.messager.show({
-                msg: result.RSP.RSP_DESC,
-                timeout: 1000,
-                style: {right: '', bottom: ''},     //居中显示
-                showType: 'slide'
+        if(flagNew){
+            Util.ajax.putJson(Util.constants.CONTEXT.concat(Util.constants.ORDER_POOL_DNS).concat("/updateCheck"), JSON.stringify(params), function (result) {
+                $.messager.show({
+                    msg: result.RSP.RSP_DESC,
+                    timeout: 1000,
+                    style: {right: '', bottom: ''},     //居中显示
+                    showType: 'slide'
+                });
+                var rspCode = result.RSP.RSP_CODE;
+                if (rspCode == "1") {
+                    $("#queryInfo").datagrid('reload'); //成功后，刷新页面
+                    $('#qry_people_window').window('close'); // 成功后，关闭窗口
+                }
             });
-            var rspCode = result.RSP.RSP_CODE;
-            if (rspCode == "1") {
-                $("#checkStaffInfo",$el).datagrid('reload'); //成功后，刷新页面
-                $("#qry_people_window").window("close"); // 成功后，关闭窗口
-            }
-        });
+        }else{
+            Util.ajax.putJson(Util.constants.CONTEXT.concat(Util.constants.VOICE_POOL_DNS).concat("/updateCheck"), JSON.stringify(params), function (result) {
+                $.messager.show({
+                    msg: result.RSP.RSP_DESC,
+                    timeout: 1000,
+                    style: {right: '', bottom: ''},     //居中显示
+                    showType: 'slide'
+                });
+                var rspCode = result.RSP.RSP_CODE;
+                if (rspCode == "1") {
+                    $("#queryInfo").datagrid('reload'); //成功后，刷新页面
+                    $("#qry_people_window").window("close"); // 成功后，关闭窗口
+                }
+            });
+        }
     }
 
     return initialize;

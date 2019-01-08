@@ -41,7 +41,7 @@
                             <label class='form-label col-2'>考评计划</label>
                             <div class='formControls col-2'>
                                 <input id="planId" hidden="hidden" >
-                                <input id="planName" type='text' class="easyui-searchbox easyui-validatebox" data-options="required:true" style='width:100%;height:30px' >
+                                <input id="planName" type='text' class="easyui-searchbox" style='width:100%;height:30px' >
                             </div>
                             <label class='form-label col-2'>质检人员</label>
                             <div class='formControls col-2'>
@@ -116,8 +116,8 @@
                         <div class='row cl'>
                             <label class='form-label col-2'>服务请求类型</label>
                             <div class='formControls col-2'>
-                                <input id="srvReqstTypeId" type='text' class='easyui-textbox'
-                                       style='width:100%;height:30px'>
+                                <input id="serviceTypeId" hidden="hidden" >
+                                <input id="serviceTypeName" type='text' class="easyui-searchbox" style='width:100%;height:30px' >
                             </div>
                             <label class='form-label col-2'>是否质检</label>
                             <div class='formControls col-2'>
@@ -142,7 +142,8 @@
                             <a href='javascript:void(0)' class='btn btn-secondary radius  mt-l-20' id="delBut"><i class='iconfont iconfont-del2'></i>删除</a>
                             <a href='javascript:void(0)' class='btn btn-secondary radius  mt-l-20' id="daoBut">导出</a>
                             <a href='javascript:void(0)' class='btn btn-secondary radius  mt-l-20' style="width:100px" id="playBut">语音播放</a>
-                            <a href='javascript:void(0)' class='btn btn-secondary radius  mt-l-20' style="width:100px" id="detailBut">分配</a>
+                            <a href='javascript:void(0)' class='btn btn-secondary radius  mt-l-20' id="claimBut">认领</a>
+                            <a href='javascript:void(0)' class='btn btn-secondary radius  mt-l-20' id="detailBut">分配</a>
                             <a href='javascript:void(0)' class='btn btn-secondary radius  mt-l-20' style="width:100px" id="releaseBut">强制释放</a>
                         </div>
                     </div>
@@ -161,6 +162,17 @@
         <!--查询员工组弹窗，默认隐藏-->
         <div  id='qry_people_window' style='display:none;'>
             <div id='qry_people_content' style='overflow:auto'>
+            </div>
+        </div>
+
+        <!--查询服务请求弹窗，默认隐藏-->
+        <div id='qry_service_window' style='display:none;'>
+            <div class='panel-tool-box cl' >
+                <div class='fl text-bold'>服务请求类型</div>
+            </div>
+            <div id="treeDiv" class="index-west">
+                <ul id="tree" class="ztree" style="border:#fff solid 0px;">
+                </ul>
             </div>
         </div>
     </div>

@@ -2,10 +2,87 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
     //初始化方法
     initialize();
     var reqParams=null;
+    var isCheckParent=false;//设置父节点是否可被选 true 可选 false不可选 默认可选
+    var isChoice=false; //节点是否区分可选标志 true区分 false不区分 默认不区分(节点是否可被选)
+    var isVisual=true; // 节点是否区分可见性标志 true区分 false不区分 默认不区分
     var i = 0;//播放按钮点击次数
     function initialize() {
         initPageInfo();
         initEvent();
+    }
+
+    /**
+     * 过滤数据
+     */
+    function filterData(datas) {
+        if (isEmpty(datas)) {
+            return;
+        }
+        for (var index in datas) {
+            datas[index].isParent = datas[index].parent;
+            datas[index].children = [];
+            if (!isCheckParent && datas[index].isParent) {
+                //父节点不可选
+                datas[index].chkDisabled = true;
+            }
+            if (isChoice && datas[index].optnlFlag == "0") {
+                //表示节点不可选
+                datas[index].chkDisabled = true;
+            }
+            if (isVisual && datas[index].vsblFlag == "0") {
+                //隐藏节点
+                datas[index].isHidden = true;
+            }
+        }
+    }
+
+    function initTree(data) {
+        var url = "http://203.57.227.53:8082/tcwf/servReqTypeManage/srvReqTypeRedisTree";
+        var setting = {
+            async: {
+                dataType: "json",
+                type: "POST",
+                enable: true,
+                url: url,
+                autoParam: ["srvReqstTypeId=suprSrvReqstTypeId"],
+                otherParam: {
+                    "provCode": Util.constants.PROVCODE
+                },
+                dataFilter : filter
+            },
+            data: {
+                key: {
+                    name: "srvReqstTypeNm"
+                },
+                simpleData: {
+                    enable: true,
+                    idKey: "srvReqstTypeId",
+                    pIdKey: "suprSrvReqstTypeId",
+                    rootPId: 1
+                }
+            },
+            callback : {
+                onClick: function (e, id, node) {//点击事件
+                    $('#serviceTypeName').searchbox("setValue",node.srvReqstTypeNm);
+                    $('#serviceTypeId').val(node.srvReqstTypeId);
+                    $("#qry_service_window").window('close'); // 关闭窗口
+                }
+            }
+        };
+        function filter(treeId, parentNode, json) {
+            var childNodes = json.rsp.datas;
+            if (!childNodes) {
+                return;
+            }
+            filterData(childNodes);
+            return childNodes;
+        }
+
+        var newNode = data.rsp.datas;
+        filterData(newNode);
+        $(document).ready(function () {
+            zTreeObj = $.fn.zTree.init($("#tree"), setting, newNode);
+        });
     }
 
     //页面信息初始化
@@ -22,6 +99,39 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
                     cache: false,
                     content:queryQmPlan.$el,
                     modal: true
+                });
+            }
+        });
+
+        $('#serviceTypeName').searchbox({//服务请求类型输入框点击查询事件
+            searcher: function(value){
+                $('#qry_service_window').show().window({
+                    title: '查询服务请求类型',
+                    width: 300,
+                    height: 500,
+                    cache: false,
+                    modal: true
+                });
+                var zNodes = [];
+                $.ajax({
+                    url:"http://203.57.227.53:8082/tcwf/servReqTypeManage/srvReqTypeRedisTree",
+                    dataType:'json',
+                    type:"POST",
+                    data:{
+                        suprSrvReqstTypeId:0,
+                        provCode: Util.constants.PROVCODE
+                    },
+                    success:function(data){
+                        initTree(data);
+                    },
+                    error:function(){
+                        $.messager.show({
+                            title: "Error",
+                            msg: "获取服务请求树失败!",
+                            timeout: 2000,
+                            style: {}
+                        });
+                    }
                 });
             }
         });
@@ -151,7 +261,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
                 var customerNumber = $("#customerNumber").val();
                 var satisfyExtentType = $("#satisfyExtentType").val();
                 var mediaType = $("#mediaType").val();
-                var srvReqstTypeId = $("#srvReqstTypeId").val();
+                var serviceTypeId = $("#serviceTypeId").val();
                 var poolStatus = $("#poolStatus").combobox("getValue");
 
                 reqParams = {
@@ -170,7 +280,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
                     "customerNumber":customerNumber,
                     "satisfyExtentType":satisfyExtentType,
                     "mediaType":mediaType,
-                    "srvReqstTypeId":srvReqstTypeId,
+                    "srvReqstTypeId":serviceTypeId,
                     "poolStatus": poolStatus,
                 };
                 var params = $.extend({
@@ -248,6 +358,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
 
         //分配
         $("#detailBut").on("click", function () {
+            var flag = false;//语音分配标志
             var selRows = $("#queryInfo").datagrid("getSelections");
             if (selRows.length == 0) {
                 $.messager.alert("提示", "请至少选择一行数据!");
@@ -264,7 +375,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
                 var id = selRows[i].touchId;
                 ids.push(id);
             }
-            var queryQmPeople = new QueryQmPeople(ids);
+            var queryQmPeople = new QueryQmPeople(ids,flag);
 
             $('#qry_people_window').show().window({
                 title: '查询质检人员信息',
@@ -274,6 +385,57 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
                 content:queryQmPeople.$el,
                 modal: true
             });
+        });
+
+        //认领(质检员自己认领)
+        $("#claimBut").on("click", function () {
+            var selRows = $("#queryInfo").datagrid("getSelections");
+            if (selRows.length == 0) {
+                $.messager.alert("提示", "请至少选择一行数据!");
+                return false;
+            }
+            for(var i=0;i<selRows.length;i++){
+                if (selRows[i].poolStatus == "2"||selRows[i].isOperate=="1") {
+                    $.messager.alert("提示", "已分配或已质检后不可操作!");
+                    return false;
+                }
+            }
+            $.messager.confirm('确认弹窗', '确定要认领吗？', function (confirm) {
+                if (confirm) {
+                    var ids = [];
+                    for (var i = 0; i < selRows.length; i++) {
+                        var id = selRows[i].touchId;
+                        ids.push(id);
+                    }
+                    claim(ids);
+                }});
+        });
+    }
+
+    /**
+     * 认领
+     */
+    function claim(dataNew){
+        var params=[];
+        for(var i=0;i<dataNew.length;i++){
+            var map = {};
+            map["checkStaffName"]="开心";//质检员信息先写死
+            map["checkStaffId"]="112233";
+            map["touchId"]=dataNew[i];
+            params.push(map);
+        }
+
+        Util.ajax.putJson(Util.constants.CONTEXT.concat(Util.constants.VOICE_POOL_DNS).concat("/updateCheck"), JSON.stringify(params), function (result) {
+            $.messager.show({
+                msg: result.RSP.RSP_DESC,
+                timeout: 1000,
+                style: {right: '', bottom: ''},     //居中显示
+                showType: 'slide'
+            });
+            var rspCode = result.RSP.RSP_CODE;
+            if (rspCode == "1") {
+                $("#queryInfo").datagrid('reload'); //成功后，刷新页面
+            }
         });
     }
 
@@ -339,60 +501,6 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
                 }
             });
         }
-    }
-
-    //新增页面
-    function addPageEvent(){
-        //质检人员信息
-        $("#checkStaffInfo").datagrid({
-            columns: [[
-                {field: 'ck', checkbox: true, align: 'center'},
-                {field: 'checkStaffId', title: '员工编码信息', align: 'center', width: '15%'},
-                {field: 'checkStaffCode', title: '员工CODE', align: 'center', width: '10%'},
-                {field: 'checkStaffId', title: '组织编码', align: 'center', width: '10%'},
-                {field: 'orgs', title: '员工组', align: 'center', width: '10%'}
-            ]],
-            fitColumns: true,
-            height: 420,
-            pagination: true,
-            pageSize: 10,
-            pageList: [5, 10, 20, 50],
-            rownumbers: false,
-            loader: function (param, success) {
-                // var start = (param.page - 1) * param.rows;
-                // var pageNum = param.rows;
-                // var checkStaffId = $("#checkStaffId").val();
-                //
-                // var reqParams = {
-                //     "checkStaffId": checkStaffId
-                // };
-                // var params = $.extend({
-                //     "start": start,
-                //     "pageNum": pageNum,
-                //     "params": JSON.stringify(reqParams)
-                // }, Util.PageUtil.getParams($("#queryInfo")));
-                //
-                // Util.ajax.getJson(Util.constants.CONTEXT + qmURI+ "/selectByParams", params, function (result) {
-                //     var data = Transfer.DataGrid.transfer(result);
-                //     var rspCode = result.RSP.RSP_CODE;
-                //     if (rspCode != null && rspCode !== "1") {
-                //         $.messager.show({
-                //             msg: result.RSP.RSP_DESC,
-                //             timeout: 1000,
-                //             style: {right: '', bottom: ''},     //居中显示
-                //             showType: 'show'
-                //         });
-                //     }
-                //     success(data);
-                // });
-                var data=[{'checkStaffId':'10001','checkStaffCode':'测试工号22','checkStaffId':'10000','orgs':'投诉专席工单处理1班'},
-                    {'checkStaffId':'10002','checkStaffCode':'测试工号23','checkStaffId':'10000','orgs':'投诉专席工单处理1班'},
-                    {'checkStaffId':'10003','checkStaffCode':'测试工号24','checkStaffId':'10000','orgs':'投诉专席工单处理1班'},
-                    {'checkStaffId':'10004','checkStaffCode':'测试工号25','checkStaffId':'10000','orgs':'投诉专席工单处理1班'},
-                    {'checkStaffId':'10005','checkStaffCode':'测试工号26','checkStaffId':'10000','orgs':'投诉专席工单处理1班'}];
-                success(data);
-            }
-        });
     }
 
     function updateCheck(dataNew) {
@@ -477,6 +585,16 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
         // 采用encodeURI两次编码,防止乱码
         window.location.href = Util.constants.CONTEXT + Util.constants.VOICE_POOL_DNS+"/export?params="+encodeURI(encodeURI(JSON.stringify(params)));
     }
+
+    //判断字符是否为空的方法
+    function isEmpty(obj){
+        if(typeof obj == "undefined" || obj == null || obj == ""){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
     return {
         initialize: initialize
     };
