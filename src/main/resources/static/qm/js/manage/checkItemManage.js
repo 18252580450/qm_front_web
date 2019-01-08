@@ -194,8 +194,8 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
                 if (tenantId === "") {
                     tenantId = Util.constants.TENANT_ID;
                 }
-                if (parentCheckItemId === undefined || parentCheckItemId == null) {
-                    parentCheckItemId = "";
+                if (parentCheckItemId === "") {
+                    parentCheckItemId = "1";
                 }
                 var checkItemType = $("#checkItemType").combobox("getValue");
                 if (checkItemType === "-1") {
@@ -380,7 +380,12 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
             if (checkItemType === Util.constants.CHECK_TYPE_ORDER) {
                 nodeTypeCode = $("#checkLinkConfig").combobox("getValue");
             }
-
+            if (catalogFlag === Util.constants.CHECK_ITEM_PARENT && orderNo > 6) {
+                $.messager.alert("提示", "目录层数超过最大值!");
+                disableSubmit = false;
+                submitBtn.linkbutton({disabled: false});  //取消提交禁用
+                return;
+            }
             if (checkItemName == null || checkItemName === "") {
                 $.messager.alert("提示", "考评项名称不能为空!");
                 disableSubmit = false;
@@ -616,8 +621,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
             tenantId = Util.constants.TENANT_ID;
         }
         var reqParams = {
-            "tenantId": tenantId,
-            "parentCheckItemId": "0"
+            "tenantId": tenantId
         };
         var params = $.extend({
             "start": 0,
