@@ -393,6 +393,10 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
         Util.ajax.postJson(Util.constants.CONTEXT.concat(Util.constants.ORDER_CHECK_DNS).concat("/"), JSON.stringify(params), function (result) {
 
             Util.loading.destroyLoading();
+            var errMsg = "提交失败！<br>";
+            if (checkStatus === Util.constants.CHECK_RESULT_TEMP_SAVE) {
+                errMsg = "保存失败！<br>";
+            }
             var rspCode = result.RSP.RSP_CODE;
             if (rspCode != null && rspCode === "1") {
                 $.messager.alert("提示", result.RSP.RSP_DESC, null, function () {
@@ -408,12 +412,7 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
                     });
                 });
             } else {
-                $.messager.show({
-                    msg: result.RSP.RSP_DESC,
-                    timeout: 1000,
-                    style: {right: '', bottom: ''},     //居中显示
-                    showType: 'show'
-                });
+                $.messager.alert("提示", errMsg + result.RSP.RSP_DESC);
             }
         });
     }

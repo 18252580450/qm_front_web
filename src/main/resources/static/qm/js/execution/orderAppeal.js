@@ -308,16 +308,19 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                 Util.loading.showLoading();
                 Util.ajax.postJson(Util.constants.CONTEXT.concat(Util.constants.APPEAL_DEAL_DNS).concat("/"), JSON.stringify(params), function (result) {
                     Util.loading.destroyLoading();
-                    $.messager.show({
-                        msg: result.RSP.RSP_DESC,
-                        timeout: 1000,
-                        style: {right: '', bottom: ''},     //居中显示
-                        showType: 'show'
-                    });
                     var rspCode = result.RSP.RSP_CODE;
                     if (rspCode != null && rspCode === "1") {
+                        $.messager.show({
+                            msg: result.RSP.RSP_DESC,
+                            timeout: 1000,
+                            style: {right: '', bottom: ''},     //居中显示
+                            showType: 'show'
+                        });
                         $("#appealDealDialog").window("close");  //关闭对话框
                         $("#appealCheckList").datagrid("reload"); //刷新列表
+                    } else {
+                        var errMsg = "审批失败！<br>" + result.RSP.RSP_DESC;
+                        $.messager.alert("提示", errMsg);
                     }
                     disableSubmit = false;
                     submitBtn.linkbutton({disabled: false});  //取消提交禁用

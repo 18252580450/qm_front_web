@@ -1,4 +1,4 @@
-require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui","dateUtil"], function (QueryQmPlan,$, Util, Transfer,easyui,dateUtil) {
+require(["js/manage/queryQmPlan", "jquery", 'util', "transfer", "easyui", "dateUtil"], function (QueryQmPlan, $, Util, Transfer, easyui, dateUtil) {
     //初始化方法
     initialize();
     var reqParams = null;
@@ -12,7 +12,7 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui","dateUti
     function initPageInfo() {
 
         $('#planName').searchbox({//输入框点击查询事件
-            searcher: function(value){
+            searcher: function (value) {
                 var queryQmPlan = new QueryQmPlan();
 
                 $('#qry_window').show().window({
@@ -20,7 +20,7 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui","dateUti
                     width: 1150,
                     height: 600,
                     cache: false,
-                    content:queryQmPlan.$el,
+                    content: queryQmPlan.$el,
                     modal: true
                 });
             }
@@ -62,8 +62,8 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui","dateUti
         //时间控件初始化
         var startTime = $('#startTime');
         startTime.datetimebox({
-            onShowPanel:function(){
-                $(this).datetimebox("spinner").timespinner("setValue","00:00:00");
+            onShowPanel: function () {
+                $(this).datetimebox("spinner").timespinner("setValue", "00:00:00");
             },
             onChange: function () {
                 checkTime();
@@ -72,8 +72,8 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui","dateUti
 
         var endTime = $('#endTime');
         endTime.datetimebox({
-            onShowPanel:function(){
-                $(this).datetimebox("spinner").timespinner("setValue","23:59:59");
+            onShowPanel: function () {
+                $(this).datetimebox("spinner").timespinner("setValue", "23:59:59");
             },
             onChange: function () {
                 checkTime();
@@ -168,7 +168,7 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui","dateUti
                     "endTime": endTime,
                     "inspectionId": inspectionId,
                     "resultStatus": resultStatus,
-                    "planId":planId
+                    "planId": planId
                 };
                 var params = $.extend({
                     "start": start,
@@ -178,11 +178,11 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui","dateUti
 
                 Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.VOICE_QM_RESULT + "/selectByParams", params, function (result) {
                     var data = Transfer.DataGrid.transfer(result);
-                    var dataNew=[];
-                    for(var i=0;i<data.rows.length;i++){
-                        var map=data.rows[i];
-                        if(map.qmPlan!=null){
-                            map["planName"]=map.qmPlan.planName;
+                    var dataNew = [];
+                    for (var i = 0; i < data.rows.length; i++) {
+                        var map = data.rows[i];
+                        if (map.qmPlan != null) {
+                            map["planName"] = map.qmPlan.planName;
                             dataNew.push(map);
                         }
                     }
@@ -340,16 +340,19 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui","dateUti
             Util.loading.showLoading();
             Util.ajax.postJson(Util.constants.CONTEXT.concat(Util.constants.APPEAL_DEAL_DNS).concat("/submit"), JSON.stringify(params), function (result) {
                 Util.loading.destroyLoading();
-                $.messager.show({
-                    msg: result.RSP.RSP_DESC,
-                    timeout: 1000,
-                    style: {right: '', bottom: ''},     //居中显示
-                    showType: 'show'
-                });
                 var rspCode = result.RSP.RSP_CODE;
                 if (rspCode != null && rspCode === "1") {
+                    $.messager.show({
+                        msg: result.RSP.RSP_DESC,
+                        timeout: 1000,
+                        style: {right: '', bottom: ''},     //居中显示
+                        showType: 'show'
+                    });
                     $("#appealDialog").window("close");  //关闭对话框
                     $("#queryInfo").datagrid("reload"); //刷新列表
+                } else {
+                    var errMsg = "申诉失败！<br>" + result.RSP.RSP_DESC;
+                    $.messager.alert("提示", errMsg);
                 }
                 disableSubmit = false;
                 submitBtn.linkbutton({disabled: false});  //取消提交禁用

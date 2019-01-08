@@ -291,16 +291,19 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui", "dateUt
             Util.loading.showLoading();
             Util.ajax.postJson(Util.constants.CONTEXT.concat(Util.constants.APPEAL_DEAL_DNS).concat("/submit"), JSON.stringify(params), function (result) {
                 Util.loading.destroyLoading();
-                $.messager.show({
-                    msg: result.RSP.RSP_DESC,
-                    timeout: 1000,
-                    style: {right: '', bottom: ''},     //居中显示
-                    showType: 'show'
-                });
                 var rspCode = result.RSP.RSP_CODE;
                 if (rspCode != null && rspCode === "1") {
+                    $.messager.show({
+                        msg: result.RSP.RSP_DESC,
+                        timeout: 1000,
+                        style: {right: '', bottom: ''},     //居中显示
+                        showType: 'show'
+                    });
                     $("#appealDialog").window("close");  //关闭对话框
                     $("#queryInfo").datagrid("reload"); //刷新列表
+                } else {
+                    var errMsg = "申诉失败！<br>" + result.RSP.RSP_DESC;
+                    $.messager.alert("提示", errMsg);
                 }
                 disableSubmit = false;
                 submitBtn.linkbutton({disabled: false});  //取消提交禁用
@@ -355,58 +358,11 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui", "dateUt
             $("#page input").val("");
         });
 
-        //申诉
-        $("#appealBut").on("click", function () {
-            $("#add_content").show().window({   //弹框
-                width: 950,
-                height: 400,
-                modal: true,
-                title: "申诉"
-            });
-            appeal();
-        });
-
         //导出
         $("#daoBut").on("click", function () {
             dao();
         });
 
-    }
-
-    /**
-     * 申诉
-     */
-    function appeal() {
-        var selRows = $("#queryInfo").datagrid("getSelections");//选中多行
-        if (selRows.length == 0) {
-            $.messager.alert("提示", "请至少选择一行数据!");
-            return false;
-        }
-        var ids = [];
-        for (var i = 0; i < selRows.length; i++) {
-            var id = selRows[i].touchId;
-            ids.push(id);
-        }
-
-        $.messager.confirm('确认弹窗', '确定要强制释放吗？', function (confirm) {
-
-            if (confirm) {
-                Util.ajax.putJson(Util.constants.CONTEXT.concat(qmURI).concat("/update"), JSON.stringify(ids), function (result) {
-
-                    $.messager.show({
-                        msg: result.RSP.RSP_DESC,
-                        timeout: 1000,
-                        style: {right: '', bottom: ''},     //居中显示
-                        showType: 'slide'
-                    });
-                    var rspCode = result.RSP.RSP_CODE;
-
-                    if (rspCode == "1") {
-                        $("#queryInfo").datagrid('reload'); //成功后，刷新页面
-                    }
-                });
-            }
-        });
     }
 
     //校验开始时间和终止时间
