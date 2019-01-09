@@ -373,7 +373,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
             "processName": processName,
             "tenantId": Util.constants.TENANT_ID,
             "tenantName": tenantName,
-            "departmentId": departmentId,
+            "departmentId": "2231",  //暂时写死
             "departmentName": departmentName,
             "checkType": checkType,
             "mainProcessFlag": mainProcessFlag,
