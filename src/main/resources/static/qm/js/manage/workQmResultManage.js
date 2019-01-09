@@ -182,7 +182,8 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui", "dateUt
                     "resultStatus":qmResult,
                     "errorRank":errorType,
                     "planId":planId,
-                    "reqTypeEndNode":reqTypeEndNode
+                    "reqTypeEndNode":reqTypeEndNode,
+                    "lastResultFlag":"1"
                 };
                 var params = $.extend({
                     "start": start,
