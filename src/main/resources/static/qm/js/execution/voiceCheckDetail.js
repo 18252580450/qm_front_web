@@ -291,7 +291,7 @@ require(["jquery", "util", "dateUtil", "transfer", "easyui"], function ($, Util)
             "checkModel": Util.constants.CHECK_TYPE_WITHIN_PLAN,     //质检模式、计划内质检
             "checkedStaffId": voicePool.checkedStaffId,              //被质检员id
             "checkedStaffName": voicePool.checkedStaffName,          //被质检员名
-            "checkedDepartId": "",                                   //被质检部门id
+            "checkedDepartId": Util.constants.CHECKED_DEPART_ID,     //被质检部门id 暂时
             "checkedDepartName": "",                                 //被质检部门名称
             "checkStaffId": voicePool.checkStaffId,                  //质检员id
             "checkStaffName": voicePool.checkStaffName,              //质检员名

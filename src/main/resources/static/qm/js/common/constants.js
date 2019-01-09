@@ -9,6 +9,7 @@ define(function () {
         TENANT_ID: "10010000",
         STAFF_ID: "123",       //模拟工号
         STAFF_NAME: "石莹",    //模拟员工姓名
+        CHECKED_DEPART_ID:"2231",  //模拟被质检员部门id
         PROCESS_STATUS_START: "1", //申诉主流程启动状态
         PROCESS_STATUS_STOP: "2",
         PROVCODE: "00030000",//省份编码
