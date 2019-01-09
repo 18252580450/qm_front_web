@@ -255,7 +255,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
            });
 
            $("#modf_content").on("click", "#ok", function () {
-
+               $('#modfName').validatebox({required:true});//非空校验
                var commentId = sensjson.commentId;
                var modfName = $("#modfName").val();
                var remark = $("#remark").val();
