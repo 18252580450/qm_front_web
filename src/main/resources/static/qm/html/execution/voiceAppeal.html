@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8"/>
-    <title>语音申诉处理</title>
+    <title>工单申诉处理</title>
     <link rel="stylesheet" type="text/css" href="../../assets/lib/easyui/themes/cmcui/cmcui.css"/>
     <link rel="stylesheet" type="text/css" href="../../assets/lib/easyui/themes/cmcui/iconfont/iconfont.min.css"/>
     <link rel="stylesheet" type="text/css" href="../../assets/lib/ztree/css/cmcStyle/tree.css"/>
@@ -41,7 +41,6 @@
                             </div>
                         </div>
                     </form>
-
                     <form class='form form-horizontal'>
                         <div class='row cl'>
                             <label class='form-label col-1'>申诉单号</label>
@@ -65,6 +64,69 @@
                     </div>
                     <table id='appealCheckList' class='easyui-datagrid' style=' width:100%;'>
                     </table>
+                </div>
+
+                <!-- 审批记录弹窗，默认隐藏  -->
+                <div id='appealRecordDialog' style='overflow: auto;display:none;'>
+                    <form id='appealDealRecordConfig' method='GET' class='form form-horizontal'>
+                        <div class='panel-search' style='overflow: auto;margin-top: 20px;'>
+                            <!--左侧区域-->
+                            <div id="appealLeftDiv" style="float:left ; width:20%; height:100%;">
+                            </div>
+
+                            <!--右侧区域-->
+                            <div id="appealRightDiv" style="float:right ; width:80%; height:100%;">
+                            </div>
+
+                        </div>
+                    </form>
+                </div>
+
+                <!-- 申诉弹窗，默认隐藏  -->
+                <div id='appealDealDialog' style='display:none;'>
+                    <div class='panel-search'>
+                        <form id='appealDealConfig' method='POST' class='form form-horizontal'>
+                            <div class='row cl' style="margin-top: 10px">
+                                <div class='formControls col-1'>
+                                </div>
+                                <label class='form-label col-2'>审批意见：</label>
+                                <div class='formControls col-8'>
+                                    <input id='appealDealComment' type='text' class='easyui-textarea'
+                                           data-options="multiline:true"
+                                           style='width:100%;height:120px'/>
+                                </div>
+                            </div>
+                        </form>
+
+                        <form class='form form-horizontal' style="margin-top: 10px">
+                            <div class='row cl'>
+                                <div class="formControls col-3">
+                                </div>
+                                <div class='formControls col-2'>
+                                    <input id="checkPass" type="radio" name="appealResult"
+                                           class="easyui-validatebox" checked="checked" value="0">&nbsp;&nbsp;通过
+                                </div>
+
+                                <div class='formControls col-2'>
+                                    <input id="checkUnPass" type="radio" name="appealResult"
+                                           class="easyui-validatebox" value="1">&nbsp;&nbsp;驳回
+                                </div>
+                            </div>
+                        </form>
+
+                        <div class='mt-10 test-c' style="margin-top: 40px">
+                            <div class='formControls col-4'>
+                            </div>
+                            <div class='formControls col-2'>
+                                <a href='javascript:void(0)' class='btn btn-green radius mt-l-20'
+                                   id="submitBtn">保存</a>
+                            </div>
+                            <div class='formControls col-2'>
+                                <a href='javascript:void(0)' class='btn btn-secondary radius mt-l-20'
+                                   id="cancelBtn">取消</a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
             </div>

@@ -96,12 +96,12 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                             }
                         }
                     },
-                    // {
-                    //     field: 'touchId', title: '工单流水', width: '14%',
-                    //     formatter: function (value, row, index) {
-                    //         return '<a href="javascript:void(0);" id = "orderFlow_' + row.touchId + '">' + value + '</a>';
-                    //     }
-                    // },
+                    {
+                        field: 'touchId', title: '接触流水', width: '14%',
+                        formatter: function (value, row, index) {
+                            return '<a href="javascript:void(0);" id = "touchFlow' + row.touchId + '">' + value + '</a>';
+                        }
+                    },
                     {
                         field: 'inspectionId', title: '质检流水', width: '14%',
                         formatter: function (value, row, index) {

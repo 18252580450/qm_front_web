@@ -1,7 +1,6 @@
-require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], function ($, Util, Transfer, CommonAjax) {
+require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util, Transfer) {
 
-        var appealCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/execution/orderAppealDetail.html",
-            checkTypeData = [];  //质检类型静态数据
+        var appealCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/execution/orderAppealDetail.html";
 
         initialize();
 
@@ -39,37 +38,6 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                 }
             );
 
-            //质检类型下拉框
-            $("#checkType").combobox({
-                url: '../../data/select_init_data.json',
-                method: "GET",
-                valueField: 'paramsCode',
-                textField: 'paramsName',
-                panelHeight: 'auto',
-                editable: false,
-                onLoadSuccess: function () {
-                    var checkTypeSelect = $("#checkType"),
-                        data = checkTypeSelect.combobox('getData');
-                    if (data.length > 0) {
-                        checkTypeSelect.combobox('select', data[0].paramsCode);
-                    }
-                },
-                onSelect: function () {
-                    $("#appealCheckList").datagrid("load");
-                }
-            });
-            CommonAjax.getStaticParams("CHECK_TYPE", function (datas) {
-                if (datas) {
-                    checkTypeData = datas;
-                    var data = {
-                        "paramsCode": "-1",
-                        "paramsName": "全部"
-                    };
-                    datas.unshift(data);
-                    $("#checkType").combobox('loadData', datas);
-                }
-            });
-
             //申诉处理列表
             var IsCheckFlag = true; //标示是否是勾选复选框选中行的，true - 是 , false - 否
             $("#appealCheckList").datagrid({
@@ -83,28 +51,18 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                         }
                     },
                     {
-                        field: 'checkType', title: '质检类型', width: '10%',
+                        field: 'touchId', title: '工单流水', width: '14%',
                         formatter: function (value, row, index) {
-                            for (var i = 0; i < checkTypeData.length; i++) {
-                                if (checkTypeData[i].paramsCode === value) {
-                                    return checkTypeData[i].paramsName;
-                                }
-                            }
+                            return '<a href="javascript:void(0);" id = "orderFlow_' + row.touchId + '">' + value + '</a>';
                         }
                     },
-                    // {
-                    //     field: 'touchId', title: '工单流水', width: '14%',
-                    //     formatter: function (value, row, index) {
-                    //         return '<a href="javascript:void(0);" id = "orderFlow_' + row.touchId + '">' + value + '</a>';
-                    //     }
-                    // },
                     {
                         field: 'inspectionId', title: '质检流水', width: '14%',
                         formatter: function (value, row, index) {
                             return '<a href="javascript:void(0);" id = "checkFlow_' + row.inspectionId + '">' + value + '</a>';
                         }
                     },
-                    {field: 'appealId', title: '申诉单号', width: '14%'},
+                    {field: 'appealId', title: '申诉单号', width: '10%'},
                     {field: 'appealStaffName', title: '申诉人', width: '14%'},
                     {field: 'appealReason', title: '申诉原因', width: '14%'},
                     {
@@ -148,15 +106,11 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                         appealTimeBegin = $("#appealBeginTime").datetimebox("getValue"),
                         appealTimeEnd = $("#appealEndTime").datetimebox("getValue"),
                         appealStaffId = $("#appealStaffId").val(),
-                        appealId = $("#appealId").val(),
-                        checkType = $("#checkType").combobox("getValue");
-                    if (checkType === "-1") {
-                        checkType = "";
-                    }
+                        appealId = $("#appealId").val();
 
                     var reqParams = {
                         "staffId": Util.constants.STAFF_ID,
-                        "checkType": checkType,
+                        "checkType": Util.constants.CHECK_TYPE_ORDER,
                         "inspectionId": inspectionId,
                         "appealTimeBegin": appealTimeBegin,
                         "appealTimeEnd": appealTimeEnd,
