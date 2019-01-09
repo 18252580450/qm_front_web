@@ -97,6 +97,7 @@ require(["js/manage/queryQmPlan", "jquery", 'util', "transfer", "easyui", "dateU
                         return detail + "&nbsp;&nbsp;" + appeal;
                     }
                 },
+                {field: 'touchId', title: '语音流水', align: 'center', width: '15%'},
                 {field: 'inspectionId', title: '语音质检流水', align: 'center', width: '15%'},
                 {field: 'callingNumber', title: '主叫号码', align: 'center', width: '10%'},
                 {field: 'planName', title: '计划名称', align: 'center', width: '10%'},

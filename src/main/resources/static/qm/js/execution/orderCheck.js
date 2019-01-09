@@ -99,7 +99,7 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "commonAjax", "da
                     }
                 },
                 {
-                    field: 'wrkfmId', title: '工单流水', width: '15%',
+                    field: 'workFormId', title: '工单流水', width: '15%',
                     formatter: function (value, row, index) {
                         if (value != null) {
                             return '<a href="javascript:void(0);" id = "orderFlow' + row.wrkfmId + '">' + value + '</a>';
@@ -190,7 +190,7 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "commonAjax", "da
                     poolStatus = "0";
                 }
                 var reqParams = {
-                    "checkStaffId": Util.constants.STAFF_ID,
+                    // "checkStaffId": Util.constants.STAFF_ID,     //暂时不考虑工号
                     "wrkfmId": wrkfmId,
                     "isOperate": Util.constants.ORDER_DISTRIBUTE,        //已分配
                     "poolStatus": poolStatus,
@@ -205,7 +205,9 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "commonAjax", "da
                     "params": JSON.stringify(reqParams)
                 }, Util.PageUtil.getParams($("#searchForm")));
 
+                debugger;
                 Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.ORDER_POOL_DNS + "/selectByParams", params, function (result) {
+                    debugger;
                     var data = Transfer.DataGrid.transfer(result);
 
                     var rspCode = result.RSP.RSP_CODE;
