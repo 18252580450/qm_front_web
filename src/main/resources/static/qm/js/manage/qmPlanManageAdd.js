@@ -9,6 +9,7 @@ define([
     var planTypes = [];
     var $el;
     var planBean;
+    var qmBindRlnList;
     var initialize = function(planId) {
         $el = $(tpl);
         if(planId){
@@ -17,20 +18,22 @@ define([
                 if (rspCode == "1" && result.RSP.DATA.length > 0) {
                     planBean = result.RSP.DATA[0];
                     initSearchForm(planBean);
+                    initDatas(planBean);
                 }
             });
         }else{
             initSearchForm();//初始化表单数据
+            initDatas();
         }
         initGlobalEvent();
         this.$el = $el;
     };
 
     function initGlobalEvent(){
-        //重置
-        $("#resetBut",$el).on("click", function () {
+        //关闭
+        $("#close",$el).on("click", function () {
             $("#mainForm",$el).form('clear');
-
+            $("#add_window").window("close");
         });
 
         //保存
@@ -49,6 +52,32 @@ define([
             var planEndtime = $('#planEndtime',$el).datetimebox('getValue');
             var remark = $('#remark',$el).val();
 
+            //质检关系
+            var qmBindRlnListNew = [];
+            var treeObj = $.fn.zTree.getZTreeObj("qmStaffsTree");
+            var nodes = treeObj.getNodes();
+            var checkedStaff = $("#checkedStaffList").datagrid("getRows");
+            var staffIds = [];
+            if(checkedStaff && checkedStaff.length > 0){
+                qmBindRlnListNew.push(checkedStaff);
+                $.each(checkedStaff,function(j,c){
+                    if(staffIds.indexOf(c.checkStaffId) < 0){
+                        staffIds.push(c.checkStaffId);
+                    }
+                });
+            }
+            if(nodes.length > 1){
+                for(var i = 1;i<nodes.length;i++){
+                    if(staffIds.indexOf(nodes[i].checkStaffId) < 0){
+                        var qmBindRln = {
+                            checkStaffId:nodes[i].checkStaffId,
+                            userType:"0"
+                        };
+                        qmBindRlnListNew.push(qmBindRln);
+                    }
+                }
+            }
+
             var params = {
                 'tenantId': Util.constants.TENANT_ID,
                 'planName': planName,
@@ -60,7 +89,8 @@ define([
                 'planRuntime':"2018-01-01 " + planRuntime,
                 'planStarttime': planStarttime,
                 'planEndtime': planEndtime,
-                'remark':remark
+                'remark':remark,
+                'qmBindRlnList':qmBindRlnList
             };
 
             if (planName == null || planName == "" || planType == null || planType == "" || templateId == null || templateId == ""
@@ -229,7 +259,8 @@ define([
         //修改
         if(planBean){
             $("#planName",$el).val(planBean.planName);
-            $("#templateId",$el).val(planBean.templateName);
+            $("#templateId",$el).val(planBean.templateId);
+            $("#template",$el).val(planBean.templateName);
             $("#pId",$el).val(planBean.pId);
             $("#manOrAuto",$el).combobox('setValue',planBean.manOrAuto);
             $("#planRuntype",$el).combobox('setValue',planBean.planRuntype);
@@ -246,5 +277,178 @@ define([
         }
     }
 
+    //初始化树
+    function initTree(checkStaffs){
+        var setting = {
+            view: {
+                selectedMulti: false//是否支持同时选中多个节点
+            },
+            data: {
+                key: {
+                    name: "checkStaffName"
+                },
+                simpleData: {
+                    enable: true,   //是否异步
+                    idKey: "checkStaffId",    //当前节点id属性
+                    pIdKey: "pId",  //当前节点的父节点id属性
+                    rootPId: 0      //用于修正根节点父节点数据，即pIdKey指定的属性值
+                }
+            },
+            callback:{
+                onClick:function(e, id, node){
+                    if(node.checkStaffId != 0){
+                        var checkedStaffsOfCheckStaff = [];
+                        if(qmBindRlnList.length > 0) {
+                            $.each(qmBindRlnList, function (i, qmBindRln) {
+                                if (qmBindRln.checkStaffId == node.checkStaffId && qmBindRln.checkedObjectId != "") {
+                                    checkedStaffsOfCheckStaff.push(qmBindRln);
+                                }
+                            });
+                        }
+                        $("#checkedStaffList").datagrid("loadData",checkedStaffsOfCheckStaff);
+                    }else{
+                        var checkedStaffs = [];
+                        if(qmBindRlnList.length > 0) {
+                            $.each(qmBindRlnList, function (i, qmBindRln) {
+                                if (qmBindRln.userType == 0 && qmBindRln.checkedObjectId) {
+                                    checkedStaffs.push(qmBindRln);
+                                }
+                            });
+                        }
+                        $("#checkedStaffList").datagrid("loadData",checkedStaffs);
+                    }
+                }
+            }
+        };
+        if(checkStaffs){
+            checkStaffs.unshift({
+                checkStaffId:"0",
+                checkStaffName:"质检员列表"
+            });
+        }else{
+            checkStaffs = [{
+                checkStaffId:"0",
+                checkStaffName:"质检员列表"
+            }];
+        }
+
+        var treeObj = $.fn.zTree.init($("#qmStaffsTree"), setting, checkStaffs);
+        var nodes = treeObj.getNodes();
+        treeObj.expandNode(nodes[0], true, false, false);
+    }
+
+    //初始化被质检对象列表
+    function initTable(checkedStaffs,checkedDeparts){
+        if(checkedStaffs && checkedStaffs.length > 0){
+            $("#checkedStaffList").datagrid({
+                columns:[
+                    [
+                        {field:'checkedObjectId',title:'被质检人ID',width:'15%'},
+                        {field:'checkedObjectName',title:'被质检人姓名',width:'20%'},
+                        {field:'checkedDepartName',title:'所属部门',width:'20%'},
+                        {field:'checkStaffId',title:'质检人ID',width:'15%'},
+                        {field:'checkStaffName',title:'质检人',width:'18%'},
+                        {
+                            field: 'action', title: '操作', width: '10%',
+                            formatter: function (value, row, index) {
+                                var Action =
+                                    "<a href='javascript:void(0);' class='delBtn' id =" + row.checkedObjectId + " >删除</a>";
+                                return Action;
+                            }
+                        }
+                    ]
+                ],
+                data:checkedStaffs,
+                idField:"checkedObjectId"
+            });
+        }else if(checkedDeparts && checkedDeparts.length > 0){
+            $("#checkedStaffList").datagrid({
+                columns : [
+                    [
+                        {field:'checkedObjectId',title:'被质检部门ID',width:'30%'},
+                        {field:'checkedObjectName',title:'被质检部门姓名',width:'30%'},
+                        {
+                            field: 'action', title: '操作', width: '40%',
+                            formatter: function (value, row, index) {
+                                var Action =
+                                    "<a href='javascript:void(0);' class='delBtn' id =" + row.checkedObjectId + " >删除</a>";
+                                return Action;
+                            }
+                        }
+                    ]
+                ],
+                data:checkedDeparts
+            });
+        }else{
+            $("#checkedStaffList").datagrid({
+                columns:[
+                    [
+                        {field:'checkedObjectId',title:'被质检人ID',width:'15%'},
+                        {field:'checkedObjectName',title:'被质检人姓名',width:'20%'},
+                        {field:'checkedDepartName',title:'所属部门',width:'20%'},
+                        {field:'checkStaffId',title:'质检人ID',width:'15%'},
+                        {field:'checkStaffName',title:'质检人',width:'18%'},
+                        {
+                            field: 'action', title: '操作', width: '10%',
+                            formatter: function (value, row, index) {
+                                var Action =
+                                    "<a href='javascript:void(0);' class='delBtn' id =" + row.checkedObjectId + " >删除</a>";
+                                return Action;
+                            }
+                        }
+                    ]
+                ],
+                idField:"checkedObjectId"
+            });
+        }
+    }
+
+    function initDelBut(){
+        $(".delBtn").on("click", function () {
+            var checkedObjectId = $(this).attr('id');
+            $("#checkedStaffList").datagrid("deleteRow",$("#checkedStaffList").datagrid("getRowIndex",checkedObjectId));
+            if(qmBindRlnList && qmBindRlnList.length > 0){
+                $.each(qmBindRlnList,function(i,qmBindRln){
+                    if(qmBindRln.checkedObjectId == checkedObjectId){
+                        //delete qmBindRlnList[i];
+                        qmBindRlnList.splice(i,1);
+                        return;
+                    }
+                });
+            }
+        });
+    }
+
+    //初始化质检员树和被质检员信息
+    function initDatas(planBean){
+        if(planBean){
+            qmBindRlnList = planBean.qmBindRlnList;
+            if(qmBindRlnList && qmBindRlnList.length > 0){
+                var checkStaffs = [];
+                var checkedStaffs = [];
+                var checkedDeparts = [];
+                $.each(qmBindRlnList, function(index, qmBindRln){
+                    qmBindRln.pId = "0";
+                    if(qmBindRln.checkStaffId != ""){
+                        checkStaffs.push(qmBindRln);
+                    }
+                    if(qmBindRln.userType == 0 && qmBindRln.checkedObjectId){
+                        checkedStaffs.push(qmBindRln);
+                    }else{
+                        checkedDeparts.push(qmBindRln);
+                    }
+                });
+                initTree(checkStaffs);
+                initTable(checkedStaffs,checkedDeparts);
+            }else{
+                initTree();
+                initTable();
+            }
+        }else{
+            initTree();
+            initTable();
+        }
+        initDelBut();
+    }
     return initialize;
 });

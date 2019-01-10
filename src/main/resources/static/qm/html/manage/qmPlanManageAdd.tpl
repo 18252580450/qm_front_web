@@ -58,12 +58,42 @@
                             </div>
                         </div>
                     </form>
+                    <div style="width: 95%; height: 365px; overflow-y: auto; overflow-x: hidden;margin-top: 10px">
+                        <!--左侧区域-->
+                        <div style="float: left; width: 18%; height: 365px; overflow-y: auto; overflow-x: hidden;">
+                            <div class='panel-tool-box cl'>
+                                <div class='fl text-bold'>质检人</div>
+                            </div>
+                            <div id="treeDiv" class="index-west">
+                                <ul id="qmStaffsTree" class="ztree" style="border:#fff;">
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!--右侧区域-->
+                        <div style="float:right ; width:82%; height:100%;">
+                            <div class='cl'>
+                                <div class='panel-tool-box cl'>
+                                    <div class='fl text-bold'>被质检人</div>
+                                    <div class="formControls col-2" style="text-align: right;width: 90%">
+                                        <a href='javascript:void(0)' style="width: auto;" class='btn btn-green radius mt-l-20' id="addQmStaffBtn"><i
+                                                class='iconfont'></i>新增质检员</a>
+                                        <a href='javascript:void(0)' style="width: auto;" class='btn btn-green radius mt-l-20' id="addCheckedStaffBtn"><i
+                                                class='iconfont'></i>新增被质检员</a>
+                                        <a href='javascript:void(0)' class='btn btn-secondary radius mt-l-20' id="delBtn"><i
+                                                class='iconfont iconfont-del2'></i>删除</a>
+                                    </div>
+                                </div>
+                                <table id='checkedStaffList' class='easyui-datagrid' style=' width:100%;'>
+                                </table>
+                            </div>
+                        </div>
+                </div>
                     <div class='mt-10 test-c'>
                         <label class='form-label col-5'></label>
                         <a href='javascript:void(0)' id='addPlan' class='btn btn-green radius  mt-l-20'>确定</a>
-                        <a href='javascript:void(0)' id='resetBut' class='btn btn-secondary radius  mt-l-20'>重置</a>
+                        <a href='javascript:void(0)' id='close' class='btn btn-secondary radius  mt-l-20'>关闭</a>
                     </div>
-                </div>
             </div>
         </div>
         <!--删除弹窗，默认隐藏-->
@@ -77,4 +107,5 @@
             </div>
         </div>
     </div>
+</div>
 </div>
