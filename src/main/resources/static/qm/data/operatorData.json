@@ -1,0 +1,43 @@
+[
+  {
+    "paramsCode": "=",
+    "paramsName": "=",
+    "selected": true,
+    "codeDesc": ""
+  },
+  {
+    "paramsCode": ">",
+    "paramsName": ">",
+    "codeDesc": ""
+  },
+  {
+    "paramsCode": "<",
+    "paramsName": "<",
+    "codeDesc": ""
+  },
+  {
+    "paramsCode": ">=",
+    "paramsName": ">=",
+    "codeDesc": ""
+  },
+  {
+    "paramsCode": "<=",
+    "paramsName": "<=",
+    "codeDesc": ""
+  },
+  {
+    "paramsCode": "<>",
+    "paramsName": "<>",
+    "codeDesc": ""
+  },
+  {
+    "paramsCode": "between",
+    "paramsName": "between",
+    "codeDesc": ""
+  },
+  {
+    "paramsCode": "in",
+    "paramsName": "in",
+    "codeDesc": ""
+  }
+]

@@ -3,9 +3,10 @@ define([
         "jquery", "commonAjax",'util', "transfer", "easyui","crossAPI","dateUtil",'ztree-exedit'],
     function (tpl,$, CommonAjax,Util, Transfer,crossAPI,dateUtil) {
         //调用初始化方法
-        var $el;
-        var bean;
-        var elementTypyes;
+        var $el,
+            bean,
+            elementTypes;
+
         var initialize = function(paramsType,pId) {
             $el = $(tpl);
             initGrid();
@@ -37,8 +38,8 @@ define([
                     {field: 'elementType', title: '字段类型', width: '12%',
                         formatter: function (value, row, index) {
                             var str = "";
-                            if(elementTypyes){
-                                $.each(elementTypyes,function(index, item){
+                            if(elementTypes){
+                                $.each(elementTypes,function(index, item){
                                     if(item.paramsCode == value){
                                         str = item.paramsName;
                                         return;
@@ -48,21 +49,40 @@ define([
                             return str;
                         }
                     },
-                    {field: 'isNeed', title: '必须字段', width: '8%',
-                        formatter: function (value, row, index) {
-                            if(0 == value){
-                                return "否";
-                            }else if(1 == value){
-                                return "是";
-                            }
-                        }
-                    },
-                    {field: 'isRegion', title: '是否区间值', width: '8%',
+                    {field: 'isRegion', title: '是否区间值', width: '8%',hidden:true,
                         formatter: function (value, row, index) {
                             if (0 == value) {
                                 return "否";
                             } else if (1 == value) {
                                 return "是";
+                            }
+                        }
+                    },
+                    {
+                        field: 'rtype', title: '集合', width: '12%',editor: {
+                            type: 'combobox',
+                            options: {
+                                url: '../../data/rtypeData.json',
+                                method: "GET",
+                                valueField: "paramsCode",
+                                textField: "paramsName",
+                                editable: false,
+                                panelHeight: "auto",
+                                required: true
+                            }
+                        }
+                    },
+                    {
+                        field: 'operator', title: '运算符', width: '12%',editor:{
+                            type: 'combobox',
+                            options: {
+                                url: '../../data/operatorData.json',
+                                method: "GET",
+                                valueField: "paramsCode",
+                                textField: "paramsName",
+                                editable: false,
+                                panelHeight: "auto",
+                                required: true
                             }
                         }
                     },
@@ -177,8 +197,8 @@ define([
                     {field: 'elementType', title: '字段类型', width: '8%',
                         formatter: function (value, row, index) {
                             var str = "";
-                            if(elementTypyes){
-                                $.each(elementTypyes,function(index, item){
+                            if(elementTypes){
+                                $.each(elementTypes,function(index, item){
                                     if(item.paramsCode == value){
                                         str = item.paramsName;
                                         return;
@@ -301,6 +321,20 @@ define([
                 if(rows.length > 0){
                     $.each(rows, function(index, row){
                         var rowIndex = $("#newElesList",$el).datagrid('getRowIndex',row);
+                        var rtypeEd = $("#newElesList",$el).datagrid('getEditor',{index:rowIndex,field:'rtype'});
+                        var rtype;
+                        if(rtypeEd){
+                            rtype = $(rtypeEd.target).combobox("getValue");
+                        }else {
+                            rtype = row.rtype;
+                        }
+                        var operatorEd = $("#newElesList",$el).datagrid('getEditor',{index:rowIndex,field:'operator'});
+                        var operator;
+                        if(rtypeEd){
+                            operator = $(operatorEd.target).combobox("getValue");
+                        }else {
+                            operator = row.operator;
+                        }
                         var elementValue1Ed = $("#newElesList",$el).datagrid('getEditor',{index:rowIndex,field:'elementValue1'});
                         var elementValue1;
                         if(elementValue1Ed){
@@ -319,7 +353,7 @@ define([
                         }else{
                             elementValue2 = row.elementValue2;
                         }
-                        if(row.isRegion == 1 &&(elementValue2 == ''|| elementValue2 == null)){
+                        if(operator === "between" &&(elementValue2 == ''|| elementValue2 == null)){
                             str = '元素“'+row.elementName+'”区间值2不能为空。';
                             return false;
                         }
@@ -327,6 +361,8 @@ define([
                             tenantId:Util.constants.TENANT_ID,
                             elementId:row.elementId,
                             pId:row.pId,
+                            rtype:rtype,
+                            operator:operator,
                             elementValue1:elementValue1,
                             elementValue2:elementValue2
                         };
@@ -435,7 +471,7 @@ define([
             }
             CommonAjax.getStaticParams("ELEMENT_TYPE",function(datas){
                 if(datas){
-                    elementTypyes = datas;
+                    elementTypes = datas;
                 }
             });
         }
