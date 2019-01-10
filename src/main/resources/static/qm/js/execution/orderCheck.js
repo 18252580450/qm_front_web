@@ -1,6 +1,6 @@
 require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], function (QueryQmPlan,$, Util, Transfer, CommonAjax) {
 
-    var orderCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/execution/orderCheckDetail.html",
+    var orderCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/execution/orderCheckDetailNew.html",
         poolStatusData = [];  //质检状态下拉框静态数据（待质检、待复检）
 
     initialize();
@@ -205,9 +205,7 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "commonAjax", "da
                     "params": JSON.stringify(reqParams)
                 }, Util.PageUtil.getParams($("#searchForm")));
 
-                debugger;
                 Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.ORDER_POOL_DNS + "/selectByParams", params, function (result) {
-                    debugger;
                     var data = Transfer.DataGrid.transfer(result);
 
                     var rspCode = result.RSP.RSP_CODE;
