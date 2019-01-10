@@ -21,9 +21,9 @@
                                 <input  type='radio' name = 'isValidate' value = "1" />&nbsp;&nbsp;无效
                             </div>
                             <label class='form-label col-2'></label>
-                            <div class='formControls col-2'>
-                                <a href='javascript:void(0)' class='btn btn-green radius mt-l-20' id = "selectBut"><i class='iconfont iconfont-search2'></i>查询</a>
-                                <a href='javascript:void(0)' class='btn btn-default radius mt-l-20 '><i class='iconfont iconfont-zhongzuo'></i>重置</a>
+                            <div class='formControls col-3'>
+                                <a href='javascript:void(0)' class='btn btn-green radius mt-l-20' id = "qryStrategy_selectBut"><i class='iconfont iconfont-search2'></i>查询</a>
+                                <a href='javascript:void(0)' class='btn btn-secondary radius mt-l-20 ' id="qryStrategy_resetBut"><i class='iconfont iconfont-zhongzuo'></i>重置</a>
                             </div>
                         </div>
                     </form>
@@ -36,10 +36,13 @@
                         <div class="formControls col-2" style="text-align: right;width: 90%">
                         </div>
                     </div>
-                        <table id='retList' class='easyui-datagrid'  style=' width:100%;'>
+                        <table id='qryStrategy_retList' class='easyui-datagrid'  style=' width:100%;'>
                     </table>
                 </div>
-
+                <div class='mt-10 test-c'>
+                    <label class='form-label col-5'></label>
+                    <a href='javascript:void(0)' id='qryStrategy_close' class='btn btn-secondary radius  mt-l-20'>关闭</a>
+                </div>
             </div>
         </div>
     </div>

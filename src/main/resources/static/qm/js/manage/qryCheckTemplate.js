@@ -129,10 +129,10 @@ define([
             $("#qryCheckTemplate_page").find("#qryCheckTemplate_checkTemplateManage").datagrid("load");
         });
         //重置
-        $("#qryCheckTemplate_searchForm",$el).on("click", "a.btn-default", function () {
+        $("#qryCheckTemplate_searchForm",$el).on("click", "#qryCheckTemplate_resetBut", function () {
             $("#qryCheckTemplate_searchForm").form('clear');
         });
-        $("#qryCheckTemplate_page",$el).on("click", "#close", function () {
+        $("#qryCheckTemplate_page",$el).on("click", "#qryCheckTemplate_close", function () {
             $("#qryCheckTemplate_searchForm").form('clear');
             $("#qry_window").window("close");
         });

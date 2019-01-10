@@ -21,7 +21,7 @@
                             </div>
                             <div class='formControls col-3' style="text-align: right">
                                 <a href='javascript:void(0)' class='btn btn-green radius mt-l-20' id = "qryCheckTemplate_selectBut"><i class='iconfont iconfont-search2'></i>查询</a>
-                                <a href='javascript:void(0)' class='btn btn-default radius mt-l-20 '><i class='iconfont iconfont-zhongzuo'></i>重置</a>
+                                <a href='javascript:void(0)' class='btn btn-secondary radius mt-l-20 ' id="qryCheckTemplate_resetBut"><i class='iconfont iconfont-zhongzuo'></i>重置</a>
                             </div>
                         </div>
                     </form>
@@ -35,7 +35,7 @@
                 </div>
                 <div class='mt-10 test-c'>
                     <label class='form-label col-5'></label>
-                    <a href='javascript:void(0)' id='close' class='btn btn-secondary radius  mt-l-20'>关闭</a>
+                    <a href='javascript:void(0)' id='qryCheckTemplate_close' class='btn btn-secondary radius  mt-l-20'>关闭</a>
                 </div>
             </div>
         </div>

@@ -207,7 +207,6 @@ define([
             editable: false
         });
         $('#planRuntype',$el).combobox("setValue","0");
-        var qryCheckTemplate = new QryCheckTemplate();
         $('#template',$el).searchbox({
             searcher: function(value){
                 var qryCheckTemplate = new QryCheckTemplate();
@@ -222,17 +221,16 @@ define([
                 });
             }
         });
-
         $('#strategy',$el).searchbox({
             searcher: function(value){
-                var qryCheckTemplate = new QryCheckTemplate();
+                var qryStrategy = new QryStrategy();
 
                 $('#qry_window').show().window({
                     title: '查询考评策略',
                     width: 1000,
                     height: 550,
                     cache: false,
-                    content:qryCheckTemplate.$el,
+                    content:qryStrategy.$el,
                     modal: true
                 });
             }
@@ -261,8 +259,10 @@ define([
         if(planBean){
             $("#planName",$el).val(planBean.planName);
             $("#templateId",$el).val(planBean.templateId);
-            $("#template",$el).val(planBean.templateName);
+            //$("#template",$el).val(planBean.templateName);
+            $('#template').searchbox("setValue",planBean.templateName);
             $("#pId",$el).val(planBean.pId);
+            $('#strategy').searchbox("setValue",planBean.pName);
             $("#manOrAuto",$el).combobox('setValue',planBean.manOrAuto);
             $("#planRuntype",$el).combobox('setValue',planBean.planRuntype);
             if(planBean.planRuntime){

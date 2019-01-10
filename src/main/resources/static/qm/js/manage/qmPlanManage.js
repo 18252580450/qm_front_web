@@ -108,8 +108,8 @@ define([
         var IsCheckFlag = true; //标示是否是勾选复选框选中行的，true - 是 , false - 否
         $("#page").find("#planList").datagrid({
             columns: [[
-                {field: 'planId', title: '计划编码', hidden: true},
                 {field: 'ck', checkbox: true, align: 'center'},
+                {field: 'planId', title: '计划编码', width: '8%'},
                 {
                     field: 'action', title: '操作', width: '8%',
                     formatter: function (value, row, index) {
@@ -188,7 +188,7 @@ define([
             ]],
             fitColumns: true,
             width: '100%',
-            height: 420,
+            height: "auto",
             pagination: true,
             pageSize: 10,
             pageList: [5, 10, 20, 50],
