@@ -112,6 +112,7 @@ define([
                 planBean.planStarttime = planStarttime;
                 planBean.planEndtime = planEndtime
                 planBean.remark = remark;
+                planBean.qmBindRlnList = qmBindRlnList;
                 Util.ajax.putJson(Util.constants.CONTEXT.concat(Util.constants.QM_PLAN_DNS).concat("/"), JSON.stringify(planBean), function (result) {
                     $.messager.show({
                         msg: result.RSP.RSP_DESC,

@@ -19,6 +19,7 @@ define([
                     }
                 });
             }else{
+                bean = null;
                 initSearchForm(paramsType);//初始化表单数据
             }
             initGlobalEvent();
