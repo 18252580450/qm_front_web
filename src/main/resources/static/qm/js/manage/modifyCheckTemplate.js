@@ -159,7 +159,7 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
                 $('#peopleManage').datagrid('insertRow', {
                     index: i,  // 索引从0开始
                     row: {
-                        nodeName: treeMap.text,
+                        checkItemName: treeMap.text,
                         nodeId: treeMap.id,
                         pNodeId:treeMap.pId,
                         errorType: treeMap.type,
@@ -183,7 +183,7 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
             $('#peopleManage').datagrid('insertRow',{
                 index:i ,  // 索引从0开始
                 row: {
-                    nodeName: node.name,
+                    checkItemName: node.name,
                     nodeId: node.id,
                     pNodeId: node.pId,
                     errorType: checkItemVitalType,
@@ -263,7 +263,7 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
                         "tenantId":Util.constants.TENANT_ID,
                         "templateId":templateId,
                         "nodeId":rowsData[i].nodeId,
-                        "nodeName": rowsData[i].nodeName,
+                        "nodeName": rowsData[i].checkItemName,
                         "maxScore": maxScore,
                         "nodeScore": nodeScore,
                         "errorType": rowsData[i].errorType,
@@ -339,9 +339,12 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
             var templateStatus = $("#templateStatus").combobox("getValue");
             var templateDesc = $("#templateDesc").val();
 
-            var params = {'createTime':createTime,'tenantId': Util.constants.TENANT_ID,'templateName': templateName,
-                'templateStatus': templateStatus, 'operateType': '1','remark':templateDesc,'templateType':templateType,"templateId":templateId};
-            Util.ajax.putJson(Util.constants.CONTEXT.concat(Util.constants.CHECK_TEMPLATE).concat("/action"), JSON.stringify(params), function (result) {
+            var map = {'templateName': templateName,'templateStatus': templateStatus,
+                'operateType': '1','remark':templateDesc,
+                'templateType':templateType,"templateId":templateId};
+            var params = [];
+            params.push(map);
+            Util.ajax.putJson(Util.constants.CONTEXT.concat(Util.constants.CHECK_TEMPLATE).concat("/updateTemplate"), JSON.stringify(params), function (result) {
                 $.messager.show({
                     msg: result.RSP.RSP_DESC,
                     timeout: 1000,
@@ -439,7 +442,7 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
                         return action+"&nbsp;&nbsp;"+action2;
                     }
                 },
-                {field: 'nodeName', title: '考评项名称', width: '20%',
+                {field: 'checkItemName', title: '考评项名称', width: '20%',
                     formatter: function (value) {
                         return "<span title='" + value + "'>" + value + "</span>";
                     }},
@@ -480,7 +483,14 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
 
                 Util.ajax.getJson(Util.constants.CONTEXT +  Util.constants.ADD_CHECK_TEMPLATE + "/selectByParams", param, function (result) {
                     var data = Transfer.DataGrid.transfer(result);
-
+                    var dataNew=[];
+                    for(var i=0;i<data.rows.length;i++){
+                        var map=data.rows[i];
+                        if(map.checkItem!=null){
+                            map["checkItemName"]=map.checkItem.checkItemName;
+                            dataNew.push(map);
+                        }
+                    }
                     var rspCode = result.RSP.RSP_CODE;
                     if (rspCode != "1") {
 
@@ -491,7 +501,7 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
                             showType: 'slide'
                         });
                     }
-                    success(data);
+                    success(dataNew);
                 });
             }
         });

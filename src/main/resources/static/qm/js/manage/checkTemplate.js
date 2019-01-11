@@ -93,7 +93,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
                 {field: 'createTime', title: '创建时间', width: '20%',
                     formatter:function(value,row,index){
                         return DateUtil.formatDateTime(value);
-                }},
+                }}
             ]],
             fitColumns: true,
             width: '100%',
@@ -194,46 +194,38 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
 
                 if (confirm) {
                     Util.ajax.deleteJson(Util.constants.CONTEXT.concat(Util.constants.CHECK_TEMPLATE).concat("/deleteByIds/").concat(ids), {}, function (result) {
-
+                        var rspCode = result.RSP.RSP_CODE;
                         $.messager.show({
                             msg: result.RSP.RSP_DESC,
-                            timeout: 1000,
+                            timeout: 2000,
                             style: {right: '', bottom: ''},     //居中显示
                             showType: 'slide'
                         });
-                        var rspCode = result.RSP.RSP_CODE;
 
                         if (rspCode == "1") {
                             $("#checkTemplateManage").datagrid('reload'); //删除成功后，刷新页面
                         }
-                    });
 
-                    // 根据templateId删除t_qm_templatedetail对应的数据
-                    Util.ajax.putJson(Util.constants.CONTEXT.concat(Util.constants.ADD_CHECK_TEMPLATE).concat("/deleteByIds/").concat(ids), {}, function (result) {
+                        if(rspCode!="2"){
+                            // 根据templateId删除t_qm_templatedetail对应的数据
+                            Util.ajax.putJson(Util.constants.CONTEXT.concat(Util.constants.ADD_CHECK_TEMPLATE).concat("/deleteByIds/").concat(ids), {}, function (result) {
 
-                        $.messager.show({
-                            msg: result.RSP.RSP_DESC,
-                            timeout: 1000,
-                            style: {right: '', bottom: ''},     //居中显示
-                            showType: 'slide'
-                        });
-                    })
+                                $.messager.show({
+                                    msg: result.RSP.RSP_DESC,
+                                    timeout: 1000,
+                                    style: {right: '', bottom: ''},     //居中显示
+                                    showType: 'slide'
+                                });
+                            })
 
-                    //将操作信息保存到考评模板操作日志表中
-                    var params = {'operateType': '2',"templateId":JSON.stringify(ids)};
-                    Util.ajax.postJson(Util.constants.CONTEXT+ Util.constants.TPL_OP_LOG + "/insertTplOpLog ", JSON.stringify(params), function (result) {
-
-                        $.messager.show({
-                            msg: result.RSP.RSP_DESC,
-                            timeout: 1000,
-                            style: {right: '', bottom: ''},     //居中显示
-                            showType: 'slide'
-                        });
+                            //将操作信息保存到考评模板操作日志表中
+                            var params = {'operateType': '2',"templateId":JSON.stringify(ids)};
+                            Util.ajax.postJson(Util.constants.CONTEXT+ Util.constants.TPL_OP_LOG + "/insertTplOpLog ", JSON.stringify(params), function (result) {
+                            });
+                        }
                     });
                 }
             });
-
-
         });
     }
 
@@ -294,16 +286,17 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
     //修改模板状态
     function initReviseEvent() {
         $("#page").on("click", "a.actionBtn", function () {
-
+            var params=[];
             var rowData = $(this).attr('id'); //获取a标签中传递的值
             var sensjson = JSON.parse(rowData); //转成json格式
             var status = sensjson.status;
             var templateStatus = {'release':'1','stop':'2'}[status];
             sensjson.templateStatus=templateStatus;
+            params.push(sensjson);
             $.messager.confirm('确认', '确定更改模板状态吗？', function (confirm) {
 
                 if (confirm) {
-                    Util.ajax.putJson(Util.constants.CONTEXT.concat(Util.constants.CHECK_TEMPLATE).concat("/action"), JSON.stringify(sensjson), function (result) {
+                    Util.ajax.putJson(Util.constants.CONTEXT.concat(Util.constants.CHECK_TEMPLATE).concat("/action"), JSON.stringify(params), function (result) {
 
                         $.messager.show({
                             msg: result.RSP.RSP_DESC,

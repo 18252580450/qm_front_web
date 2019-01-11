@@ -257,7 +257,7 @@ define([
         });
         //修改
         if(planBean){
-            $("#planName",$el).val(planBean.planName);
+            $('#planName',$el).textbox('setValue',planBean.planName);
             $("#templateId",$el).val(planBean.templateId);
             //$("#template",$el).val(planBean.templateName);
             $('#template').searchbox("setValue",planBean.templateName);
@@ -274,7 +274,7 @@ define([
             if(planBean.planEndtime){
                 $('#planEndtime',$el).datetimebox('setValue',DateUtil.formatDateTime(planBean.planEndtime,"yyyy-MM-dd hh:mm:ss"));
             }
-            $('#remark',$el).val(planBean.remark);
+            $('#remark',$el).textbox('setValue',planBean.remark);
         }
     }
 
@@ -306,7 +306,7 @@ define([
                                 }
                             });
                         }
-                        $("#checkedStaffList").datagrid("loadData",checkedStaffsOfCheckStaff);
+                        $("#checkedStaffList",$el).datagrid("loadData",checkedStaffsOfCheckStaff);
                     }else{
                         var checkedStaffs = [];
                         if(qmBindRlnList.length > 0) {
@@ -316,7 +316,7 @@ define([
                                 }
                             });
                         }
-                        $("#checkedStaffList").datagrid("loadData",checkedStaffs);
+                        $("#checkedStaffList",$el).datagrid("loadData",checkedStaffs);
                     }
                 }
             }
@@ -333,7 +333,7 @@ define([
             }];
         }
 
-        var treeObj = $.fn.zTree.init($("#qmStaffsTree"), setting, checkStaffs);
+        var treeObj = $.fn.zTree.init($("#qmStaffsTree",$el), setting, checkStaffs);
         var nodes = treeObj.getNodes();
         treeObj.expandNode(nodes[0], true, false, false);
     }
@@ -341,7 +341,7 @@ define([
     //初始化被质检对象列表
     function initTable(checkedStaffs,checkedDeparts){
         if(checkedStaffs && checkedStaffs.length > 0){
-            $("#checkedStaffList").datagrid({
+            $("#checkedStaffList",$el).datagrid({
                 columns:[
                     [
                         {field:'checkedObjectId',title:'被质检人ID',width:'15%'},
@@ -363,7 +363,7 @@ define([
                 idField:"checkedObjectId"
             });
         }else if(checkedDeparts && checkedDeparts.length > 0){
-            $("#checkedStaffList").datagrid({
+            $("#checkedStaffList",$el).datagrid({
                 columns : [
                     [
                         {field:'checkedObjectId',title:'被质检部门ID',width:'30%'},
@@ -381,7 +381,7 @@ define([
                 data:checkedDeparts
             });
         }else{
-            $("#checkedStaffList").datagrid({
+            $("#checkedStaffList",$el).datagrid({
                 columns:[
                     [
                         {field:'checkedObjectId',title:'被质检人ID',width:'15%'},
@@ -407,7 +407,7 @@ define([
     function initDelBut(){
         $(".delBtn").on("click", function () {
             var checkedObjectId = $(this).attr('id');
-            $("#checkedStaffList").datagrid("deleteRow",$("#checkedStaffList").datagrid("getRowIndex",checkedObjectId));
+            $("#checkedStaffList",$el).datagrid("deleteRow",$("#checkedStaffList",$el).datagrid("getRowIndex",checkedObjectId));
             if(qmBindRlnList && qmBindRlnList.length > 0){
                 $.each(qmBindRlnList,function(i,qmBindRln){
                     if(qmBindRln.checkedObjectId == checkedObjectId){

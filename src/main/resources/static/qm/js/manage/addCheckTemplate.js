@@ -245,7 +245,7 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
                 "nodeScore": nodeScore,
                 "errorType": rowsData[i].errorType,
                 "nodeType": '3',
-                "pNodeId":rowsData[i].pNodeId
+                "pNodeId":rowsData[i].pNodeId,
             };
             json.push(loc);
         });
@@ -293,7 +293,7 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
             var templateDesc = $("#templateDesc").val();
 
             var params = {'tenantId': Util.constants.TENANT_ID,'templateName': templateName,
-                'templateStatus': templateStatus, 'operateType': '0','remark':templateDesc,'templateType':templateType,"templateId":num.toString()};
+                'templateStatus': templateStatus, 'operateType': '0','remark':templateDesc,'templateType':templateType,"templateId":num.toString(),"scoreType":'2'};
             Util.ajax.postJson(Util.constants.CONTEXT+ Util.constants.CHECK_TEMPLATE + "/insertCheckTemplate ", JSON.stringify(params), function (result) {
 
                 $.messager.show({
