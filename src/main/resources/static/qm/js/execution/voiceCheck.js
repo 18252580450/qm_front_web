@@ -1,4 +1,4 @@
-require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], function (QueryQmPlan,$, Util, Transfer, CommonAjax) {
+require(["js/manage/queryQmPlan", "jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], function (QueryQmPlan, $, Util, Transfer, CommonAjax) {
 
     var voiceCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/execution/voiceCheckDetail.html";
 
@@ -13,7 +13,7 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "commonAjax", "da
     function initPageInfo() {
 
         $('#planName').searchbox({//输入框点击查询事件
-            searcher: function(value){
+            searcher: function (value) {
                 var queryQmPlan = new QueryQmPlan();
 
                 $('#qry_window').show().window({
@@ -21,7 +21,7 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "commonAjax", "da
                     width: 1150,
                     height: 600,
                     cache: false,
-                    content:queryQmPlan.$el,
+                    content: queryQmPlan.$el,
                     modal: true
                 });
             }
@@ -183,8 +183,8 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "commonAjax", "da
                     maxRecordTime = $("#maxRecordTime").val(),
                     poolStatus = $("#poolStatus").combobox("getValue");
 
-                if (poolStatus === "") {
-                    poolStatus = "0";
+                if (poolStatus === "" || poolStatus === "-1") {
+                    return;
                 }
 
                 var reqParams = {

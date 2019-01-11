@@ -150,6 +150,10 @@
 .processRight-13{
     margin-right:28px;
 }
+.check-right{
+    position:absolute;
+    right: 20px;
+}
 .process-left{
     position:absolute;
     left: -72px;
@@ -211,7 +215,7 @@ td,th{
     height:14px;
 }
 .input-type{
-    width:90px;
+    width:110px;
     height:30px;
     background: #FFFFFF;
     border: 1px solid #EAEAEA;
@@ -219,11 +223,11 @@ td,th{
 }
 .content4-6{
     margin-top:30px;
-    margin-left:64px;
+    margin-left:30px;
 }
 .content4-6 div span{
     display: inline-block;
-    width:48px;
+    width:82px;
     height:17px;
     font-size: 12px;
     color: #000000;

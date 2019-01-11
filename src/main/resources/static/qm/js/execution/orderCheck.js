@@ -106,14 +106,6 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "commonAjax", "da
                         }
                     }
                 },
-                // {
-                //     field: 'touchId', title: '质检流水', width: '15%',
-                //     formatter: function (value, row, index) {
-                //         if (value != null) {
-                //             return '<a href="javascript:void(0);" id = "checkFlow' + row.touchId + '">' + value + '</a>';
-                //         }
-                //     }
-                // },
                 {field: 'srvReqstTypeNm', title: '服务请求类型', width: '15%'},
                 {
                     field: 'planName', title: '计划名称', width: '15%',
@@ -123,14 +115,6 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "commonAjax", "da
                         }
                     }
                 },
-                // {
-                //     field: 'planCreateTime', title: '计划生成时间', width: '15%',
-                //     formatter: function (value, row, index) {
-                //         if (row.qmPlan != null && row.qmPlan.createTime != null) {
-                //             return DateUtil.formatDateTime(row.qmPlan.createTime);
-                //         }
-                //     }
-                // },
                 {
                     field: 'operateTime', title: '分配时间', width: '15%',
                     formatter: function (value, row, index) { //格式化时间格式
@@ -186,8 +170,8 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "commonAjax", "da
                     planId = $("#planId").val(),
                     poolStatus = $("#poolStatus").combobox("getValue");
 
-                if (poolStatus === "") {
-                    poolStatus = "0";
+                if (poolStatus === "" || poolStatus === "-1") {
+                    return;
                 }
                 var reqParams = {
                     // "checkStaffId": Util.constants.STAFF_ID,     //暂时不考虑工号

@@ -5,8 +5,9 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
         scoreType,             //分值类型（默认扣分）
         startTime,             //页面初始化时间
         checkItemListData,     //考评项列表数据
-        currentNode,           //当前选中环节
-        checkLinkData = [];    //环节考评数据
+        currentNode = "1001",  //当前选中环节  //暂时
+        checkLinkData = [],    //环节考评数据
+        totalScore = 0;        //总得分
     initialize();
 
     function initialize() {
@@ -28,14 +29,18 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
             }
         );
 
+        //当前环节默认得分为满分
+        $("#checkScore").val("100");
+
         //动态展示处理过程
-        showDealProcess(dealProcessData);
+        // showDealProcess(dealProcessData);   暂时静态显示工单轨迹，对接工单轨迹接口后再动态显示
+        initCheckBoxEvent();
 
         //考评项列表
         var IsCheckFlag = true; //标示是否是勾选复选框选中行的，true - 是 , false - 否
         $("#checkItemList").datagrid({
             columns: [[
-                {field: 'nodeName', title: '考评项名称', width: '15%'},
+                {field: 'nodeName', title: '考评项名称', width: '17%'},
                 {
                     field: 'errorType', title: '类别', width: '15%',
                     formatter: function (value, row, index) {
@@ -49,14 +54,14 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
                         return vitalType;
                     }
                 },
-                {field: 'remark', title: '描述', width: '20%'},
+                {field: 'remark', title: '描述', width: '25%'},
                 {field: 'nodeScore', title: '所占分值', width: '15%'},
                 {
                     field: 'scoreScope', title: '扣分区间', width: '10%',
                     formatter: function (value, row, index) {
                         var min = "0",
                             max = "0";
-                       if (row.minScore != null) {
+                        if (row.minScore != null) {
                             min = row.minScore;
                         }
                         if (row.maxScore != null) {
@@ -76,7 +81,7 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
                 }
             ]],
             fitColumns: true,
-            width: '100%',
+            width: '90%',
             height: 200,
             rownumbers: false,
             checkOnSelect: false,
@@ -189,13 +194,6 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
                 });
             }
         });
-
-        //考评评语
-        // $("#checkComment").textbox(
-        //     {
-        //         multiline: true
-        //     }
-        // );
     }
 
     //事件初始化
@@ -267,32 +265,7 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
                         $("#checkBox_" + data.nodeId).attr("checked", false);
                     }
                 });
-
-                //工作质量评价区数据更新
-                var checkScore = $("#checkScore"),
-                    checkComment = $("#checkComment");
-                for (var i = 0; i < checkLinkData.length; i++) {
-                    if (checkLinkData[i].checkLink === currentNode) {
-                        checkScore.val(checkLinkData[i].finalScore);
-                        checkComment.val(checkLinkData[i].checkComment);
-                        //考评项列表
-                        $.each(checkItemListData, function (index, item) {
-                            $.each(checkLinkData[i].checkItemScoreList, function (scoreIndex, scoreItem) {
-                                if (item.nodeId === scoreItem.nodeId) {
-                                    var score = (scoreItem.scoreScope - scoreItem.realScore).toString();
-                                    $("#score" + item.nodeId).val(score);
-                                }
-                            });
-                        });
-                        return;
-                    }
-                }
-                //没有保存结果的情况
-                checkScore.val("100");
-                checkComment.val("");
-                $.each(checkItemListData, function (i, item) {
-                    $("#score" + item.nodeId).val("0");
-                });
+                refreshCheckArea();
             });
         });
     }
@@ -300,14 +273,16 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
     //考评环节保存
     function checkLinkSave() {
         var checkItemScoreList = [],
-            finalScore = parseInt($("#checkScore").val()),
-            checkComment = $("#checkComment").val();
+            checkLinkScore = parseInt($("#checkScore").val());
 
-        $.each(checkLinkData, function (i, item) {
-            if (item.checkLink === currentNode) {
+        for (var i = 0; i < checkLinkData.length; i++) {
+            if (checkLinkData[i].checkLink === currentNode) {
+                //更新总得分
+                totalScore -= checkLinkData[i].checkLinkScore;
                 checkLinkData.splice(i, 1);
+                break;
             }
-        });
+        }
 
         $.each(checkItemListData, function (i, item) {
             var checkItem = {};
@@ -323,14 +298,16 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
 
         var checkLink = {
             "checkLink": currentNode,
-            "finalScore": finalScore,
-            "checkComment": checkComment,
+            "checkLinkScore": checkLinkScore,
             "checkItemScoreList": checkItemScoreList
         };
         checkLinkData.push(checkLink);
 
+        //更新总得分
+        totalScore += checkLinkScore;
+
         //显示已评价标识
-        $("#checkFlag_" + currentNode).html("已评价");
+        // $("#checkFlag_" + currentNode).html("已评价");
     }
 
     //质检提交or保存
@@ -343,17 +320,7 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
 
         //针对提交，提交时需要对所有（必检）环节进行考评，现在默认需要对所有环节进行考评
         if (checkStatus === Util.constants.CHECK_RESULT_NEW_BUILD || checkStatus === Util.constants.CHECK_RESULT_RECHECK) {
-            var allCheck = false;
-            for (var i = 0; i < dealProcessData.length; i++) {
-                allCheck = false;
-                for (var j = 0; j < checkLinkData.length; j++) {
-                    if (checkLinkData[j].checkLink === dealProcessData[i].nodeId) {
-                        allCheck = true;
-                        break;
-                    }
-                }
-            }
-            if (!allCheck) {
+            if (checkLinkData.length < dealProcessData.length) {
                 $.messager.alert("提示", "有未考评环节!考评后才能提交");
                 return;
             }
@@ -361,14 +328,16 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
 
         var currentTime = new Date(),
             checkTime = currentTime - startTime,
-            checkStartTime = DateUtil.formatDateTime(parseInt(orderPool.operateTime));
+            checkStartTime = DateUtil.formatDateTime(parseInt(orderPool.operateTime)),
+            finalScore = totalScore / checkLinkData.length,  //最终得分，暂时按各个环节的平局分统计
+            checkComment = $("#checkComment").val();
 
         //工单质检基本信息
         var orderCheckInfo = {
             "tenantId": orderPool.tenantId,                          //租户id
             "callingNumber": orderPool.acptStaffNum,                 //主叫号码
             "acceptNumber": orderPool.custNum,                       //受理号码
-            "touchId": orderPool.wrkfmId,                            //工单流水
+            "touchId": orderPool.workFormId,                         //工单流水
             "planId": orderPool.planId,                              //考评计划
             "templateId": orderPool.templateId,                      //考评模版ID
             "checkModel": Util.constants.CHECK_TYPE_WITHIN_PLAN,     //质检模式、计划内质检
@@ -383,6 +352,8 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
             "checkStartTime": checkStartTime,                        //质检开始时间（质检分配时间）
             "checkTime": checkTime,                                  //质检时长
             "scoreType": scoreType,                                  //分值类型
+            "finalScore": finalScore,                                //总得分
+            "checkComment": checkComment,                            //考评评语
             "resultStatus": checkStatus                              //质检结果状态（暂存、质检、复检）
         };
 
@@ -464,6 +435,69 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
             '<div class="fl text-small" style="margin-top: 12px;" id="checkFlag_' + data.nodeId + '">待评价</div>' +
             '</div></form></div>' +
             '</div>';
+    }
+
+
+    //接口联调之后删除
+    function initCheckBoxEvent() {
+        $("#checkBox-1").on("click", function () {
+            debugger;
+            //切换环节时更新考评信息
+            if (currentNode !== "1001") {
+                checkLinkSave();
+            }
+            $("#checkBox-2").attr("checked", false);
+            $("#left-span-1").attr("class", "left-span-1");
+            $("#left-span-2").attr("class", "left-span-2");
+            $("#spot-1").attr("class", "spot-1");
+            $("#spot-2").attr("class", "spot-2");
+            $("#checkLinkTitle").html("填单&nbsp");
+            currentNode = "1001";
+            refreshCheckArea();
+
+        });
+        $("#checkBox-2").on("click", function () {
+            debugger;
+            //切换环节时更新考评信息
+            if (currentNode !== "1002") {
+                checkLinkSave();
+            }
+            $("#checkBox-1").attr("checked", false);
+            $("#left-span-1").attr("class", "left-span-2");
+            $("#left-span-2").attr("class", "left-span-1");
+            $("#spot-1").attr("class", "spot-2");
+            $("#spot-2").attr("class", "spot-1");
+            $("#checkLinkTitle").html("复核&nbsp");
+            currentNode = "1002";
+            refreshCheckArea();
+        });
+    }
+
+    //更新评价区数据
+    function refreshCheckArea() {
+        //工作质量评价区数据更新
+        var checkScore = $("#checkScore");
+        $("#totalScore").val(totalScore);  //总得分
+        for (var i = 0; i < checkLinkData.length; i++) {
+            if (checkLinkData[i].checkLink === currentNode) {
+                checkScore.val(checkLinkData[i].checkLinkScore);
+                //考评项列表
+                $.each(checkItemListData, function (index, item) {
+                    $.each(checkLinkData[i].checkItemScoreList, function (scoreIndex, scoreItem) {
+                        if (item.nodeId === scoreItem.nodeId) {
+                            var score = (scoreItem.scoreScope - scoreItem.realScore).toString();
+                            $("#score" + item.nodeId).val(score);
+                        }
+                    });
+                });
+                return;
+            }
+        }
+        //没有保存结果的情况
+        checkScore.val("100");
+        $.each(checkItemListData, function (i, item) {
+            $("#score" + item.nodeId).val("0");
+        });
     }
 
     //获取url对象

@@ -99,7 +99,6 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui", "dateUt
                 {field: 'touchId', title: '工单流水号', align: 'center', width: '15%'},
                 {field: 'inspectionId', title: '质检流水号', align: 'center', width: '15%'},
                 {field: 'acceptNumber', title: '客户号码', align: 'center', width: '10%', hidden: true},
-                {field: 'checkLink', title: '考评环节', align: 'center', width: '10%'},
                 {field: 'planName', title: '计划名称', align: 'center', width: '10%'},
                 {field: 'checkedStaffId', title: '被质检人工号', align: 'center', width: '10%'},
                 {field: 'checkedDepartId', title: '被质检人班组', align: 'center', width: '10%'},
