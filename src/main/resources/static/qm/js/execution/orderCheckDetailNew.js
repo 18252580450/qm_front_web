@@ -29,8 +29,8 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
             }
         );
 
-        //当前环节默认得分为满分
-        $("#checkScore").val("100");
+        //初始化总得分
+        $("#totalScore").val("0");
 
         //动态展示处理过程
         // showDealProcess(dealProcessData);   暂时静态显示工单轨迹，对接工单轨迹接口后再动态显示
@@ -112,7 +112,6 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
                     "params": JSON.stringify(templateReqParams)
                 }, Util.PageUtil.getParams($("#searchForm")));
 
-                debugger;
                 Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.CHECK_TEMPLATE + "/selectByParams", templateParams, function (result) {
                     var data = result.RSP.DATA;
                     var rspCode = result.RSP.RSP_CODE;
@@ -145,7 +144,6 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
                 }, Util.PageUtil.getParams($("#searchForm")));
 
                 Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.CHECK_TEMPLATE_DETAIL_DNS + "/queryCheckTemplateDetail", params, function (result) {
-                    debugger;
                     checkItemListData = result.RSP.DATA;
                     var data = {
                         rows: result.RSP.DATA
@@ -167,7 +165,7 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
                 $.each(data.rows, function (i, item) {
                     var input = $("#score" + item.nodeId);
                     input.on("keyup", function () {
-                        var totalScore = 0,
+                        var total = 0,
                             maxScore = $("#maxScore" + item.nodeId).val(),
                             scoreDiv = $("#score" + item.nodeId),
                             score = scoreDiv.val();
@@ -179,10 +177,11 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
                         $.each(data.rows, function (i, item) {
                             var inputScore = $("#score" + item.nodeId);
                             if (inputScore.val() !== "") {
-                                totalScore = totalScore + parseInt(inputScore.val());
+                                total = total + parseInt(inputScore.val());
                             }
                         });
-                        $("#checkScore").val(String(100 - totalScore));
+                        $("#checkScore" + currentNode).html(String(100 - total));
+                        // $("#checkScore").val(String(100 - total));
                     });
                     input.on("blur", function () {
                         var scoreDiv = $("#score" + item.nodeId),
@@ -273,8 +272,11 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
     //考评环节保存
     function checkLinkSave() {
         var checkItemScoreList = [],
-            checkLinkScore = parseInt($("#checkScore").val());
-
+            checkLinkScore = 0,
+            scoreStr = $("#checkScore" + currentNode).html();
+        if (scoreStr !== "") {
+            checkLinkScore = parseInt(scoreStr);
+        }
         for (var i = 0; i < checkLinkData.length; i++) {
             if (checkLinkData[i].checkLink === currentNode) {
                 //更新总得分
@@ -441,7 +443,6 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
     //接口联调之后删除
     function initCheckBoxEvent() {
         $("#checkBox-1").on("click", function () {
-            debugger;
             //切换环节时更新考评信息
             if (currentNode !== "1001") {
                 checkLinkSave();
@@ -457,7 +458,6 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
 
         });
         $("#checkBox-2").on("click", function () {
-            debugger;
             //切换环节时更新考评信息
             if (currentNode !== "1002") {
                 checkLinkSave();
@@ -476,11 +476,9 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
     //更新评价区数据
     function refreshCheckArea() {
         //工作质量评价区数据更新
-        var checkScore = $("#checkScore");
         $("#totalScore").val(totalScore);  //总得分
         for (var i = 0; i < checkLinkData.length; i++) {
             if (checkLinkData[i].checkLink === currentNode) {
-                checkScore.val(checkLinkData[i].checkLinkScore);
                 //考评项列表
                 $.each(checkItemListData, function (index, item) {
                     $.each(checkLinkData[i].checkItemScoreList, function (scoreIndex, scoreItem) {
@@ -494,7 +492,6 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
             }
         }
         //没有保存结果的情况
-        checkScore.val("100");
         $.each(checkItemListData, function (i, item) {
             $("#score" + item.nodeId).val("0");
         });

@@ -116,6 +116,10 @@
     border: 1px solid #EAEAEA;
     border-radius: 0 8px 8px 8px;
 }
+.check-right{
+    margin-left: 20px;
+    display: inline-block;
+}
 .leftTop-border{
     background: url(../image/border.png) no-repeat 0 0; 
     width: 8px;
@@ -149,10 +153,6 @@
 }
 .processRight-13{
     margin-right:28px;
-}
-.check-right{
-    position:absolute;
-    right: 20px;
 }
 .process-left{
     position:absolute;
