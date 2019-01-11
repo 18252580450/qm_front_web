@@ -40,7 +40,7 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
         var IsCheckFlag = true; //标示是否是勾选复选框选中行的，true - 是 , false - 否
         $("#checkItemList").datagrid({
             columns: [[
-                {field: 'nodeName', title: '考评项名称', width: '17%'},
+                {field: 'nodeName', title: '考评项名称', width: '18%'},
                 {
                     field: 'errorType', title: '类别', width: '15%',
                     formatter: function (value, row, index) {
@@ -81,7 +81,7 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
                 }
             ]],
             fitColumns: true,
-            width: '90%',
+            width: '80%',
             height: 200,
             rownumbers: false,
             checkOnSelect: false,
@@ -189,6 +189,7 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
                         if (score === "") {
                             scoreDiv.val("0");
                         }
+                        checkLinkSave();
                     });
                 });
             }

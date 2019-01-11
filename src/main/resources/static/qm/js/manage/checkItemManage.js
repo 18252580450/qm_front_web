@@ -404,18 +404,22 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
                 "orderNo": orderNo
             };
             Util.ajax.postJson(Util.constants.CONTEXT.concat(Util.constants.CHECK_ITEM_DNS).concat("/"), JSON.stringify(params), function (result) {
-                $.messager.show({
-                    msg: result.RSP.RSP_DESC,
-                    timeout: 1000,
-                    style: {right: '', bottom: ''},     //居中显示
-                    showType: 'show'
-                });
                 var rspCode = result.RSP.RSP_CODE;
                 if (rspCode != null && rspCode === "1") {
                     $("#checkItemDialog").window("close");  //关闭对话框
                     checkNode.id = "";  //展示所有考评项
                     $("#checkItemList").datagrid('reload'); //插入成功后，刷新页面
                     refreshTree(); //刷新考评树
+                    //提示
+                    $.messager.show({
+                        msg: result.RSP.RSP_DESC,
+                        timeout: 1000,
+                        style: {right: '', bottom: ''},     //居中显示
+                        showType: 'show'
+                    });
+                } else {
+                    var errMsg = "新增失败！<br>" + result.RSP.RSP_DESC;
+                    $.messager.alert("提示", errMsg);
                 }
                 disableSubmit = false;
                 submitBtn.linkbutton({disabled: false});  //取消提交禁用
@@ -563,18 +567,22 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
             }
 
             Util.ajax.putJson(Util.constants.CONTEXT.concat(Util.constants.CHECK_ITEM_DNS).concat("/"), JSON.stringify(item), function (result) {
-                $.messager.show({
-                    msg: result.RSP.RSP_DESC,
-                    timeout: 1000,
-                    style: {right: '', bottom: ''},     //居中显示
-                    showType: 'show'
-                });
                 var rspCode = result.RSP.RSP_CODE;
                 if (rspCode != null && rspCode === "1") {
                     checkNode.id = "";  //展示所有考评项
                     $("#checkItemDialog").window("close");  //关闭对话框
                     $("#checkItemList").datagrid('reload'); //插入成功后，刷新页面
                     refreshTree(); //刷新考评树
+                    //提示
+                    $.messager.show({
+                        msg: result.RSP.RSP_DESC,
+                        timeout: 1000,
+                        style: {right: '', bottom: ''},     //居中显示
+                        showType: 'show'
+                    });
+                } else {
+                    var errMsg = "修改失败！<br>" + result.RSP.RSP_DESC;
+                    $.messager.alert("提示", errMsg);
                 }
                 disableSubmit = false;
                 submitBtn.linkbutton({disabled: false});  //取消提交禁用
@@ -599,17 +607,21 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
         $.messager.confirm('确认删除弹窗', '确定要删除吗？', function (confirm) {
             if (confirm) {
                 Util.ajax.deleteJson(Util.constants.CONTEXT.concat(Util.constants.CHECK_ITEM_DNS).concat("/").concat(delArr), {}, function (result) {
-                    $.messager.show({
-                        msg: result.RSP.RSP_DESC,
-                        timeout: 1000,
-                        style: {right: '', bottom: ''},     //居中显示
-                        showType: 'show'
-                    });
                     var rspCode = result.RSP.RSP_CODE;
                     if (rspCode != null && rspCode === "1") {
                         checkNode.id = "";  //展示所有考评项
                         $("#checkItemList").datagrid('reload'); //删除成功后，刷新页面
                         refreshTree(); //刷新考评树
+                        //提示
+                        $.messager.show({
+                            msg: result.RSP.RSP_DESC,
+                            timeout: 1000,
+                            style: {right: '', bottom: ''},     //居中显示
+                            showType: 'show'
+                        });
+                    } else {
+                        var errMsg = "删除失败！<br>" + result.RSP.RSP_DESC;
+                        $.messager.alert("提示", errMsg);
                     }
                 });
             }
