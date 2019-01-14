@@ -103,7 +103,10 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
         var beginDateBox = $('#createTimeBegin');
         var beginDate = (DateUtil.formatDateTime(new Date() - 24 * 60 * 60 * 1000)).substr(0, 11) + "00:00:00";
         beginDateBox.datetimebox({
-            value: beginDate,
+            // value: beginDate,
+            onShowPanel:function(){
+                $("#createTimeBegin").datetimebox("spinner").timespinner("setValue","00:00:00");
+            },
             onChange: function () {
                 checkBeginEndTime();
             }
@@ -113,7 +116,10 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
         var endDate = (DateUtil.formatDateTime(new Date())).substr(0, 11) + "00:00:00";
         // var endDate = (DateUtil.formatDateTime(new Date()-24*60*60*1000)).substr(0,11) + "23:59:59";
         endDateBox.datetimebox({
-            value: endDate,
+            // value: endDate,
+            onShowPanel:function(){
+                $("#createTimeEnd").datetimebox("spinner").timespinner("setValue","23:59:59");
+            },
             onChange: function () {
                 checkBeginEndTime();
             }

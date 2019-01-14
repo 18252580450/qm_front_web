@@ -32,7 +32,10 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "commonAjax", "da
         // var beginDate = (DateUtil.formatDateTime(new Date() - 24 * 60 * 60 * 1000)).substr(0, 11) + "00:00:00";
         var beginDate = "2018-10-10 00:00:00";
         $("#assignBeginTime").datetimebox({
-            value: beginDate,
+            // value: beginDate,
+            onShowPanel:function(){
+                $("#assignBeginTime").datetimebox("spinner").timespinner("setValue","00:00:00");
+            },
             onChange: function () {
                 checkBeginEndTime();
             }
@@ -42,7 +45,10 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "commonAjax", "da
         var endDate = (DateUtil.formatDateTime(new Date())).substr(0, 11) + "00:00:00";
         // var endDate = (DateUtil.formatDateTime(new Date()-24*60*60*1000)).substr(0,11) + "23:59:59";
         $('#assignEndTime').datetimebox({
-            value: endDate,
+            // value: endDate,
+            onShowPanel:function(){
+                $("#assignEndTime").datetimebox("spinner").timespinner("setValue","23:59:59");
+            },
             onChange: function () {
                 checkBeginEndTime();
             }

@@ -37,7 +37,10 @@ require(["js/manage/queryQmPlan", "jquery", 'util', "transfer", "commonAjax", "d
         // var extractBeginDate = (DateUtil.formatDateTime(new Date() - 24 * 60 * 60 * 1000)).substr(0, 11) + "00:00:00";
         var extractBeginDate = "2018-10-10 00:00:00";
         $("#extractBeginTime").datetimebox({
-            value: extractBeginDate,
+            // value: extractBeginDate,
+            onShowPanel:function(){
+                $("#extractBeginTime").datetimebox("spinner").timespinner("setValue","00:00:00");
+            },
             onChange: function () {
                 var beginDate = $("#extractBeginTime").datetimebox("getValue"),
                     endDate = $("#extractEndTime").datetimebox("getValue");
@@ -49,7 +52,10 @@ require(["js/manage/queryQmPlan", "jquery", 'util', "transfer", "commonAjax", "d
         var extractEndDate = (DateUtil.formatDateTime(new Date())).substr(0, 11) + "00:00:00";
         // var endDate = (DateUtil.formatDateTime(new Date()-24*60*60*1000)).substr(0,11) + "23:59:59";
         $('#extractEndTime').datetimebox({
-            value: extractEndDate,
+            // value: extractEndDate,
+            onShowPanel:function(){
+                $("#extractEndTime").datetimebox("spinner").timespinner("setValue","23:59:59");
+            },
             onChange: function () {
                 var beginDate = $("#extractBeginTime").datetimebox("getValue"),
                     endDate = $("#extractEndTime").datetimebox("getValue");
@@ -61,7 +67,10 @@ require(["js/manage/queryQmPlan", "jquery", 'util', "transfer", "commonAjax", "d
         // var distributeBeginDate = (DateUtil.formatDateTime(new Date() - 24 * 60 * 60 * 1000)).substr(0, 11) + "00:00:00";
         var distributeBeginDate = "2018-10-10 00:00:00";
         $("#distributeBeginTime").datetimebox({
-            value: distributeBeginDate,
+            // value: distributeBeginDate,
+            onShowPanel:function(){
+                $("#distributeBeginTime").datetimebox("spinner").timespinner("setValue","00:00:00");
+            },
             onChange: function () {
                 var beginDate = $("#distributeBeginTime").datetimebox("getValue"),
                     endDate = $("#distributeEndTime").datetimebox("getValue");
@@ -73,7 +82,10 @@ require(["js/manage/queryQmPlan", "jquery", 'util', "transfer", "commonAjax", "d
         var distributeEndDate = (DateUtil.formatDateTime(new Date())).substr(0, 11) + "00:00:00";
         // var endDate = (DateUtil.formatDateTime(new Date()-24*60*60*1000)).substr(0,11) + "23:59:59";
         $('#distributeEndTime').datetimebox({
-            value: distributeEndDate,
+            // value: distributeEndDate,
+            onShowPanel:function(){
+                $("#distributeEndTime").datetimebox("spinner").timespinner("setValue","23:59:59");
+            },
             onChange: function () {
                 var beginDate = $("#distributeBeginTime").datetimebox("getValue"),
                     endDate = $("#distributeEndTime").datetimebox("getValue");
