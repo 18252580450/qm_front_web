@@ -1,9 +1,9 @@
-define([
+define(["js/execution/queryQmPeople",
         "text!html/manage/qmPlanManageAdd.tpl",
         "js/manage/qryCheckTemplate",
         "js/manage/qryStrategy",
         "jquery", 'commonAjax','util', "transfer", "easyui","crossAPI","dateUtil",'ztree-exedit'],
-    function (tpl,QryCheckTemplate,QryStrategy,$,CommonAjax, Util, Transfer,crossAPI,dateUtil) {
+    function (QueryQmPeople,tpl,QryCheckTemplate,QryStrategy,$,CommonAjax, Util, Transfer,crossAPI,dateUtil) {
     //调用初始化方法
 
     var planTypes = [];
@@ -30,6 +30,20 @@ define([
     };
 
     function initGlobalEvent(){
+
+        $("#addQmStaffBtn",$el).on("click", function () {
+            var queryQmPeople = new QueryQmPeople();
+
+            $('#qry_window',$el).show().window({
+                title: '查询考评计划',
+                width: 1150,
+                height: 600,
+                cache: false,
+                content:queryQmPeople.$el,
+                modal: true
+            });
+        });
+
         //关闭
         $("#close",$el).on("click", function () {
             $("#mainForm",$el).form('clear');
