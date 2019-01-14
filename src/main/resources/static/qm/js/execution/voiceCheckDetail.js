@@ -38,9 +38,9 @@ require(["jquery", "util", "dateUtil", "transfer", "easyui"], function ($, Util)
         var IsCheckFlag = true; //标示是否是勾选复选框选中行的，true - 是 , false - 否
         $("#checkItemList").datagrid({
             columns: [[
-                {field: 'nodeName', title: '考评项名称', width: '15%'},
+                {field: 'checkItemName', title: '考评项名称', width: '15%'},
                 {
-                    field: 'errorType', title: '类别', width: '15%',
+                    field: 'checkItemVitalType', title: '类别', width: '15%',
                     formatter: function (value, row, index) {
                         var vitalType = null;
                         if (value != null && value === "0") {
@@ -123,38 +123,7 @@ require(["jquery", "util", "dateUtil", "transfer", "easyui"], function ($, Util)
                     if (data.length !== 0) {
                         templateId = data[0].templateId;
 
-                        //查询分值类型
-                        var templateReqParams = {
-                            "tenantId": voicePool.tenantId,
-                            "templateId": templateId
-                        };
-                        var templateParams = $.extend({
-                            "start": 0,
-                            "pageNum": 0,
-                            "params": JSON.stringify(templateReqParams)
-                        }, Util.PageUtil.getParams($("#searchForm")));
-
-                        Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.CHECK_TEMPLATE + "/selectByParams", templateParams, function (result) {
-                            var data = result.RSP.DATA;
-                            var rspCode = result.RSP.RSP_CODE;
-                            if (rspCode != null && rspCode !== "1") {
-                                $.messager.show({
-                                    msg: result.RSP.RSP_DESC,
-                                    timeout: 1000,
-                                    style: {right: '', bottom: ''},     //居中显示
-                                    showType: 'show'
-                                });
-                            }
-                            if (data.length !== 0) {
-                                if (data[0].scoreType != null) {
-                                    scoreType = data[0].scoreType;
-                                } else {
-                                    scoreType = Util.constants.SCORE_TYPE_DISCOUNT;
-                                }
-                            }
-                        });
-
-                        //考评模版详细信息
+                        //考评项详细信息
                         var reqParams = {
                             "tenantId": voicePool.tenantId,
                             "templateId": templateId
@@ -165,29 +134,10 @@ require(["jquery", "util", "dateUtil", "transfer", "easyui"], function ($, Util)
                             "params": JSON.stringify(reqParams)
                         }, Util.PageUtil.getParams($("#searchForm")));
 
-                        Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.CHECK_TEMPLATE_DETAIL_DNS + "/queryCheckTemplateDetail", params, function (result) {
+                        Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.CHECK_ITEM_DNS + "/queryCheckItemDetail", params, function (result) {
                             var data = {
                                 rows: result.RSP.DATA
                             };
-                            $.each(result.RSP.DATA, function (i, item) {
-                                var checkItem = {};
-                                checkItem.nodeType = item.nodeType;
-                                checkItem.nodeId = item.nodeId;
-                                checkItem.nodeName = item.nodeName;
-                                checkItem.scoreScope = item.nodeScore;
-                                checkItem.realScore = item.nodeScore;
-                                if (item.minScore != null) {
-                                    checkItem.minScore = item.minScore;
-                                } else {
-                                    checkItem.minScore = 0;
-                                }
-                                if (item.maxScore != null) {
-                                    checkItem.maxScore = item.maxScore;
-                                } else {
-                                    checkItem.maxScore = item.nodeScore;
-                                }
-                                checkItemScoreList.push(checkItem);
-                            });
                             var rspCode = result.RSP.RSP_CODE;
                             if (rspCode != null && rspCode !== "1") {
                                 $.messager.show({
@@ -195,6 +145,28 @@ require(["jquery", "util", "dateUtil", "transfer", "easyui"], function ($, Util)
                                     timeout: 1000,
                                     style: {right: '', bottom: ''},     //居中显示
                                     showType: 'show'
+                                });
+                                //分值类型
+                                scoreType = result.RSP.DATA[0].scoreType;
+                                //考评项评分列表
+                                $.each(result.RSP.DATA, function (i, item) {
+                                    var checkItem = {};
+                                    checkItem.nodeType = item.nodeType;
+                                    checkItem.nodeId = item.nodeId;
+                                    checkItem.nodeName = item.nodeName;
+                                    checkItem.scoreScope = item.nodeScore;
+                                    checkItem.realScore = item.nodeScore;
+                                    if (item.minScore != null) {
+                                        checkItem.minScore = item.minScore;
+                                    } else {
+                                        checkItem.minScore = 0;
+                                    }
+                                    if (item.maxScore != null) {
+                                        checkItem.maxScore = item.maxScore;
+                                    } else {
+                                        checkItem.maxScore = item.nodeScore;
+                                    }
+                                    checkItemScoreList.push(checkItem);
                                 });
                             }
                             success(data);

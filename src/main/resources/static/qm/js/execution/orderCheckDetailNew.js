@@ -40,9 +40,9 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
         var IsCheckFlag = true; //标示是否是勾选复选框选中行的，true - 是 , false - 否
         $("#checkItemList").datagrid({
             columns: [[
-                {field: 'nodeName', title: '考评项名称', width: '18%'},
+                {field: 'checkItemName', title: '考评项名称', width: '18%'},
                 {
-                    field: 'errorType', title: '类别', width: '15%',
+                    field: 'checkItemVitalType', title: '类别', width: '15%',
                     formatter: function (value, row, index) {
                         var vitalType = null;
                         if (value != null && value === "0") {
@@ -101,38 +101,7 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
                 }
             },
             loader: function (param, success) {
-                //查询分值类型
-                var templateReqParams = {
-                    "tenantId": orderPool.tenantId,
-                    "templateId": orderPool.templateId
-                };
-                var templateParams = $.extend({
-                    "start": 0,
-                    "pageNum": 0,
-                    "params": JSON.stringify(templateReqParams)
-                }, Util.PageUtil.getParams($("#searchForm")));
-
-                Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.CHECK_TEMPLATE + "/selectByParams", templateParams, function (result) {
-                    var data = result.RSP.DATA;
-                    var rspCode = result.RSP.RSP_CODE;
-                    if (rspCode != null && rspCode !== "1") {
-                        $.messager.show({
-                            msg: result.RSP.RSP_DESC,
-                            timeout: 1000,
-                            style: {right: '', bottom: ''},     //居中显示
-                            showType: 'show'
-                        });
-                    }
-                    if (data.length !== 0) {
-                        if (data[0].scoreType != null) {
-                            scoreType = data[0].scoreType;
-                        } else {
-                            scoreType = Util.constants.SCORE_TYPE_DISCOUNT;
-                        }
-                    }
-                });
-
-                //考评模版详细信息
+                //考评项详细信息
                 var reqParams = {
                     "tenantId": orderPool.tenantId,
                     "templateId": orderPool.templateId
@@ -143,8 +112,10 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
                     "params": JSON.stringify(reqParams)
                 }, Util.PageUtil.getParams($("#searchForm")));
 
-                Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.CHECK_TEMPLATE_DETAIL_DNS + "/queryCheckTemplateDetail", params, function (result) {
+                Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.CHECK_ITEM_DNS + "/queryCheckItemDetail", params, function (result) {
                     checkItemListData = result.RSP.DATA;
+                    //分值类型
+                    scoreType = checkItemListData[0].scoreType;
                     var data = {
                         rows: result.RSP.DATA
                     };
