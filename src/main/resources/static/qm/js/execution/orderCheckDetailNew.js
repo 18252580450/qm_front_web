@@ -32,6 +32,9 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
         //初始化总得分
         $("#totalScore").val("0");
 
+        //获取工单基本信息
+        initWrkfmDetail();
+
         //动态展示处理过程
         // showDealProcess(dealProcessData);   暂时静态显示工单轨迹，对接工单轨迹接口后再动态显示
         initCheckBoxEvent();
@@ -163,6 +166,45 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
                         checkLinkSave();
                     });
                 });
+            }
+        });
+    }
+
+    //初始化工单基本信息
+    function initWrkfmDetail() {
+        var reqParams = {
+            "provCode": orderPool.provinceId,
+            "wrkfmId": "1812041617580000045"
+        };
+        var params = $.extend({
+            "start": 0,
+            "pageNum": 0,
+            "params": JSON.stringify(reqParams)
+        }, Util.PageUtil.getParams($("#searchForm")));
+
+        Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.WRKFM_DETAIL_DNS + "/queryWrkfmDetail", params, function (result) {
+            var data = result.RSP.DATA,
+                rspCode = result.RSP.RSP_CODE;
+            if (rspCode != null && rspCode !== "1") {
+                $.messager.show({
+                    msg: result.RSP.RSP_DESC,
+                    timeout: 1000,
+                    style: {right: '', bottom: ''},     //居中显示
+                    showType: 'show'
+                });
+            } else {
+                $("#workFormId").val(orderPool.workFormId);
+                $("#custNum").val(data.userInfo.custNum);
+                $("#srvReqstTypeFullNm").val(data.acceptInfo.srvReqstTypeFullNm);
+                $("#custBelgCityNm").val(data.userInfo.custBelgCityNm);
+                $("#isVipNm").val(data.userInfo.isVipNm);
+                $("#acptChnlNm").val(data.acceptInfo.acptChnlNm);
+                $("#dplctCmplntsFlagNm").val(data.acceptInfo.dplctCmplntsFlagNm);
+                $("#isMajorCmplntsNm").val(data.acceptInfo.isMajorCmplntsNm);
+                $("#faultLvlNm").val(data.acceptInfo.faultLvlNm);
+                $("#urgntExtentNm").val(data.acceptInfo.urgntExtentNm);
+                $("#custMoodTypeNm").val(data.acceptInfo.custMoodTypeNm);
+                $("#bizCntt").val(data.acceptInfo.bizCntt);
             }
         });
     }

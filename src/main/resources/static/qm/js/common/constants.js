@@ -34,6 +34,7 @@ define(function () {
         WORK_QM_RESULT: "/qm/configservice/workQmResult",//工单质检结果
         VOICE_QM_RESULT: "/qm/configservice/voiceQmResult",//语音质检结果
         APPEAL_DEAL_DNS: "/qm/configservice/appealDeal",//申诉待办
+        WRKFM_DETAIL_DNS: "/qm/configservice/wrkfmDetail",//工单详情
 
         //考评项目录类型
         CHECK_ITEM_PARENT: "0",          //目录
