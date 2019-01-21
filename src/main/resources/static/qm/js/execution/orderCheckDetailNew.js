@@ -145,7 +145,8 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
                 $.each(data.rows, function (i, item) {
                     var input = $("#score" + item.nodeId);
                     input.on("keyup", function () {
-                        var total = 0,
+                        var total = 0, //当前环节考评项总分
+                            discount = 0, //扣分总值
                             maxScore = $("#maxScore" + item.nodeId).val(),
                             scoreDiv = $("#score" + item.nodeId),
                             score = scoreDiv.val();
@@ -155,12 +156,13 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
                             return;
                         }
                         $.each(data.rows, function (i, item) {
+                            total += item.nodeScore;
                             var inputScore = $("#score" + item.nodeId);
                             if (inputScore.val() !== "") {
-                                total = total + parseInt(inputScore.val());
+                                discount = discount + parseInt(inputScore.val());
                             }
                         });
-                        $("#checkScore_" + currentNode).html(String(100 - total));
+                        $("#checkScore_" + currentNode).html(String(total - discount));
                     });
                     input.on("blur", function () {
                         var scoreDiv = $("#score" + item.nodeId),
