@@ -70,7 +70,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                 var paramsTypeId = $("#paramsNameq").val();
                 var reqParams = {
                     "tenantId":Util.constants.TENANT_ID,
-                    "paramsTypeId": paramsTypeId
+                    "paramsTypeName": paramsTypeId
                 };
                 var params = $.extend({
                     "start": start,
