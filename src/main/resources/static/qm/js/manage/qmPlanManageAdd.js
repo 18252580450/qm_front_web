@@ -227,38 +227,6 @@ define([
                 }
             }
 
-            // //添加绑定关系
-            // //获取datagrid中的所有数据，将其拼接成json格式字符串数组
-            // var json = [];
-            // var rowsData = $('#checkedStaffList',$el).datagrid('getRows');
-            // $.each(rowsData, function (i){
-            //    var loc = {
-            //         "planId":planIdNew,
-            //         "checkStaffId":rowsData[i].checkStaffId,
-            //         "checkedObjectId":rowsData[i].checkedObjectId,
-            //         // "checkStaffName":rowsData[i].checkStaffName,
-            //         // "checkedObjectName":rowsData[i].checkedObjectName,
-            //         // "checkedDepartName":rowsData[i].checkedDepartName,
-            //         "userType": "0",//对象类型先写死成话务员
-            //     };
-            //     json.push(loc);
-            // });
-            // var param =  {"params":json};
-            // Util.ajax.postJson(Util.constants.CONTEXT.concat(Util.constants.QM_BIND_RLN_DNS).concat("/insertQmBindRln"),JSON.stringify(param), function (result) {
-            //
-            //     $.messager.show({
-            //         msg: result.RSP.RSP_DESC,
-            //         timeout: 1000,
-            //         style: {right: '', bottom: ''},     //居中显示
-            //         showType: 'slide'
-            //     });
-            //     if (result.RSP.RSP_CODE == "1") {
-            //         $("#mainForm",$el).form('clear');
-            //         $("#add_window").window("close"); // 关闭窗口
-            //         $("#planList").datagrid('reload'); //插入成功后，刷新页面
-            //     }
-            // });
-
             //enable按钮
             $("#addPlan",$el).linkbutton({disabled: false}); //按钮可用
         });
