@@ -1,7 +1,7 @@
 require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPlan","js/execution/queryQmPeople"], function ($, Util, Transfer,easyui,dateUtil,QueryQmPlan,QueryQmPeople) {
     //初始化方法
     initialize();
-    var reqParams=null;
+    var reqParams = null;
     var isCheckParent=false;//设置父节点是否可被选 true 可选 false不可选 默认可选
     var isChoice=false; //节点是否区分可选标志 true区分 false不区分 默认不区分(节点是否可被选)
     var isVisual=true; // 节点是否区分可见性标志 true区分 false不区分 默认不区分
@@ -575,6 +575,27 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
             title = (title!=null)?title:"";
             titles.push(title);
         });
+        if(reqParams == null){
+             reqParams= {
+                "touchId": "",
+                "planId": "",
+                "isOperate": "",
+                "extractBeginTime": "",
+                "extractEndTime": "",
+                "checkStaffId": "",
+                "checkedStaffId":"",
+                "hungupType":"",
+                "callType":"",
+                "recordTimeMin":"",
+                "recordTimeMax":"",
+                "staffNumber":"",
+                "customerNumber":"",
+                "satisfyExtentType":"",
+                "mediaType":"",
+                "srvReqstTypeId":"",
+                "poolStatus": "",
+            };
+        }
         var params = {
             "start": 0,
             "pageNum": 0,

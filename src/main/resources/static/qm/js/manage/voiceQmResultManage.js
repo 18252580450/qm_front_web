@@ -240,6 +240,19 @@ require(["js/manage/queryQmPlan", "jquery", 'util', "transfer", "easyui", "dateU
             title = (title != null) ? title : "";
             titles.push(title);
         });
+        if(reqParams==null){
+            reqParams = {
+                "touchId": "",
+                "checkStaffId": "",
+                "checkedStaffId": "",
+                "startTime": "",
+                "endTime": "",
+                "inspectionId": "",
+                "resultStatus": "",
+                "planId": "",
+                "lastResultFlag":"1"
+            };
+        }
         var params = {
             "start": 0,
             "pageNum": 0,

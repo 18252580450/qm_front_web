@@ -1,15 +1,20 @@
-define(["js/execution/queryQmPeople",
-        "text!html/manage/qmPlanManageAdd.tpl",
+define([
+       "text!html/manage/qmPlanManageAdd.tpl",
         "js/manage/qryCheckTemplate",
         "js/manage/qryStrategy",
         "jquery", 'commonAjax','util', "transfer", "easyui","crossAPI","dateUtil",'ztree-exedit'],
-    function (QueryQmPeople,tpl,QryCheckTemplate,QryStrategy,$,CommonAjax, Util, Transfer,crossAPI,dateUtil) {
+    function (tpl,QryCheckTemplate,QryStrategy,$,CommonAjax, Util, Transfer,crossAPI,dateUtil) {
     //调用初始化方法
-
     var planTypes = [];
     var $el;
     var planBean;
-    var qmBindRlnList;
+    var qmBindRlnList=[];
+    var list;
+    var listTable;
+    var isClicked = false;//是否点击
+    var checkStaffName="";
+    var checkStaffId="";
+    var planIdNew;
     var initialize = function(planId) {
         $el = $(tpl);
         if(planId){
@@ -22,25 +27,88 @@ define(["js/execution/queryQmPeople",
                 }
             });
         }else{
+            $('#deleteBtn',$el)[0].style.display="none";//新增时，删除按钮隐藏
             initSearchForm();//初始化表单数据
             initDatas();
         }
+        planIdNew = planId;
         initGlobalEvent();
         this.$el = $el;
     };
 
     function initGlobalEvent(){
-
+        // 新增质检员
         $("#addQmStaffBtn",$el).on("click", function () {
-            var queryQmPeople = new QueryQmPeople();
+            require(["js/manage/qryQmPeople"], function (qryQmPeople) {
+                var queryQmPeople = qryQmPeople;
+                queryQmPeople.initialize();
+                $('#qry_people_window').show().window({
+                    title: '查询质检人员信息',
+                    width: 1150,
+                    height: 600,
+                    cache: false,
+                    content:queryQmPeople.$el,
+                    modal: true,
+                    onBeforeClose:function(){//弹框关闭前触发事件
+                        list = queryQmPeople.getList();//获取值
+                        //为zTree添加节点
+                        addNodes(list);
+                    }
+                });
+            });
+        });
 
-            $('#qry_window',$el).show().window({
-                title: '查询考评计划',
-                width: 1150,
-                height: 600,
-                cache: false,
-                content:queryQmPeople.$el,
-                modal: true
+        // 新增被质检员
+        $("#addCheckedStaffBtn",$el).on("click", function () {
+            require(["js/manage/qryQmPeople"], function (qryQmPeople) {
+                var queryQmPeople = qryQmPeople;
+                queryQmPeople.initialize();
+                $('#qry_people_window').show().window({
+                    title: '查询质检人员信息',
+                    width: 1150,
+                    height: 600,
+                    cache: false,
+                    content:queryQmPeople.$el,
+                    modal: true,
+                    onBeforeClose:function(){//弹框关闭前触发事件
+                        listTable = queryQmPeople.getList();//获取值
+                        //为list表添加数据
+                        addListData(listTable);
+                    }
+                });
+            });
+        });
+
+        //删除
+        $('#deleteBtn',$el).on('click',function(){
+            var delRows = $("#checkedStaffList",$el).datagrid("getSelections");
+            if (delRows.length === 0) {
+                $.messager.alert("提示", "请至少选择一行数据!");
+                return;
+            }
+            var delArr = [];
+            for (var i = 0; i < delRows.length; i++) {
+                var map={};
+                map["checkStaffId"] = delRows[i].checkStaffId;
+                map["checkedObjectId"] = delRows[i].checkedObjectId;
+                map["planId"] = planIdnew;
+                delArr.push(map);
+            }
+            var params =  {"params":delArr};
+            $.messager.confirm('确认删除弹窗', '确定要删除吗？', function (confirm) {
+                if (confirm) {
+                    Util.ajax.deleteJson(Util.constants.CONTEXT.concat(Util.constants.QM_BIND_RLN_DNS).concat("/"),JSON.stringify(params), function (result) {
+                        $.messager.show({
+                            msg: result.RSP.RSP_DESC,
+                            timeout: 1000,
+                            style: {right: '', bottom: ''},     //居中显示
+                            showType: 'slide'
+                        });
+                        if (result.RSP.RSP_CODE == "1") {
+                            $("#checkedStaffList",$el).datagrid('reload'); //删除成功后，刷新页面
+                        }
+                    });
+                }
             });
         });
 
@@ -54,18 +122,22 @@ define(["js/execution/queryQmPeople",
         $("#addPlan",$el).on("click", function () {
             //禁用按钮，防止多次提交
             $('#addPlan',$el).linkbutton({disabled: true});
-
+            $('#planRuntime',$el).validatebox({required:true});//非空校验
             var planName = $("#planName",$el).val();
             var planType = $("#planType",$el).combobox('getValue');
             var templateId = $("#templateId",$el).val();
             var pId = $("#pId",$el).val();
             var manOrAuto = $("#manOrAuto",$el).combobox('getValue');
             var planRuntype = $("#planRuntype",$el).combobox('getValue');
-            var  planRuntime = $('#planRuntime',$el).timespinner('getValue');
+            var planRuntime = $('#planRuntime',$el).timespinner('getValue');
             var planStarttime = $('#planStarttime',$el).datetimebox('getValue');
             var planEndtime = $('#planEndtime',$el).datetimebox('getValue');
             var remark = $('#remark',$el).val();
 
+            if(planRuntime==""||planRuntime==null){
+                $.messager.alert('警告', '必填项不可为空!');
+                return false;
+            }
             //质检关系
             var qmBindRlnListNew = [];
             var treeObj = $.fn.zTree.getZTreeObj("qmStaffsTree");
@@ -124,7 +196,7 @@ define(["js/execution/queryQmPeople",
                 planBean.planRuntype = planRuntype;
                 planBean.planRuntime = "2018-01-01 " + planRuntime;
                 planBean.planStarttime = planStarttime;
-                planBean.planEndtime = planEndtime
+                planBean.planEndtime = planEndtime;
                 planBean.remark = remark;
                 planBean.qmBindRlnList = qmBindRlnList;
                 Util.ajax.putJson(Util.constants.CONTEXT.concat(Util.constants.QM_PLAN_DNS).concat("/"), JSON.stringify(planBean), function (result) {
@@ -151,8 +223,41 @@ define(["js/execution/queryQmPeople",
                 rspCode = result.RSP.RSP_CODE;
                 if (rspCode == "1") {
                     $("#planList").datagrid('reload'); //新增成功后，刷新页面
+                    $("#add_window").window("close"); // 关闭窗口
                 }
             }
+
+            // //添加绑定关系
+            // //获取datagrid中的所有数据，将其拼接成json格式字符串数组
+            // var json = [];
+            // var rowsData = $('#checkedStaffList',$el).datagrid('getRows');
+            // $.each(rowsData, function (i){
+            //    var loc = {
+            //         "planId":planIdNew,
+            //         "checkStaffId":rowsData[i].checkStaffId,
+            //         "checkedObjectId":rowsData[i].checkedObjectId,
+            //         // "checkStaffName":rowsData[i].checkStaffName,
+            //         // "checkedObjectName":rowsData[i].checkedObjectName,
+            //         // "checkedDepartName":rowsData[i].checkedDepartName,
+            //         "userType": "0",//对象类型先写死成话务员
+            //     };
+            //     json.push(loc);
+            // });
+            // var param =  {"params":json};
+            // Util.ajax.postJson(Util.constants.CONTEXT.concat(Util.constants.QM_BIND_RLN_DNS).concat("/insertQmBindRln"),JSON.stringify(param), function (result) {
+            //
+            //     $.messager.show({
+            //         msg: result.RSP.RSP_DESC,
+            //         timeout: 1000,
+            //         style: {right: '', bottom: ''},     //居中显示
+            //         showType: 'slide'
+            //     });
+            //     if (result.RSP.RSP_CODE == "1") {
+            //         $("#mainForm",$el).form('clear');
+            //         $("#add_window").window("close"); // 关闭窗口
+            //         $("#planList").datagrid('reload'); //插入成功后，刷新页面
+            //     }
+            // });
 
             //enable按钮
             $("#addPlan",$el).linkbutton({disabled: false}); //按钮可用
@@ -311,9 +416,12 @@ define(["js/execution/queryQmPeople",
             },
             callback:{
                 onClick:function(e, id, node){
-                    if(node.checkStaffId != 0){
+                    isClicked = true;
+                    if(node.checkStaffId != 0){ //判断是否点击的是父节点
+                        checkStaffName = node.checkStaffName;
+                        checkStaffId = node.checkStaffId;
                         var checkedStaffsOfCheckStaff = [];
-                        if(qmBindRlnList.length > 0) {
+                        if(qmBindRlnList.length > 0) {//判断考评计划是否绑定了人员关系
                             $.each(qmBindRlnList, function (i, qmBindRln) {
                                 if (qmBindRln.checkStaffId == node.checkStaffId && qmBindRln.checkedObjectId != "") {
                                     checkedStaffsOfCheckStaff.push(qmBindRln);
@@ -323,6 +431,8 @@ define(["js/execution/queryQmPeople",
                         $("#checkedStaffList",$el).datagrid("loadData",checkedStaffsOfCheckStaff);
                     }else{
                         var checkedStaffs = [];
+                        checkStaffName = "";
+                        checkStaffId = "";
                         if(qmBindRlnList.length > 0) {
                             $.each(qmBindRlnList, function (i, qmBindRln) {
                                 if (qmBindRln.userType == 0 && qmBindRln.checkedObjectId) {
@@ -358,6 +468,7 @@ define(["js/execution/queryQmPeople",
             $("#checkedStaffList",$el).datagrid({
                 columns:[
                     [
+                        {field: 'ck', checkbox: true, align: 'center'},
                         {field:'checkedObjectId',title:'被质检人ID',width:'15%'},
                         {field:'checkedObjectName',title:'被质检人姓名',width:'20%'},
                         {field:'checkedDepartName',title:'所属部门',width:'20%'},
@@ -374,12 +485,15 @@ define(["js/execution/queryQmPeople",
                     ]
                 ],
                 data:checkedStaffs,
-                idField:"checkedObjectId"
+                idField:"checkedObjectId",
+                checkOnSelect: false,
+                height : "300px"
             });
         }else if(checkedDeparts && checkedDeparts.length > 0){
             $("#checkedStaffList",$el).datagrid({
                 columns : [
                     [
+                        {field: 'ck', checkbox: true, align: 'center'},
                         {field:'checkedObjectId',title:'被质检部门ID',width:'30%'},
                         {field:'checkedObjectName',title:'被质检部门姓名',width:'30%'},
                         {
@@ -392,12 +506,15 @@ define(["js/execution/queryQmPeople",
                         }
                     ]
                 ],
-                data:checkedDeparts
+                data:checkedDeparts,
+                checkOnSelect: false,
+                height : "300px"
             });
         }else{
             $("#checkedStaffList",$el).datagrid({
                 columns:[
                     [
+                        {field: 'ck', checkbox: true, align: 'center'},
                         {field:'checkedObjectId',title:'被质检人ID',width:'15%'},
                         {field:'checkedObjectName',title:'被质检人姓名',width:'20%'},
                         {field:'checkedDepartName',title:'所属部门',width:'20%'},
@@ -413,13 +530,16 @@ define(["js/execution/queryQmPeople",
                         }
                     ]
                 ],
-                idField:"checkedObjectId"
+                idField:"checkedObjectId",
+                checkOnSelect: false,
+                height : "300px"
             });
         }
     }
 
+    //行数据删除
     function initDelBut(){
-        $(".delBtn").on("click", function () {
+        $("#page",$el).on("click", "a.delBtn", function () {
             var checkedObjectId = $(this).attr('id');
             $("#checkedStaffList",$el).datagrid("deleteRow",$("#checkedStaffList",$el).datagrid("getRowIndex",checkedObjectId));
             if(qmBindRlnList && qmBindRlnList.length > 0){
@@ -432,6 +552,65 @@ define(["js/execution/queryQmPeople",
                 });
             }
         });
+    }
+
+    //为zTree添加节点
+    function addNodes(list){
+        if(list.length!=0){
+            //1、获取zTree对象
+            var treeObj = $.fn.zTree.getZTreeObj("qmStaffsTree");
+            list.forEach(function(value,index,array){
+                //2、给定一个要添加的新节点
+                var newNode = { pId:"0",checkStaffId: value.checkStaffId,checkStaffName:value.checkStaffName};
+                //3、把这个新节点添加到当前的节点下，作为它的子节点
+                //返回根节点集合
+                var nodes = treeObj.getNodesByFilter(function (node) { return node.level == 0 });
+                treeObj.addNodes(nodes[0], newNode);
+            });
+        }
+    }
+
+    //list表添加数据
+    function addListData(listTable){
+        if(listTable.length!=0){
+            if(isClicked==true){
+                //动态插入数据行
+                listTable.forEach(function(value,index,array){
+                    var map={
+                        checkedObjectId: value.checkStaffId,
+                        checkedObjectName: value.checkStaffName,
+                        checkedDepartName: value.orgs,
+                        checkStaffId: checkStaffId,
+                        checkStaffName: checkStaffName,
+                        pId:"0",
+                        userType:"0",
+                        planId:planIdNew
+
+                    };
+                    $("#checkedStaffList",$el).datagrid('insertRow',{
+                        row: map
+                    });
+                    qmBindRlnList.push(map);
+                });
+            }else{
+                listTable.forEach(function(value,index,array){
+                    var map= {
+                        checkedObjectId: value.checkStaffId,
+                        checkedObjectName: value.checkStaffName,
+                        checkedDepartName: value.orgs,
+                        checkStaffId: "",
+                        checkStaffName: "",
+                        pId:"0",
+                        userType:"0",
+                        planId:planIdNew
+                    };
+                    $("#checkedStaffList",$el).datagrid('insertRow',{
+                        row: map
+                    });
+                    qmBindRlnList.push(map);
+                });
+            }
+        }
     }
 
     //初始化质检员树和被质检员信息

@@ -52,14 +52,14 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
             "tenantId":Util.constants.TENANT_ID,
         };
         var params = {
-            "start": "0",
-            "pageNum": "10",
+            "start": 0,
+            "pageNum": 0,
             "params": JSON.stringify(reqParams)
         };
 
         Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.CHECK_ITEM_DNS + "/queryCheckItem", params, function (result) {
 
-            var resultNew = Transfer.DataGrid.transfer(result).rows;
+            var resultNew = result.RSP.DATA;
             for(var i=0;i<resultNew.length;i++){
                 var nodeMap =
                     {id: resultNew[i].checkItemId, pId: resultNew[i].parentCheckItemId, name: resultNew[i].checkItemName}
@@ -197,9 +197,7 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
                     style: {right: '', bottom: ''},     //居中显示
                     showType: 'slide'
                 });
-
                 var rspCode = result.RSP.RSP_CODE;
-
                 if (rspCode == "1") {
                     $("#peopleManage").datagrid('reload'); //修改成功后，刷新页面
                 }

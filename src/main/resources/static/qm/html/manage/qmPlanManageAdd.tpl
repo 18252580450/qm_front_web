@@ -80,11 +80,11 @@
                                                 class='iconfont'></i>新增质检员</a>
                                         <a href='javascript:void(0)' style="width: auto;" class='btn btn-green radius mt-l-20' id="addCheckedStaffBtn"><i
                                                 class='iconfont'></i>新增被质检员</a>
-                                        <a href='javascript:void(0)' class='btn btn-secondary radius mt-l-20' id="delBtn"><i
+                                        <a href='javascript:void(0)' style="width: auto;" class='btn btn-secondary radius mt-l-20' id="deleteBtn"><i
                                                 class='iconfont iconfont-del2'></i>删除</a>
                                     </div>
                                 </div>
-                                <table id='checkedStaffList' class='easyui-datagrid' style=' width:100%;'>
+                                <table id='checkedStaffList' class='easyui-datagrid' style='width:100%;height:100%;'>
                                 </table>
                             </div>
                         </div>
@@ -106,6 +106,10 @@
             <div id='qry_content' style='overflow:auto'>
             </div>
         </div>
-    </div>
+        <!--质检人员信息弹窗，默认隐藏-->
+        <div  id='qry_people_window' style='display:none;'>
+            <div id='qry_people_content' style='overflow:auto'>
+            </div>
+        </div>
 </div>
 </div>

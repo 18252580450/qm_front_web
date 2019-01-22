@@ -2,10 +2,9 @@ define([
         "text!html/execution/qryQmPeople.tpl","jquery", 'util', "commonAjax","transfer", "easyui","crossAPI","dateUtil","ztree-exedit"],
     function (qryQmPeopleTpl,$, Util, CommonAjax,Transfer,easyui,crossAPI,dateUtil) {
 
-    var planTypes = [];
     var $el;
     var dataNew;
-    var flagNew;
+    var flagNew;//工单质检和语音质检标志
     function initialize(ids,flag) {
         $el = $(qryQmPeopleTpl);
         dataNew = ids;
@@ -47,13 +46,13 @@ define([
         };
         var params = {
             "start": "0",
-            "pageNum": "10",
+            "pageNum": "0",
             "params": JSON.stringify(reqParams)
         };
 
         Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.CHECK_ITEM_DNS + "/queryCheckItem", params, function (result) {
 
-            var resultNew = Transfer.DataGrid.transfer(result).rows;
+            var resultNew = result.RSP.DATA;
             for(var i=0;i<resultNew.length;i++){
                 var nodeMap =
                     {id: resultNew[i].checkItemId, pId: resultNew[i].parentCheckItemId, name: resultNew[i].checkItemName}
@@ -71,7 +70,7 @@ define([
                 {field: 'ck', checkbox: true, align: 'center'},
                 {field: 'checkStaffId', title: '员工编码信息', align: 'center', width: '20%'},
                 {field: 'checkStaffCode', title: '员工CODE', align: 'center', width: '20%'},
-                {field: 'checkStaffId', title: '组织编码', align: 'center', width: '20%'},
+                {field: 'orgsId', title: '组织编码', align: 'center', width: '20%'},
                 {field: 'orgs', title: '员工组', align: 'center', width: '20%'},
                 {field: 'role', title: '角色', align: 'center', width: '20%'}
             ]],
@@ -108,11 +107,11 @@ define([
                 //     }
                 //     success(data);
                 // });
-                var data=[{'checkStaffId':'10001','checkStaffCode':'测试工号22','checkStaffId':'10000','orgs':'投诉专席工单处理1班'},
-                    {'checkStaffId':'10002','checkStaffCode':'测试工号23','checkStaffId':'10000','orgs':'投诉专席工单处理1班'},
-                    {'checkStaffId':'10003','checkStaffCode':'测试工号24','checkStaffId':'10000','orgs':'投诉专席工单处理1班'},
-                    {'checkStaffId':'10004','checkStaffCode':'测试工号25','checkStaffId':'10000','orgs':'投诉专席工单处理1班'},
-                    {'checkStaffId':'10005','checkStaffCode':'测试工号26','checkStaffId':'10000','orgs':'投诉专席工单处理1班'}];
+                var data=[{'checkStaffId':'10001','checkStaffCode':'测试工号22','orgsId':'10000','orgs':'投诉专席工单处理1班'},
+                    {'checkStaffId':'10002','checkStaffCode':'测试工号23','orgsId':'10000','orgs':'投诉专席工单处理1班'},
+                    {'checkStaffId':'10003','checkStaffCode':'测试工号24','orgsId':'10000','orgs':'投诉专席工单处理1班'},
+                    {'checkStaffId':'10004','checkStaffCode':'测试工号25','orgsId':'10000','orgs':'投诉专席工单处理1班'},
+                    {'checkStaffId':'10005','checkStaffCode':'测试工号26','orgsId':'10000','orgs':'投诉专席工单处理1班'}];
                 success(data);
             }
         });
@@ -124,14 +123,17 @@ define([
         $("#searchForm",$el).on("click", "#selectBut", function () {
             $("#page",$el).find("#checkStaffInfo",$el).datagrid("load");
         });
+
         //确定
         $("#confirm",$el).on("click", function () {
             updateCheck(dataNew);
         });
+
+
         //关闭窗口
         $("#page",$el).on("click", "#close", function () {
             $("#searchForm",$el).form('clear');
-            $("#qry_people_window").window("close");
+            $("#qry_people_window").window("close");// 成功后，关闭窗口
         });
     }
 

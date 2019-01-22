@@ -335,6 +335,26 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui", "dateUt
             title = (title!=null)?title:"";
             titles.push(title);
         });
+        if(reqParams==null){
+            reqParams = {
+                "touchId": "",
+                "acceptNumber": "",
+                "checkDepartName": "",
+                "checkStaffId": "",
+                "qmStartTime": "",
+                "qmEndTime": "",
+                "checkedStaffId": "",
+                "checkedDepartName": "",
+                "checkLink": "",
+                "minScore":"",
+                "maxScore":"",
+                "resultStatus":"",
+                "errorRank":"",
+                "planId":"",
+                "reqTypeEndNode":"",
+                "lastResultFlag":"1"
+            };
+        }
         var params = {
             "start": 0,
             "pageNum": 0,
