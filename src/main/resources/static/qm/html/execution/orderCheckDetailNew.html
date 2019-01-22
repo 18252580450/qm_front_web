@@ -10,10 +10,11 @@
 <body>
 <div class="test-body">
     <div class="content-1">
-        <button class="button-1">基本信息</button>
-        <button class="button-2">内外回复</button>
+        <button class="button-1" id="baseInfoBtn">基本信息</button>
+        <button class="button-2" id="handlingLogBtn">内外回复</button>
     </div>
-    <div class="content-2">
+    <!--工单基本信息-->
+    <div class="content-2" id="baseInfo">
         <div class="formBox">
             <div class="formDiv">
                 <span class="formBox-1">工单流水</span><input id="workFormId" class="formBox-2"/>
@@ -37,6 +38,22 @@
             </div>
         </div>
     </div>
+    <!--内外部回复-->
+    <div class="content-2" id="handlingLog" style="height:261px; overflow: auto; display:none;">
+        <div class="formBox">
+            <div class="tab-1" id="externalReplyTab">
+                <span id="externalReplySpan" style="margin-left: 18px; color: #4A90E2;">外回复</span>
+            </div>
+            <div class="tab-2" id="insideReplyTab">
+                <span id="insideReplySpan" style="margin-left: 18px; color: #CDD6E0;">内回复</span>
+            </div>
+        </div>
+        <div id="externalReply">
+        </div>
+        <div id="insideReply" style="display:none;">
+        </div>
+    </div>
+
     <div class="content-3">质量评价</div>
     <div class="content-4">
         <div class="content4-1">处理过程浏览</div>

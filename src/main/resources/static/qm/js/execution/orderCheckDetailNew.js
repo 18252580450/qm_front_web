@@ -8,6 +8,7 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
         currentNode,                //当前选中环节
         checkLinkData = [],         //环节考评数据
         totalScore = 0,             //总得分
+        replyData = {},             //内外部回复数据
         processData = [             //轨迹测试数据
             {
                 "rmk": "工单立单提交",
@@ -184,8 +185,6 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
             "wrkfmId": "1901020950440000088"
         };
         var params = $.extend({
-            "start": 0,
-            "pageNum": 0,
             "params": JSON.stringify(reqParams)
         }, {});
 
@@ -279,16 +278,35 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
 
     //事件初始化
     function initEvent() {
+        //基本信息btn
+        $("#baseInfoBtn").on("click", function () {
+            changeInfoArea(true);
+        });
+        //内外部回复btn
+        $("#handlingLogBtn").on("click", function () {
+            changeInfoArea(false);
+            initHandlingLog();
+        });
+        //外部回复tab
+        $("#externalReplyTab").on("click", function () {
+            changeReplyArea(true);
+            if (replyData.hasOwnProperty("externalReply")) {
+                showHandlingLog(replyData.externalReply, true);
+            }
+        });
+        //内部回复tab
+        $("#insideReplyTab").on("click", function () {
+            changeReplyArea(false);
+            if (replyData.hasOwnProperty("insideReply")) {
+                showHandlingLog(replyData.insideReply, false);
+            }
+        });
         //通知类型复选框点击事件
         $("#messageInform").on("click", function () {
             $("#emailInform").attr("checked", false);
         });
         $("#emailInform").on("click", function () {
             $("#messageInform").attr("checked", false);
-        });
-        //考评环节保存
-        $("#checkLinkSave").on("click", function () {
-            checkLinkSave();
         });
         //保存
         $("#saveBtn").on("click", function () {
@@ -312,6 +330,50 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
         $("#caseCollectBtn").on("click", function () {
             $.messager.alert("提示", "该功能暂未开放!");
         });
+    }
+
+    //初始化内外部回复
+    function initHandlingLog() {
+        if (JSON.stringify(replyData) === "{}") {
+            var reqParams = {
+                "provCode": orderPool.provinceId,
+                "wrkfmId": "1901020950440000088"
+            };
+            var params = $.extend({
+                "params": JSON.stringify(reqParams)
+            }, {});
+
+            Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.WRKFM_DETAIL_DNS + "/getHandingLog", params, function (result) {
+                var data = result.RSP.DATA,
+                    rspCode = result.RSP.RSP_CODE;
+                if (rspCode != null && rspCode !== "1") {
+                    $.messager.show({
+                        msg: result.RSP.RSP_DESC,
+                        timeout: 1000,
+                        style: {right: '', bottom: ''},     //居中显示
+                        showType: 'show'
+                    });
+                } else {
+                    replyData = data;
+                    showHandlingLog(replyData.externalReply, true); //展示外回复信息
+                }
+            });
+        }
+    }
+
+    //动态显示内外部回复
+    function showHandlingLog(data, showExternalReply) {
+        if (showExternalReply) {
+            $("#externalReply").empty();
+            $.each(data, function (i, item) {
+                $("#externalReply").append(getReplyDiv(item));
+            });
+        } else {
+            $("#insideReply").empty();
+            $.each(data, function (i, item) {
+                $("#insideReply").append(getReplyDiv(item));
+            });
+        }
     }
 
     //动态展示处理过程
@@ -491,6 +553,16 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
         });
     }
 
+    //内外部回复div
+    function getReplyDiv(data) {
+        return '<div class="reply-1">' +
+            '<div class="reply-2">' +
+            '<span style="margin-right:24px;">' + data.crtTime + '</span><span>' + data.opStaffId + '</span><span>|客服</span>' +
+            '</div>' +
+            '<div class="reply-3"><span>' + data.rmk + '</span></div>' +
+            '</div>';
+    }
+
     //处理过程div
     function getProcessDiv(data, isFinal) {
         var divClass = "content4-2";
@@ -547,6 +619,52 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
         $.each(currentCheckItemData, function (i, item) {
             $("#score" + item.nodeId).val("0");
         });
+    }
+
+    //基本信息、内外部回复切换
+    function changeInfoArea(showBaseInfo) {
+        var baseInfoBtn = $("#baseInfoBtn"),
+            handlingLogBtn = $("#handlingLogBtn");
+        if (showBaseInfo) {
+            baseInfoBtn.removeClass();
+            handlingLogBtn.removeClass();
+            baseInfoBtn.addClass("button-1");
+            handlingLogBtn.addClass("button-2");
+            $("#baseInfo").show();
+            $("#handlingLog").hide();
+        } else {
+            baseInfoBtn.removeClass();
+            handlingLogBtn.removeClass();
+            baseInfoBtn.addClass("button-2");
+            handlingLogBtn.addClass("button-1");
+            $("#baseInfo").hide();
+            $("#handlingLog").show();
+        }
+    }
+
+    //内部回复、外部回复切换
+    function changeReplyArea(showExternalReply) {
+        var externalReplyTab = $("#externalReplyTab"),
+            insideReplyTab = $("#insideReplyTab");
+        if (showExternalReply) {
+            externalReplyTab.removeClass();
+            insideReplyTab.removeClass();
+            externalReplyTab.addClass("tab-1");
+            insideReplyTab.addClass("tab-2");
+            $("#externalReplySpan").css("color", "#4A90E2");
+            $("#insideReplySpan").css("color", "#CDD6E0");
+            $("#externalReply").show();
+            $("#insideReply").hide();
+        } else {
+            externalReplyTab.removeClass();
+            insideReplyTab.removeClass();
+            externalReplyTab.addClass("tab-2");
+            insideReplyTab.addClass("tab-1");
+            $("#externalReplySpan").css("color", "#CDD6E0");
+            $("#insideReplySpan").css("color", "#4A90E2");
+            $("#externalReply").hide();
+            $("#insideReply").show();
+        }
     }
 
     //获取url对象
