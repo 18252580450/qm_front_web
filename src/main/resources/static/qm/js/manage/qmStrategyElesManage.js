@@ -212,7 +212,7 @@ define([
 
             $("#add_content").on("click", "#subBut", function () {
                 //禁用按钮，防止多次提交
-                $('#subBut').linkbutton({disabled: true});
+                //$('#subBut').linkbutton({disabled: true});
 
                 var paramsTypeId = $("#paramsTypeId").combobox('getValue');
                 var elementType = $("#elementType").combobox('getValue');
@@ -239,7 +239,7 @@ define([
                     || elementCode == "" ||elementName == null || elementName == "") {
                     $.messager.alert('警告', '必填项不能为空。');
 
-                    $("#subBut").linkbutton({disabled: false});  //按钮可用
+                    //$("#subBut").linkbutton({disabled: false});  //按钮可用
                     return false;
                 }
 
@@ -259,7 +259,7 @@ define([
                     }
                 });
                 //enable按钮
-                $("#subBut").linkbutton({disabled: false}); //按钮可用
+                //$("#subBut").linkbutton({disabled: false}); //按钮可用
             });
         });
 
@@ -311,7 +311,7 @@ define([
                 if (paramsTypeId == null || paramsTypeId == "" || elementType == null || elementType == "" || elementCode == null
                     || elementCode == "" ||elementName == null || elementName == "") {
                     $.messager.alert('警告', '必填项不能为空。');
-                    $("#subBut").linkbutton({disabled: false});  //按钮可用
+                    //$("#subBut").linkbutton({disabled: false});  //按钮可用
                     return false;
                 }
                 bean['paramsTypeId'] = paramsTypeId;

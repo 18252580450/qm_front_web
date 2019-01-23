@@ -126,7 +126,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
 
                         $.messager.show({
                             msg: result.RSP.RSP_DESC,
-                            timeout: 1000,
+                            timeout: 100,
                             style: {right: '', bottom: ''},     //居中显示
                             showType: 'slide'
                         });
@@ -194,7 +194,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
 
             $("#add_content").on("click", "#subBut", function () {
                 //禁用按钮，防止多次提交
-                $('#subBut').linkbutton({disabled: true});
+                //$('#subBut').linkbutton({disabled: true});
 
                 var paramsCode = $("#paramsCode").val();
                 var paramsName = $("#paramsName").val();
@@ -213,7 +213,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                     || paramsTypeId == "" ) {
                     $.messager.alert('警告', '必填项不能为空。');
 
-                    $("#subTypeBut").linkbutton({disabled: false});  //按钮可用
+                    //$("#subTypeBut").linkbutton({disabled: false});  //按钮可用
                     return false;
                 }
 
@@ -233,7 +233,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                     }
                 });
                 //enable按钮
-                $("#subBut").linkbutton({disabled: false}); //按钮可用
+                //$("#subBut").linkbutton({disabled: false}); //按钮可用
             });
         });
     }
@@ -270,7 +270,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
 
             $("#addtype_content").on("click", "#subTypeBut", function () {
                 //禁用按钮，防止多次提交
-                $('#subTypeBut').linkbutton({disabled: true});
+                //$('#subTypeBut').linkbutton({disabled: true});
 
                 var paramsCode = $("#paramsCodet").val();
                 var paramsName = $("#paramsNamet").val();
@@ -289,7 +289,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                     || paramsTypeId == "" || paramsTypeName == null || paramsTypeName == "") {
                     $.messager.alert('警告', '必填项不能为空。');
 
-                    $("#subTypeBut").linkbutton({disabled: false});  //按钮可用
+                    //$("#subTypeBut").linkbutton({disabled: false});  //按钮可用
                     return false;
                 }
 
@@ -297,7 +297,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
 
                     $.messager.show({
                         msg: result.RSP.RSP_DESC,
-                        timeout: 1000,
+                        timeout: 100,
                         style: {right: '', bottom: ''},     //居中显示
                         showType: 'slide'
                     });
@@ -309,7 +309,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                     }
                 });
                 //enable按钮
-                $("#subTypeBut").linkbutton({disabled: false}); //按钮可用
+                //$("#subTypeBut").linkbutton({disabled: false}); //按钮可用
             });
         });
     }
@@ -352,7 +352,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                 if (paramsName == null || paramsName == "") {
                     $.messager.alert('警告', '参数名称不能为空。');
 
-                    $("#subBut").linkbutton({disabled: false});  //按钮可用
+                    //$("#subBut").linkbutton({disabled: false});  //按钮可用
 
                     return false;
                 }

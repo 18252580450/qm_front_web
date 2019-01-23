@@ -56,16 +56,16 @@
             <div id='add_eles_content' style='overflow:auto'>
                 <div class='panel-search'>
                     <form  method='POST' class='form form-horizontal' id='searchEles'>
-                        <div class='row cl'>
-                            <label class='form-label col-2'>策略元素类型</label>
-                            <div class='formControls col-2'>
-                                <input id="paramsTypeq" type="text" style='width:100%;height:30px'>
-                            </div>
-                            <label class='form-label col-2'></label>
-                            <div class='formControls col-2'>
-                                <a href='javascript:void(0)' class='btn btn-green radius mt-l-20' id = "selectElesBut"><i class='iconfont iconfont-search2'></i>查询</a>
-                            </div>
-                        </div>
+                        <!--<div class='row cl'>-->
+                            <!--<label class='form-label col-2'>策略元素类型</label>-->
+                            <!--<div class='formControls col-2'>-->
+                                <!--<input id="paramsTypeq" type="text" style='width:100%;height:30px'>-->
+                            <!--</div>-->
+                            <!--<label class='form-label col-2'></label>-->
+                            <!--<div class='formControls col-2'>-->
+                                <!--<a href='javascript:void(0)' class='btn btn-green radius mt-l-20' id = "selectElesBut"><i class='iconfont iconfont-search2'></i>查询</a>-->
+                            <!--</div>-->
+                        <!--</div>-->
                     </form>
                 </div>
                 <div class='cl'>

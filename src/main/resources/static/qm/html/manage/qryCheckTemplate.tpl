@@ -9,16 +9,16 @@
                             <div class='formControls col-3'>
                                 <input id="templateName" type='text' class='easyui-textbox' style='width:100%;height:30px' >
                             </div>
-                            <label class='form-label col-2'>模板渠道</label>
-                            <div class='formControls col-3'>
-                                <input id="templatChannel" type='text' class='easyui-textbox' style='width:100%;height:30px' >
-                            </div>
+                            <!--<label class='form-label col-2'>模板渠道</label>-->
+                            <!--<div class='formControls col-3'>-->
+                                <!--<input id="templatChannel" type='text' class='easyui-textbox' style='width:100%;height:30px' >-->
+                            <!--</div>-->
                         </div>
                         <div class='row cl'>
-                            <label class='form-label col-2'>模板状态</label>
-                            <div class='formControls col-3'>
-                                <input id="templateStatus" type='text' class='easyui-textbox' style='width:100%;height:30px' >
-                            </div>
+                            <!--<label class='form-label col-2'>模板状态</label>-->
+                            <!--<div class='formControls col-3'>-->
+                                <!--<input id="templateStatus" type='text' class='easyui-textbox' style='width:100%;height:30px' >-->
+                            <!--</div>-->
                             <div class='formControls col-3' style="text-align: right">
                                 <a href='javascript:void(0)' class='btn btn-green radius mt-l-20' id = "qryCheckTemplate_selectBut"><i class='iconfont iconfont-search2'></i>查询</a>
                                 <a href='javascript:void(0)' class='btn btn-secondary radius mt-l-20 ' id="qryCheckTemplate_resetBut"><i class='iconfont iconfont-zhongzuo'></i>重置</a>

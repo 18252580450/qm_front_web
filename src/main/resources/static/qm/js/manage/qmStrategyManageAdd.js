@@ -130,24 +130,30 @@ define([
         }
 
         function initElesWindows(){
-            $('#add_eles_window').show().window({
-                title: '添加元素',
-                width: 950,
-                height: 600,
-                cache: false,
-                modal: true
-            });
-            qryElesList();
-            //查询
-            $("#add_eles_content").unbind("click");
-            $("#searchEles").on("click", "#selectElesBut", function () {
-                $("#elesList").datagrid("load");
-            });
-            $("#add_eles_content").on("click", "#close", function () {
-                $("#add_eles_content").find('form.form').form('clear');
-                $("#add_eles_window").window("close");
-            });
-            $("#add_eles_content").on("click", "#okBut", clickOk);
+            var paramsTypeId = $("#paramsTypeId").combobox('getValue');
+            if(paramsTypeId){
+                $('#add_eles_window').show().window({
+                    title: '添加元素',
+                    width: 950,
+                    height: 600,
+                    cache: false,
+                    modal: true
+                });
+                qryElesList();
+                //查询
+                $("#add_eles_content").unbind("click");
+                //$("#searchEles").on("click", "#selectElesBut", function () {
+                //    $("#elesList").datagrid("load");
+                //});
+                $("#add_eles_content").on("click", "#close", function () {
+                    $("#add_eles_content").find('form.form').form('clear');
+                    $("#add_eles_window").window("close");
+                });
+                $("#add_eles_content").on("click", "#okBut", clickOk);
+            }else{
+                $.messager.alert('警告', '请选择策略类型。');
+                return;
+            }
         }
 
         function clickOk(){
@@ -257,7 +263,7 @@ define([
                 loader: function (param, success) {
                     var start = (param.page - 1) * param.rows;
                     var pageNum = param.rows;
-                    var paramsTypeId = $("#paramsTypeq").combobox('getValue');
+                    var paramsTypeId = $("#paramsTypeId").combobox('getValue');
 
                     var reqParams = {
                         "tenantId":Util.constants.TENANT_ID,
@@ -311,7 +317,7 @@ define([
             //保存
             $("#subBut",$el).on("click", function () {
                 //禁用按钮，防止多次提交
-                $('#subBut',$el).linkbutton({disabled: true});
+                //$('#subBut',$el).linkbutton({disabled: true});
 
                 var pName = $("#pName",$el).val();
                 var paramsTypeId = $("#paramsTypeId").combobox('getValue');
@@ -381,12 +387,12 @@ define([
                 if (pName == null || pName == "" || paramsTypeId == null || paramsTypeId == "" ) {
                     $.messager.alert('警告', '必填项不能为空。');
 
-                    $("#subBut",$el).linkbutton({disabled: false});  //按钮可用
+                    //$("#subBut",$el).linkbutton({disabled: false});  //按钮可用
                     return false;
                 }else if(str != ""){
                     $.messager.alert('警告', str);
 
-                    $("#subBut",$el).linkbutton({disabled: false});  //按钮可用
+                    //$("#subBut",$el).linkbutton({disabled: false});  //按钮可用
                     return false;
                 }
                 var rspCode;
@@ -423,7 +429,7 @@ define([
                 }
 
                 //enable按钮
-                $("#subBut",$el).linkbutton({disabled: false}); //按钮可用
+                //$("#subBut",$el).linkbutton({disabled: false}); //按钮可用
             });
         }
 
