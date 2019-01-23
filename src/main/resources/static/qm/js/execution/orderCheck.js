@@ -1,4 +1,4 @@
-require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], function (QueryQmPlan,$, Util, Transfer, CommonAjax) {
+require(["js/manage/queryQmPlan", "jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], function (QueryQmPlan, $, Util, Transfer, CommonAjax) {
 
     var orderCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/execution/orderCheckDetailNew.html",
         poolStatusData = [];  //质检状态下拉框静态数据（待质检、待复检）
@@ -14,7 +14,7 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "commonAjax", "da
     function initPageInfo() {
 
         $('#planName').searchbox({//输入框点击查询事件
-            searcher: function(value){
+            searcher: function (value) {
                 var queryQmPlan = new QueryQmPlan();
 
                 $('#qry_window').show().window({
@@ -22,7 +22,7 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "commonAjax", "da
                     width: 1150,
                     height: 600,
                     cache: false,
-                    content:queryQmPlan.$el,
+                    content: queryQmPlan.$el,
                     modal: true
                 });
             }
@@ -33,8 +33,8 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "commonAjax", "da
         var beginDate = "2018-10-10 00:00:00";
         $("#assignBeginTime").datetimebox({
             // value: beginDate,
-            onShowPanel:function(){
-                $("#assignBeginTime").datetimebox("spinner").timespinner("setValue","00:00:00");
+            onShowPanel: function () {
+                $("#assignBeginTime").datetimebox("spinner").timespinner("setValue", "00:00:00");
             },
             onChange: function () {
                 checkBeginEndTime();
@@ -46,8 +46,8 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "commonAjax", "da
         // var endDate = (DateUtil.formatDateTime(new Date()-24*60*60*1000)).substr(0,11) + "23:59:59";
         $('#assignEndTime').datetimebox({
             // value: endDate,
-            onShowPanel:function(){
-                $("#assignEndTime").datetimebox("spinner").timespinner("setValue","23:59:59");
+            onShowPanel: function () {
+                $("#assignEndTime").datetimebox("spinner").timespinner("setValue", "23:59:59");
             },
             onChange: function () {
                 checkBeginEndTime();
@@ -240,6 +240,10 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "commonAjax", "da
     function initEvent() {
         $("#queryBtn").on("click", function () {
             $("#orderCheckList").datagrid('reload');
+        });
+        $("#resetBtn").on("click", function () {
+            $("#searchForm").form('clear');
+            $("#poolStatus").combobox('setValue', poolStatusData[0].paramsCode);
         });
     }
 

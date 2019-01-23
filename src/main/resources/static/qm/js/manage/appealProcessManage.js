@@ -104,8 +104,8 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
         var beginDate = (DateUtil.formatDateTime(new Date() - 24 * 60 * 60 * 1000)).substr(0, 11) + "00:00:00";
         beginDateBox.datetimebox({
             // value: beginDate,
-            onShowPanel:function(){
-                $("#createTimeBegin").datetimebox("spinner").timespinner("setValue","00:00:00");
+            onShowPanel: function () {
+                $("#createTimeBegin").datetimebox("spinner").timespinner("setValue", "00:00:00");
             },
             onChange: function () {
                 checkBeginEndTime();
@@ -117,8 +117,8 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
         // var endDate = (DateUtil.formatDateTime(new Date()-24*60*60*1000)).substr(0,11) + "23:59:59";
         endDateBox.datetimebox({
             // value: endDate,
-            onShowPanel:function(){
-                $("#createTimeEnd").datetimebox("spinner").timespinner("setValue","23:59:59");
+            onShowPanel: function () {
+                $("#createTimeEnd").datetimebox("spinner").timespinner("setValue", "23:59:59");
             },
             onChange: function () {
                 checkBeginEndTime();
@@ -287,6 +287,13 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
         //查询
         $("#queryBtn").on("click", function () {
             $("#appealProcessList").datagrid("load");
+        });
+
+        //重置
+        $("#resetBtn").on("click", function () {
+            $("#searchForm").form('clear');
+            $("#checkType").combobox("setValue", checkTypeData[0].paramsCode);
+            $("#processStatus").combobox("setValue", processStatusData[0].paramsCode);
         });
 
         //新增

@@ -11,7 +11,6 @@ require(["js/manage/queryQmPlan", "jquery", 'util', "transfer", "commonAjax", "d
 
     //页面信息初始化
     function initPageInfo() {
-
         $('#planName').searchbox({//输入框点击查询事件
             searcher: function (value) {
                 var queryQmPlan = new QueryQmPlan();
@@ -257,7 +256,11 @@ require(["js/manage/queryQmPlan", "jquery", 'util', "transfer", "commonAjax", "d
     function initEvent() {
         $("#queryBtn").on("click", function () {
             $("#voiceCheckList").datagrid('reload');
-        })
+        });
+        $("#resetBtn").on("click", function () {
+            $("#searchForm").form('clear');
+            $("#poolStatus").combobox('setValue', poolStatusData[0].paramsCode);
+        });
     }
 
     //工单质检详情

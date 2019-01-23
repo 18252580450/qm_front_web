@@ -167,6 +167,9 @@ require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util,
             $("#queryBtn").on("click", function () {
                 $("#appealCheckList").datagrid("reload");
             });
+            $("#resetBtn").on("click", function () {
+                $("#searchForm").form('clear');
+            });
         }
 
         //审批记录弹框

@@ -230,6 +230,10 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
             $("#queryBtn").on("click", function () {
                 $("#appealCheckList").datagrid("reload");
             });
+            $("#resetBtn").on("click", function () {
+                $("#searchForm").form('clear');
+                $("#appealStatus").combobox('setValue', appealStatusData[0].paramsCode);
+            });
         }
 
         //审批记录弹框
