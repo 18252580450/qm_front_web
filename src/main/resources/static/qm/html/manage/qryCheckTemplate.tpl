@@ -13,8 +13,8 @@
                             <!--<div class='formControls col-3'>-->
                                 <!--<input id="templatChannel" type='text' class='easyui-textbox' style='width:100%;height:30px' >-->
                             <!--</div>-->
-                        </div>
-                        <div class='row cl'>
+                        <!--</div>-->
+                        <!--<div class='row cl'>-->
                             <!--<label class='form-label col-2'>模板状态</label>-->
                             <!--<div class='formControls col-3'>-->
                                 <!--<input id="templateStatus" type='text' class='easyui-textbox' style='width:100%;height:30px' >-->

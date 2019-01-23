@@ -14,38 +14,38 @@ define([
     function initGrid() {
 
         //模板渠道下拉框
-        $("#templatChannel",$el).combobox({
-            url: '../../data/checkTemp_type.json',
-            method: "GET",
-            valueField: 'codeValue',
-            textField: 'codeName',
-            panelHeight:'auto',
-            editable:false,
-            onLoadSuccess : function(){//当数据加载成功时，默认显示第一个数据
-                var templatChannel = $("#templatChannel");
-                var data = templatChannel.combobox('getData');
-                if (data.length > 0) {
-                    templatChannel.combobox('select', data[0].codeValue);
-                }
-            }
-        });
+        //$("#templatChannel",$el).combobox({
+        //    url: '../../data/checkTemp_type.json',
+        //    method: "GET",
+        //    valueField: 'codeValue',
+        //    textField: 'codeName',
+        //    panelHeight:'auto',
+        //    editable:false,
+        //    onLoadSuccess : function(){//当数据加载成功时，默认显示第一个数据
+        //        //var templatChannel = $("#templatChannel");
+        //        //var data = templatChannel.combobox('getData');
+        //        //if (data.length > 0) {
+        //        //    templatChannel.combobox('select', data[0].codeValue);
+        //        //}
+        //    }
+        //});
 
         //模板状态下拉框
-        $("#templateStatus",$el).combobox({
-            url: '../../data/checkStatus_type.json',
-            method: "GET",
-            valueField: 'codeValue',
-            textField: 'codeName',
-            panelHeight:'auto',
-            editable:false,
-            onLoadSuccess : function(){//当数据加载成功时，默认显示最后一个数据
-                var templateStatus = $("#templateStatus");
-                var data = templateStatus.combobox('getData');
-                if (data.length > 0) {
-                    templateStatus.combobox('select', data[4].codeValue);
-                }
-            }
-        });
+        //$("#templateStatus",$el).combobox({
+        //    url: '../../data/checkStatus_type.json',
+        //    method: "GET",
+        //    valueField: 'codeValue',
+        //    textField: 'codeName',
+        //    panelHeight:'auto',
+        //    editable:false,
+        //    onLoadSuccess : function(){//当数据加载成功时，默认显示最后一个数据
+        //        var templateStatus = $("#templateStatus");
+        //        var data = templateStatus.combobox('getData');
+        //        if (data.length > 0) {
+        //            templateStatus.combobox('select', data[4].codeValue);
+        //        }
+        //    }
+        //});
 
         var IsCheckFlag = true; //标示是否是勾选复选框选中行的，true - 是 , false - 否
         $("#qryCheckTemplate_checkTemplateManage",$el).datagrid({
@@ -86,11 +86,13 @@ define([
                 var start = (param.page - 1) * param.rows;
                 var pageNum = param.rows;
                 var templateName = $("#templateName",$el).val();
-                var tenantId = $("#templatChannel",$el).combobox("getValue");
-                var templateStatus = $("#templateStatus",$el).combobox("getValue");
-                if(templateStatus == '4'){
-                    templateStatus = null;
-                }
+                //var tenantId = $("#templatChannel",$el).combobox("getValue");
+                var tenantId = Util.constants.TENANT_ID;
+                //var templateStatus = $("#templateStatus",$el).combobox("getValue");
+                var templateStatus = "1";
+                //if(templateStatus == '4'){
+                //    templateStatus = null;
+                //}
                 var reqParams = {
                     "tenantId":tenantId,
                     "templateName": templateName,
