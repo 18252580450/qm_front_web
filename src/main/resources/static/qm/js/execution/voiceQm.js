@@ -195,6 +195,18 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
         $("#queryInfo").datagrid({
             columns: [[
                 {field: 'ck', checkbox: true, align: 'center'},
+                {
+                    field: 'action', title: '操作', width: '5%',
+                    formatter: function (value, row, index) {
+                        var bean = {//根据参数进行定位修改
+                            'index':index,
+                            'touchId': row.touchId
+                        };
+                        var beanStr = JSON.stringify(bean);   //转成字符串
+                        var action = "<a href='javascript:void(0);' class='playBtn' id =" + beanStr + " >语音播放</a>";
+                        return action;
+                    }
+                },
                 {field: 'touchId', title: '语音流水', align: 'center', width: '10%'},
                 {field: 'staffNumber', title: '坐席号码', align: 'center', width: '10%'},
                 {field: 'customerNumber', title: '客户号码', align: 'center', width: '10%'},
@@ -239,6 +251,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
             pageSize: 10,
             pageList: [5, 10, 20, 50],
             rownumbers: false,
+            checkOnSelect: false,
             loader: function (param, success) {
                 var start = (param.page - 1) * param.rows;
                 var pageNum = param.rows;
@@ -336,21 +349,6 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
             deleteCheck();
         });
 
-        // var voicePath = "../../data/voice.mp3";
-        var voicePath = "../../data/voice2.wav";
-        var voice = new Audio(voicePath);
-        //播放
-        $("#playBut").on("click", function () {
-            if(i++%2==0){
-                document.getElementById('playBut').text='语音播放';
-                voice.play(); //播放
-            }else{
-                document.getElementById('playBut').text='语音暂停';
-                //暂停
-                voice.pause();
-            }
-        });
-
         //强制释放
         $("#releaseBut").on("click", function () {
             release();
@@ -409,6 +407,29 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
                     }
                     claim(ids);
                 }});
+        });
+
+        // var voicePath = "../../data/voice.mp3";
+        var voicePath = "../../data/voice2.wav";
+        var voice  = new Audio(voicePath);
+        //语音播放
+        $("#page").on('click','a.playBtn',function(){
+
+            var rowData = $(this).attr('id'); //获取a标签中传递的值
+            var sensjson = JSON.parse(rowData); //转成json格式
+            var index = sensjson.index;
+            if(i++%2==0){
+                $("a.playBtn")[index].innerHTML='语音暂停';
+                voice.play(); //播放
+            }else{
+                $("a.playBtn")[index].innerHTML='语音播放';
+                voice.pause();//暂停
+            }
+        });
+        
+        //语音下载
+        $("#downloadBut").on('click',function () {
+            var selRows = $("#queryInfo").datagrid("getSelections");//选中多行
         });
     }
 
