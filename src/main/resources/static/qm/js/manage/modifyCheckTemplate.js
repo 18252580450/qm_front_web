@@ -368,6 +368,9 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
                     showType: 'slide'
                 });
             });
+            setTimeout(function () {
+                top.jQuery('#tabs').tabs('close', "修改考评模板");
+            },2000);
         });
     }
 
