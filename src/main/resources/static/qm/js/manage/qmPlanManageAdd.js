@@ -120,9 +120,6 @@ define([
 
         //保存
         $("#addPlan",$el).on("click", function () {
-            //禁用按钮，防止多次提交
-            $('#addPlan',$el).linkbutton({disabled: true});
-            $('#planRuntime',$el).validatebox({required:true});//非空校验
             var planName = $("#planName",$el).val();
             var planType = $("#planType",$el).combobox('getValue');
             var templateId = $("#templateId",$el).val();
@@ -134,10 +131,10 @@ define([
             var planEndtime = $('#planEndtime',$el).datetimebox('getValue');
             var remark = $('#remark',$el).val();
 
-            if(planRuntime==""||planRuntime==null){
-                $.messager.alert('警告', '必填项不可为空!');
-                return false;
-            }
+            // if(planRuntime==""||planRuntime==null){
+            //     $.messager.alert('警告', '任务执行时间不可为空!');
+            //     return false;
+            // }
             //质检关系
             var qmBindRlnListNew = [];
             var treeObj = $.fn.zTree.getZTreeObj("qmStaffsTree");
@@ -180,7 +177,7 @@ define([
             };
 
             if (planName == null || planName == "" || planType == null || planType == "" || templateId == null || templateId == ""
-                || pId == null || pId == "" || manOrAuto == null || manOrAuto == "" || planRuntype == null || planRuntype == "") {
+                || pId == null || pId == "" || manOrAuto == null || manOrAuto == "" || planRuntype == null || planRuntype == ""|| planRuntime == null || planRuntime == "") {
                 $.messager.alert('警告', '必填项不能为空。');
 
                 $("#addPlan",$el).linkbutton({disabled: false});  //按钮可用
@@ -226,9 +223,6 @@ define([
                     $("#add_window").window("close"); // 关闭窗口
                 }
             }
-
-            //enable按钮
-            $("#addPlan",$el).linkbutton({disabled: false}); //按钮可用
         });
     }
 
@@ -258,7 +252,7 @@ define([
             }
         });
         $('#planRuntime',$el).timespinner({
-            required: false,
+            required: true,
             showSeconds: true,
             panelHeight:'auto'
         });

@@ -78,7 +78,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
                     formatter: function (value) {//鼠标悬浮显示全部内容
                         return "<span title='" + value + "'>" + value + "</span>";
                     }},
-                {field: 'tenantId', title: '渠道名称', width: '20%',
+                {field: 'tenantId', title: '渠道名称', width: '20%', hidden: true,
                     formatter: function (value) {
                         return "<span title='" + value + "'>" + value + "</span>";
                     }},
@@ -331,7 +331,6 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
                     return false;
                 }
 
-                selRows[0].templateStatus = "0";//未发布
                 Util.ajax.postJson(Util.constants.CONTEXT+ Util.constants.CHECK_TEMPLATE + "/copyTemplate", JSON.stringify(selRows[0]), function (result) {
                     $.messager.show({
                         msg: result.RSP.RSP_DESC,

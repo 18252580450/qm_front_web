@@ -209,7 +209,8 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
     //保存操作。将表中的数据保存到数据库中（新增）
     function saveEvent(){
         $("#page").on("click", "#saveBut", function () {
-
+        //禁用按钮，防止多次提交
+        $('#saveBut').linkbutton({disabled: true});
         $('#templateName').validatebox({required:true});//非空校验
         $('#templateDesc').validatebox({required:true});//非空校验
         if($("#templateName").val()==""||$("#templateDesc").val()==""){
@@ -274,16 +275,14 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
                 style: {right: '', bottom: ''},     //居中显示
                 showType: 'slide'
             });
-
             var rspCode = result.RSP.RSP_CODE;
-
             if (rspCode == "1") {
                 $('#add_content').window('close'); // 关闭窗口
                 $("#peopleManage").datagrid('reload'); //插入成功后，刷新页面
             }
         });
 
-        //将基本信息保存到基本信息表中
+            //将基本信息保存到基本信息表中
             var templateName = $("#templateName").val();
             var templatChannel = $("#templatChannel").combobox("getValue");//模板渠道
             var templateType = $("#templateType").combobox("getValue");
@@ -300,9 +299,7 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
                     style: {right: '', bottom: ''},     //居中显示
                     showType: 'slide'
                 });
-
                 var rspCode = result.RSP.RSP_CODE;
-
                 if (rspCode == "1") {
                     $("#checkTemplateManage").datagrid('reload'); //插入成功后，刷新页面
                 }
@@ -311,7 +308,6 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
             //将操作信息保存到考评模板操作日志表中
             var params = {'operateType': '0'};
             Util.ajax.postJson(Util.constants.CONTEXT+ Util.constants.TPL_OP_LOG + "/insertTplOpLog ", JSON.stringify(params), function (result) {
-
                 $.messager.show({
                     msg: result.RSP.RSP_DESC,
                     timeout: 1000,
@@ -319,6 +315,9 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
                     showType: 'slide'
                 });
             });
+            setTimeout(function () {
+                top.jQuery('#tabs').tabs('close', "新增考评模板");
+            },2000);
         });
     }
 
