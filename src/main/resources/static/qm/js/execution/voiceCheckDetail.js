@@ -112,7 +112,6 @@ require(["jquery", "util", "dateUtil", "transfer", "easyui"], function ($, Util)
 
                     var rspCode = result.RSP.RSP_CODE;
                     if (rspCode !== "1") {
-
                         $.messager.show({
                             msg: result.RSP.RSP_DESC,
                             timeout: 1000,
@@ -146,6 +145,7 @@ require(["jquery", "util", "dateUtil", "transfer", "easyui"], function ($, Util)
                                     style: {right: '', bottom: ''},     //居中显示
                                     showType: 'show'
                                 });
+                            } else {
                                 //分值类型
                                 scoreType = result.RSP.DATA[0].scoreType;
                                 //考评项评分列表

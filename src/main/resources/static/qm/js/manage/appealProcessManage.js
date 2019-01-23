@@ -160,7 +160,6 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                     }
                 },
                 {field: 'createStaffId', title: '创建工号', width: '10%'},
-                {field: 'tenantId', title: '渠道', width: '10%'},
                 {
                     field: 'modifyTime', title: '修改时间', width: '15%',
                     formatter: function (value, row, index) { //格式化时间格式

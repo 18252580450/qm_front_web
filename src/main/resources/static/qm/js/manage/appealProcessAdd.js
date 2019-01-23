@@ -35,11 +35,23 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
 
         //部门搜索框
         var department = $("#departmentName");
-        department.searchbox({
-                searcher: function () {
-                }
+        // department.searchbox({
+        //         searcher: function () {
+        //         }
+        //     }
+        // );
+        // department.validatebox();
+        department.combotree({
+            url: '../../data/process_depart.json',
+            method: "GET",
+            textField: "text",
+            panelHeight: "250",
+            multiple: true,
+            editable: false,
+            onlyLeafCheck: true,
+            onBeforeExpand: function (node, param) {    // 下拉树异步
             }
-        );
+        });
         department.validatebox();
 
         //质检类型下拉框
@@ -85,10 +97,12 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                 //新增子流程时，禁用渠道和质检类型下拉框，保证子流程渠道和质检类型和主流程保持一致
                 var orderNo = $("#orderNo").combobox("getValue");
                 if (orderNo === "00") {
+                    $("#departmentName").combotree('enable');
                     $("#tenantType").combobox('enable');
                     $("#checkType").combobox('enable');
                     $("#maxAppealNum").attr("readOnly", false)
                 } else {
+                    $("#departmentName").combotree('disable');
                     $("#tenantType").combobox('disable');
                     $("#checkType").combobox('disable');
                     $("#maxAppealNum").attr("readOnly", true);
@@ -348,10 +362,10 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
 
         var processName = $("#processName").val(),
             tenantType = $("#tenantType"),
-            tenantId = tenantType.combobox("getValue"),
             tenantName = tenantType.combobox("getText"),
             departmentId = $("#departmentId").val(),
-            departmentName = $("#departmentName").val(),
+            // departmentName = $("#departmentName").val(),
+            departmentName = $("#departmentName").combotree("getText").split(","),
             checkType = $("#checkType").combobox("getValue"),
             mainProcessFlag = "0";
         if (parseInt(orderNo) > 0) {
@@ -365,6 +379,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
             $.messager.alert("提示", "流程名称不能为空!");
             return false;
         }
+        debugger;
         if (departmentName == null || departmentName === "") {
             $.messager.alert("提示", "请选择部门!");
             return false;
@@ -374,7 +389,8 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
             "tenantId": Util.constants.TENANT_ID,
             "tenantName": tenantName,
             "departmentId": Util.constants.CHECKED_DEPART_ID,  //暂时写死
-            "departmentName": departmentName,
+            // "departmentName": departmentName,
+            "departmentName": departmentName[0],
             "checkType": checkType,
             "mainProcessFlag": mainProcessFlag,
             "maxAppealNum": maxAppealNum,
@@ -412,9 +428,8 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
             panelHeight: "250",
             multiple: true,
             editable: false,
+            onlyLeafCheck: true,
             onBeforeExpand: function (node, param) {    // 下拉树异步
-                // console.log("onBeforeExpand - node: " + node + " param: " + param);
-                // $('#userName').combotree("tree").tree("options").url = "../../data/process_user.json";
             }
         });
         userNameSelect.validatebox();
@@ -429,11 +444,10 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
         var submitBtn = $("#subNodeAddBtn");
         submitBtn.unbind("click");
         submitBtn.on("click", function () {
-            var subNodeName = $("#subNodeName").val();
-            var userNameComboTree = $("#userName");
-            //审批人员名单
-            var userNameArr = userNameComboTree.combotree("getText").split(",");
-            var userIdArr = userNameComboTree.combotree("getValues");
+            var subNodeName = $("#subNodeName").val(),
+                userNameComboTree = $("#userName"),
+                userNameArr = userNameComboTree.combotree("getText").split(","),//审批人员名单
+                userIdArr = userNameComboTree.combotree("getValues");
 
             if (subNodeName == null || subNodeName === "") {
                 $.messager.alert("提示", "节点名称不能为空!");
