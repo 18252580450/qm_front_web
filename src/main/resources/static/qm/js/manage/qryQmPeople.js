@@ -139,22 +139,20 @@ define([
         function getVal(){
             var list = [];
             var selRows = $("#checkStaffInfo",$el).datagrid("getSelections");//选中多行
-            if (selRows.length == 0) {
-                $.messager.alert("提示", "请至少选择一行数据!");
-                return false;
+            if (selRows.length != 0) {
+                selRows.forEach(function(value,index,array){
+                    var map = {};
+                    var checkStaffId = selRows[index].checkStaffId;
+                    var checkStaffCode = selRows[index].checkStaffCode;
+                    var orgsId = selRows[index].orgsId;
+                    var orgs = selRows[index].orgs;
+                    map["checkStaffName"]=checkStaffCode;
+                    map["checkStaffId"]=checkStaffId;
+                    map["orgsId"]=orgsId;
+                    map["orgs"]=orgs;
+                    list.push(map);
+                });
             }
-            selRows.forEach(function(value,index,array){
-                var map = {};
-                var checkStaffId = selRows[index].checkStaffId;
-                var checkStaffCode = selRows[index].checkStaffCode;
-                var orgsId = selRows[index].orgsId;
-                var orgs = selRows[index].orgs;
-                map["checkStaffName"]=checkStaffCode;
-                map["checkStaffId"]=checkStaffId;
-                map["orgsId"]=orgsId;
-                map["orgs"]=orgs;
-                list.push(map);
-            });
             return list;
         }
 
