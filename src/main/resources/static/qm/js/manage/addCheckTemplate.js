@@ -208,9 +208,7 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
 
     //保存操作。将表中的数据保存到数据库中（新增）
     function saveEvent(){
-        $("#page").on("click", "#saveBut", function () {
-        //禁用按钮，防止多次提交
-        $('#saveBut').linkbutton({disabled: true});
+        $("#page").one("click", "#saveBut", function () {
         $('#templateName').validatebox({required:true});//非空校验
         $('#templateDesc').validatebox({required:true});//非空校验
         if($("#templateName").val()==""||$("#templateDesc").val()==""){
