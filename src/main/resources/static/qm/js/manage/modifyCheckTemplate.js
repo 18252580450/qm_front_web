@@ -294,7 +294,7 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
             nAll.forEach(function(i,index){
                 nAllScore = nAllScore+i;
             });
-            if(nAllScore!=100||maxAllScore>=100){
+            if(nAllScore!=100||maxAllScore>100){
                 $.messager.alert("提示", "所占分值总和必须为100以及扣分范围总和不得高于100!");
                 return false;
             }
