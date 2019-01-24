@@ -258,6 +258,9 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
                 var touchId = $("#touchId").val();
                 var planId = $("#planId").val();
                 var isOperate = $("#isOperate").combobox("getValue");
+                if(isOperate==""){
+                    isOperate = "0";
+                }
                 var startTime = $("#startTime").datetimebox("getValue");
                 var endTime = $("#endTime").datetimebox("getValue");
                 var checkStaffId = $("#checkStaffId").val();
@@ -276,7 +279,9 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
                 var mediaType = $("#mediaType").val();
                 var serviceTypeId = $("#serviceTypeId").val();
                 var poolStatus = $("#poolStatus").combobox("getValue");
-
+                if(poolStatus==""){
+                    poolStatus = "0";
+                }
                 reqParams = {
                     "touchId": touchId,
                     "planId": planId,

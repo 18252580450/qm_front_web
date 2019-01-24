@@ -258,7 +258,13 @@ require(["js/execution/queryQmPeople","js/manage/queryQmPlan","jquery", 'util', 
                 var planId = $("#planId").val();
                 var serviceTypeId = $("#serviceTypeId").val();
                 var isOperate = $("#isDis").combobox("getValue");
+                if(isOperate==""){
+                    isOperate = "0";
+                }
                 var poolStatus = $("#poolStatus").combobox("getValue");
+                if(poolStatus==""){
+                    poolStatus = "0";
+                }
                 var planStartTime = $("#planStartTime").datetimebox("getValue");
                 var planEndTime = $("#planEndTime").datetimebox("getValue");
                 var qmLink = $("#qmLink").val();

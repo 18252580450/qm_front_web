@@ -27,7 +27,6 @@ define([
                 }
             });
         }else{
-            $('#deleteBtn',$el)[0].style.display="none";//新增时，删除按钮隐藏
             initSearchForm();//初始化表单数据
             initDatas();
         }
@@ -79,24 +78,55 @@ define([
             });
         });
 
-        //删除
-        $('#deleteBtn',$el).on('click',function(){
-            var delRows = $("#checkedStaffList",$el).datagrid("getSelections");
-            if (delRows.length === 0) {
-                $.messager.alert("提示", "请至少选择一行数据!");
-                return;
-            }
+        // //删除
+        // $('#deleteBtn',$el).on('click',function(){
+        //     var delRows = $("#checkedStaffList",$el).datagrid("getSelections");
+        //     if (delRows.length === 0) {
+        //         $.messager.alert("提示", "请至少选择一行数据!");
+        //         return;
+        //     }
+        //     var delArr = [];
+        //     for (var i = 0; i < delRows.length; i++) {
+        //         var map={};
+        //         map["checkStaffId"] = delRows[i].checkStaffId;
+        //         map["checkedObjectId"] = delRows[i].checkedObjectId;
+        //         map["planId"] = planIdnew;
+        //         delArr.push(map);
+        //     }
+        //     var params =  {"params":delArr};
+        //     $.messager.confirm('确认删除弹窗', '确定要删除吗？', function (confirm) {
+        //         if (confirm) {
+        //             Util.ajax.deleteJson(Util.constants.CONTEXT.concat(Util.constants.QM_BIND_RLN_DNS).concat("/"),JSON.stringify(params), function (result) {
+        //                 $.messager.show({
+        //                     msg: result.RSP.RSP_DESC,
+        //                     timeout: 1000,
+        //                     style: {right: '', bottom: ''},     //居中显示
+        //                     showType: 'slide'
+        //                 });
+        //                 if (result.RSP.RSP_CODE == "1") {
+        //                     $("#checkedStaffList",$el).datagrid('reload'); //删除成功后，刷新页面
+        //                 }
+        //             });
+        //         }
+        //     });
+        // });
+
+        //行数据删除
+        $("#page",$el).on("click", "a.delBtn", function () {
+            var rowData = $(this).attr('id');
+            var sensjson = JSON.parse(rowData); //转成json格式
             var delArr = [];
-            for (var i = 0; i < delRows.length; i++) {
-                var map={};
-                map["checkStaffId"] = delRows[i].checkStaffId;
-                map["checkedObjectId"] = delRows[i].checkedObjectId;
-                map["planId"] = planIdnew;
-                delArr.push(map);
-            }
+            var map={
+                "checkStaffId":sensjson.checkStaffId,
+                "checkedObjectId":sensjson.checkedObjectId,
+                "planId":planIdNew
+            };
+            delArr.push(map);
+            var param =  {"params":JSON.stringify(map)};
             var params =  {"params":delArr};
-            $.messager.confirm('确认删除弹窗', '确定要删除吗？', function (confirm) {
-                if (confirm) {
+            //先查询数据库中有没有该条数据，有的话就删除数据库中的，没有的话则删除页面上的
+            Util.ajax.getJson(Util.constants.CONTEXT.concat(Util.constants.QM_BIND_RLN_DNS).concat("/selectByPrimaryKey"),param, function (result) {
+                if (result.RSP.RSP_CODE == "1") {
                     Util.ajax.deleteJson(Util.constants.CONTEXT.concat(Util.constants.QM_BIND_RLN_DNS).concat("/"),JSON.stringify(params), function (result) {
                         $.messager.show({
                             msg: result.RSP.RSP_DESC,
@@ -108,6 +138,17 @@ define([
                             $("#checkedStaffList",$el).datagrid('reload'); //删除成功后，刷新页面
                         }
                     });
+                }else{
+                    $("#checkedStaffList",$el).datagrid("deleteRow",$("#checkedStaffList",$el).datagrid("getRowIndex",checkedObjectId));
+                    if(qmBindRlnList && qmBindRlnList.length > 0){
+                        $.each(qmBindRlnList,function(i,qmBindRln){
+                            if(qmBindRln.checkedObjectId == map["checkedObjectId"]&&qmBindRln.checkStaffId==map["checkStaffId"]){
+                                //delete qmBindRlnList[i];
+                                qmBindRlnList.splice(i,1);
+                                return;
+                            }
+                        });
+                    }
                 }
             });
         });
@@ -131,10 +172,6 @@ define([
             var planEndtime = $('#planEndtime',$el).datetimebox('getValue');
             var remark = $('#remark',$el).val();
 
-            // if(planRuntime==""||planRuntime==null){
-            //     $.messager.alert('警告', '任务执行时间不可为空!');
-            //     return false;
-            // }
             //质检关系
             var qmBindRlnListNew = [];
             var treeObj = $.fn.zTree.getZTreeObj("qmStaffsTree");
@@ -385,7 +422,7 @@ define([
                         var checkedStaffsOfCheckStaff = [];
                         if(qmBindRlnList.length > 0) {//判断考评计划是否绑定了人员关系
                             $.each(qmBindRlnList, function (i, qmBindRln) {
-                                if (qmBindRln.checkStaffId == node.checkStaffId && qmBindRln.checkedObjectId != "") {
+                                if (qmBindRln.checkStaffId == node.checkStaffId && qmBindRln.checkedObjectId != null) {
                                     checkedStaffsOfCheckStaff.push(qmBindRln);
                                 }
                             });
@@ -439,8 +476,12 @@ define([
                         {
                             field: 'action', title: '操作', width: '10%',
                             formatter: function (value, row, index) {
+                                var bean = {
+                                    'checkedObjectId': row.checkedObjectId,
+                                    'checkStaffId': row.checkStaffId,
+                                };
                                 var Action =
-                                    "<a href='javascript:void(0);' class='delBtn' id =" + row.checkedObjectId + " >删除</a>";
+                                    "<a href='javascript:void(0);' class='delBtn' id =" + JSON.stringify(bean) + " >删除</a>";
                                 return Action;
                             }
                         }
@@ -461,8 +502,11 @@ define([
                         {
                             field: 'action', title: '操作', width: '40%',
                             formatter: function (value, row, index) {
+                                var bean = {
+                                    'checkedObjectId': row.checkedObjectId,
+                                };
                                 var Action =
-                                    "<a href='javascript:void(0);' class='delBtn' id =" + row.checkedObjectId + " >删除</a>";
+                                    "<a href='javascript:void(0);' class='delBtn' id =" + JSON.stringify(bean) + " >删除</a>";
                                 return Action;
                             }
                         }
@@ -485,8 +529,12 @@ define([
                         {
                             field: 'action', title: '操作', width: '10%',
                             formatter: function (value, row, index) {
+                                var bean = {
+                                    'checkedObjectId': row.checkedObjectId,
+                                    'checkStaffId': row.checkStaffId,
+                                };
                                 var Action =
-                                    "<a href='javascript:void(0);' class='delBtn' id =" + row.checkedObjectId + " >删除</a>";
+                                    "<a href='javascript:void(0);' class='delBtn' id =" + JSON.stringify(bean) + " >删除</a>";
                                 return Action;
                             }
                         }
@@ -500,21 +548,21 @@ define([
     }
 
     //行数据删除
-    function initDelBut(){
-        $("#page",$el).on("click", "a.delBtn", function () {
-            var checkedObjectId = $(this).attr('id');
-            $("#checkedStaffList",$el).datagrid("deleteRow",$("#checkedStaffList",$el).datagrid("getRowIndex",checkedObjectId));
-            if(qmBindRlnList && qmBindRlnList.length > 0){
-                $.each(qmBindRlnList,function(i,qmBindRln){
-                    if(qmBindRln.checkedObjectId == checkedObjectId){
-                        //delete qmBindRlnList[i];
-                        qmBindRlnList.splice(i,1);
-                        return;
-                    }
-                });
-            }
-        });
-    }
+    // function initDelBut(){
+    //     $("#page",$el).on("click", "a.delBtn", function () {
+    //         var checkedObjectId = $(this).attr('id');
+    //         $("#checkedStaffList",$el).datagrid("deleteRow",$("#checkedStaffList",$el).datagrid("getRowIndex",checkedObjectId));
+    //         if(qmBindRlnList && qmBindRlnList.length > 0){
+    //             $.each(qmBindRlnList,function(i,qmBindRln){
+    //                 if(qmBindRln.checkedObjectId == checkedObjectId){
+    //                     //delete qmBindRlnList[i];
+    //                     qmBindRlnList.splice(i,1);
+    //                     return;
+    //                 }
+    //             });
+    //         }
+    //     });
+    // }
 
     //为zTree添加节点
     function addNodes(list){
@@ -523,11 +571,12 @@ define([
             var treeObj = $.fn.zTree.getZTreeObj("qmStaffsTree");
             list.forEach(function(value,index,array){
                 //2、给定一个要添加的新节点
-                var newNode = { pId:"0",checkStaffId: value.checkStaffId,checkStaffName:value.checkStaffName};
+                var newNode = { pId:"0",checkStaffId: value.checkStaffId,checkStaffName:value.checkStaffName,planId:planIdNew,userType:"0"};
                 //3、把这个新节点添加到当前的节点下，作为它的子节点
                 //返回根节点集合
                 var nodes = treeObj.getNodesByFilter(function (node) { return node.level == 0 });
                 treeObj.addNodes(nodes[0], newNode);
+                qmBindRlnList.push(newNode);
             });
         }
     }
@@ -544,7 +593,6 @@ define([
                         checkedDepartName: value.orgs,
                         checkStaffId: checkStaffId,
                         checkStaffName: checkStaffName,
-                        pId:"0",
                         userType:"0",
                         planId:planIdNew
 
@@ -560,9 +608,8 @@ define([
                         checkedObjectId: value.checkStaffId,
                         checkedObjectName: value.checkStaffName,
                         checkedDepartName: value.orgs,
-                        checkStaffId: "",
-                        checkStaffName: "",
-                        pId:"0",
+                        checkStaffId: null,
+                        checkStaffName: null,
                         userType:"0",
                         planId:planIdNew
                     };
@@ -584,9 +631,18 @@ define([
                 var checkedStaffs = [];
                 var checkedDeparts = [];
                 $.each(qmBindRlnList, function(index, qmBindRln){
-                    qmBindRln.pId = "0";
-                    if(qmBindRln.checkStaffId != ""){
-                        checkStaffs.push(qmBindRln);
+                    // qmBindRln.pId = "0";
+                    if(qmBindRln.checkStaffId !=null){
+                        qmBindRln.pId = "0";
+                        if(checkedStaffs.length!=0){//同一质检员去重
+                            checkedStaffs.forEach(function(value, index, array){
+                                if(value.checkStaffId != null && value.checkStaffId != qmBindRln.checkStaffId){
+                                    checkStaffs.push(qmBindRln);
+                                }
+                            });
+                        }else{
+                            checkStaffs.push(qmBindRln);
+                        }
                     }
                     if(qmBindRln.userType == 0 && qmBindRln.checkedObjectId){
                         checkedStaffs.push(qmBindRln);
@@ -604,7 +660,7 @@ define([
             initTree();
             initTable();
         }
-        initDelBut();
+        // initDelBut();
     }
     return initialize;
 });

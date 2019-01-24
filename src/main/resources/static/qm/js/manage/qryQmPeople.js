@@ -123,7 +123,7 @@ define([
             });
 
             //确定
-            $("#confirm",$el).on("click", function () {
+            $("#confirm",$el).one("click", function () {
                 flag = true;
                 getVal();
                 $('#qry_people_window').window('close'); // 成功后，关闭窗口
