@@ -5,17 +5,18 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
         startTime,                  //页面初始化时间
         checkItemListData = [],     //考评项列表数据（所有环节考评项）
         currentCheckItemData = [],  //当前考评项列表数据
-        currentNode,                //当前选中环节
-        checkLinkData = [],         //环节考评数据
+        currentNode = {},           //当前选中环节
+        checkLinkData = [],         //环节考评数据（提交数据）
         totalScore = 0,             //总得分
         replyData = {},             //内外部回复数据
         processData = [             //轨迹测试数据
             {
                 "rmk": "工单立单提交",
                 "opStaffNm": "员工10001",
+                "lgId": "1901020950440000046",
                 "opStaffId": "YN0003",
                 "nodeTypeCd": "start",
-                "handIngTime": 0,
+                "handIngTime": "2小时10分",
                 "crtTime": "2019-01-02 09:50:44",
                 "opWorkGroupNm": "北京1班",
                 "opTypeNm": "填单",
@@ -25,21 +26,23 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
             {
                 "rmk": "工单立单复检",
                 "opStaffNm": "员工10001",
+                "lgId": "1901021009500000047",
                 "opStaffId": "YN0003",
                 "nodeTypeCd": "review",
-                "handIngTime": null,
+                "handIngTime": "53分20秒",
                 "crtTime": "2019-01-02 10:09:50",
                 "opWorkGroupNm": "北京1班",
                 "opTypeNm": "立单",
-                "opTypeCd": "1",
+                "opTypeCd": "4",
                 "opWorkGroupId": ""
             },
             {
                 "rmk": "工单详情修改",
                 "opStaffNm": "员工10001",
+                "lgId": "1901021046340000048",
                 "opStaffId": "YN00010",
                 "nodeTypeCd": "handle",
-                "handIngTime": null,
+                "handIngTime": "1天4小时",
                 "crtTime": "2019-01-02 10:46:34",
                 "opWorkGroupNm": "北京1班",
                 "opTypeNm": "返单",
@@ -163,7 +166,7 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
                                 discount = discount + parseInt(inputScore.val());
                             }
                         });
-                        $("#checkScore_" + currentNode).html(String(total - discount));
+                        $("#checkScore_" + currentNode.lgId).html(String(total - discount));
                     });
                     input.on("blur", function () {
                         var scoreDiv = $("#score" + item.nodeId),
@@ -263,7 +266,7 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
                         });
                     } else {
                         //初始化考评项列表
-                        var checkLink = processData[0].nodeTypeCd;
+                        var checkLink = processData[0].opTypeCd;
                         $.each(checkItemListData, function (i, item) {
                             if (item.nodeTypeCode === checkLink) {
                                 currentCheckItemData.push(item)
@@ -386,31 +389,31 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
                 processDiv.append(getProcessDiv(item, true));
             }
 
-            var checkBox = $("#checkBox_" + item.nodeTypeCd);
+            var checkBox = $("#checkBox_" + item.lgId);
             //默认选中第一处理环节
             if (i < 1) {
-                currentNode = item.nodeTypeCd;
+                currentNode = item;
                 checkBox.attr("checked", true);
-                $("#leftSpan_" + item.nodeTypeCd).attr("class", "left-span-1");
-                $("#spot_" + item.nodeTypeCd).attr("class", "spot-1");
+                $("#leftSpan_" + item.lgId).attr("class", "left-span-1");
+                $("#spot_" + item.lgId).attr("class", "spot-1");
                 $("#checkLinkTitle").html(item.opTypeNm);
             }
             //绑定checkBox点击事件
             checkBox.on("click", function () {
                 //禁止取消勾选
-                if (item.nodeTypeCd === currentNode) {
+                if (item.lgId === currentNode.lgId) {
                     checkBox.prop("checked", true);
                     return;
                 }
                 //取消勾选其他checkBox
                 $.each(data, function (index, data) {
-                    if (data.nodeTypeCd !== item.nodeTypeCd) {
-                        $("#checkBox_" + data.nodeTypeCd).attr("checked", false);
-                        $("#leftSpan_" + data.nodeTypeCd).attr("class", "left-span-2");
-                        $("#spot_" + data.nodeTypeCd).attr("class", "spot-2");
+                    if (data.lgId !== item.lgId) {
+                        $("#checkBox_" + data.lgId).attr("checked", false);
+                        $("#leftSpan_" + data.lgId).attr("class", "left-span-2");
+                        $("#spot_" + data.lgId).attr("class", "spot-2");
                     } else {
-                        $("#leftSpan_" + data.nodeTypeCd).attr("class", "left-span-1");
-                        $("#spot_" + data.nodeTypeCd).attr("class", "spot-1");
+                        $("#leftSpan_" + data.lgId).attr("class", "left-span-1");
+                        $("#spot_" + data.lgId).attr("class", "spot-1");
                         $("#checkLinkTitle").html(data.opTypeNm);
                     }
                 });
@@ -419,12 +422,12 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
                 checkLinkSave();
 
                 //当前选中环节
-                currentNode = item.nodeTypeCd;
+                currentNode = item;
                 //当前考评项列表
                 currentCheckItemData = [];
                 $.each(checkItemListData, function (i, item) {
-                    if (item.nodeTypeCode === currentNode) {
-                        currentCheckItemData.push(item)
+                    if (item.nodeTypeCode === currentNode.opTypeCd) {
+                        currentCheckItemData.push(item);
                     }
                 });
                 $("#checkItemList").datagrid("loadData", {rows: currentCheckItemData}); //刷新考评项列表
@@ -437,12 +440,12 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
     function checkLinkSave() {
         var checkItemScoreList = [],
             checkLinkScore = 0,
-            scoreStr = $("#checkScore_" + currentNode).html();
+            scoreStr = $("#checkScore_" + currentNode.lgId).html();
         if (scoreStr !== "") {
             checkLinkScore = parseInt(scoreStr);
         }
         for (var i = 0; i < checkLinkData.length; i++) {
-            if (checkLinkData[i].checkLink === currentNode) {
+            if (checkLinkData[i].checkLink === currentNode.lgId) {
                 //更新总得分
                 totalScore -= checkLinkData[i].checkLinkScore;
                 checkLinkData.splice(i, 1);
@@ -463,7 +466,7 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
         });
 
         var checkLink = {
-            "checkLink": currentNode,
+            "checkLink": currentNode.lgId,
             "checkLinkScore": checkLinkScore,
             "checkItemScoreList": checkItemScoreList
         };
@@ -585,14 +588,14 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
             '</div>' +
             '</div>' +
             '<div class="process-left">' +
-            '<span class="left-span-2" style="margin-right: 5px" id="leftSpan_' + data.nodeTypeCd + '">' + data.opTypeNm + '</span>' +
-            '<input class="left-check-1" type="checkbox" id="checkBox_' + data.nodeTypeCd + '"/>' +
+            '<span class="left-span-2" style="margin-right: 5px" id="leftSpan_' + data.lgId + '">' + data.opTypeNm + '</span>' +
+            '<input class="left-check-1" type="checkbox" id="checkBox_' + data.lgId + '"/>' +
             '</div>' +
             '<div class="process-spot">' +
-            '<div class="spot-2" id="spot_' + data.nodeTypeCd + '"></div>' +
+            '<div class="spot-2" id="spot_' + data.lgId + '"></div>' +
             '</div>' +
             '<div class="check-right">' +
-            '<span class="content4-1-1" id="checkScore_' + data.nodeTypeCd + '"></span>' +
+            '<span class="content4-1-1" id="checkScore_' + data.lgId + '"></span>' +
             '</div>' +
             '</div>';
     }
@@ -602,7 +605,7 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
         //工作质量评价区数据更新
         $("#totalScore").val(totalScore);  //总得分
         for (var i = 0; i < checkLinkData.length; i++) {
-            if (checkLinkData[i].checkLink === currentNode) {
+            if (checkLinkData[i].checkLink === currentNode.lgId) {
                 //考评项列表
                 $.each(currentCheckItemData, function (index, item) {
                     $.each(checkLinkData[i].checkItemScoreList, function (scoreIndex, scoreItem) {

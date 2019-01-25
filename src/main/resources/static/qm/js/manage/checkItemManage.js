@@ -227,7 +227,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
                     if (checkLinkData.length > 0) {
                         success(data);
                     } else {
-                        getSelectData("WRKFM_NODE_TYPE", false, function (datas) {
+                        getSelectData("WRKFM_OPERATE_TYPE", false, function (datas) {
                             checkLinkData = datas;
                             success(data);
                         });
@@ -685,7 +685,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
         treeObj.refresh();
     }
 
-    //显示考评环
+    //显示考评环节
     function showCheckLink(item) {
         $("#checkLinkSelect").show();
         //工单环节下拉框
@@ -694,7 +694,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
             method: "GET",
             valueField: 'paramsCode',
             textField: 'paramsName',
-            panelHeight: 'auto',
+            panelHeight: 120,
             editable: false,
             onLoadSuccess: function () {
                 if (item != null && item.nodeTypeCode != null) {
@@ -704,7 +704,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
         });
         //重载下拉框数据
         if (checkLinkData.length === 0) {
-            getSelectData("WRKFM_NODE_TYPE", false, function (data) {
+            getSelectData("WRKFM_OPERATE_TYPE", false, function (data) {
                 checkLinkData = data;
                 $("#checkLinkConfig").combobox('loadData', data);
             });
