@@ -2,6 +2,9 @@
 require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], function ($, Util, Transfer,dateUtil) {
     var data = [];
     var i = 0;
+    var disableSubmit = false;  //禁用提交按钮标志
+    var num = Math.random()*15000 + 800;//随机生成
+    num = parseInt(num, 10);
     //调用初始化方法
     initialize();
 
@@ -176,20 +179,72 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
         }
     }
 
-    //删除操作。点击删除，删除树子节点和表中对应的行数据
+    //删除操作
     function delEvent() {
         $("#page").on("click", "a.delBtn", function () {
-            //删除表中对应行
-            var row = $('#peopleManage').datagrid('getSelected');
-            var rowIndex = $('#peopleManage').datagrid('getRowIndex', row);
-            $('#peopleManage').datagrid('deleteRow', rowIndex);
+            var rowData = $(this).attr('id');
+            var sensjson = JSON.parse(rowData); //转成json格式
+            var index = sensjson.index;
+            $('#peopleManage').datagrid('deleteRow', index);
 
-            //删除表中的数据
-            var ids = [];
-            var id= row.templateId
-            ids.push(id);
+        });
+    }
 
-            Util.ajax.putJson(Util.constants.CONTEXT.concat(Util.constants.ADD_CHECK_TEMPLATE).concat("/deleteByIds/").concat(ids), {}, function (result) {
+    //保存操作。将表中的数据保存到数据库中（新增）。
+    function insertTempDetail(){
+        return  new Promise(function(resolve, reject){
+            //将表中数据保存到详情信息表中
+            //获取datagrid中的所有数据，将其拼接成json格式字符串数组
+            var rowsData = $('#peopleManage').datagrid('getRows');
+            var json = [];
+            var maxAll = [];// 扣分范围
+            var nAll = [];//所占分值
+            var loc;
+            // var num = Math.random()*15000 + 800;//随机生成
+            // num = parseInt(num, 10);
+            $.each(rowsData, function (i)
+            {
+                var maxScore =  parseInt(rowsData[i].maxScore);
+                var nodeScore = parseInt(rowsData[i].nodeScore);
+                if(nodeScore<maxScore){
+                    return false;
+                }
+                nAll.push(nodeScore);
+                maxAll.push(maxScore);
+                loc = {
+                    "tenantId":Util.constants.TENANT_ID,
+                    "templateId":num.toString(),
+                    "nodeId":rowsData[i].nodeId,
+                    "nodeName": rowsData[i].nodeName,
+                    "maxScore": maxScore,
+                    "nodeScore": nodeScore,
+                    "errorType": rowsData[i].errorType,
+                    "nodeType": '3',
+                    "pNodeId":rowsData[i].pNodeId,
+                };
+                json.push(loc);
+            });
+            if(maxAll.length!=rowsData.length||nAll.length!=rowsData.length){
+                $.messager.alert("提示", "扣分范围不能高于所占分值！");
+                disableSubmit = false;
+                return false;
+            }
+            //判断分值总和是否为100
+            var maxAllScore = null;
+            maxAll.forEach(function(i,index){
+                maxAllScore = maxAllScore+i;
+            });
+            var nAllScore = null;
+            nAll.forEach(function(i,index){
+                nAllScore = nAllScore+i;
+            });
+            if(nAllScore!=100||maxAllScore>100){
+                $.messager.alert("提示", "所占分值总和必须为100以及扣分范围总和不得高于100!");
+                disableSubmit = false;
+                return false;
+            }
+            var param =  {"params":json};
+            Util.ajax.postJson(Util.constants.CONTEXT.concat(Util.constants.ADD_CHECK_TEMPLATE).concat("/insertTempDetail"),JSON.stringify(param), function (result) {
 
                 $.messager.show({
                     msg: result.RSP.RSP_DESC,
@@ -199,87 +254,16 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
                 });
                 var rspCode = result.RSP.RSP_CODE;
                 if (rspCode == "1") {
-                    $("#peopleManage").datagrid('reload'); //修改成功后，刷新页面
+                    $('#add_content').window('close'); // 关闭窗口
+                    $("#peopleManage").datagrid('reload'); //插入成功后，刷新页面
                 }
-
-            })
+            });
+            resolve();
         });
     }
 
-    //保存操作。将表中的数据保存到数据库中（新增）
-    function saveEvent(){
-        $("#page").one("click", "#saveBut", function () {
-        $('#templateName').validatebox({required:true});//非空校验
-        $('#templateDesc').validatebox({required:true});//非空校验
-        if($("#templateName").val()==""||$("#templateDesc").val()==""){
-            $.messager.alert('警告', '必填项不可为空!');
-            return false;
-        }
-         //将表中数据保存到详情信息表中
-        //获取datagrid中的所有数据，将其拼接成json格式字符串数组
-        var rowsData = $('#peopleManage').datagrid('getRows');
-        var json = [];
-        var maxAll = [];// 扣分范围
-        var nAll = [];//所占分值
-        var loc;
-        var num = Math.random()*15000 + 800;//随机生成
-        num = parseInt(num, 10);
-        $.each(rowsData, function (i)
-        {
-            var maxScore =  parseInt(rowsData[i].maxScore);
-            var nodeScore = parseInt(rowsData[i].nodeScore);
-            if(nodeScore<maxScore){
-                return false;
-            }
-            nAll.push(nodeScore);
-            maxAll.push(maxScore);
-            loc = {
-                "tenantId":Util.constants.TENANT_ID,
-                "templateId":num.toString(),
-                "nodeId":rowsData[i].nodeId,
-                "nodeName": rowsData[i].nodeName,
-                "maxScore": maxScore,
-                "nodeScore": nodeScore,
-                "errorType": rowsData[i].errorType,
-                "nodeType": '3',
-                "pNodeId":rowsData[i].pNodeId,
-            };
-            json.push(loc);
-        });
-        if(maxAll.length!=rowsData.length||nAll.length!=rowsData.length){
-            $.messager.alert("提示", "扣分范围不能高于所占分值！");
-            return false;
-        }
-        //判断分值总和是否为100
-        var maxAllScore = null;
-        maxAll.forEach(function(i,index){
-            maxAllScore = maxAllScore+i;
-        });
-        var nAllScore = null;
-        nAll.forEach(function(i,index){
-            nAllScore = nAllScore+i;
-        });
-        if(nAllScore!=100||maxAllScore>100){
-            $.messager.alert("提示", "所占分值总和必须为100以及扣分范围总和不得高于100!");
-            return false;
-        }
-
-        var param =  {"params":json};
-        Util.ajax.postJson(Util.constants.CONTEXT.concat(Util.constants.ADD_CHECK_TEMPLATE).concat("/insertTempDetail"),JSON.stringify(param), function (result) {
-
-            $.messager.show({
-                msg: result.RSP.RSP_DESC,
-                timeout: 1000,
-                style: {right: '', bottom: ''},     //居中显示
-                showType: 'slide'
-            });
-            var rspCode = result.RSP.RSP_CODE;
-            if (rspCode == "1") {
-                $('#add_content').window('close'); // 关闭窗口
-                $("#peopleManage").datagrid('reload'); //插入成功后，刷新页面
-            }
-        });
-
+    function insertCheckTemplate(){
+        return  new Promise(function(resolve, reject){
             //将基本信息保存到基本信息表中
             var templateName = $("#templateName").val();
             var templatChannel = $("#templatChannel").combobox("getValue");//模板渠道
@@ -302,9 +286,14 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
                     $("#checkTemplateManage").datagrid('reload'); //插入成功后，刷新页面
                 }
             });
+            resolve();
+        });
+    }
 
+    function insertTplOpLog(){
+        return  new Promise(function(resolve, reject){
             //将操作信息保存到考评模板操作日志表中
-            var params = {'operateType': '0'};
+            var params = {'tenantId': Util.constants.TENANT_ID,'operateType': '0','operateStaff':'9527','provinceId':'10000','cityId':'2002','templateId':num.toString()};
             Util.ajax.postJson(Util.constants.CONTEXT+ Util.constants.TPL_OP_LOG + "/insertTplOpLog ", JSON.stringify(params), function (result) {
                 $.messager.show({
                     msg: result.RSP.RSP_DESC,
@@ -312,10 +301,34 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
                     style: {right: '', bottom: ''},     //居中显示
                     showType: 'slide'
                 });
-            });
-            setTimeout(function () {
                 top.jQuery('#tabs').tabs('close', "新增考评模板");
-            },2000);
+            });
+            resolve();
+        });
+    }
+
+    function saveEvent() {
+        $("#page").on("click", "#saveBut", function () {
+            if(disableSubmit){
+                return;
+            }
+
+            $('#templateName').validatebox({required: true});//非空校验
+            $('#templateDesc').validatebox({required: true});//非空校验
+            if ($("#templateName").val() == "" || $("#templateDesc").val() == "") {
+                $.messager.alert('警告', '必填项不可为空!');
+                return false;
+            }
+            insertTempDetail().then(function () {
+                return insertCheckTemplate();
+            })
+                .then(function () {
+                    return insertTplOpLog();
+                })
+                .catch(function(e){
+                    $.messager.alert('警告', '操作错误!');
+                });
+            disableSubmit = true;   //防止多次提交
         });
     }
 
@@ -379,7 +392,8 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
                     field: 'action', title: '操作', width: '20%',
                     formatter: function (value, row, index) {
                         var bean = {//根据参数进行定位修改
-                            'templateId': row.templateId
+                            'templateId': row.templateId,
+                            'index':index
                         };
                         var beanStr = JSON.stringify(bean);   //转成字符串
                         var action = "<a href='javascript:void(0);' class='delBtn' id =" + beanStr + " >删除</a>";

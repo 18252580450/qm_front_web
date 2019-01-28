@@ -196,35 +196,32 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
         }
     }
 
-    //删除操作。点击删除，删除树子节点和表中对应的行数据
+    //删除操作
     function delEvent() {
         $("#page").on("click", "a.delBtn", function () {
-            //删除表中对应行
-            var row = $('#peopleManage').datagrid('getSelected');
-            var rowIndex = $('#peopleManage').datagrid('getRowIndex', row);
-            $('#peopleManage').datagrid('deleteRow', rowIndex);
 
-            //删除表中的数据
-            var ids = [];
-            var id= row.templateId
-            ids.push(id);
-
-            Util.ajax.putJson(Util.constants.CONTEXT.concat( Util.constants.ADD_CHECK_TEMPLATE).concat("/deleteByIds/").concat(ids), {}, function (result) {
-
-                $.messager.show({
-                    msg: result.RSP.RSP_DESC,
-                    timeout: 1000,
-                    style: {right: '', bottom: ''},     //居中显示
-                    showType: 'slide'
-                });
-
-                var rspCode = result.RSP.RSP_CODE;
-
-                if (rspCode == "1") {
-                    $("#peopleManage").datagrid('reload'); //修改成功后，刷新页面
+            //先查询数据库中有没有该条数据，有的话就删除数据库中的，没有的话则删除页面上的
+            var rowData = $(this).attr('id');
+            var sensjson = JSON.parse(rowData); //转成json格式
+            var index = sensjson.index;
+            var map = {
+                "templateId":sensjson.templateId,
+                "nodeId":sensjson.nodeId,
+                "nodeType":sensjson.nodeType
+            };
+            var param =  {"params":JSON.stringify(map)};
+            Util.ajax.getJson(Util.constants.CONTEXT.concat(Util.constants.ADD_CHECK_TEMPLATE).concat("/selectByPrimaryKey"),param, function (result) {
+                if (result.RSP.RSP_CODE == "1") {
+                    Util.ajax.deleteJson(Util.constants.CONTEXT.concat( Util.constants.ADD_CHECK_TEMPLATE).concat("/deleteByPrimaryKey/"), JSON.stringify(map), function (result) {
+                        if (result.RSP.RSP_CODE == "1") {
+                            $('#peopleManage').datagrid('deleteRow', index);
+                        }
+                    });
+                }else{
+                    $('#peopleManage').datagrid('deleteRow', index);
                 }
+            });
 
-            })
         });
     }
 
@@ -358,7 +355,7 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
             });
 
             //将操作信息保存到考评模板操作日志表中
-            var params = {'operateType': '1',"templateId":num.toString()};
+            var params = {'tenantId': Util.constants.TENANT_ID,'operateType': '1',"templateId":num.toString(),'operateStaff':'9527','provinceId':'10000','cityId':'2002'};
             Util.ajax.postJson(Util.constants.CONTEXT+ Util.constants.TPL_OP_LOG + "/insertTplOpLog ", JSON.stringify(params), function (result) {
 
                 $.messager.show({
@@ -437,7 +434,10 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
                     field: 'action', title: '操作', width: '20%',
                     formatter: function (value, row, index) {
                         var bean = {//根据参数进行定位修改
-                            'templateId': row.templateId
+                            "templateId":row.templateId,
+                            "nodeId":row.nodeId,
+                            "nodeType":"3",
+                            "index":index,
                         };
                         var beanStr = JSON.stringify(bean);   //转成字符串
                         var action = "<a href='javascript:void(0);' class='delBtn' id =" + beanStr + " >删除</a>";

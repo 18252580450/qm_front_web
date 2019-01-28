@@ -12,6 +12,8 @@ define([
     var list;
     var listTable;
     var isClicked = false;//是否点击
+    var isChildren = false;//是否是子节点
+    var disableSubmit = false;  //禁用提交按钮标志
     var checkStaffName="";
     var checkStaffId="";
     var planIdNew;
@@ -35,9 +37,18 @@ define([
         this.$el = $el;
     };
 
+    //质检人员信息弹窗，默认隐藏
+    function getQmPeopleDiv() {
+        return '<div  id="qry_people_window" style="display:none;">'+
+            '<div id="qry_people_content" style="overflow:auto">'+
+            '</div></div>'
+    }
+
     function initGlobalEvent(){
         // 新增质检员
         $("#addQmStaffBtn",$el).on("click", function () {
+            var div = $("#content",$el);
+            div.append(getQmPeopleDiv());
             require(["js/manage/qryQmPeople"], function (qryQmPeople) {
                 var queryQmPeople = qryQmPeople;
                 queryQmPeople.initialize();
@@ -48,7 +59,7 @@ define([
                     cache: false,
                     content:queryQmPeople.$el,
                     modal: true,
-                    onBeforeClose:function(){//弹框关闭前触发事件
+                    onBeforeDestroy:function(){//弹框关闭前触发事件
                         list = queryQmPeople.getList();//获取值
                         //为zTree添加节点
                         addNodes(list);
@@ -59,6 +70,8 @@ define([
 
         // 新增被质检员
         $("#addCheckedStaffBtn",$el).on("click", function () {
+            var div = $("#content",$el);
+            div.append(getQmPeopleDiv());
             require(["js/manage/qryQmPeople"], function (qryQmPeople) {
                 var queryQmPeople = qryQmPeople;
                 queryQmPeople.initialize();
@@ -69,7 +82,7 @@ define([
                     cache: false,
                     content:queryQmPeople.$el,
                     modal: true,
-                    onBeforeClose:function(){//弹框关闭前触发事件
+                    onBeforeDestroy:function(){//弹框关闭前触发事件
                         listTable = queryQmPeople.getList();//获取值
                         //为list表添加数据
                         addListData(listTable);
@@ -78,56 +91,59 @@ define([
             });
         });
 
-        // //删除
-        // $('#deleteBtn',$el).on('click',function(){
-        //     var delRows = $("#checkedStaffList",$el).datagrid("getSelections");
-        //     if (delRows.length === 0) {
-        //         $.messager.alert("提示", "请至少选择一行数据!");
-        //         return;
-        //     }
-        //     var delArr = [];
-        //     for (var i = 0; i < delRows.length; i++) {
-        //         var map={};
-        //         map["checkStaffId"] = delRows[i].checkStaffId;
-        //         map["checkedObjectId"] = delRows[i].checkedObjectId;
-        //         map["planId"] = planIdnew;
-        //         delArr.push(map);
-        //     }
-        //     var params =  {"params":delArr};
-        //     $.messager.confirm('确认删除弹窗', '确定要删除吗？', function (confirm) {
-        //         if (confirm) {
-        //             Util.ajax.deleteJson(Util.constants.CONTEXT.concat(Util.constants.QM_BIND_RLN_DNS).concat("/"),JSON.stringify(params), function (result) {
-        //                 $.messager.show({
-        //                     msg: result.RSP.RSP_DESC,
-        //                     timeout: 1000,
-        //                     style: {right: '', bottom: ''},     //居中显示
-        //                     showType: 'slide'
-        //                 });
-        //                 if (result.RSP.RSP_CODE == "1") {
-        //                     $("#checkedStaffList",$el).datagrid('reload'); //删除成功后，刷新页面
-        //                 }
-        //             });
-        //         }
-        //     });
-        // });
+        //删除质检员树
+        $('#deleteBtn',$el).on('click',function(){
+            if(isChildren==true){//判断是否点击的是子节点
+                var treeObj = $.fn.zTree.getZTreeObj("qmStaffsTree");
+                var nodes = treeObj.getSelectedNodes();//选中节点
+                var map={
+                    "checkStaffId":checkStaffId,
+                    "planId":planIdNew
+                };
+                var param =  {"params":JSON.stringify(map)};
+                $.messager.confirm('确认删除弹窗', '确定要删除吗？', function (confirm) {
+                    if (confirm) {
+                        Util.ajax.getJson(Util.constants.CONTEXT.concat(Util.constants.QM_BIND_RLN_DNS).concat("/selectByPrimaryKey"),param, function (result) {
+                            if (result.RSP.RSP_CODE == "1") {
+                                Util.ajax.deleteJson(Util.constants.CONTEXT.concat(Util.constants.QM_BIND_RLN_DNS).concat("/deleteById"),JSON.stringify(map), function (result) {
+                                    $.messager.show({
+                                        msg: result.RSP.RSP_DESC,
+                                        timeout: 1000,
+                                        style: {right: '', bottom: ''},     //居中显示
+                                        showType: 'slide'
+                                    });
+                                    if (result.RSP.RSP_CODE == "1") {
+                                        treeObj.removeNode(nodes[0]);//删除选中的节点
+                                        //删除节点之后，需要删除页面上和该节点匹配的数据
+                                        delRow(nodes[0]);
+                                    }
+                                });
+                            }else{
+                                treeObj.removeNode(nodes[0]);//删除选中的节点
+                                //删除节点之后，需要删除页面上和该节点匹配的数据
+                                delRow(nodes[0]);
+                            }
+                        });
+                    }
+                });
+            }
+        });
 
         //行数据删除
         $("#page",$el).on("click", "a.delBtn", function () {
             var rowData = $(this).attr('id');
             var sensjson = JSON.parse(rowData); //转成json格式
-            var delArr = [];
+            var index = sensjson.index;
             var map={
                 "checkStaffId":sensjson.checkStaffId,
                 "checkedObjectId":sensjson.checkedObjectId,
                 "planId":planIdNew
             };
-            delArr.push(map);
             var param =  {"params":JSON.stringify(map)};
-            var params =  {"params":delArr};
             //先查询数据库中有没有该条数据，有的话就删除数据库中的，没有的话则删除页面上的
             Util.ajax.getJson(Util.constants.CONTEXT.concat(Util.constants.QM_BIND_RLN_DNS).concat("/selectByPrimaryKey"),param, function (result) {
                 if (result.RSP.RSP_CODE == "1") {
-                    Util.ajax.deleteJson(Util.constants.CONTEXT.concat(Util.constants.QM_BIND_RLN_DNS).concat("/"),JSON.stringify(params), function (result) {
+                    Util.ajax.deleteJson(Util.constants.CONTEXT.concat(Util.constants.QM_BIND_RLN_DNS).concat("/deleteByPrimaryKey"),JSON.stringify(map), function (result) {
                         $.messager.show({
                             msg: result.RSP.RSP_DESC,
                             timeout: 1000,
@@ -135,19 +151,24 @@ define([
                             showType: 'slide'
                         });
                         if (result.RSP.RSP_CODE == "1") {
-                            $("#checkedStaffList",$el).datagrid('reload'); //删除成功后，刷新页面
+                            $("#checkedStaffList",$el).datagrid("deleteRow",index);
                         }
                     });
                 }else{
-                    $("#checkedStaffList",$el).datagrid("deleteRow",$("#checkedStaffList",$el).datagrid("getRowIndex",checkedObjectId));
+                    $("#checkedStaffList",$el).datagrid("deleteRow",index);
                     if(qmBindRlnList && qmBindRlnList.length > 0){
-                        $.each(qmBindRlnList,function(i,qmBindRln){
-                            if(qmBindRln.checkedObjectId == map["checkedObjectId"]&&qmBindRln.checkStaffId==map["checkStaffId"]){
-                                //delete qmBindRlnList[i];
+                        // $.each(qmBindRlnList,function(i,qmBindRln){
+                        //     if(qmBindRln.checkedObjectId == map["checkedObjectId"]&&qmBindRln.checkStaffId==map["checkStaffId"]){
+                        //         //delete qmBindRlnList[i];
+                        //         qmBindRlnList.splice(i,1);
+                        //         return;
+                        //     }
+                        // });
+                        for (var i = qmBindRlnList.length-1;i >= 0 ;i--) {
+                            if (qmBindRlnList[i].checkedObjectId== map["checkedObjectId"]&&qmBindRlnList[i].checkStaffId==map["checkStaffId"]) {
                                 qmBindRlnList.splice(i,1);
-                                return;
                             }
-                        });
+                        }
                     }
                 }
             });
@@ -161,6 +182,9 @@ define([
 
         //保存
         $("#addPlan",$el).on("click", function () {
+            if(disableSubmit){
+                return;
+            }
             var planName = $("#planName",$el).val();
             var planType = $("#planType",$el).combobox('getValue');
             var templateId = $("#templateId",$el).val();
@@ -243,6 +267,7 @@ define([
                     rspCode = result.RSP.RSP_CODE;
                     if (rspCode == "1") {
                         $("#planList").datagrid('reload'); //修改成功后，刷新页面
+                        $("#add_window").window("close"); // 关闭窗口
                     }
                 });
             }else{
@@ -260,11 +285,20 @@ define([
                     $("#add_window").window("close"); // 关闭窗口
                 }
             }
+            disableSubmit = true;   //防止多次提交
         });
     }
 
     //初始化搜索表单
     function initSearchForm(planBean) {
+
+        //查询弹窗，默认隐藏
+        function getSearchDiv() {
+            return '<div  id="qry_window" style="display:none;">'+
+                '<div id="qry_content" style="overflow:auto">'+
+                '</div></div>'
+        }
+
         $('#planStarttime',$el).datetimebox({
             required: false,
             showSeconds: true,
@@ -327,9 +361,10 @@ define([
         $('#planRuntype',$el).combobox("setValue","0");
         $('#template',$el).searchbox({
             searcher: function(value){
+                var div = $("#content",$el);
+                div.append(getSearchDiv());
                 var qryCheckTemplate = new QryCheckTemplate();
-
-                $('#qry_window').show().window({
+                $('#qry_window',$el).show().window({
                     title: '查询模板',
                     width: 1000,
                     height: 550,
@@ -341,9 +376,10 @@ define([
         });
         $('#strategy',$el).searchbox({
             searcher: function(value){
+                var div = $("#content",$el);
+                div.append(getSearchDiv());
                 var qryStrategy = new QryStrategy();
-
-                $('#qry_window').show().window({
+                $('#qry_window',$el).show().window({
                     title: '查询考评策略',
                     width: 1000,
                     height: 550,
@@ -417,18 +453,20 @@ define([
                 onClick:function(e, id, node){
                     isClicked = true;
                     if(node.checkStaffId != 0){ //判断是否点击的是父节点
+                        isChildren = true;
                         checkStaffName = node.checkStaffName;
                         checkStaffId = node.checkStaffId;
                         var checkedStaffsOfCheckStaff = [];
                         if(qmBindRlnList.length > 0) {//判断考评计划是否绑定了人员关系
                             $.each(qmBindRlnList, function (i, qmBindRln) {
-                                if (qmBindRln.checkStaffId == node.checkStaffId && qmBindRln.checkedObjectId != null) {
+                                if (qmBindRln.checkStaffId == node.checkStaffId && qmBindRln.checkedObjectId != "") {
                                     checkedStaffsOfCheckStaff.push(qmBindRln);
                                 }
                             });
                         }
                         $("#checkedStaffList",$el).datagrid("loadData",checkedStaffsOfCheckStaff);
                     }else{
+                        isChildren = false;
                         var checkedStaffs = [];
                         checkStaffName = "";
                         checkStaffId = "";
@@ -477,6 +515,7 @@ define([
                             field: 'action', title: '操作', width: '10%',
                             formatter: function (value, row, index) {
                                 var bean = {
+                                    'index':index,
                                     'checkedObjectId': row.checkedObjectId,
                                     'checkStaffId': row.checkStaffId,
                                 };
@@ -497,13 +536,14 @@ define([
                 columns : [
                     [
                         {field: 'ck', checkbox: true, align: 'center'},
-                        {field:'checkedObjectId',title:'被质检部门ID',width:'30%'},
-                        {field:'checkedObjectName',title:'被质检部门姓名',width:'30%'},
+                        {field:'checkedDepartId',title:'被质检部门ID',width:'30%'},
+                        {field:'checkedDepartName',title:'被质检部门姓名',width:'30%'},
                         {
                             field: 'action', title: '操作', width: '40%',
                             formatter: function (value, row, index) {
                                 var bean = {
-                                    'checkedObjectId': row.checkedObjectId,
+                                    'index':index,
+                                    'checkedDepartId': row.checkedDepartId,
                                 };
                                 var Action =
                                     "<a href='javascript:void(0);' class='delBtn' id =" + JSON.stringify(bean) + " >删除</a>";
@@ -530,6 +570,7 @@ define([
                             field: 'action', title: '操作', width: '10%',
                             formatter: function (value, row, index) {
                                 var bean = {
+                                    'index':index,
                                     'checkedObjectId': row.checkedObjectId,
                                     'checkStaffId': row.checkStaffId,
                                 };
@@ -563,6 +604,19 @@ define([
     //         }
     //     });
     // }
+    function delRow(nodes) {
+        if(qmBindRlnList && qmBindRlnList.length > 0){
+            for (var i = qmBindRlnList.length-1;i >= 0 ;i--) {//倒序
+                if (qmBindRlnList[i].checkStaffId==nodes.checkStaffId) {
+                    qmBindRlnList.splice(i,1);
+                }
+            }
+        }
+        var planBean = {
+           "qmBindRlnList":qmBindRlnList
+        }
+        initDatas(planBean);
+    }
 
     //为zTree添加节点
     function addNodes(list){
@@ -571,7 +625,7 @@ define([
             var treeObj = $.fn.zTree.getZTreeObj("qmStaffsTree");
             list.forEach(function(value,index,array){
                 //2、给定一个要添加的新节点
-                var newNode = { pId:"0",checkStaffId: value.checkStaffId,checkStaffName:value.checkStaffName,planId:planIdNew,userType:"0"};
+                var newNode = { pId:"0",checkStaffId: value.checkStaffId,checkStaffName:value.checkStaffName,planId:planIdNew,userType:"0",checkedObjectId:"",checkedObjectName:""};
                 //3、把这个新节点添加到当前的节点下，作为它的子节点
                 //返回根节点集合
                 var nodes = treeObj.getNodesByFilter(function (node) { return node.level == 0 });
@@ -608,8 +662,8 @@ define([
                         checkedObjectId: value.checkStaffId,
                         checkedObjectName: value.checkStaffName,
                         checkedDepartName: value.orgs,
-                        checkStaffId: null,
-                        checkStaffName: null,
+                        checkStaffId: "",
+                        checkStaffName: "",
                         userType:"0",
                         planId:planIdNew
                     };
@@ -630,26 +684,30 @@ define([
                 var checkStaffs = [];
                 var checkedStaffs = [];
                 var checkedDeparts = [];
+                var checkStaffIdList = [];
                 $.each(qmBindRlnList, function(index, qmBindRln){
-                    // qmBindRln.pId = "0";
-                    if(qmBindRln.checkStaffId !=null){
-                        qmBindRln.pId = "0";
-                        if(checkedStaffs.length!=0){//同一质检员去重
-                            checkedStaffs.forEach(function(value, index, array){
-                                if(value.checkStaffId != null && value.checkStaffId != qmBindRln.checkStaffId){
-                                    checkStaffs.push(qmBindRln);
-                                }
-                            });
-                        }else{
-                            checkStaffs.push(qmBindRln);
-                        }
+                    qmBindRln.pId = "0";
+                    if(qmBindRln.checkStaffId !=""){
+                        checkStaffIdList.push(qmBindRln.checkStaffId);
                     }
                     if(qmBindRln.userType == 0 && qmBindRln.checkedObjectId){
                         checkedStaffs.push(qmBindRln);
-                    }else{
-                        checkedDeparts.push(qmBindRln);
+                    }
+                    // else{
+                    //     checkedDeparts.push(qmBindRln);
+                    // }
+                });
+                //质检员去重。获取非重质检员所在的位置
+                var index = [];
+                $.each(checkStaffIdList,function(i, checkStaffId){
+                    if(checkStaffIdList.indexOf(checkStaffId)==i){
+                        index.push(i);
                     }
                 });
+                $.each(index,function(i, value){
+                    checkStaffs.push(qmBindRlnList[value]);
+                });
+
                 initTree(checkStaffs);
                 initTable(checkedStaffs,checkedDeparts);
             }else{

@@ -123,16 +123,16 @@ define([
             });
 
             //确定
-            $("#confirm",$el).one("click", function () {
+            $("#page",$el).on("click", "#confirm", function () {
                 flag = true;
                 getVal();
-                $('#qry_people_window').window('close'); // 成功后，关闭窗口
+                $('#qry_people_window').window('destroy'); // 成功后，销毁窗口（注意：用close会会对原先已有的dom结构造成影响）
             });
 
             //关闭窗口
             $("#page",$el).on("click", "#close", function () {
                 $("#searchForm").form('clear');
-                $('#qry_people_window').window('close'); // 成功后，关闭窗口
+                $('#qry_people_window').window('destroy');
             });
         }
 

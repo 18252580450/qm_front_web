@@ -80,7 +80,7 @@ define([
                 //var str = JSON.stringify(template);
                 $('#template').searchbox("setValue",rowData.templateName);
                 $('#templateId').val(rowData.templateId);
-                $("#qry_window").window("close");
+                $("#qry_window").window('destroy');
             },
             loader: function (param, success) {
                 var start = (param.page - 1) * param.rows;
@@ -136,7 +136,7 @@ define([
         });
         $("#qryCheckTemplate_page",$el).on("click", "#qryCheckTemplate_close", function () {
             $("#qryCheckTemplate_searchForm").form('clear');
-            $("#qry_window").window("close");
+            $("#qry_window").window('destroy');
         });
 
     }

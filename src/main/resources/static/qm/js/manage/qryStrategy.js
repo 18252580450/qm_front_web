@@ -54,7 +54,7 @@ define([
             onDblClickRow:function(rowIndex, rowData){
                 $('#strategy').searchbox("setValue",rowData.pName);
                 $('#pId').val(rowData.pId);
-                $("#qry_window").window("close");
+                $("#qry_window").window('destroy');
             },
             loader: function (param, success) {
                 var start = (param.page - 1) * param.rows;
@@ -106,7 +106,7 @@ define([
 
         $("#qryStrategy_page",$el).on("click", "#qryStrategy_close", function () {
             $("#qryStrategy_searchForm").form('clear');
-            $("#qry_window").window("close");
+            $("#qry_window").window('destroy');
         });
     }
 
