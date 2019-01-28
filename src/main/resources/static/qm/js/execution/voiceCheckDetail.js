@@ -225,14 +225,18 @@ require(["jquery", "util", "dateUtil", "transfer", "easyui"], function ($, Util)
     function initEvent() {
         //保存
         $("#saveBtn").on("click", function () {
-            checkSubmit(Util.constants.CHECK_RESULT_TEMP_SAVE);
+            if (voicePool.poolStatus === Util.constants.CHECK_STATUS_RECHECK) {
+                checkSubmit(Util.constants.CHECK_FLAG_RECHECK_SAVE);  //复检保存
+            } else {
+                checkSubmit(Util.constants.CHECK_FLAG_CHECK_SAVE);  //质检保存
+            }
         });
         //提交
         $("#submitBtn").on("click", function () {
             if (voicePool.poolStatus === Util.constants.CHECK_STATUS_RECHECK) {
-                checkSubmit(Util.constants.CHECK_RESULT_RECHECK);  //复检
+                checkSubmit(Util.constants.CHECK_FLAG_RECHECK);  //复检
             } else {
-                checkSubmit(Util.constants.CHECK_RESULT_NEW_BUILD);
+                checkSubmit(Util.constants.CHECK_FLAG_NEW_BUILD); //质检
             }
         });
         //取消
@@ -286,7 +290,7 @@ require(["jquery", "util", "dateUtil", "transfer", "easyui"], function ($, Util)
 
             Util.loading.destroyLoading();
             var errMsg = "提交失败！<br>";
-            if (checkStatus === Util.constants.CHECK_RESULT_TEMP_SAVE) {
+            if (checkStatus === Util.constants.CHECK_FLAG_CHECK_SAVE || checkStatus === Util.constants.CHECK_FLAG_RECHECK_SAVE) {
                 errMsg = "保存失败！<br>";
             }
             var rspCode = result.RSP.RSP_CODE;

@@ -71,14 +71,11 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
             }
         );
 
-        //初始化总得分
-        $("#totalScore").val("0");
+        // //初始化总得分
+        // $("#totalScore").val(totalScore);
 
         //获取工单基本信息
         initWrkfmDetail();
-
-        //获取工单轨迹
-        initProcProceLocus();
 
         //考评项列表
         var IsCheckFlag = true; //标示是否是勾选复选框选中行的，true - 是 , false - 否
@@ -179,6 +176,9 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
                 });
             }
         });
+
+        //获取工单轨迹、初始化考评项列表、环节考评数据
+        initProcProceLocus();
     }
 
     //初始化工单基本信息
@@ -273,6 +273,33 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
                             }
                         });
                         $("#checkItemList").datagrid("loadData", {rows: currentCheckItemData});
+
+                        //初始化环节考评数据（默认满分）
+                        $.each(processData, function (i, processItem) {
+                            var checkItemScoreList = [],
+                                checkLinkScore = 0;
+                            $.each(checkItemListData, function (index, checkItem) {
+                                if (processItem.opTypeCd === checkItem.nodeTypeCode) {
+                                    var checkItemData = {};
+                                    checkItemData.nodeType = checkItem.nodeType;
+                                    checkItemData.nodeId = checkItem.nodeId;
+                                    checkItemData.nodeName = checkItem.nodeName;
+                                    checkItemData.scoreScope = checkItem.nodeScore;
+                                    checkItemData.minScore = checkItem.minScore;
+                                    checkItemData.maxScore = checkItem.maxScore;
+                                    checkItemData.realScore = checkItem.nodeScore;
+                                    checkItemScoreList.push(checkItemData);
+
+                                    checkLinkScore += checkItem.nodeScore;
+                                }
+                            });
+                            var checkLink = {
+                                "checkLink": processItem.lgId,
+                                "checkLinkScore": checkLinkScore,
+                                "checkItemScoreList": checkItemScoreList
+                            };
+                            checkLinkData.push(checkLink);
+                        });
                     }
                 });
             }
@@ -313,14 +340,18 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
         });
         //保存
         $("#saveBtn").on("click", function () {
-            checkSubmit(Util.constants.CHECK_RESULT_TEMP_SAVE);
+            if (orderPool.poolStatus === Util.constants.CHECK_STATUS_RECHECK) {
+                checkSubmit(Util.constants.CHECK_FLAG_RECHECK_SAVE);  //复检保存
+            } else {
+                checkSubmit(Util.constants.CHECK_FLAG_CHECK_SAVE);  //质检保存
+            }
         });
         //提交
         $("#submitBtn").on("click", function () {
             if (orderPool.poolStatus === Util.constants.CHECK_STATUS_RECHECK) {
-                checkSubmit(Util.constants.CHECK_RESULT_RECHECK);  //复检
+                checkSubmit(Util.constants.CHECK_FLAG_RECHECK);  //复检
             } else {
-                checkSubmit(Util.constants.CHECK_RESULT_NEW_BUILD);
+                checkSubmit(Util.constants.CHECK_FLAG_NEW_BUILD);
             }
         });
         //取消
@@ -379,7 +410,7 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
         }
     }
 
-    //动态展示处理过程
+    //初始化处理过程
     function showDealProcess(data) {
         var processDiv = $("#processDealDiv");
         $.each(data, function (i, item) {
@@ -431,7 +462,7 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
                     }
                 });
                 $("#checkItemList").datagrid("loadData", {rows: currentCheckItemData}); //刷新考评项列表
-                refreshCheckArea(); //刷新考评项列表数据
+                refreshCheckArea(); //刷新评价区数据
             });
         });
     }
@@ -485,7 +516,7 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
         }
 
         //针对提交，提交时需要对所有（必检）环节进行考评，现在默认需要对所有环节进行考评
-        if (checkStatus === Util.constants.CHECK_RESULT_NEW_BUILD || checkStatus === Util.constants.CHECK_RESULT_RECHECK) {
+        if (checkStatus === Util.constants.CHECK_FLAG_NEW_BUILD || checkStatus === Util.constants.CHECK_FLAG_RECHECK) {
             if (checkLinkData.length < processData.length) {
                 $.messager.alert("提示", "有未考评环节!考评后才能提交");
                 return;
@@ -533,7 +564,7 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
 
             Util.loading.destroyLoading();
             var errMsg = "提交失败！<br>";
-            if (checkStatus === Util.constants.CHECK_RESULT_TEMP_SAVE) {
+            if (checkStatus === Util.constants.CHECK_FLAG_CHECK_SAVE || checkStatus === Util.constants.CHECK_FLAG_RECHECK_SAVE) {
                 errMsg = "保存失败！<br>";
             }
             var rspCode = result.RSP.RSP_CODE;
@@ -595,7 +626,7 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
             '<div class="spot-2" id="spot_' + data.lgId + '"></div>' +
             '</div>' +
             '<div class="check-right">' +
-            '<span class="content4-1-1" id="checkScore_' + data.lgId + '"></span>' +
+            '<span class="content4-1-1" style="display: none" id="checkScore_' + data.lgId + '"></span>' +
             '</div>' +
             '</div>';
     }

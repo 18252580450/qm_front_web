@@ -80,6 +80,12 @@ define(function () {
         CHECK_RESULT_APPEAL_DENY: '9',   //申诉驳回
         CHECK_RESULT_SYS_DENY: '99',     //系统驳回
 
+        //质检标识
+        CHECK_FLAG_NEW_BUILD: '0',       //质检新生成
+        CHECK_FLAG_CHECK_SAVE: '1',      //质检保存
+        CHECK_FLAG_RECHECK: '2',         //复检
+        CHECK_FLAG_RECHECK_SAVE: '3',    //复检保存
+
         //审批通过状态
         APPROVE_STATUS_PASS: "0",         //通过
         APPROVE_STATUS_DENY: "1",         //驳回
