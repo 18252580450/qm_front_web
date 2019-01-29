@@ -129,7 +129,19 @@ define([
             });
         }
 
+        //新增弹窗，默认隐藏
+        function getAddDiv() {
+            return '<div  id="add_eles_window" style="display:none;"><div id="add_eles_content" style="overflow:auto">'+
+                '<div class="cl"><div class="panel-tool-box cl"><div class="fl text-bold">' +
+                '策略元素列表</div></div><table id="elesList" class="easyui-datagrid"  style="width:100%;">'+
+                '</table></div><div class="mt-10 test-c"><label class="form-label col-5"></label>'+
+                '<a href="javascript:void(0)" id="okBut" class="btn btn-green radius  mt-l-20">确定</a>'+
+                '<a href="javascript:void(0)" id="close" class="btn btn-secondary radius  mt-l-20">关闭</a>'+
+                '</div></div></div>';
+        }
+
         function initElesWindows(){
+            $("#content").append(getAddDiv());
             var paramsTypeId = $("#paramsTypeId").combobox('getValue');
             if(paramsTypeId){
                 $('#add_eles_window').show().window({
@@ -147,11 +159,11 @@ define([
                 //});
                 $("#add_eles_content").on("click", "#close", function () {
                     $("#add_eles_content").find('form.form').form('clear');
-                    $("#add_eles_window").window("close");
+                    $("#add_eles_window").window('destroy');
                 });
                 $("#add_eles_content").on("click", "#okBut", clickOk);
             }else{
-                $.messager.alert('警告', '请选择策略类型。');
+                $.messager.alert('警告', '请选择策略类型！');
                 return;
             }
         }
@@ -159,11 +171,11 @@ define([
         function clickOk(){
             var checkedRows = $("#elesList").datagrid('getChecked');
             if(checkedRows.length <= 0){
-                $.messager.alert('警告', '至少选择一项元素。');
+                $.messager.alert('警告', '至少选择一项元素！');
                 return;
             }
             $("#add_eles_content").find('form.form').form('clear');
-            $("#add_eles_window").window("close");
+            $("#add_eles_window").window('destroy');
 
             $.each(checkedRows, function(index, row){
                 var newRow = {
@@ -193,7 +205,7 @@ define([
 
         function qryElesList(){
             var IsCheckFlag = true; //标示是否是勾选复选框选中行的，true - 是 , false - 否
-            $("#elesList").datagrid("uncheckAll");
+            // $("#elesList").datagrid("uncheckAll");
             $("#elesList").datagrid({
                 columns: [[
                     {field: 'elementId', title: '元素ID', hidden: true},
@@ -306,7 +318,7 @@ define([
             $("#delElesBut",$el).on("click", function(){
                 var checkedRows = $("#newElesList",$el).datagrid('getChecked');
                 if(checkedRows.length <= 0){
-                    $.messager.alert('警告', '至少选择一项元素。');
+                    $.messager.alert('警告', '至少选择一项元素！');
                     return;
                 }
                 $.each(checkedRows,function(index,row){
@@ -350,7 +362,7 @@ define([
                             elementValue1 = row.elementValue1;
                         }
                         if(elementValue1 == '' || elementValue1 == null){
-                            str = '元素“'+row.elementName+'”区间值1不能为空。';
+                            str = '元素“'+row.elementName+'”区间值1不能为空！';
                             return false;
                         }
                         var elementValue2Ed = $("#newElesList",$el).datagrid('getEditor',{index:rowIndex,field:'elementValue2'});
@@ -361,7 +373,7 @@ define([
                             elementValue2 = row.elementValue2;
                         }
                         if(operator === "between" &&(elementValue2 == ''|| elementValue2 == null)){
-                            str = '元素“'+row.elementName+'”区间值2不能为空。';
+                            str = '元素“'+row.elementName+'”区间值2不能为空！';
                             return false;
                         }
                         var ele = {
@@ -385,7 +397,7 @@ define([
                 };
 
                 if (pName == null || pName == "" || paramsTypeId == null || paramsTypeId == "" ) {
-                    $.messager.alert('警告', '必填项不能为空。');
+                    $.messager.alert('警告', '必填项不能为空！');
 
                     //$("#subBut",$el).linkbutton({disabled: false});  //按钮可用
                     return false;

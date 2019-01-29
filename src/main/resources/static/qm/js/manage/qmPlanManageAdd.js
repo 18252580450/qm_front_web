@@ -41,7 +41,7 @@ define([
     function getQmPeopleDiv() {
         return '<div  id="qry_people_window" style="display:none;">'+
             '<div id="qry_people_content" style="overflow:auto">'+
-            '</div></div>'
+            '</div></div>';
     }
 
     function initGlobalEvent(){
@@ -152,10 +152,14 @@ define([
                         });
                         if (result.RSP.RSP_CODE == "1") {
                             $("#checkedStaffList",$el).datagrid("deleteRow",index);
+                            var rows = $("#checkedStaffList",$el).datagrid("getRows");    //重新获取数据生成行号
+                            $("#checkedStaffList",$el).datagrid("loadData", rows);
                         }
                     });
                 }else{
                     $("#checkedStaffList",$el).datagrid("deleteRow",index);
+                    var rows = $("#checkedStaffList",$el).datagrid("getRows");    //重新获取数据生成行号
+                    $("#checkedStaffList",$el).datagrid("loadData", rows);
                     if(qmBindRlnList && qmBindRlnList.length > 0){
                         // $.each(qmBindRlnList,function(i,qmBindRln){
                         //     if(qmBindRln.checkedObjectId == map["checkedObjectId"]&&qmBindRln.checkStaffId==map["checkStaffId"]){
@@ -364,7 +368,7 @@ define([
                 var div = $("#content",$el);
                 div.append(getSearchDiv());
                 var qryCheckTemplate = new QryCheckTemplate();
-                $('#qry_window',$el).show().window({
+                $('#qry_window').show().window({
                     title: '查询模板',
                     width: 1000,
                     height: 550,
@@ -379,7 +383,7 @@ define([
                 var div = $("#content",$el);
                 div.append(getSearchDiv());
                 var qryStrategy = new QryStrategy();
-                $('#qry_window',$el).show().window({
+                $('#qry_window').show().window({
                     title: '查询考评策略',
                     width: 1000,
                     height: 550,

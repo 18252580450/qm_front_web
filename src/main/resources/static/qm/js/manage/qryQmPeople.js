@@ -132,6 +132,7 @@ define([
             //关闭窗口
             $("#page",$el).on("click", "#close", function () {
                 $("#searchForm").form('clear');
+                $("#checkStaffInfo",$el).datagrid('clearChecked');//清除所有勾选状态
                 $('#qry_people_window').window('destroy');
             });
         }

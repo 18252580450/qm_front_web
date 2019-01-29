@@ -219,6 +219,8 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
                     });
                 }else{
                     $('#peopleManage').datagrid('deleteRow', index);
+                    var rows = $('#peopleManage').datagrid("getRows");    //重新获取数据生成行号
+                    $('#peopleManage').datagrid("loadData", rows);
                 }
             });
 

@@ -186,7 +186,8 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
             var sensjson = JSON.parse(rowData); //转成json格式
             var index = sensjson.index;
             $('#peopleManage').datagrid('deleteRow', index);
-
+            var rows = $('#peopleManage').datagrid("getRows");    //重新获取数据生成行号
+            $('#peopleManage').datagrid("loadData", rows);
         });
     }
 
