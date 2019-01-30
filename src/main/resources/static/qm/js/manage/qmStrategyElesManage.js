@@ -191,7 +191,7 @@ define([
     function initWindowEvent(){
         $("#elementCode").validatebox({required: true});
         $("#elementName").validatebox({required: true});
-        $("#add_content").find('form.form').form('clear');  //初始化清空
+
         //新增
         $("#addBtn").on("click", function(){
             $('#add_window').show().window({
@@ -201,7 +201,11 @@ define([
                 cache: false,
                 modal: true
             });
-            $("#add_content").unbind("click");
+            $("#add_content").find('form.form').form('clear');  //初始化清空
+            $("#isRegion1").prop("checked", true);
+            $("#isNeed1").prop("checked", true);
+            $("#isValidate1").prop("checked", true);
+            // $("#add_content").unbind("click");
             /*
              * 清除表单信息
              */
@@ -276,23 +280,23 @@ define([
                 modal: true
             });
             var id = $(this).attr('id'); //获取选中行的数据
-            var bean;
+            // var bean;
             Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.QM_STRATEGY_ELES_DNS + "/" + id, {}, function (result) {
                 var rspCode = result.RSP.RSP_CODE;
                 if (rspCode == "1" && result.RSP.DATA.length > 0) {
-                    bean = result.RSP.DATA[0];
+                    var bean = result.RSP.DATA[0];
                     $("#paramsTypeId").combobox('setValue',bean.paramsTypeId);
                     $("#elementType").combobox('setValue',bean.elementType);
                     $("#elementCode").val(bean.elementCode);
                     $("#elementName").val(bean.elementName);
-                    $("input[name='isRegion'][value='"+bean.isRegion+"']").attr("checked","checked");
-                    $("input[name='isNeed'][value='"+bean.isNeed+"']").attr("checked","checked");
-                    $("input[name='isValidate'][value='"+bean.isValidate+"']").attr("checked","checked");
+                    $("input[name='isRegion'][value='"+bean.isRegion+"']").prop("checked", true);
+                    $("input[name='isNeed'][value='"+bean.isNeed+"']").prop("checked", true);
+                    $("input[name='isValidate'][value='"+bean.isValidate+"']").prop("checked", true);
                     $("#remark").val(bean.remark);
                 }
             });
 
-            $("#add_content").unbind("click");              //解绑事件
+            // $("#add_content").unbind("click");              //解绑事件
 
             $("#add_content").on("click", "#cancel", function () {
                 $("#add_content").find('form.form').form('clear');

@@ -61,8 +61,10 @@ define([
                     modal: true,
                     onBeforeDestroy:function(){//弹框关闭前触发事件
                         list = queryQmPeople.getList();//获取值
-                        //为zTree添加节点
-                        addNodes(list);
+                        if(list.length!=0){
+                            //为zTree添加节点
+                            addNodes(list);
+                        }
                     }
                 });
             });
@@ -84,8 +86,10 @@ define([
                     modal: true,
                     onBeforeDestroy:function(){//弹框关闭前触发事件
                         listTable = queryQmPeople.getList();//获取值
-                        //为list表添加数据
-                        addListData(listTable);
+                        if(listTable.length!=0){
+                            //为list表添加数据
+                            addListData(listTable);
+                        }
                     }
                 });
             });
@@ -624,24 +628,21 @@ define([
 
     //为zTree添加节点
     function addNodes(list){
-        if(list.length!=0){
-            //1、获取zTree对象
-            var treeObj = $.fn.zTree.getZTreeObj("qmStaffsTree");
-            list.forEach(function(value,index,array){
-                //2、给定一个要添加的新节点
-                var newNode = { pId:"0",checkStaffId: value.checkStaffId,checkStaffName:value.checkStaffName,planId:planIdNew,userType:"0",checkedObjectId:"",checkedObjectName:""};
-                //3、把这个新节点添加到当前的节点下，作为它的子节点
-                //返回根节点集合
-                var nodes = treeObj.getNodesByFilter(function (node) { return node.level == 0 });
-                treeObj.addNodes(nodes[0], newNode);
-                qmBindRlnList.push(newNode);
-            });
-        }
+        //1、获取zTree对象
+        var treeObj = $.fn.zTree.getZTreeObj("qmStaffsTree");
+        list.forEach(function(value,index,array){
+            //2、给定一个要添加的新节点
+            var newNode = { pId:"0",checkStaffId: value.checkStaffId,checkStaffName:value.checkStaffName,planId:planIdNew,userType:"0",checkedObjectId:"",checkedObjectName:""};
+            //3、把这个新节点添加到当前的节点下，作为它的子节点
+            //返回根节点集合
+            var nodes = treeObj.getNodesByFilter(function (node) { return node.level == 0 });
+            treeObj.addNodes(nodes[0], newNode);
+            qmBindRlnList.push(newNode);
+        });
     }
 
     //list表添加数据
     function addListData(listTable){
-        if(listTable.length!=0){
             if(isClicked==true){
                 //动态插入数据行
                 listTable.forEach(function(value,index,array){
@@ -677,7 +678,6 @@ define([
                     qmBindRlnList.push(map);
                 });
             }
-        }
     }
 
     //初始化质检员树和被质检员信息

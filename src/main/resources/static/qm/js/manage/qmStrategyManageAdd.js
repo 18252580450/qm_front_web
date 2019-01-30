@@ -141,15 +141,18 @@ define([
         }
 
         function initElesWindows(){
-            $("#content").append(getAddDiv());
             var paramsTypeId = $("#paramsTypeId").combobox('getValue');
             if(paramsTypeId){
+                $("#content").append(getAddDiv());//动态添加div
                 $('#add_eles_window').show().window({
                     title: '添加元素',
                     width: 950,
                     height: 600,
                     cache: false,
-                    modal: true
+                    modal: true,
+                    onBeforeClose: function () {//如果点击右上角关闭依然触发销毁事件
+                        $("#add_eles_window").window('destroy');
+                    }
                 });
                 qryElesList();
                 //查询
@@ -204,13 +207,14 @@ define([
         }
 
         function qryElesList(){
+            $('#elesList').show();
             var IsCheckFlag = true; //标示是否是勾选复选框选中行的，true - 是 , false - 否
             // $("#elesList").datagrid("uncheckAll");
             $("#elesList").datagrid({
                 columns: [[
                     {field: 'elementId', title: '元素ID', hidden: true},
                     {field: 'ck', checkbox: true, align: 'center'},
-                    {field: 'elementCode', title: '元素编码', width: '15%'},
+                    {field: 'elementCode', title: '元素编码', width: '20%'},
                     {field: 'elementName', title: '元素名称', width: '15%'},
                     {field: 'paramsTypeName', title: '元素类型', width: '13%'},
                     {field: 'elementType', title: '字段类型', width: '8%',
@@ -333,7 +337,7 @@ define([
 
                 var pName = $("#pName",$el).val();
                 var paramsTypeId = $("#paramsTypeId").combobox('getValue');
-                var isValidate = $("input[name='isValidate']:checked").val();
+                var isValidate = $("input[name='isValidate']:checked",$el).val();
                 var rows = $("#newElesList",$el).datagrid('getRows');
                 var elements = [];
                 var str = "";
