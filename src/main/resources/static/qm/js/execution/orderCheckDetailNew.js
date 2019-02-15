@@ -580,10 +580,10 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
             var checkResult = $("#checkResult_" + processItem.lgId);
             if (totalScore !== 0 && gainScore / totalScore > 0.6) {
                 checkResult.html("合格");
-                checkResult.css("color","#4A4A4A");
+                checkResult.css("color", "#4A4A4A");
             } else {
                 checkResult.html("不合格");
-                checkResult.css("color","#F5A623");
+                checkResult.css("color", "#F5A623");
             }
         });
     }
@@ -605,10 +605,10 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
         var checkResult = $("#checkResult_" + currentNode.lgId);
         if (totalScore !== 0 && gainScore / totalScore > 0.6) {
             checkResult.html("合格");
-            checkResult.css("color","#4A4A4A");
+            checkResult.css("color", "#4A4A4A");
         } else {
             checkResult.html("不合格");
-            checkResult.css("color","#F5A623");
+            checkResult.css("color", "#F5A623");
         }
     }
 
@@ -632,11 +632,19 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
             checkTime = currentTime - startTime,
             checkStartTime = DateUtil.formatDateTime(parseInt(orderPool.operateTime)),
             finalScore = totalScore / checkLinkData.length,  //最终得分，暂时按各个环节的平局分统计
-            checkComment = $("#checkComment").val();
+            checkComment = $("#checkComment").val(),
+            unqualifiedNum = 0;  //不合格环节数
 
+        //统计不合格环节数
+        $.each(processData, function (i, item) {
+            if ($("#checkResult_" + item.lgId).html() === "不合格") {
+                unqualifiedNum++;
+            }
+        });
         //工单质检基本信息
         var orderCheckInfo = {
             "tenantId": orderPool.tenantId,                          //租户id
+            "provinceId": orderPool.provinceId,                      //省份id
             "callingNumber": orderPool.acptStaffNum,                 //主叫号码
             "acceptNumber": orderPool.custNum,                       //受理号码
             "touchId": orderPool.workFormId,                         //工单流水
@@ -656,6 +664,7 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
             "scoreType": scoreType,                                  //分值类型
             "finalScore": finalScore,                                //总得分
             "checkComment": checkComment,                            //考评评语
+            "unqualifiedNum": unqualifiedNum,                         //不合格环节数
             "resultStatus": checkStatus                              //质检结果状态（暂存、质检、复检）
         };
 
