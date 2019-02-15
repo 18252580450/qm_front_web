@@ -348,8 +348,8 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui", "dateUt
                 "checkLink": "",
                 "minScore":"",
                 "maxScore":"",
-                "resultStatus":"",
-                "errorRank":"",
+                "resultStatus":"0",
+                "errorRank":"0",
                 "planId":"",
                 "reqTypeEndNode":"",
                 "lastResultFlag":"1"

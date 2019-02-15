@@ -200,7 +200,8 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
                     formatter: function (value, row, index) {
                         var bean = {//根据参数进行定位修改
                             'index':index,
-                            'touchId': row.touchId
+                            'touchId': row.touchId,
+                            'recordPath':row.recordPath
                         };
                         var beanStr = JSON.stringify(bean);   //转成字符串
                         var action = "<a href='javascript:void(0);' class='playBtn' id =" + beanStr + " >语音播放</a>";
@@ -242,7 +243,8 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
                     formatter:function(value, row, index){
                         return {'0':'未分派','1':'已分派'}[value];
                     }
-                }
+                },
+                {field: 'recordPath', title: '录音地址', align: 'center', width: '10%',hidden: true},
             ]],
             fitColumns: true,
             width: '100%',
@@ -436,6 +438,8 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
         //语音下载
         $("#downloadBut").on('click',function () {
             var selRows = $("#queryInfo").datagrid("getSelections");//选中多行
+            // window.open(url,'_blank');
+
         });
     }
 
@@ -606,7 +610,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
              reqParams= {
                 "touchId": "",
                 "planId": "",
-                "isOperate": "",
+                "isOperate": "0",
                 "extractBeginTime": "",
                 "extractEndTime": "",
                 "checkStaffId": "",
@@ -620,7 +624,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
                 "satisfyExtentType":"",
                 "mediaType":"",
                 "srvReqstTypeId":"",
-                "poolStatus": "",
+                "poolStatus": "0",
             };
         }
         var params = {
