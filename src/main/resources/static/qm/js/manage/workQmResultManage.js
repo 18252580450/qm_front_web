@@ -1,7 +1,8 @@
 require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui", "dateUtil"], function (QueryQmPlan,$, Util, Transfer, easyui, dateUtil) {
     //初始化方法
     initialize();
-    var reqParams=null;
+    var reqParams=null,
+        orderCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/manage/workQmResultDetail.html";
     function initialize() {
         initPageInfo();
         initEvent();
@@ -87,12 +88,8 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui", "dateUt
                 {
                     field: 'action', title: '操作', width: '5%',
                     formatter: function (value, row, index) {
-                        var bean = {//根据参数进行定位修改
-                            'commentName': row.commentName
-                        };
-                        var beanStr = JSON.stringify(bean);   //转成字符串
-                        var detail = "<a href='javascript:void(0);' class='reviseBtn' id =" + beanStr + " >详情</a>",
-                            appeal = "<a href='javascript:void(0);' id='resultAppeal_" + row.inspectionId + "_" + row.checkLink + "'>申诉</a>";
+                        var detail = "<a href='javascript:void(0);' id ='resultDetail_" + row.inspectionId + "'>详情</a>",
+                            appeal = "<a href='javascript:void(0);' id ='resultAppeal_" + row.inspectionId + "'>申诉</a>";
                         return detail + "&nbsp;&nbsp;" + appeal;
                     }
                 },
@@ -221,9 +218,16 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui", "dateUt
 
                     addTabs("工单质检详情", "http://127.0.0.1:8080/qm/html/execution/orderCheckDetail.html");
                 });
+                //详情
+                $.each(data.rows, function (i, item) {
+                    $("#resultDetail_" + item.inspectionId).on("click", function () {
+                        var url = createURL(orderCheckDetail, item);
+                        addTabs("质检结果详情", url);
+                    });
+                });
                 //申诉
                 $.each(data.rows, function (i, item) {
-                    $("#resultAppeal_" + item.inspectionId + "_" + item.checkLink).on("click", function () {
+                    $("#resultAppeal_" + item.inspectionId).on("click", function () {
                         //判断是否已有申诉流程
                         if (item.appealId != null && item.resultStatus === Util.constants.CHECK_RESULT_APPEALING) {
                             $.messager.alert("提示", "申诉中！申诉单号：" + item.appealId + "!");
@@ -326,6 +330,18 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui", "dateUt
         }
     }
 
+    //拼接对象到url
+    function createURL(url, param) {
+        var urlLink = url;
+        if (param != null) {
+            $.each(param, function (item, value) {
+                urlLink += '&' + item + "=" + encodeURI(value);
+            });
+            urlLink = url + "?" + urlLink.substr(1);
+        }
+        return urlLink.replace(' ', '');
+    }
+
     //后端导出
     function dao(){
         var fields = $('#queryInfo').datagrid('getColumnFields'); //获取datagrid的所有fields
@@ -404,35 +420,6 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui", "dateUt
                 }
             });
         }
-    }
-
-    /**
-     * 下拉框数据重载
-     */
-    function reloadSelectData(paramsType, select, showAll) {
-        var reqParams = {
-            "tenantId": Util.constants.TENANT_ID,
-            "paramsTypeId": paramsType
-        };
-        var params = {
-            "start": 0,
-            "pageNum": 0,
-            "params": JSON.stringify(reqParams)
-        };
-        Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.STATIC_PARAMS_DNS + "/selectByParams", params, function (result) {
-            var rspCode = result.RSP.RSP_CODE;
-            if (rspCode === "1") {
-                var selectData = result.RSP.DATA;
-                if (showAll) {
-                    var data = {
-                        "paramsCode": "-1",
-                        "paramsName": "全部"
-                    };
-                    selectData.unshift(data);
-                }
-                $("#" + select).combobox('loadData', selectData);
-            }
-        });
     }
 
     //点击后添加页面
