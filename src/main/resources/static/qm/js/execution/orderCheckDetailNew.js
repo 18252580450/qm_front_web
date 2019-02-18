@@ -312,6 +312,10 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
                                     });
                                     var checkLink = {
                                         "checkLink": processItem.lgId,
+                                        "checkedStaffId": processItem.opStaffId,
+                                        "checkedStaffNm": processItem.opStaffNm,
+                                        "checkedDepartId": processItem.opWorkGroupId,
+                                        "checkedDepartNm": processItem.opWorkGroupNm,
                                         "checkLinkScore": checkLinkScore,
                                         "checkItemScoreList": checkItemScoreList
                                     };
@@ -340,6 +344,10 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
                                     });
                                     var checkLink = {
                                         "checkLink": processItem.lgId,
+                                        "checkedStaffId": processItem.opStaffId,
+                                        "checkedStaffNm": processItem.opStaffNm,
+                                        "checkedDepartId": processItem.opWorkGroupId,
+                                        "checkedDepartNm": processItem.opWorkGroupNm,
                                         "checkLinkScore": checkLinkScore,
                                         "checkItemScoreList": checkItemScoreList
                                     };
@@ -553,6 +561,10 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
 
         var checkLink = {
             "checkLink": currentNode.lgId,
+            "checkedStaffId": currentNode.opStaffId,
+            "checkedStaffNm": currentNode.opStaffNm,
+            "checkedDepartId": currentNode.opWorkGroupId,
+            "checkedDepartNm": currentNode.opWorkGroupNm,
             "checkLinkScore": checkLinkScore,
             "checkItemScoreList": checkItemScoreList
         };

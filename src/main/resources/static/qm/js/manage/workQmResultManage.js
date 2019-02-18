@@ -107,6 +107,7 @@ require(["js/manage/queryQmPlan", "jquery", 'util', "transfer", "easyui", "dateU
                     }
                 },
                 {field: 'finalScore', title: '质检得分', align: 'center', width: '10%'},
+                {field: 'unqualifiedNum', title: '不合格环节数', align: 'center', width: '10%'},
                 {field: 'checkStaffId', title: '质检人工号', align: 'center', width: '10%'},
                 {
                     field: 'resultStatus', title: '申诉结果', align: 'center', width: '10%',
