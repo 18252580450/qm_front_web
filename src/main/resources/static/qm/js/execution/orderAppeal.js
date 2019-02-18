@@ -16,8 +16,8 @@ require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util,
             var beginDate = "2018-10-10 00:00:00";
             $("#appealBeginTime").datetimebox({
                 // value: beginDate,
-                onShowPanel:function(){
-                    $("#appealBeginTime").datetimebox("spinner").timespinner("setValue","00:00:00");
+                onShowPanel: function () {
+                    $("#appealBeginTime").datetimebox("spinner").timespinner("setValue", "00:00:00");
                 },
                 onChange: function () {
                     checkBeginEndTime();
@@ -29,8 +29,8 @@ require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util,
             // var endDate = (DateUtil.formatDateTime(new Date()-24*60*60*1000)).substr(0,11) + "23:59:59";
             $('#appealEndTime').datetimebox({
                 // value: endDate,
-                onShowPanel:function(){
-                    $("#appealEndTime").datetimebox("spinner").timespinner("setValue","23:59:59");
+                onShowPanel: function () {
+                    $("#appealEndTime").datetimebox("spinner").timespinner("setValue", "23:59:59");
                 },
                 onChange: function () {
                     checkBeginEndTime();
@@ -201,9 +201,8 @@ require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util,
                         style: {right: '', bottom: ''},     //居中显示
                         showType: 'show'
                     });
-                }
-                if (record != null && record.length > 0) {
-                    showAppealDealProcess(record);
+                } else {
+                    showAppealDealProcess(record, data.userName);
                 }
             });
         }
@@ -265,8 +264,8 @@ require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util,
                     "nextNodeId": data.nextNodeId,
                     "approveStatus": approveStatus,
                     "approveSuggestion": approveSuggestion,
-                    "staffId": Util.constants.STAFF_ID,
-                    "staffName": Util.constants.STAFF_NAME
+                    "staffId": data.userId,
+                    "staffName": data.userName
                 };
                 Util.loading.showLoading();
                 Util.ajax.postJson(Util.constants.CONTEXT.concat(Util.constants.APPEAL_DEAL_DNS).concat("/"), JSON.stringify(params), function (result) {
@@ -340,20 +339,25 @@ require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util,
         }
 
         //显示审批记录
-        function showAppealDealProcess(data) {
+        function showAppealDealProcess(record, currentDealStaff) {
             var leftDiv = $("#appealLeftDiv"),
                 rightDiv = $("#appealRightDiv");
-            $.each(data, function (i, item) {
+            $.each(record, function (i, item) {
                 if (i > 0) {
                     leftDiv.append(getProcessLine());
                 }
-                leftDiv.append(getLeftDiv(item));
+                leftDiv.append(getLeftDiv());
                 rightDiv.append(getRightDiv(item));
             });
+            if (record.length > 0) {
+                leftDiv.append(getProcessLine());
+            }
+            leftDiv.append(getLeftDiv());
+            rightDiv.append(getCurrentDealDiv(currentDealStaff))
         }
 
         //左侧操作区域
-        function getLeftDiv(item) {
+        function getLeftDiv() {
             return '<div class="panel-transparent"><form class="form form-horizontal"><div class="cl">' +
                 '<div class="formControls col-8"><div class="fl text-small"></div></div>' +
                 '<div class="formControls col-4"><div class="circle"></div></div>' +
@@ -388,6 +392,15 @@ require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util,
                 '<div class="panel-transparent-20 cl"><form class="form form-horizontal"><div class="cl">' +
                 '<div class="formControls col-12"><div class="fl text-small">审批时间：' + DateUtil.formatDateTime(item.approveTime) + '</div></div>' +
                 '</div></form> </div>' +
+                '</div>';
+        }
+
+        //当前处理人
+        function getCurrentDealDiv(item) {
+            return '<div style="margin-bottom:30px;">' +
+                '<div class="panel-transparent-20 cl"><form class="form form-horizontal"><div class="cl">' +
+                '<div class="formControls col-12"><div class="fl text-small">当前审批人：' + item + '</div></div>' +
+                '</div></form></div>' +
                 '</div>';
         }
 
