@@ -157,7 +157,7 @@ require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util,
                     $.each(data.rows, function (i, item) {
                         $("#checkFlow_" + item.appealId).on("click", function () {
                             var url = createURL(orderCheckDetail, item);
-                            addTabs("申诉待办-详情", url);
+                            addTabs("申诉待办-质检详情", url);
                         });
                     });
                 }

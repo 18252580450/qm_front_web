@@ -220,7 +220,7 @@ require(["js/manage/queryQmPlan", "jquery", 'util', "transfer", "easyui", "dateU
                 $.each(data.rows, function (i, item) {
                     $("#resultDetail_" + item.inspectionId).on("click", function () {
                         var url = createURL(orderCheckDetail, item);
-                        addTabs("质检结果-详情", url);
+                        addTabs("质检结果-质检详情", url);
                     });
                 });
                 //申诉

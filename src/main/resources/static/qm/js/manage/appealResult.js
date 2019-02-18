@@ -1,6 +1,7 @@
 require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], function ($, Util, Transfer, CommonAjax) {
 
-        var checkTypeData = [],      //质检类型静态数据
+        var orderCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/execution/orderAppealDetail.html",
+            checkTypeData = [],      //质检类型静态数据
             appealStatusData = [];   //申诉状态静态数据
 
         initialize();
@@ -17,8 +18,8 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
             var beginDate = "2018-10-10 00:00:00";
             $("#appealBeginTime").datetimebox({
                 // value: beginDate,
-                onShowPanel:function(){
-                    $("#appealBeginTime").datetimebox("spinner").timespinner("setValue","00:00:00");
+                onShowPanel: function () {
+                    $("#appealBeginTime").datetimebox("spinner").timespinner("setValue", "00:00:00");
                 },
                 onChange: function () {
                     checkBeginEndTime();
@@ -30,8 +31,8 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
             // var endDate = (DateUtil.formatDateTime(new Date()-24*60*60*1000)).substr(0,11) + "23:59:59";
             $('#appealEndTime').datetimebox({
                 // value: endDate,
-                onShowPanel:function(){
-                    $("#appealEndTime").datetimebox("spinner").timespinner("setValue","23:59:59");
+                onShowPanel: function () {
+                    $("#appealEndTime").datetimebox("spinner").timespinner("setValue", "23:59:59");
                 },
                 onChange: function () {
                     checkBeginEndTime();
@@ -102,16 +103,11 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                             }
                         }
                     },
-                    {
-                        field: 'touchId', title: '接触流水', width: '14%',
-                        formatter: function (value, row, index) {
-                            return '<a href="javascript:void(0);" id = "touchFlow' + row.touchId + '">' + value + '</a>';
-                        }
-                    },
+                    {field: 'touchId', title: '接触流水', width: '14%'},
                     {
                         field: 'inspectionId', title: '质检流水', width: '14%',
                         formatter: function (value, row, index) {
-                            return '<a href="javascript:void(0);" id = "checkFlow_' + row.inspectionId + '">' + value + '</a>';
+                            return '<a href="javascript:void(0);" id = "checkFlow_' + row.appealId + '">' + value + '</a>';
                         }
                     },
                     {field: 'appealId', title: '申诉单号', width: '14%'},
@@ -221,6 +217,15 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                             showAppealRecordDialog(item);
                         });
                     });
+                    //质检详情
+                    $.each(data.rows, function (i, item) {
+                        $("#checkFlow_" + item.appealId).on("click", function () {
+                            if (item.checkType === Util.constants.CHECK_TYPE_ORDER) {
+                                var url = createURL(orderCheckDetail, item);
+                                addTabs("申诉结果-质检详情", url);
+                            }
+                        });
+                    });
                 }
             });
         }
@@ -270,6 +275,33 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                     showAppealDealProcess(record);
                 }
             });
+        }
+
+        //拼接对象到url
+        function createURL(url, param) {
+            var urlLink = url;
+            if (param != null) {
+                $.each(param, function (item, value) {
+                    urlLink += '&' + item + "=" + encodeURI(value);
+                });
+                urlLink = url + "?" + urlLink.substr(1);
+            }
+            return urlLink.replace(' ', '');
+        }
+
+        //添加一个选项卡面板
+        function addTabs(title, url) {
+            var jq = top.jQuery;
+
+            if (!jq('#tabs').tabs('exists', title)) {
+                jq('#tabs').tabs('add', {
+                    title: title,
+                    content: '<iframe src="' + url + '" frameBorder="0" border="0" scrolling="auto"  style="width: 100%; height: 100%;"/>',
+                    closable: true
+                });
+            } else {
+                jq('#tabs').tabs('select', title);
+            }
         }
 
         //校验开始时间和终止时间
