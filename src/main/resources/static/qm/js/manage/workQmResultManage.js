@@ -1,8 +1,9 @@
-require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui", "dateUtil"], function (QueryQmPlan,$, Util, Transfer, easyui, dateUtil) {
+require(["js/manage/queryQmPlan", "jquery", 'util', "transfer", "easyui", "dateUtil"], function (QueryQmPlan, $, Util, Transfer, easyui, dateUtil) {
     //初始化方法
     initialize();
-    var reqParams=null,
+    var reqParams = null,
         orderCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/manage/workQmResultDetail.html";
+
     function initialize() {
         initPageInfo();
         initEvent();
@@ -12,7 +13,7 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui", "dateUt
     function initPageInfo() {
 
         $('#planName').searchbox({//输入框点击查询事件
-            searcher: function(value){
+            searcher: function (value) {
                 var queryQmPlan = new QueryQmPlan();
 
                 $('#qry_window').show().window({
@@ -20,7 +21,7 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui", "dateUt
                     width: 1150,
                     height: 600,
                     cache: false,
-                    content:queryQmPlan.$el,
+                    content: queryQmPlan.$el,
                     modal: true
                 });
             }
@@ -62,8 +63,8 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui", "dateUt
         //时间控件初始化
         var qmStartTime = $('#qmStartTime');
         qmStartTime.datetimebox({
-            onShowPanel:function(){
-                $(this).datetimebox("spinner").timespinner("setValue","00:00:00");
+            onShowPanel: function () {
+                $(this).datetimebox("spinner").timespinner("setValue", "00:00:00");
             },
             onChange: function () {
                 checkTime();
@@ -72,8 +73,8 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui", "dateUt
 
         var qmEndTime = $('#qmEndTime');
         qmEndTime.datetimebox({
-            onShowPanel:function(){
-                $(this).datetimebox("spinner").timespinner("setValue","23:59:59");
+            onShowPanel: function () {
+                $(this).datetimebox("spinner").timespinner("setValue", "23:59:59");
             },
             onChange: function () {
                 checkTime();
@@ -99,18 +100,23 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui", "dateUt
                 {field: 'planName', title: '计划名称', align: 'center', width: '10%'},
                 {field: 'checkedStaffId', title: '被质检人工号', align: 'center', width: '10%'},
                 {field: 'checkedDepartId', title: '被质检人班组', align: 'center', width: '10%'},
-                {field: 'errorRank', title: '差错类型', align: 'center', width: '10%',
-                    formatter:function(value, row, index){
-                        return {'0':'无错误','1':'绝对错误'}[value];
+                {
+                    field: 'errorRank', title: '差错类型', align: 'center', width: '10%',
+                    formatter: function (value, row, index) {
+                        return {'0': '无错误', '1': '绝对错误'}[value];
                     }
                 },
                 {field: 'finalScore', title: '质检得分', align: 'center', width: '10%'},
                 {field: 'checkStaffId', title: '质检人工号', align: 'center', width: '10%'},
-                {field: 'resultStatus', title: '申诉结果', align: 'center', width: '10%',
-                    formatter:function(value, row, index){
-                        return {'0':'质检新生成','1':'临时保存','2':'放弃','3':'复检','4':'分检','5':'被检人确认'
-                            ,'6':'系统自确认','7':'申诉中','8':'申诉通过','9':'申诉驳回','99':'系统驳回'}[value];
-                    }},
+                {
+                    field: 'resultStatus', title: '申诉结果', align: 'center', width: '10%',
+                    formatter: function (value, row, index) {
+                        return {
+                            '0': '质检新生成', '1': '临时保存', '2': '放弃', '3': '复检', '4': '分检', '5': '被检人确认'
+                            , '6': '系统自确认', '7': '申诉中', '8': '申诉通过', '9': '申诉驳回', '99': '系统驳回'
+                        }[value];
+                    }
+                },
                 {
                     field: 'checkEndTime', title: '质检时间', align: 'center', width: '15%',
                     formatter: function (value, row, index) { //格式化时间格式
@@ -155,7 +161,7 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui", "dateUt
                 var checkLink = $("#checkLink").val();
                 var minScore = $("#minScore").val();
                 var maxScore = $("#maxScore").val();
-                if(parseInt(maxScore)<parseInt(minScore)){
+                if (parseInt(maxScore) < parseInt(minScore)) {
                     $.messager.alert("提示", "质检评分最小值不能高于最大值！");
                     return false;
                 }
@@ -173,13 +179,13 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui", "dateUt
                     "checkedStaffId": qmedStaffId,
                     "checkedDepartName": qmedTeam,
                     "checkLink": checkLink,
-                    "minScore":minScore,
-                    "maxScore":maxScore,
-                    "resultStatus":qmResult,
-                    "errorRank":errorType,
-                    "planId":planId,
-                    "reqTypeEndNode":reqTypeEndNode,
-                    "lastResultFlag":"1"
+                    "minScore": minScore,
+                    "maxScore": maxScore,
+                    "resultStatus": qmResult,
+                    "errorRank": errorType,
+                    "planId": planId,
+                    "reqTypeEndNode": reqTypeEndNode,
+                    "lastResultFlag": "1"
                 };
                 var params = $.extend({
                     "start": start,
@@ -210,19 +216,11 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui", "dateUt
                 });
             },
             onLoadSuccess: function (data) {
-                $("#page").on("click", "a.workformIdBtn", function () {
-
-                    var rowData = $(this).attr('id'); //获取a标签中传递的值
-                    var sensjson = JSON.parse(rowData); //转成json格式
-                    var status = sensjson.status;
-
-                    addTabs("工单质检详情", "http://127.0.0.1:8080/qm/html/execution/orderCheckDetail.html");
-                });
                 //详情
                 $.each(data.rows, function (i, item) {
                     $("#resultDetail_" + item.inspectionId).on("click", function () {
                         var url = createURL(orderCheckDetail, item);
-                        addTabs("质检结果详情", url);
+                        addTabs("质检结果-详情", url);
                     });
                 });
                 //申诉
@@ -285,9 +283,13 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui", "dateUt
             }
             var params = {
                 "departmentId": data.checkedDepartId,
+                "tenantId": data.tenantId,
+                "provinceId": data.provinceId,
                 "checkType": Util.constants.CHECK_TYPE_ORDER,
                 "touchId": data.touchId,
                 "inspectionId": data.inspectionId,
+                "planId": data.planId,
+                "templateId": data.templateId,
                 "appealStaffId": data.checkedStaffId,
                 "appealStaffName": data.checkedStaffName,
                 "appealReason": appealReason
@@ -343,15 +345,15 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui", "dateUt
     }
 
     //后端导出
-    function dao(){
+    function dao() {
         var fields = $('#queryInfo').datagrid('getColumnFields'); //获取datagrid的所有fields
-        var titles=[];
-        fields.forEach(function(value,index,array){
-            var title = $('#queryInfo').datagrid('getColumnOption',value).title;//获取datagrid的title
-            title = (title!=null)?title:"";
+        var titles = [];
+        fields.forEach(function (value, index, array) {
+            var title = $('#queryInfo').datagrid('getColumnOption', value).title;//获取datagrid的title
+            title = (title != null) ? title : "";
             titles.push(title);
         });
-        if(reqParams==null){
+        if (reqParams == null) {
             reqParams = {
                 "touchId": "",
                 "acceptNumber": "",
@@ -362,24 +364,24 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui", "dateUt
                 "checkedStaffId": "",
                 "checkedDepartName": "",
                 "checkLink": "",
-                "minScore":"",
-                "maxScore":"",
-                "resultStatus":"0",
-                "errorRank":"0",
-                "planId":"",
-                "reqTypeEndNode":"",
-                "lastResultFlag":"1"
+                "minScore": "",
+                "maxScore": "",
+                "resultStatus": "0",
+                "errorRank": "0",
+                "planId": "",
+                "reqTypeEndNode": "",
+                "lastResultFlag": "1"
             };
         }
         var params = {
             "start": 0,
             "pageNum": 0,
-            "fields":JSON.stringify(fields),
-            "titles":JSON.stringify(titles),
+            "fields": JSON.stringify(fields),
+            "titles": JSON.stringify(titles),
             "params": JSON.stringify(reqParams)
         };
         // 采用encodeURI两次编码,防止乱码
-        window.location.href = Util.constants.CONTEXT + Util.constants.WORK_QM_RESULT+"/export?params="+encodeURI(encodeURI(JSON.stringify(params)));
+        window.location.href = Util.constants.CONTEXT + Util.constants.WORK_QM_RESULT + "/export?params=" + encodeURI(encodeURI(JSON.stringify(params)));
     }
 
     //事件初始化

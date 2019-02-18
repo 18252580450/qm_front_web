@@ -143,7 +143,6 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
         //获取工单轨迹、初始化考评项列表、环节考评数据
         initProcProceLocus();
         //初始化考评评语
-        debugger;
         $("#checkComment").html(orderPool.checkComment);
     }
 
@@ -475,7 +474,8 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
             '<div class="leftTop-border"></div>' +
             '<div class="processRight-21">' +
             '<span>建单时间：</span><span class="processRight-211">' + data.crtTime + '</span>' +
-            '<span>处理时长：</span><span class="processRight-212">' + data.handIngTime + '</span><span>当前环节评价：</span><span id="checkResult_' + data.lgId + '">合格</span>' +
+            '<span>处理时长：</span><span class="processRight-212">' + data.handIngTime + '</span>'+
+            '<span>考评结果：</span><span id="checkResult_' + data.lgId + '">合格</span>' +
             '</div>' +
             '<div class="processRight-22"><span>处理意见：</span><span>' + data.rmk + '</span></div>' +
             '</div>' +
