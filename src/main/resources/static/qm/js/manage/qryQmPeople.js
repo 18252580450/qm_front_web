@@ -42,6 +42,7 @@ define([
                         });
                     }else{
                         var allChildrenNodesIdSet = new Set();
+                        allChildrenNodesIdSet.add(node.GROUP_ID);
                         allChildrenNodesIdSet = getAllChildrenNodes(node,allChildrenNodesIdSet);
                         allChildrenNodesIdSet.forEach(function(childrenValue, childrenIndex, childrenArr){
                             listData.forEach(function(listDataValue, listDataIndex, listDataArr){
@@ -62,7 +63,7 @@ define([
                 var childrenNodes = node.children;
                 if(childrenNodes){
                     for (var i = 0;i<childrenNodes.length;i++){
-                        allChildrenNodesIdSet.add(childrenNodes[i].PARENT_ID);
+                        allChildrenNodesIdSet.add(childrenNodes[i].GROUP_ID);
                         getAllChildrenNodes(childrenNodes[i],allChildrenNodesIdSet);
                     }
                 }
@@ -107,18 +108,20 @@ define([
                 ]],
                 fitColumns: true,
                 height: 420,
-                pagination: true,
-                pageSize: 10,
-                pageList: [5, 10, 20, 50],
+                pagination: true, //分页显示
+                // pageSize: 10,
+                // pageList: [5, 10, 20, 50],
                 rownumbers: false,
                 loader: function (param, success) {
+                    var start = (param.page - 1) * param.rows;
+                    var pageNum = param.rows;
                     var addCheckStaffId = $("#addCheckStaffId",$el).val();
                     var reqParams = {
                         "groupId": "",
                         "staffName":addCheckStaffId,
                         "staffId": "",
-                        "start": "",
-                        "limit": "",
+                        "start": start,
+                        "limit": pageNum,
                         "provCode": "",
                         "roleCode": ""
                     };
@@ -128,6 +131,22 @@ define([
 
                     Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.QM_PLAN_DNS + "/getQmPeople", params, function (result) {
                         var data = result.RSP.DATA;
+                        //设置分页控件
+                        var p = $("#page",$el).find("#checkStaffInfo").datagrid("getPager");
+                        p.pagination({
+                            total:data.length,
+                            // pageSize: 10,
+                            // pageList: [5, 10, 20, 50],
+                            onSelectPage:function (pageNo, pageSize) {
+                                var start = (pageNo - 1) * pageSize;
+                                var end = start + pageSize;
+                                $("#page",$el).find("#checkStaffInfo").datagrid("loadData", data.slice(start, end));
+                                p.pagination({
+                                    total:data.length,
+                                    pageNumber:pageNo
+                                });
+                            }
+                        });
                         listData = data;
                         success(data);
                     });
