@@ -295,6 +295,26 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
                 });
             }
         });
+
+        //初始化考评评语
+        var reqParam = {
+            "tenantId": orderPool.tenantId,
+            "touchId": orderPool.workFormId,
+            "resultStatus": Util.constants.CHECK_RESULT_TEMP_SAVE
+        };
+        var param = $.extend({
+            "start": 0,
+            "pageNum": 0,
+            "params": JSON.stringify(reqParam)
+        }, Util.PageUtil.getParams($("#searchForm")));
+
+        Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.ORDER_CHECK_DNS + "/queryOrderCheckResult", param, function (result) {
+            var data = result.RSP.DATA,
+                rspCode = result.RSP.RSP_CODE;
+            if (rspCode != null && rspCode === "1") {
+                $("#checkComment").html(data[0].checkComment);
+            }
+        });
     }
 
     //事件初始化

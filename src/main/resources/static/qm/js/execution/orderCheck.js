@@ -101,14 +101,14 @@ require(["js/manage/queryQmPlan", "jquery", 'util', "transfer", "commonAjax", "d
                 {
                     field: 'operate', title: '操作', width: '8%',
                     formatter: function (value, row, index) {
-                        return '<a href="javascript:void(0);" id = "orderCheck_' + row.wrkfmId + '" style="color: deepskyblue;">质检</a>';
+                        return '<a href="javascript:void(0);" id = "orderCheck_' + row.workFormId + '" style="color: deepskyblue;">质检</a>';
                     }
                 },
                 {
                     field: 'workFormId', title: '工单流水', width: '15%',
                     formatter: function (value, row, index) {
                         if (value != null) {
-                            return '<a href="javascript:void(0);" id = "orderFlow' + row.wrkfmId + '">' + value + '</a>';
+                            return '<a href="javascript:void(0);" id = "orderFlow' + row.workFormId + '">' + value + '</a>';
                         }
                     }
                 },
@@ -222,7 +222,7 @@ require(["js/manage/queryQmPlan", "jquery", 'util', "transfer", "commonAjax", "d
             onLoadSuccess: function (data) {
                 //工单质检详情
                 $.each(data.rows, function (i, item) {
-                    $("#orderCheck_" + item.wrkfmId).on("click", function () {
+                    $("#orderCheck_" + item.workFormId).on("click", function () {
                         var url = createURL(orderCheckDetail, item);
                         addTabs("工单质检详情", url);
                     });

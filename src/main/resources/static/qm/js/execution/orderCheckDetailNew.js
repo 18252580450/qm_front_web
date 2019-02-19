@@ -220,7 +220,7 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
         });
     }
 
-    //初始化工单轨迹、考评项列表
+    //初始化工单轨迹、考评项列表、考评评语
     function initProcProceLocus() {
         var reqParams = {
             "provCode": orderPool.provinceId,
@@ -365,6 +365,26 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
                         });
                     }
                 });
+            }
+        });
+
+        //初始化考评评语
+        var reqParam = {
+            "tenantId": orderPool.tenantId,
+            "touchId": orderPool.workFormId,
+            "resultStatus": Util.constants.CHECK_RESULT_TEMP_SAVE
+        };
+        var param = $.extend({
+            "start": 0,
+            "pageNum": 0,
+            "params": JSON.stringify(reqParam)
+        }, Util.PageUtil.getParams($("#searchForm")));
+
+        Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.ORDER_CHECK_DNS + "/queryOrderCheckResult", param, function (result) {
+            var data = result.RSP.DATA,
+                rspCode = result.RSP.RSP_CODE;
+            if (rspCode != null && rspCode === "1") {
+                $("#checkComment").html(data[0].checkComment);
             }
         });
     }
@@ -739,7 +759,7 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
             '<div class="leftTop-border"></div>' +
             '<div class="processRight-21">' +
             '<span>建单时间：</span><span class="processRight-211">' + data.crtTime + '</span>' +
-            '<span>处理时长：</span><span class="processRight-212">' + data.handIngTime + '</span>'+
+            '<span>处理时长：</span><span class="processRight-212">' + data.handIngTime + '</span>' +
             '<span>考评结果：</span><span id="checkResult_' + data.lgId + '">合格</span>' +
             '</div>' +
             '<div class="processRight-22"><span>处理意见：</span><span>' + data.rmk + '</span></div>' +
