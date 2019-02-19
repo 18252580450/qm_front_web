@@ -6,7 +6,7 @@
                 <div class='panel-search ' title="">
                     <form class='form form-horizontal' id="searchForm">
                         <div class='row cl'>
-                            <label class='form-label col-2'>质检人员</label>
+                            <label class='form-label col-2'>质检人姓名</label>
                             <div class='formControls col-3'>
                                 <input id="addCheckStaffId" type="easyui-textbox" style='width:100%;height:30px' >
                             </div>
@@ -23,7 +23,7 @@
                     <div style="float:left ; width:20%; height:100%;">
                         <div class='cl'>
                             <div class='panel-tool-box cl' >
-                                <div class='fl text-bold'>员工组树</div>
+                                <div class='fl text-bold'>工作组列表</div>
                             </div>
                             <div id="treeDiv" title="员工组信息"  class="index-west">
                                 <ul id="tree" class="ztree" style="border:#fff solid 0px;">
