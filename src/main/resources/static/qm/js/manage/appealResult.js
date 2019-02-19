@@ -1,6 +1,7 @@
 require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], function ($, Util, Transfer, CommonAjax) {
 
-        var orderCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/execution/orderAppealDetail.html",
+        var voiceCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/execution/voiceAppealDetail.html",
+            orderCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/execution/orderAppealDetail.html",
             checkTypeData = [],      //质检类型静态数据
             appealStatusData = [];   //申诉状态静态数据
 
@@ -220,9 +221,13 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                     //质检详情
                     $.each(data.rows, function (i, item) {
                         $("#checkFlow_" + item.appealId).on("click", function () {
+                            if (item.checkType === Util.constants.CHECK_TYPE_VOICE) {
+                                var voiceUrl = createURL(voiceCheckDetail, item);
+                                addTabs(item.inspectionId, voiceUrl);
+                            }
                             if (item.checkType === Util.constants.CHECK_TYPE_ORDER) {
-                                var url = createURL(orderCheckDetail, item);
-                                addTabs("申诉结果-质检详情", url);
+                                var orderUrl = createURL(orderCheckDetail, item);
+                                addTabs(item.inspectionId, orderUrl);
                             }
                         });
                     });

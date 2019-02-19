@@ -1,7 +1,8 @@
 require(["js/manage/queryQmPlan", "jquery", 'util', "transfer", "easyui", "dateUtil"], function (QueryQmPlan, $, Util, Transfer, easyui, dateUtil) {
     //初始化方法
     initialize();
-    var reqParams = null;
+    var reqParams = null,
+        voiceCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/manage/voiceQmResultDetail.html";
 
     function initialize() {
         initPageInfo();
@@ -92,7 +93,7 @@ require(["js/manage/queryQmPlan", "jquery", 'util', "transfer", "easyui", "dateU
                             'commentName': row.commentName
                         };
                         var beanStr = JSON.stringify(bean);   //转成字符串
-                        var detail = "<a href='javascript:void(0);' class='reviseBtn' id =" + beanStr + " >详情</a>",
+                        var detail = "<a href='javascript:void(0);' id='resultDetail_" + row.inspectionId + "'>详情</a>",
                             appeal = "<a href='javascript:void(0);' id='resultAppeal_" + row.inspectionId + "'>申诉</a>";
                         return detail + "&nbsp;&nbsp;" + appeal;
                     }
@@ -201,6 +202,13 @@ require(["js/manage/queryQmPlan", "jquery", 'util', "transfer", "easyui", "dateU
                 });
             },
             onLoadSuccess: function (data) {
+                //详情
+                $.each(data.rows, function (i, item) {
+                    $("#resultDetail_" + item.inspectionId).on("click", function () {
+                        var url = createURL(voiceCheckDetail, item);
+                        addTabs("质检结果-质检详情", url);
+                    });
+                });
                 //申诉
                 $.each(data.rows, function (i, item) {
                     $("#resultAppeal_" + item.inspectionId).on("click", function () {
@@ -229,6 +237,18 @@ require(["js/manage/queryQmPlan", "jquery", 'util', "transfer", "easyui", "dateU
         } else {
             jq('#tabs').tabs('select', title);
         }
+    }
+
+    //拼接对象到url
+    function createURL(url, param) {
+        var urlLink = url;
+        if (param != null) {
+            $.each(param, function (item, value) {
+                urlLink += '&' + item + "=" + encodeURI(value);
+            });
+            urlLink = url + "?" + urlLink.substr(1);
+        }
+        return urlLink.replace(' ', '');
     }
 
     //后端导出
@@ -345,9 +365,13 @@ require(["js/manage/queryQmPlan", "jquery", 'util', "transfer", "easyui", "dateU
             }
             var params = {
                 "departmentId": data.checkedDepartId,
+                "tenantId": data.tenantId,
+                "provinceId": data.provinceId,
                 "checkType": Util.constants.CHECK_TYPE_VOICE,
                 "touchId": data.touchId,
                 "inspectionId": data.inspectionId,
+                "planId": data.planId,
+                "templateId": data.templateId,
                 "appealStaffId": data.checkedStaffId,
                 "appealStaffName": data.checkedStaffName,
                 "appealReason": appealReason
@@ -430,21 +454,6 @@ require(["js/manage/queryQmPlan", "jquery", 'util', "transfer", "easyui", "dateU
 
         addTabs("工单质检详情", "");
     });
-
-    //添加一个选项卡面板
-    function addTabs(title, url) {
-        var jq = top.jQuery;//顶层的window对象.取得整个父页面对象
-        //重写jndex.js中的方法
-        if (!jq('#tabs').tabs('exists', title)) {
-            jq('#tabs').tabs('add', {
-                title: title,
-                content: '<iframe src="' + url + '" frameBorder="0" border="0" scrolling="auto"  style="width: 100%; height: 100%;"/>',
-                closable: true
-            });
-        } else {
-            jq('#tabs').tabs('select', title);
-        }
-    }
 
     return {
         initialize: initialize

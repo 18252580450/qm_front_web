@@ -1,6 +1,6 @@
 require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util, Transfer) {
 
-        var appealCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/execution/orderAppealDetail.html";
+        var voiceCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/execution/voiceAppealDetail.html";
 
         initialize();
 
@@ -56,16 +56,11 @@ require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util,
                             return detail + "&nbsp;&nbsp;" + deal;
                         }
                     },
-                    {
-                        field: 'touchId', title: '语音流水', width: '14%',
-                        formatter: function (value, row, index) {
-                            return '<a href="javascript:void(0);" id = "orderFlow_' + row.touchId + '">' + value + '</a>';
-                        }
-                    },
+                    {field: 'touchId', title: '语音流水', width: '14%'},
                     {
                         field: 'inspectionId', title: '质检流水', width: '14%',
                         formatter: function (value, row, index) {
-                            return '<a href="javascript:void(0);" id = "checkFlow_' + row.inspectionId + '">' + value + '</a>';
+                            return '<a href="javascript:void(0);" id = "checkFlow_' + row.appealId + '">' + value + '</a>';
                         }
                     },
                     {field: 'appealId', title: '申诉单号', width: '14%'},
@@ -156,6 +151,13 @@ require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util,
                     $.each(data.rows, function (i, item) {
                         $("#appealDeal_" + item.appealId).on("click", function () {
                             showAppealDealDialog(item);
+                        });
+                    });
+                    //质检详情
+                    $.each(data.rows, function (i, item) {
+                        $("#checkFlow_" + item.appealId).on("click", function () {
+                            var url = createURL(voiceCheckDetail, item);
+                            addTabs("申诉待办-质检详情", url);
                         });
                     });
                 }

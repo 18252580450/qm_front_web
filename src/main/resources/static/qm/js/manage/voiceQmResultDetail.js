@@ -136,7 +136,7 @@ require(["jquery", "util", "dateUtil", "transfer", "easyui"], function ($, Util)
         );
     }
 
-    //初始化考评项列表
+    //初始化考评区
     function initCheckArea() {
         var planReqParams = {
             "tenantId": voicePool.tenantId,
@@ -190,10 +190,9 @@ require(["jquery", "util", "dateUtil", "transfer", "easyui"], function ($, Util)
                         //初始化考评项列表
                         $("#checkItemList").datagrid("loadData", {rows: checkItemData});
 
-                        //查询暂存数据
+                        //质检结果详情
                         var reqParams = {
-                            "tenantId": voicePool.tenantId,
-                            "touchId": voicePool.touchId
+                            "inspectionId": voicePool.inspectionId
                         };
                         var params = $.extend({
                             "start": 0,
@@ -201,7 +200,7 @@ require(["jquery", "util", "dateUtil", "transfer", "easyui"], function ($, Util)
                             "params": JSON.stringify(reqParams)
                         }, Util.PageUtil.getParams($("#searchForm")));
 
-                        Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.VOICE_CHECK_DNS + "/querySavedResult", params, function (result) {
+                        Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.VOICE_CHECK_DNS + "/queryVoiceCheckResultDetail", params, function (result) {
                             var savedData = result.RSP.DATA,
                                 rspCode = result.RSP.RSP_CODE,
                                 totalScore = 0;    //考评项总得分
@@ -219,28 +218,6 @@ require(["jquery", "util", "dateUtil", "transfer", "easyui"], function ($, Util)
                                     //考评项总得分
                                     totalScore += item.realScore;
                                 });
-                            } else {  //无暂存数据则默认满分
-                                $.each(checkItemData, function (i, item) {
-                                    var checkItem = {};
-                                    checkItem.nodeType = item.nodeType;
-                                    checkItem.nodeId = item.nodeId;
-                                    checkItem.nodeName = item.nodeName;
-                                    checkItem.scoreScope = item.nodeScore;
-                                    checkItem.realScore = item.nodeScore;
-                                    if (item.minScore != null) {
-                                        checkItem.minScore = item.minScore;
-                                    } else {
-                                        checkItem.minScore = 0;
-                                    }
-                                    if (item.maxScore != null) {
-                                        checkItem.maxScore = item.maxScore;
-                                    } else {
-                                        checkItem.maxScore = item.nodeScore;
-                                    }
-                                    checkItemScoreList.push(checkItem);
-                                    //考评项总得分
-                                    totalScore += item.nodeScore;
-                                });
                             }
                             //刷新评价区数据
                             refreshCheckArea(totalScore);
@@ -249,26 +226,9 @@ require(["jquery", "util", "dateUtil", "transfer", "easyui"], function ($, Util)
                 });
             }
         });
-        //初始化考评评语
-        var reqParam = {
-            "tenantId": voicePool.tenantId,
-            "touchId": voicePool.touchId,
-            "resultStatus": Util.constants.CHECK_RESULT_TEMP_SAVE
-        };
-        var param = $.extend({
-            "start": 0,
-            "pageNum": 0,
-            "params": JSON.stringify(reqParam)
-        }, Util.PageUtil.getParams($("#searchForm")));
 
-        Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.VOICE_CHECK_DNS + "/queryVoiceCheckResult", param, function (result) {
-            debugger;
-            var data = result.RSP.DATA,
-                rspCode = result.RSP.RSP_CODE;
-            if (rspCode != null && rspCode === "1") {
-                $("#checkComment").val(data[0].checkComment);
-            }
-        });
+        //初始化考评评语
+        $("#checkComment").html(voicePool.checkComment);
     }
 
     //更新评价区数据
@@ -287,94 +247,9 @@ require(["jquery", "util", "dateUtil", "transfer", "easyui"], function ($, Util)
 
     //事件初始化
     function initEvent() {
-        //保存
-        $("#saveBtn").on("click", function () {
-            if (voicePool.poolStatus === Util.constants.CHECK_STATUS_RECHECK) {
-                checkSubmit(Util.constants.CHECK_FLAG_RECHECK_SAVE);  //复检保存
-            } else {
-                checkSubmit(Util.constants.CHECK_FLAG_CHECK_SAVE);  //质检保存
-            }
-        });
-        //提交
-        $("#submitBtn").on("click", function () {
-            if (voicePool.poolStatus === Util.constants.CHECK_STATUS_RECHECK) {
-                checkSubmit(Util.constants.CHECK_FLAG_RECHECK);  //复检
-            } else {
-                checkSubmit(Util.constants.CHECK_FLAG_NEW_BUILD); //质检
-            }
-        });
-        //取消
-        $("#cancelBtn").on("click", function () {
-            var jq = top.jQuery;
-            //关闭语音质检详情
-            jq('#tabs').tabs('close', "语音质检详情");
-        });
-        //案例收集
-        $("#caseCollectBtn").on("click", function () {
-            $.messager.alert("提示", "该功能暂未开放!");
-        });
-    }
+        //申诉
+        $("#appealBtn").on("click", function () {
 
-    function checkSubmit(checkStatus) {
-        var currentTime = new Date(),
-            checkTime = currentTime - startTime,
-            finalScore = $("#checkScore").val(),
-            checkStartTime = DateUtil.formatDateTime(parseInt(voicePool.operateTime)),
-            checkComment = $("#checkComment").val();
-        var voiceCheckResult = {
-            "tenantId": voicePool.tenantId,                          //租户id
-            "provinceId": voicePool.provinceId,                      //省份id
-            "callingNumber": voicePool.staffNumber,                  //主叫号码
-            "acceptNumber": voicePool.customerNumber,                //受理号码
-            "touchId": voicePool.touchId,                            //语音流水
-            "planId": voicePool.planId,                              //考评计划
-            "templateId": templateId,                                //考评模版ID
-            "checkModel": Util.constants.CHECK_TYPE_WITHIN_PLAN,     //质检模式、计划内质检
-            "checkedStaffId": voicePool.checkedStaffId,              //被质检员id
-            "checkedStaffName": voicePool.checkedStaffName,          //被质检员名
-            "checkedDepartId": Util.constants.CHECKED_DEPART_ID,     //被质检部门id 暂时
-            "checkedDepartName": "",                                 //被质检部门名称
-            "checkStaffId": voicePool.checkStaffId,                  //质检员id
-            "checkStaffName": voicePool.checkStaffName,              //质检员名
-            "checkDepartId": "",                                     //质检部门id
-            "checkDepartName": "",                                   //质检部门名称
-            "checkStartTime": checkStartTime,                        //质检开始时间（质检分配时间）
-            "checkTime": checkTime,                                  //质检时长
-            "scoreType": scoreType,                                  //分值类型
-            "resultStatus": checkStatus,                             //质检结果状态（保存or提交）
-            "finalScore": finalScore,                                //最终得分
-            "checkComment": checkComment                             //考评评语
-        };
-
-        var params = {
-            "voiceCheckResult": voiceCheckResult,
-            "checkItemList": checkItemScoreList
-        };
-        Util.loading.showLoading();
-        Util.ajax.postJson(Util.constants.CONTEXT.concat(Util.constants.VOICE_CHECK_DNS).concat("/"), JSON.stringify(params), function (result) {
-
-            Util.loading.destroyLoading();
-            var errMsg = "提交失败！<br>";
-            if (checkStatus === Util.constants.CHECK_FLAG_CHECK_SAVE || checkStatus === Util.constants.CHECK_FLAG_RECHECK_SAVE) {
-                errMsg = "保存失败！<br>";
-            }
-            var rspCode = result.RSP.RSP_CODE;
-            if (rspCode != null && rspCode === "1") {
-                $.messager.alert("提示", result.RSP.RSP_DESC, null, function () {
-                    var jq = top.jQuery;
-                    //刷新语音质检待办区
-                    jq('#tabs').tabs('close', "语音质检详情");
-                    var tab = jq('#tabs').tabs('getTab', "质检待办区"),
-                        iframe = jq(tab.panel('options').content),
-                        content = '<iframe scrolling="auto" frameborder="0"  src="' + iframe.attr('src') + '" style="width:100%;height:100%;"></iframe>';
-                    jq('#tabs').tabs('update', {
-                        tab: tab,
-                        options: {content: content, closable: true}
-                    });
-                });
-            } else {
-                $.messager.alert("提示", errMsg + result.RSP.RSP_DESC);
-            }
         });
     }
 
