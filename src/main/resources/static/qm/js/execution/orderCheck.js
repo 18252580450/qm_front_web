@@ -13,21 +13,6 @@ require(["js/manage/queryQmPlan", "jquery", 'util', "transfer", "commonAjax", "d
     //页面信息初始化
     function initPageInfo() {
 
-        $('#planName').searchbox({//输入框点击查询事件
-            searcher: function (value) {
-                var queryQmPlan = new QueryQmPlan();
-
-                $('#qry_window').show().window({
-                    title: '查询考评计划',
-                    width: 1150,
-                    height: 600,
-                    cache: false,
-                    content: queryQmPlan.$el,
-                    modal: true
-                });
-            }
-        });
-
         //分配开始时间选择框
         // var beginDate = (DateUtil.formatDateTime(new Date() - 24 * 60 * 60 * 1000)).substr(0, 11) + "00:00:00";
         var beginDate = "2018-10-10 00:00:00";
@@ -62,11 +47,20 @@ require(["js/manage/queryQmPlan", "jquery", 'util', "transfer", "commonAjax", "d
         );
 
         //计划名称搜索框
-        $("#qmPlanName").searchbox({
-                searcher: function () {
-                }
+        $('#planName').searchbox({//输入框点击查询事件
+            searcher: function (value) {
+                var queryQmPlan = new QueryQmPlan();
+
+                $('#qry_window').show().window({
+                    title: '查询考评计划',
+                    width: 1150,
+                    height: 600,
+                    cache: false,
+                    content: queryQmPlan.$el,
+                    modal: true
+                });
             }
-        );
+        });
 
         //质检状态下拉框
         $("#poolStatus").combobox({
@@ -104,14 +98,7 @@ require(["js/manage/queryQmPlan", "jquery", 'util', "transfer", "commonAjax", "d
                         return '<a href="javascript:void(0);" id = "orderCheck_' + row.workFormId + '" style="color: deepskyblue;">质检</a>';
                     }
                 },
-                {
-                    field: 'workFormId', title: '工单流水', width: '15%',
-                    formatter: function (value, row, index) {
-                        if (value != null) {
-                            return '<a href="javascript:void(0);" id = "orderFlow' + row.workFormId + '">' + value + '</a>';
-                        }
-                    }
-                },
+                {field: 'workFormId', title: '工单流水', width: '15%'},
                 {field: 'srvReqstTypeNm', title: '服务请求类型', width: '15%'},
                 {
                     field: 'planName', title: '计划名称', width: '15%',
@@ -121,6 +108,20 @@ require(["js/manage/queryQmPlan", "jquery", 'util', "transfer", "commonAjax", "d
                         }
                     }
                 },
+                {field: 'custNum', title: '客户号码', width: '15%'},
+                {
+                    field: 'crtTime', title: '提交时间', width: '15%',
+                    formatter: function (value, row, index) { //格式化时间格式
+                        return DateUtil.formatDateTime(value);
+                    }
+                },
+                {
+                    field: 'arcTime', title: '完成时间', width: '15%',
+                    formatter: function (value, row, index) { //格式化时间格式
+                        return DateUtil.formatDateTime(value);
+                    }
+                },
+                {field: 'checkedStaffName', title: '被检人员', width: '15%'},
                 {
                     field: 'operateTime', title: '分配时间', width: '15%',
                     formatter: function (value, row, index) { //格式化时间格式
@@ -129,8 +130,6 @@ require(["js/manage/queryQmPlan", "jquery", 'util', "transfer", "commonAjax", "d
                         }
                     }
                 },
-                {field: 'checkedStaffName', title: '被检人员', width: '15%'},
-                {field: 'checkLink', title: '考评环节', width: '15%'},
                 {
                     field: 'poolStatus', title: '状态', width: '15%',
                     formatter: function (value, row, index) {

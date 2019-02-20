@@ -1,6 +1,7 @@
 require(["js/manage/queryQmPlan", "jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], function (QueryQmPlan, $, Util, Transfer, CommonAjax) {
 
-    var voiceCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/execution/voiceCheckDetail.html";
+    var voiceCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/execution/voiceCheckDetail.html",
+        poolStatusData = [];  //质检状态下拉框静态数据（待质检、待复检）
 
     initialize();
 
@@ -37,8 +38,8 @@ require(["js/manage/queryQmPlan", "jquery", 'util', "transfer", "commonAjax", "d
         var extractBeginDate = "2018-10-10 00:00:00";
         $("#extractBeginTime").datetimebox({
             // value: extractBeginDate,
-            onShowPanel:function(){
-                $("#extractBeginTime").datetimebox("spinner").timespinner("setValue","00:00:00");
+            onShowPanel: function () {
+                $("#extractBeginTime").datetimebox("spinner").timespinner("setValue", "00:00:00");
             },
             onChange: function () {
                 var beginDate = $("#extractBeginTime").datetimebox("getValue"),
@@ -52,8 +53,8 @@ require(["js/manage/queryQmPlan", "jquery", 'util', "transfer", "commonAjax", "d
         // var endDate = (DateUtil.formatDateTime(new Date()-24*60*60*1000)).substr(0,11) + "23:59:59";
         $('#extractEndTime').datetimebox({
             // value: extractEndDate,
-            onShowPanel:function(){
-                $("#extractEndTime").datetimebox("spinner").timespinner("setValue","23:59:59");
+            onShowPanel: function () {
+                $("#extractEndTime").datetimebox("spinner").timespinner("setValue", "23:59:59");
             },
             onChange: function () {
                 var beginDate = $("#extractBeginTime").datetimebox("getValue"),
@@ -67,8 +68,8 @@ require(["js/manage/queryQmPlan", "jquery", 'util', "transfer", "commonAjax", "d
         var distributeBeginDate = "2018-10-10 00:00:00";
         $("#distributeBeginTime").datetimebox({
             // value: distributeBeginDate,
-            onShowPanel:function(){
-                $("#distributeBeginTime").datetimebox("spinner").timespinner("setValue","00:00:00");
+            onShowPanel: function () {
+                $("#distributeBeginTime").datetimebox("spinner").timespinner("setValue", "00:00:00");
             },
             onChange: function () {
                 var beginDate = $("#distributeBeginTime").datetimebox("getValue"),
@@ -82,8 +83,8 @@ require(["js/manage/queryQmPlan", "jquery", 'util', "transfer", "commonAjax", "d
         // var endDate = (DateUtil.formatDateTime(new Date()-24*60*60*1000)).substr(0,11) + "23:59:59";
         $('#distributeEndTime').datetimebox({
             // value: distributeEndDate,
-            onShowPanel:function(){
-                $("#distributeEndTime").datetimebox("spinner").timespinner("setValue","23:59:59");
+            onShowPanel: function () {
+                $("#distributeEndTime").datetimebox("spinner").timespinner("setValue", "23:59:59");
             },
             onChange: function () {
                 var beginDate = $("#distributeBeginTime").datetimebox("getValue"),
@@ -128,12 +129,10 @@ require(["js/manage/queryQmPlan", "jquery", 'util', "transfer", "commonAjax", "d
                         return '<a href="javascript:void(0);" id = "voiceCheck_' + row.touchId + '" style="color: deepskyblue">质检</a>';
                     }
                 },
-                {
-                    field: 'touchId', title: '语音流水', width: '15%',
-                    formatter: function (value, row, index) {
-                        return '<a href="javascript:void(0);" id = "voiceFlow' + row.touchId + '">' + value + '</a>';
-                    }
-                },
+                {field: 'touchId', title: '语音流水', width: '15%'},
+                {field: 'planName', title: '计划名称', width: '15%'},
+                {field: 'staffNumber', title: '坐席号码', width: '15%'},
+                {field: 'customerNumber', title: '客户号码', width: '15%'},
                 {
                     field: 'checkedTime', title: '抽取时间', width: '15%',
                     formatter: function (value, row, index) { //格式化时间格式
@@ -142,7 +141,6 @@ require(["js/manage/queryQmPlan", "jquery", 'util', "transfer", "commonAjax", "d
                         }
                     }
                 },
-                {field: 'distributeStaff', title: '分派人员', width: '10%'},
                 {
                     field: 'operateTime', title: '分派时间', width: '15%',
                     formatter: function (value, row, index) { //格式化时间格式
@@ -152,8 +150,16 @@ require(["js/manage/queryQmPlan", "jquery", 'util', "transfer", "commonAjax", "d
                     }
                 },
                 {field: 'checkedStaffName', title: '被检人员', width: '15%'},
-                {field: 'staffNumber', title: '主叫号码', width: '15%'},
-                {field: 'customerNumber', title: '服务号码', width: '15%'}
+                {
+                    field: 'poolStatus', title: '状态', width: '15%',
+                    formatter: function (value, row, index) {
+                        for (var i = 0; i < poolStatusData.length; i++) {
+                            if (parseInt(poolStatusData[i].paramsCode) === value) {
+                                return poolStatusData[i].paramsName;
+                            }
+                        }
+                    }
+                }
             ]],
             fitColumns: true,
             width: '100%',
@@ -221,7 +227,14 @@ require(["js/manage/queryQmPlan", "jquery", 'util', "transfer", "commonAjax", "d
 
                 Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.VOICE_POOL_DNS + "/selectByParams", params, function (result) {
                     var data = Transfer.DataGrid.transfer(result);
-
+                    var dataNew = [];
+                    for (var i = 0; i < data.rows.length; i++) {
+                        var map = data.rows[i];
+                        if (map.qmPlan != null) {
+                            map["planName"] = map.qmPlan.planName;
+                            dataNew.push(map);
+                        }
+                    }
                     var rspCode = result.RSP.RSP_CODE;
                     if (rspCode != null && rspCode !== "1") {
                         $.messager.show({
@@ -231,7 +244,16 @@ require(["js/manage/queryQmPlan", "jquery", 'util', "transfer", "commonAjax", "d
                             showType: 'show'
                         });
                     }
-                    success(data);
+                    if (poolStatusData.length > 0) {
+                        success(dataNew);
+                    } else {
+                        CommonAjax.getStaticParams("POOL_STATUS", function (datas) {
+                            if (datas) {
+                                poolStatusData = datas;
+                                success(dataNew);
+                            }
+                        });
+                    }
                 });
             },
             onLoadSuccess: function (data) {
