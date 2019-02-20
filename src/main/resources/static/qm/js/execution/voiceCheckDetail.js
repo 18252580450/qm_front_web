@@ -19,11 +19,14 @@ require(["jquery", "util", "dateUtil", "transfer", "easyui"], function ($, Util)
         //获取y语音流水、质检流水等信息
         voicePool = getRequestObj();
 
+        debugger;
         //基本信息初始化
         $("#checkedStaffName").val(voicePool.checkedStaffName);
+        $("#checkedDepartName").val(voicePool.departName);
         $("#touchId").val(voicePool.touchId);
-        $("#callingNumber").val(voicePool.callingNumber);
-        $("#calledNumber").val(voicePool.calledNumber);
+        $("#createTime").val(voicePool.checkedTime);
+        $("#callingNumber").val(voicePool.staffNumber);
+        $("#calledNumber").val(voicePool.customerNumber);
         $("#callType").val(voicePool.callType);
         $("#hungupType").val(voicePool.hungupType);
 
@@ -187,6 +190,15 @@ require(["jquery", "util", "dateUtil", "transfer", "easyui"], function ($, Util)
                     } else {
                         //分值类型
                         scoreType = result.RSP.DATA[0].scoreType;
+                        if (scoreType === "0") {
+                            $("#scoreType").val("合格");
+                        }
+                        if (scoreType === "1") {
+                            $("#scoreType").val("得分");
+                        }
+                        if (scoreType === "2") {
+                            $("#scoreType").val("扣分");
+                        }
                         //初始化考评项列表
                         $("#checkItemList").datagrid("loadData", {rows: checkItemData});
 

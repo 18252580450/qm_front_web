@@ -63,8 +63,8 @@ require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util,
                             return '<a href="javascript:void(0);" id = "checkFlow_' + row.appealId + '">' + value + '</a>';
                         }
                     },
-                    {field: 'appealId', title: '申诉单号', width: '10%'},
-                    {field: 'appealStaffName', title: '申诉人', width: '14%'},
+                    {field: 'appealId', title: '申诉单号', width: '14%'},
+                    {field: 'appealStaffName', title: '申诉人', width: '10%'},
                     {field: 'appealReason', title: '申诉原因', width: '14%'},
                     {
                         field: 'appealTime', title: '申诉时间', width: '14%',

@@ -228,10 +228,10 @@ require(["js/manage/queryQmPlan", "jquery", 'util', "transfer", "easyui", "dateU
                 $.each(data.rows, function (i, item) {
                     $("#resultAppeal_" + item.inspectionId).on("click", function () {
                         //判断是否已有申诉流程
-                        if (item.appealId != null && item.resultStatus === Util.constants.CHECK_RESULT_APPEALING) {
-                            $.messager.alert("提示", "申诉中！申诉单号：" + item.appealId + "!");
-                            return;
-                        }
+                        // if (item.appealId != null && item.resultStatus === Util.constants.CHECK_RESULT_APPEALING) {
+                        //     $.messager.alert("提示", "申诉中！申诉单号：" + item.appealId + "!");
+                        //     return;
+                        // }
                         showAppealDialog(item);
                     });
                 });

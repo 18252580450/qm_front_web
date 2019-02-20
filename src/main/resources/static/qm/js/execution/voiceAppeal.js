@@ -266,8 +266,8 @@ require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util,
                     "nextNodeId": data.nextNodeId,
                     "approveStatus": approveStatus,
                     "approveSuggestion": approveSuggestion,
-                    "staffId": Util.constants.STAFF_ID,
-                    "staffName": Util.constants.STAFF_NAME
+                    "staffId": data.userId,
+                    "staffName": data.userName
                 };
                 Util.loading.showLoading();
                 Util.ajax.postJson(Util.constants.CONTEXT.concat(Util.constants.APPEAL_DEAL_DNS).concat("/"), JSON.stringify(params), function (result) {

@@ -20,12 +20,7 @@ require(["jquery", "util", "dateUtil", "transfer", "easyui"], function ($, Util)
         voicePool = getRequestObj();
 
         //基本信息初始化
-        $("#checkedStaffName").val(voicePool.checkedStaffName);
-        $("#touchId").val(voicePool.touchId);
-        $("#callingNumber").val(voicePool.callingNumber);
-        $("#calledNumber").val(voicePool.calledNumber);
-        $("#callType").val(voicePool.callType);
-        $("#hungupType").val(voicePool.hungupType);
+        initBaseInfo();
 
         //考评项列表
         var IsCheckFlag = true; //标示是否是勾选复选框选中行的，true - 是 , false - 否
@@ -136,6 +131,42 @@ require(["jquery", "util", "dateUtil", "transfer", "easyui"], function ($, Util)
         );
     }
 
+    //初始化基本信息
+    function initBaseInfo() {
+        var reqParams = {
+            "touchId": voicePool.touchId
+        };
+        var params = $.extend({
+            "start": 0,
+            "pageNum": 0,
+            "params": JSON.stringify(reqParams)
+        }, Util.PageUtil.getParams($("#searchForm")));
+
+        //通过语音流水查询基本信息
+        Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.VOICE_POOL_DNS + "/selectByParams", params, function (result) {
+            debugger;
+            var data = result.RSP.DATA,
+                rspCode = result.RSP.RSP_CODE;
+            if (rspCode !== "1") {
+                $.messager.show({
+                    msg: result.RSP.RSP_DESC,
+                    timeout: 1000,
+                    style: {right: '', bottom: ''},     //居中显示
+                    showType: 'slide'
+                });
+            } else {
+                $("#checkedStaffName").val(data[0].checkedStaffName);
+                $("#checkedDepartName").val(data[0].departName);
+                $("#touchId").val(data[0].touchId);
+                $("#createTime").val(data[0].checkedTime);
+                $("#callingNumber").val(data[0].staffNumber);
+                $("#calledNumber").val(data[0].customerNumber);
+                $("#callType").val(data[0].callType);
+                $("#hungupType").val(data[0].hungupType);
+            }
+        });
+    }
+
     //初始化考评区
     function initCheckArea() {
         var planReqParams = {
@@ -187,13 +218,21 @@ require(["jquery", "util", "dateUtil", "transfer", "easyui"], function ($, Util)
                     } else {
                         //分值类型
                         scoreType = result.RSP.DATA[0].scoreType;
+                        if (scoreType === "0") {
+                            $("#scoreType").val("合格");
+                        }
+                        if (scoreType === "1") {
+                            $("#scoreType").val("得分");
+                        }
+                        if (scoreType === "2") {
+                            $("#scoreType").val("扣分");
+                        }
                         //初始化考评项列表
                         $("#checkItemList").datagrid("loadData", {rows: checkItemData});
 
-                        //查询暂存数据
+                        //质检结果详情
                         var reqParams = {
-                            "tenantId": voicePool.tenantId,
-                            "touchId": voicePool.touchId
+                            "inspectionId": voicePool.inspectionId
                         };
                         var params = $.extend({
                             "start": 0,
@@ -201,7 +240,7 @@ require(["jquery", "util", "dateUtil", "transfer", "easyui"], function ($, Util)
                             "params": JSON.stringify(reqParams)
                         }, Util.PageUtil.getParams($("#searchForm")));
 
-                        Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.VOICE_CHECK_DNS + "/querySavedResult", params, function (result) {
+                        Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.VOICE_CHECK_DNS + "/queryVoiceCheckResultDetail", params, function (result) {
                             var savedData = result.RSP.DATA,
                                 rspCode = result.RSP.RSP_CODE,
                                 totalScore = 0;    //考评项总得分
@@ -219,28 +258,8 @@ require(["jquery", "util", "dateUtil", "transfer", "easyui"], function ($, Util)
                                     //考评项总得分
                                     totalScore += item.realScore;
                                 });
-                            } else {  //无暂存数据则默认满分
-                                $.each(checkItemData, function (i, item) {
-                                    var checkItem = {};
-                                    checkItem.nodeType = item.nodeType;
-                                    checkItem.nodeId = item.nodeId;
-                                    checkItem.nodeName = item.nodeName;
-                                    checkItem.scoreScope = item.nodeScore;
-                                    checkItem.realScore = item.nodeScore;
-                                    if (item.minScore != null) {
-                                        checkItem.minScore = item.minScore;
-                                    } else {
-                                        checkItem.minScore = 0;
-                                    }
-                                    if (item.maxScore != null) {
-                                        checkItem.maxScore = item.maxScore;
-                                    } else {
-                                        checkItem.maxScore = item.nodeScore;
-                                    }
-                                    checkItemScoreList.push(checkItem);
-                                    //考评项总得分
-                                    totalScore += item.nodeScore;
-                                });
+                            } else {
+                                $.messager.alert("提示", result.RSP.RSP_DESC);
                             }
                             //刷新评价区数据
                             refreshCheckArea(totalScore);
