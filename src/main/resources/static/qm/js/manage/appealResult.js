@@ -89,9 +89,9 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
             $("#appealCheckList").datagrid({
                 columns: [[
                     {
-                        field: 'operate', title: '操作', width: '5%',
+                        field: 'operate', title: '操作', width: '8%',
                         formatter: function (value, row, index) {
-                            return '<a href="javascript:void(0);" id = "appealRecord_' + row.appealId + '">详情</a>';
+                            return '<a href="javascript:void(0);" style="color: deepskyblue;" id = "appealRecord_' + row.appealId + '">审批记录</a>';
                         }
                     },
                     {
@@ -108,7 +108,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                     {
                         field: 'inspectionId', title: '质检流水', width: '14%',
                         formatter: function (value, row, index) {
-                            return '<a href="javascript:void(0);" id = "checkFlow_' + row.appealId + '">' + value + '</a>';
+                            return '<a href="javascript:void(0);" style="color: deepskyblue;" id = "checkFlow_' + row.appealId + '">' + value + '</a>';
                         }
                     },
                     {field: 'appealId', title: '申诉单号', width: '14%'},
@@ -223,11 +223,13 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                         $("#checkFlow_" + item.appealId).on("click", function () {
                             if (item.checkType === Util.constants.CHECK_TYPE_VOICE) {
                                 var voiceUrl = createURL(voiceCheckDetail, item);
-                                addTabs(item.inspectionId, voiceUrl);
+                                // addTabs(item.inspectionId, voiceUrl);
+                                showDialog(voiceUrl, "质检详情", 1200, 650, false);
                             }
                             if (item.checkType === Util.constants.CHECK_TYPE_ORDER) {
                                 var orderUrl = createURL(orderCheckDetail, item);
-                                addTabs(item.inspectionId, orderUrl);
+                                // addTabs(item.inspectionId, orderUrl);
+                                showDialog(orderUrl, "质检详情", 1200, 650, false);
                             }
                         });
                     });
@@ -380,6 +382,25 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                 '<div class="formControls col-12"><div class="fl text-small">审批时间：' + DateUtil.formatDateTime(item.approveTime) + '</div></div>' +
                 '</div></form> </div>' +
                 '</div>';
+        }
+
+        //dialog弹框
+        //url：窗口调用地址，title：窗口标题，width：宽度，height：高度，shadow：是否显示背景阴影罩层
+        function showDialog(url, title, width, height, shadow) {
+            var content = '<iframe src="' + url + '" width="100%" height="100%" frameborder="0" scrolling="auto"></iframe>';
+            var dialogDiv = '<div id="processDetailDialog" title="' + title + '"></div>'; //style="overflow:hidden;"可以去掉滚动条
+            $(document.body).append(dialogDiv);
+            var win = $('#processDetailDialog').dialog({
+                content: content,
+                width: width,
+                height: height,
+                modal: shadow,
+                title: title,
+                onClose: function () {
+                    $(this).dialog('destroy');//后面可以关闭后的事件
+                }
+            });
+            win.dialog('open');
         }
 
         return {

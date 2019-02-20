@@ -49,10 +49,10 @@ require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util,
             $("#appealCheckList").datagrid({
                 columns: [[
                     {
-                        field: 'operate', title: '操作', width: '8%',
+                        field: 'operate', title: '操作', width: '10%',
                         formatter: function (value, row, index) {
-                            var detail = '<a href="javascript:void(0);" id = "appealRecord_' + row.appealId + '">详情</a>';
-                            var deal = '<a href="javascript:void(0);" id = "appealDeal_' + row.appealId + '">审批</a>';
+                            var detail = '<a href="javascript:void(0);" style="color: deepskyblue;" id = "appealRecord_' + row.appealId + '">审批记录</a>';
+                            var deal = '<a href="javascript:void(0);" style="color: deepskyblue;" id = "appealDeal_' + row.appealId + '">审批</a>';
                             return detail + "&nbsp;&nbsp;" + deal;
                         }
                     },
@@ -60,11 +60,11 @@ require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util,
                     {
                         field: 'inspectionId', title: '质检流水', width: '14%',
                         formatter: function (value, row, index) {
-                            return '<a href="javascript:void(0);" id = "checkFlow_' + row.appealId + '">' + value + '</a>';
+                            return '<a href="javascript:void(0);" style="color: deepskyblue;" id = "checkFlow_' + row.appealId + '">' + value + '</a>';
                         }
                     },
                     {field: 'appealId', title: '申诉单号', width: '14%'},
-                    {field: 'appealStaffName', title: '申诉人', width: '10%'},
+                    {field: 'appealStaffName', title: '申诉人', width: '8%'},
                     {field: 'appealReason', title: '申诉原因', width: '14%'},
                     {
                         field: 'appealTime', title: '申诉时间', width: '14%',
@@ -157,7 +157,8 @@ require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util,
                     $.each(data.rows, function (i, item) {
                         $("#checkFlow_" + item.appealId).on("click", function () {
                             var url = createURL(voiceCheckDetail, item);
-                            addTabs("申诉待办-质检详情", url);
+                            // addTabs("申诉待办-质检详情", url);
+                            showDialog(url, "质检详情", 1200, 600, false);
                         });
                     });
                 }
@@ -404,6 +405,25 @@ require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util,
                 '<div class="formControls col-12"><div class="fl text-small">当前审批人：' + item + '</div></div>' +
                 '</div></form></div>' +
                 '</div>';
+        }
+
+        //dialog弹框
+        //url：窗口调用地址，title：窗口标题，width：宽度，height：高度，shadow：是否显示背景阴影罩层
+        function showDialog(url, title, width, height, shadow) {
+            var content = '<iframe src="' + url + '" width="100%" height="100%" frameborder="0" scrolling="auto"></iframe>';
+            var dialogDiv = '<div id="processDetailDialog" title="' + title + '"></div>'; //style="overflow:hidden;"可以去掉滚动条
+            $(document.body).append(dialogDiv);
+            var win = $('#processDetailDialog').dialog({
+                content: content,
+                width: width,
+                height: height,
+                modal: shadow,
+                title: title,
+                onClose: function () {
+                    $(this).dialog('destroy');//后面可以关闭后的事件
+                }
+            });
+            win.dialog('open');
         }
 
         return {
