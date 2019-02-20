@@ -253,7 +253,6 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
             pageSize: 10,
             pageList: [5, 10, 20, 50],
             rownumbers: false,
-            checkOnSelect: false,
             loader: function (param, success) {
                 var start = (param.page - 1) * param.rows;
                 var pageNum = param.rows;
