@@ -195,10 +195,26 @@ define([
             }
             var planName = $("#planName",$el).val();
             var planType = $("#planType",$el).combobox('getValue');
+            if(planType==""){
+                $.messager.alert('警告', '请选择计划类型!');
+                return false;
+            }
             var templateId = $("#templateId",$el).val();
             var pId = $("#pId",$el).val();
             var manOrAuto = $("#manOrAuto",$el).combobox('getValue');
+            if(manOrAuto=="自动分派"){
+                manOrAuto = "1";
+            }else{
+                manOrAuto = "0";
+            }
             var planRuntype = $("#planRuntype",$el).combobox('getValue');
+            if(planRuntype=="每天自动执行"){
+                planRuntype = "0";
+            }else if(planRuntype=="执行一次"){
+                planRuntype = "1";
+            }else{
+                planRuntype = "2";
+            }
             var planRuntime = $('#planRuntime',$el).timespinner('getValue');
             var planStarttime = $('#planStarttime',$el).datetimebox('getValue');
             var planEndtime = $('#planEndtime',$el).datetimebox('getValue');
@@ -247,7 +263,7 @@ define([
 
             if (planName == null || planName == "" || planType == null || planType == "" || templateId == null || templateId == ""
                 || pId == null || pId == "" || manOrAuto == null || manOrAuto == "" || planRuntype == null || planRuntype == ""|| planRuntime == null || planRuntime == "") {
-                $.messager.alert('警告', '必填项不能为空。');
+                $.messager.alert('警告', '必填项不能为空!');
 
                 $("#addPlan",$el).linkbutton({disabled: false});  //按钮可用
                 return false;

@@ -54,10 +54,24 @@ define([
                         });
                     });
                 }
+                setFirstPage();
+                var data = {"total":newArr.length,"rows":newArr};
                 $("#page",$el).find("#checkStaffInfo").datagrid("loadData",newArr);
             }
         }
     };
+
+    //返回第一页
+    function setFirstPage(){
+        var opts =  $("#page",$el).find("#checkStaffInfo").datagrid('options');
+        var pager = $("#page",$el).find("#checkStaffInfo").datagrid('getPager');
+        opts.pageNumber = 1;
+        opts.pageSize = opts.pageSize;
+        pager.pagination('refresh',{
+            pageNumber:1,
+            pageSize:opts.pageSize
+        });
+    }
 
     //递归获取该节点下所有的子节点的id
     function getAllChildrenNodes(node,allChildrenNodesIdSet) {
@@ -116,14 +130,12 @@ define([
             rownumbers: false,
             loader: function (param, success) {
                 var addCheckStaffId = $("#addCheckStaffId",$el).val();
-                var start = (param.page - 1) * param.rows;
-                var pageNum = param.rows;
                 var reqParams = {
                     "groupId": "",
                     "staffName":addCheckStaffId,
                     "staffId": "",
-                    "start":start,
-                    "limit": pageNum,
+                    "start":param.page,
+                    "limit": param.rows,
                     "provCode": "",
                     "roleCode": ""
                 };
@@ -132,24 +144,8 @@ define([
                 };
 
                 Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.QM_PLAN_DNS + "/getQmPeople", params, function (result) {
-                    var data = result.RSP.DATA;
-                    //设置分页控件
-                    var p = $("#page",$el).find("#checkStaffInfo").datagrid("getPager");
-                    p.pagination({
-                        total:data.length,
-                        // pageSize: 10,
-                        // pageList: [5, 10, 20, 50],
-                        onSelectPage:function (pageNo, pageSize) {
-                            var start = (pageNo - 1) * pageSize;
-                            var end = start + pageSize;
-                            $("#page",$el).find("#checkStaffInfo").datagrid("loadData", data.slice(start, end));
-                            p.pagination({
-                                total:data.length,
-                                pageNumber:pageNo
-                            });
-                        }
-                    });
-                    listData = data;
+                    var data = {rows:result.RSP.DATA[0].jsonArray,total:result.RSP.DATA[0].totalAll};
+                    listData = result.RSP.DATA[0].jsonArrayAll;
                     success(data);
                 });
             }
