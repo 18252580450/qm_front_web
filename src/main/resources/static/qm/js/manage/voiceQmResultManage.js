@@ -2,7 +2,8 @@ require(["js/manage/queryQmPlan", "jquery", 'util', "transfer", "easyui", "dateU
     //初始化方法
     initialize();
     var reqParams = null,
-        voiceCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/manage/voiceQmResultDetail.html";
+        voiceCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/manage/voiceQmResultDetail.html",
+        voiceCheckHistory = Util.constants.URL_CONTEXT + "/qm/html/manage/voiceQmResultHistory.html";
 
     function initialize() {
         initPageInfo();
@@ -87,19 +88,24 @@ require(["js/manage/queryQmPlan", "jquery", 'util', "transfer", "easyui", "dateU
             columns: [[
                 {field: 'ck', checkbox: true, align: 'center'},
                 {
-                    field: 'action', title: '操作', width: '5%',
+                    field: 'action', title: '操作', width: '8%',
                     formatter: function (value, row, index) {
                         var bean = {//根据参数进行定位修改
                             'commentName': row.commentName
                         };
                         var beanStr = JSON.stringify(bean);   //转成字符串
-                        var detail = "<a href='javascript:void(0);' id='resultDetail_" + row.inspectionId + "'>详情</a>",
-                            appeal = "<a href='javascript:void(0);' id='resultAppeal_" + row.inspectionId + "'>申诉</a>";
-                        return detail + "&nbsp;&nbsp;" + appeal;
+                        var checkHistory = "<a href='javascript:void(0);' style='color: deepskyblue;' id='resultHistory_" + row.inspectionId + "'>质检记录</a>",
+                            appeal = "<a href='javascript:void(0);' style='color: deepskyblue;' id='resultAppeal_" + row.inspectionId + "'>申诉</a>";
+                        return appeal + "&nbsp;&nbsp;" + checkHistory;
                     }
                 },
                 {field: 'touchId', title: '语音流水', align: 'center', width: '15%'},
-                {field: 'inspectionId', title: '语音质检流水', align: 'center', width: '15%'},
+                {
+                    field: 'inspectionId', title: '质检流水', align: 'center', width: '15%',
+                    formatter: function (value, row, index) {
+                        return '<a href="javascript:void(0);" style="color: deepskyblue;" id = "resultDetail_' + row.inspectionId + '">' + value + '</a>';
+                    }
+                },
                 {field: 'callingNumber', title: '主叫号码', align: 'center', width: '10%'},
                 {field: 'planName', title: '计划名称', align: 'center', width: '10%'},
                 {field: 'acceptNumber', title: '服务号码', align: 'center', width: '10%', hidden: true},
@@ -186,8 +192,8 @@ require(["js/manage/queryQmPlan", "jquery", 'util', "transfer", "easyui", "dateU
                         var map = data.rows[i];
                         if (map.qmPlan != null) {
                             map["planName"] = map.qmPlan.planName;
-                            dataNew.push(map);
                         }
+                        dataNew.push(map);
                     }
                     var rspCode = result.RSP.RSP_CODE;
                     if (rspCode != null && rspCode !== "1") {
@@ -207,17 +213,24 @@ require(["js/manage/queryQmPlan", "jquery", 'util', "transfer", "easyui", "dateU
                     $("#resultDetail_" + item.inspectionId).on("click", function () {
                         var url = createURL(voiceCheckDetail, item);
                         // addTabs("质检结果-质检详情", url);
-                        showDialog(url, "质检详情", 1200, 600, false);
+                        showDialog(url, "质检详情", 1200, 600);
+                    });
+                });
+                //质检历史
+                $.each(data.rows, function (i, item) {
+                    $("#resultHistory_" + item.inspectionId).on("click", function () {
+                        var url = createURL(voiceCheckHistory, item);
+                        showDialog(url, "质检历史", 1250, 600);
                     });
                 });
                 //申诉
                 $.each(data.rows, function (i, item) {
                     $("#resultAppeal_" + item.inspectionId).on("click", function () {
                         //判断是否已有申诉流程
-                        if (item.appealId != null && item.resultStatus === Util.constants.CHECK_RESULT_APPEALING) {
-                            $.messager.alert("提示", "申诉中！申诉单号：" + item.appealId + "!");
-                            return;
-                        }
+                        // if (item.appealId != null && item.resultStatus === Util.constants.CHECK_RESULT_APPEALING) {
+                        //     $.messager.alert("提示", "申诉中！申诉单号：" + item.appealId + "!");
+                        //     return;
+                        // }
                         showAppealDialog(item);
                     });
                 });
@@ -421,46 +434,17 @@ require(["js/manage/queryQmPlan", "jquery", 'util', "transfer", "easyui", "dateU
         }
     }
 
-    /**
-     * 下拉框数据重载
-     */
-    function reloadSelectData(paramsType, select, showAll) {
-        var reqParams = {
-            "tenantId": Util.constants.TENANT_ID,
-            "paramsTypeId": paramsType
-        };
-        var params = {
-            "start": 0,
-            "pageNum": 0,
-            "params": JSON.stringify(reqParams)
-        };
-        Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.STATIC_PARAMS_DNS + "/selectByParams", params, function (result) {
-            var rspCode = result.RSP.RSP_CODE;
-            if (rspCode === "1") {
-                var selectData = result.RSP.DATA;
-                if (showAll) {
-                    var data = {
-                        "paramsCode": "-1",
-                        "paramsName": "全部"
-                    };
-                    selectData.unshift(data);
-                }
-                $("#" + select).combobox('loadData', selectData);
-            }
-        });
-    }
-
     //dialog弹框
     //url：窗口调用地址，title：窗口标题，width：宽度，height：高度，shadow：是否显示背景阴影罩层
-    function showDialog(url, title, width, height, shadow) {
-        var content = '<iframe src="' + url + '" width="100%" height="100%" frameborder="0" scrolling="auto"></iframe>';
-        var dialogDiv = '<div id="processDetailDialog" title="' + title + '"></div>'; //style="overflow:hidden;"可以去掉滚动条
+    function showDialog(url, title, width, height) {
+        var content = '<iframe src="' + url + '" width="100%" height="100%" frameborder="0" scrolling="auto"></iframe>',
+            dialogDiv = '<div id="resultDialog" title="' + title + '"></div>'; //style="overflow:hidden;"可以去掉滚动条
         $(document.body).append(dialogDiv);
-        var win = $('#processDetailDialog').dialog({
+        var win = $('#resultDialog').dialog({
             content: content,
             width: width,
             height: height,
-            modal: shadow,
+            modal: true,
             title: title,
             onClose: function () {
                 $(this).dialog('destroy');//后面可以关闭后的事件

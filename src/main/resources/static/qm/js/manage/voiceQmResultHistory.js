@@ -1,8 +1,8 @@
-require(["jquery", 'util', "transfer", "easyui", "dateUtil"], function ($, Util, Transfer, easyui, dateUtil) {
+require(["js/manage/queryQmPlan", "jquery", 'util', "transfer", "easyui", "dateUtil"], function (QueryQmPlan, $, Util, Transfer, easyui, dateUtil) {
     //初始化方法
     initialize();
     var reqParams = null,
-        orderCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/manage/workQmResultDetail.html";
+        voiceCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/manage/voiceQmResultDetail.html";
 
     function initialize() {
         initPageInfo();
@@ -13,34 +13,26 @@ require(["jquery", 'util', "transfer", "easyui", "dateUtil"], function ($, Util,
 
         var checkResult = getRequestObj();
 
-        //质检历史列表
+        //申诉流程列表
         var IsCheckFlag = true; //标示是否是勾选复选框选中行的，true - 是 , false - 否
         $("#queryInfo").datagrid({
             columns: [[
                 {
                     field: 'action', title: '操作', width: '5%',
                     formatter: function (value, row, index) {
-                        return "<a href='javascript:void(0);' style='color: deepskyblue;' id ='resultDetail_" + row.inspectionId + "'>详情</a>";
+                        return "<a href='javascript:void(0);' style='color: deepskyblue;' id='resultDetail_" + row.inspectionId + "'>详情</a>";
                     }
                 },
-                {field: 'touchId', title: '工单流水号', align: 'center', width: '15%'},
-                {field: 'inspectionId', title: '质检流水号', align: 'center', width: '15%'},
-                {field: 'originInspectionId', title: '原质检流水号', align: 'center', width: '15%'},
-                {field: 'acceptNumber', title: '客户号码', align: 'center', width: '10%', hidden: true},
+                {field: 'touchId', title: '语音流水', align: 'center', width: '15%'},
+                {field: 'inspectionId', title: '质检流水', align: 'center', width: '15%'},
+                {field: 'originInspectionId', title: '原质检流水', align: 'center', width: '15%'},
+                {field: 'callingNumber', title: '主叫号码', align: 'center', width: '10%'},
                 {field: 'planName', title: '计划名称', align: 'center', width: '10%'},
-                {field: 'checkedStaffId', title: '被质检人工号', align: 'center', width: '10%'},
-                {field: 'checkedDepartId', title: '被质检人班组', align: 'center', width: '10%'},
+                {field: 'acceptNumber', title: '服务号码', align: 'center', width: '10%', hidden: true},
+                {field: 'checkStaffName', title: '质检人', align: 'center', width: '10%'},
+                {field: 'checkedStaffName', title: '被质检人', align: 'center', width: '10%'},
                 {
-                    field: 'errorRank', title: '差错类型', align: 'center', width: '10%',
-                    formatter: function (value, row, index) {
-                        return {'0': '无错误', '1': '绝对错误'}[value];
-                    }
-                },
-                {field: 'finalScore', title: '质检得分', align: 'center', width: '10%'},
-                {field: 'unqualifiedNum', title: '不合格环节数', align: 'center', width: '10%'},
-                {field: 'checkStaffId', title: '质检人工号', align: 'center', width: '10%'},
-                {
-                    field: 'resultStatus', title: '申诉结果', align: 'center', width: '10%',
+                    field: 'resultStatus', title: '状态', align: 'center', width: '10%',
                     formatter: function (value, row, index) {
                         return {
                             '0': '质检新生成', '1': '临时保存', '2': '放弃', '3': '复检', '4': '分检', '5': '被检人确认'
@@ -48,6 +40,13 @@ require(["jquery", 'util', "transfer", "easyui", "dateUtil"], function ($, Util,
                         }[value];
                     }
                 },
+                {
+                    field: 'errorRank', title: '差错类型', align: 'center', width: '10%',
+                    formatter: function (value, row, index) {
+                        return {'0': '无错误', '1': '绝对错误'}[value];
+                    }
+                },
+                {field: 'finalScore', title: '质检得分', align: 'center', width: '10%'},
                 {
                     field: 'checkEndTime', title: '质检时间', align: 'center', width: '15%',
                     formatter: function (value, row, index) { //格式化时间格式
@@ -85,7 +84,7 @@ require(["jquery", 'util', "transfer", "easyui", "dateUtil"], function ($, Util,
                     "params": JSON.stringify(reqParams)
                 }, Util.PageUtil.getParams($("#queryInfo")));
 
-                Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.WORK_QM_RESULT + "/selectByParams", params, function (result) {
+                Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.VOICE_QM_RESULT + "/selectByParams", params, function (result) {
                     var data = {
                         rows: result.RSP.DATA
                     };
@@ -113,7 +112,7 @@ require(["jquery", 'util', "transfer", "easyui", "dateUtil"], function ($, Util,
                 //详情
                 $.each(data.rows, function (i, item) {
                     $("#resultDetail_" + item.inspectionId).on("click", function () {
-                        var url = createURL(orderCheckDetail, item);
+                        var url = createURL(voiceCheckDetail, item);
                         showDialog(url, "质检详情", 1200, 540);
                     });
                 });
@@ -137,9 +136,9 @@ require(["jquery", 'util', "transfer", "easyui", "dateUtil"], function ($, Util,
     //url：窗口调用地址，title：窗口标题，width：宽度，height：高度，shadow：是否显示背景阴影罩层
     function showDialog(url, title, width, height) {
         var content = '<iframe src="' + url + '" width="100%" height="100%" frameborder="0" scrolling="auto"></iframe>',
-            dialogDiv = '<div id="orderCheckDetailDialog" title="' + title + '"></div>'; //style="overflow:hidden;"可以去掉滚动条
+            dialogDiv = '<div id="resultDialog" title="' + title + '"></div>'; //style="overflow:hidden;"可以去掉滚动条
         $(document.body).append(dialogDiv);
-        var win = $('#orderCheckDetailDialog').dialog({
+        var win = $('#resultDialog').dialog({
             content: content,
             width: width,
             height: height,

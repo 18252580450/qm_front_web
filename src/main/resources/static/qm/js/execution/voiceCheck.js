@@ -1,6 +1,7 @@
 require(["js/manage/queryQmPlan", "jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], function (QueryQmPlan, $, Util, Transfer, CommonAjax) {
 
     var voiceCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/execution/voiceCheckDetail.html",
+        voiceCheckHistory = Util.constants.URL_CONTEXT + "/qm/html/manage/voiceQmResultHistory.html",
         poolStatusData = [];  //质检状态下拉框静态数据（待质检、待复检）
 
     initialize();
@@ -126,7 +127,14 @@ require(["js/manage/queryQmPlan", "jquery", 'util', "transfer", "commonAjax", "d
                 {
                     field: 'operate', title: '操作', width: '8%',
                     formatter: function (value, row, index) {
-                        return '<a href="javascript:void(0);" id = "voiceCheck_' + row.touchId + '" style="color: deepskyblue">质检</a>';
+                        var check = '<a href="javascript:void(0);" style="color: deepskyblue;" id = "voiceCheck_' + row.workFormId + '">质检</a>',
+                            checkHistory = '<a href="javascript:void(0);" style="color: deepskyblue;" id = "checkHistory_' + row.workFormId + '">质检记录</a>';
+                        if (row.poolStatus.toString() === Util.constants.CHECK_STATUS_CHECK) {
+                            return check;
+                        }
+                        if (row.poolStatus.toString() === Util.constants.CHECK_STATUS_RECHECK) {
+                            return check + "&nbsp;&nbsp;" + checkHistory;
+                        }
                     }
                 },
                 {field: 'touchId', title: '语音流水', width: '15%'},
@@ -264,12 +272,13 @@ require(["js/manage/queryQmPlan", "jquery", 'util', "transfer", "commonAjax", "d
                         addTabs("语音质检详情", url);
                     });
                 });
-                // //语音详情
-                // $.each(data.rows, function (i, item) {
-                //     $("#checkFlow" + item.inspectionId).on("click", function () {
-                //
-                //     });
-                // });
+                //语音质检详情
+                $.each(data.rows, function (i, item) {
+                    $("#checkHistory_" + item.inspectionId).on("click", function () {
+                        var url = createURL(voiceCheckHistory, item);
+                        showDialog(url, "质检记录", 1250, 600);
+                    });
+                });
             }
         });
     }
@@ -335,6 +344,25 @@ require(["js/manage/queryQmPlan", "jquery", 'util', "transfer", "commonAjax", "d
                 }
             });
         }
+    }
+
+    //dialog弹框
+    //url：窗口调用地址，title：窗口标题，width：宽度，height：高度，shadow：是否显示背景阴影罩层
+    function showDialog(url, title, width, height) {
+        var content = '<iframe src="' + url + '" width="100%" height="100%" frameborder="0" scrolling="auto"></iframe>',
+            dialogDiv = '<div id="resultDialog" title="' + title + '"></div>'; //style="overflow:hidden;"可以去掉滚动条
+        $(document.body).append(dialogDiv);
+        var win = $('#resultDialog').dialog({
+            content: content,
+            width: width,
+            height: height,
+            modal: true,
+            title: title,
+            onClose: function () {
+                $(this).dialog('destroy');//后面可以关闭后的事件
+            }
+        });
+        win.dialog('open');
     }
 
     return {

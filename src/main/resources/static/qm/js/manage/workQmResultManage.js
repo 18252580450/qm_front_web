@@ -90,17 +90,16 @@ require(["js/manage/queryQmPlan", "jquery", 'util', "transfer", "easyui", "dateU
                 {
                     field: 'action', title: '操作', width: '8%',
                     formatter: function (value, row, index) {
-                        var detail = "<a href='javascript:void(0);' id ='resultDetail_" + row.inspectionId + "'>详情</a>",
-                            history = "<a href='javascript:void(0);' id ='resultHistory_" + row.inspectionId + "'>质检历史</a>",
-                            appeal = "<a href='javascript:void(0);' id ='resultAppeal_" + row.inspectionId + "'>申诉</a>";
-                        return history + "&nbsp;&nbsp;" + appeal;
+                        var checkHistory = "<a href='javascript:void(0);' style='color: deepskyblue;' id ='resultHistory_" + row.inspectionId + "'>质检记录</a>",
+                            appeal = "<a href='javascript:void(0);' style='color: deepskyblue;' id ='resultAppeal_" + row.inspectionId + "'>申诉</a>";
+                        return appeal + "&nbsp;&nbsp;" + checkHistory;
                     }
                 },
                 {field: 'touchId', title: '工单流水号', align: 'center', width: '15%'},
                 {
                     field: 'inspectionId', title: '质检流水号', align: 'center', width: '15%',
                     formatter: function (value, row, index) {
-                        return '<a href="javascript:void(0);" id = "resultDetail_' + row.inspectionId + '">' + value + '</a>';
+                        return '<a href="javascript:void(0);" style="color: deepskyblue;" id = "resultDetail_' + row.inspectionId + '">' + value + '</a>';
                     }
                 },
                 {field: 'acceptNumber', title: '客户号码', align: 'center', width: '10%', hidden: true},
@@ -208,8 +207,8 @@ require(["js/manage/queryQmPlan", "jquery", 'util', "transfer", "easyui", "dateU
                         var map = data.rows[i];
                         if (map.qmPlan != null) {
                             map["planName"] = map.qmPlan.planName;
-                            dataNew.push(map);
                         }
+                        dataNew.push(map);
                     }
                     var rspCode = result.RSP.RSP_CODE;
                     if (rspCode != null && rspCode !== "1") {
@@ -236,7 +235,7 @@ require(["js/manage/queryQmPlan", "jquery", 'util', "transfer", "easyui", "dateU
                 $.each(data.rows, function (i, item) {
                     $("#resultHistory_" + item.inspectionId).on("click", function () {
                         var url = createURL(orderCheckHistory, item);
-                        showDialog(url, "质检历史", 1300, 600);
+                        showDialog(url, "质检历史", 1250, 600);
                     });
                 });
                 //申诉

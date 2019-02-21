@@ -16,7 +16,7 @@ require(["jquery", "util", "dateUtil", "transfer", "easyui"], function ($, Util)
 
     //页面信息初始化
     function initPageInfo() {
-        //获取y语音流水、质检流水等信息
+        //获取语音流水、质检流水等信息
         voicePool = getRequestObj();
 
         //基本信息初始化
