@@ -40,8 +40,12 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
                  }},
                 {field: 'createStaffId', title: '创建工号', width: '20%'},
                 {field: 'modfTime', title: '修改时间', width: '20%',
-                    formatter:function(value,row,index){
-                        return DateUtil.formatDateTime(value);
+                    formatter: function (value, row, index) { //格式化时间格式
+                        if(value!=null){
+                            return DateUtil.formatDateTime(value);
+                        }else{
+                            return null;
+                        }
                     }},
                 {field: 'operateStaffId', title: '修改工号', width: '20%'},
                 {field: 'remark', title: '描述', width: '20%'}
