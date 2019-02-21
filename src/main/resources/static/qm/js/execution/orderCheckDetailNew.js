@@ -1,6 +1,7 @@
 require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util) {
 
     var orderPool,
+        showingInfo = 0,            //当前显示的基本信息（0工单基本信息、1内外部回复、2接触记录、3工单历史）
         scoreType,                  //分值类型（默认扣分）
         startTime,                  //页面初始化时间
         checkItemListData = [],     //考评项列表数据（所有环节考评项）
@@ -78,9 +79,9 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
         var IsCheckFlag = true; //标示是否是勾选复选框选中行的，true - 是 , false - 否
         $("#checkItemList").datagrid({
             columns: [[
-                {field: 'checkItemName', title: '考评项名称', width: '18%'},
+                {field: 'checkItemName', title: '考评项名称', width: '20%'},
                 {
-                    field: 'checkItemVitalType', title: '类别', width: '15%',
+                    field: 'checkItemVitalType', title: '类别', width: '10%',
                     formatter: function (value, row, index) {
                         var vitalType = null;
                         if (value != null && value === "0") {
@@ -92,10 +93,10 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
                         return vitalType;
                     }
                 },
-                {field: 'remark', title: '描述', width: '25%'},
-                {field: 'nodeScore', title: '所占分值', width: '15%'},
+                {field: 'remark', title: '描述', width: '28%'},
+                {field: 'nodeScore', title: '所占分值', width: '10%'},
                 {
-                    field: 'scoreScope', title: '扣分区间', width: '10%',
+                    field: 'scoreScope', title: '扣分区间', width: '15%',
                     formatter: function (value, row, index) {
                         var min = "0",
                             max = "0";
@@ -119,7 +120,7 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
                 }
             ]],
             fitColumns: true,
-            width: '80%',
+            width: 845,
             height: 200,
             rownumbers: false,
             checkOnSelect: false,
@@ -393,12 +394,20 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
     function initEvent() {
         //基本信息btn
         $("#baseInfoBtn").on("click", function () {
-            changeInfoArea(true);
+            changeInfoArea(0);
         });
         //内外部回复btn
         $("#handlingLogBtn").on("click", function () {
-            changeInfoArea(false);
+            changeInfoArea(1);
             initHandlingLog();
+        });
+        //接触记录btn
+        $("#recordingBtn").on("click", function () {
+            changeInfoArea(2);
+        });
+        //工单历史btn
+        $("#historyBtn").on("click", function () {
+            changeInfoArea(3);
         });
         //外部回复tab
         $("#externalReplyTab").on("click", function () {
@@ -737,7 +746,7 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
     function getReplyDiv(data) {
         return '<div class="reply-1">' +
             '<div class="reply-2">' +
-            '<span style="margin-right:24px;">' + data.crtTime + '</span><span>' + data.opStaffId + '</span><span>|客服</span>' +
+            '<span style="margin-right:24px;">' + data.crtTime + '</span><span>' + data.opStaffId + '</span><span>|' + data.opWorkGroupNm + '</span>' +
             '</div>' +
             '<div class="reply-3"><span>' + data.rmk + '</span></div>' +
             '</div>';
@@ -803,24 +812,60 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
     }
 
     //基本信息、内外部回复切换
-    function changeInfoArea(showBaseInfo) {
+    function changeInfoArea(curShowingInfo) {
         var baseInfoBtn = $("#baseInfoBtn"),
-            handlingLogBtn = $("#handlingLogBtn");
-        if (showBaseInfo) {
-            baseInfoBtn.removeClass();
-            handlingLogBtn.removeClass();
-            baseInfoBtn.addClass("button-1");
-            handlingLogBtn.addClass("button-2");
-            $("#baseInfo").show();
-            $("#handlingLog").hide();
-        } else {
-            baseInfoBtn.removeClass();
-            handlingLogBtn.removeClass();
-            baseInfoBtn.addClass("button-2");
-            handlingLogBtn.addClass("button-1");
-            $("#baseInfo").hide();
-            $("#handlingLog").show();
+            handlingLogBtn = $("#handlingLogBtn"),
+            recordingBtn = $("#recordingBtn"),
+            historyBtn = $("#historyBtn"),
+            baseInfo = $("#baseInfo"),
+            handlingLog = $("#handlingLog"),
+            recording = $("#recording"),
+            history = $("#history");
+        switch (showingInfo) {
+            case 0:
+                baseInfoBtn.removeClass();
+                baseInfoBtn.addClass("button-2");
+                baseInfo.hide();
+                break;
+            case 1:
+                handlingLogBtn.removeClass();
+                handlingLogBtn.addClass("button-2");
+                handlingLog.hide();
+                break;
+            case 2:
+                recordingBtn.removeClass();
+                recordingBtn.addClass("button-2");
+                recording.hide();
+                break;
+            case 3:
+                historyBtn.removeClass();
+                historyBtn.addClass("button-2");
+                history.hide();
+                break;
         }
+        switch (curShowingInfo) {
+            case 0:
+                baseInfoBtn.removeClass();
+                baseInfoBtn.addClass("button-1");
+                baseInfo.show();
+                break;
+            case 1:
+                handlingLogBtn.removeClass();
+                handlingLogBtn.addClass("button-1");
+                handlingLog.show();
+                break;
+            case 2:
+                recordingBtn.removeClass();
+                recordingBtn.addClass("button-1");
+                recording.show();
+                break;
+            case 3:
+                historyBtn.removeClass();
+                historyBtn.addClass("button-1");
+                history.show();
+                break;
+        }
+        showingInfo = curShowingInfo;
     }
 
     //内部回复、外部回复切换
