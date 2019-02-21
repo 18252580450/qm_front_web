@@ -229,7 +229,7 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
 
     //保存操作。将表中的数据保存到数据库中（更新）
     function saveEvent(){
-        $("#page").one("click", "#saveBut", function () {
+        $("#page").on("click", "#saveBut", function () {
             $('#templateName').validatebox({required:true});//非空校验
             $('#templateDesc').validatebox({required:true});//非空校验
             if($("#templateName").val()==""||$("#templateDesc").val()==""){
@@ -293,6 +293,10 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
             nAll.forEach(function(i,index){
                 nAllScore = nAllScore+i;
             });
+            if(nAll.indexOf(0)!=-1){
+                $.messager.alert("提示", "点击行修改分数后,请点击行保持操作！");
+                return false;
+            }
             if(nAllScore!=100||maxAllScore>100){
                 $.messager.alert("提示", "所占分值总和必须为100以及扣分范围总和不得高于100!");
                 return false;

@@ -420,11 +420,13 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
         var voice  = new Audio(voicePath);
         //语音播放
         $("#page").on('click','a.playBtn',function(){
-            voice.src=voicePath;
-            voice.load();//重新加载音频，用于更改src之后使用
             var rowData = $(this).attr('id'); //获取a标签中传递的值
             var sensjson = JSON.parse(rowData); //转成json格式
             var index = sensjson.index;
+            voice.src=voicePath;
+            // voice.src=sensjson.recordPath;
+            voice.load();//重新加载音频，用于更改src之后使用
+
             if(i++%2==0){
                 $("a.playBtn")[index].innerHTML='语音停止';
                 voice.play(); //播放
