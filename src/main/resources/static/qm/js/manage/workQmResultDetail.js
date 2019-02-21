@@ -1,6 +1,6 @@
 require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util) {
 
-    var orderPool,
+    var orderResult,
         scoreType,                  //分值类型（默认扣分）
         startTime,                  //页面初始化时间
         checkItemListData = [],     //考评项列表数据（所有环节考评项）
@@ -62,7 +62,7 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
     //页面信息初始化
     function initPageInfo() {
         //获取工单流水、质检流水等信息
-        orderPool = getRequestObj();
+        orderResult = getRequestObj();
 
         //工单受理内容
         $("#orderDealContent").textbox(
@@ -143,13 +143,13 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
         //获取工单轨迹、初始化考评项列表、环节考评数据
         initProcProceLocus();
         //初始化考评评语
-        $("#checkComment").html(orderPool.checkComment);
+        $("#checkComment").html(orderResult.checkComment);
     }
 
     //初始化工单基本信息
     function initWrkfmDetail() {
         var reqParams = {
-            "provCode": orderPool.provinceId,
+            "provCode": orderResult.provinceId,
             "wrkfmId": "1901020950440000088"
         };
         var params = $.extend({
@@ -167,7 +167,7 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
                     showType: 'show'
                 });
             } else {
-                $("#workFormId").val(orderPool.touchId);
+                $("#workFormId").val(orderResult.touchId);
                 $("#custNum").val(data.userInfo.custNum);
                 $("#srvReqstTypeFullNm").val(data.acceptInfo.srvReqstTypeFullNm);
                 $("#custBelgCityNm").val(data.userInfo.custBelgCityNm);
@@ -186,7 +186,7 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
     //初始化工单轨迹、考评项列表
     function initProcProceLocus() {
         var reqParams = {
-            "provCode": orderPool.provinceId,
+            "provCode": orderResult.provinceId,
             "wrkfmId": "1901020950440000088"
         };
         var params = $.extend({
@@ -208,8 +208,8 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
                 showDealProcess(processData);  //初始化工单轨迹
                 //初始化考评项列表
                 var reqParams = {
-                    "tenantId": orderPool.tenantId,
-                    "templateId": orderPool.templateId
+                    "tenantId": orderResult.tenantId,
+                    "templateId": orderResult.templateId
                 };
                 var params = $.extend({
                     "start": 0,
@@ -241,7 +241,7 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
 
                         //查询质检结果详情
                         var reqParams = {
-                            "inspectionId": orderPool.inspectionId
+                            "inspectionId": orderResult.inspectionId
                         };
                         var params = $.extend({
                             "start": 0,
@@ -328,7 +328,7 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
     function initHandlingLog() {
         if (JSON.stringify(replyData) === "{}") {
             var reqParams = {
-                "provCode": orderPool.provinceId,
+                "provCode": orderResult.provinceId,
                 "wrkfmId": "1901020950440000088"
             };
             var params = $.extend({

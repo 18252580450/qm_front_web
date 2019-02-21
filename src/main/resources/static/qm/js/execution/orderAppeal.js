@@ -157,8 +157,7 @@ require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util,
                     $.each(data.rows, function (i, item) {
                         $("#checkFlow_" + item.appealId).on("click", function () {
                             var url = createURL(orderCheckDetail, item);
-                            // addTabs("申诉待办-质检详情", url);
-                            showDialog(url, "质检详情", 1200, 600, false);
+                            showDialog(url, "质检详情", 1200, 600);
                         });
                     });
                 }
@@ -305,21 +304,6 @@ require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util,
             return urlLink.replace(' ', '');
         }
 
-        //添加一个选项卡面板
-        function addTabs(title, url) {
-            var jq = top.jQuery;
-
-            if (!jq('#tabs').tabs('exists', title)) {
-                jq('#tabs').tabs('add', {
-                    title: title,
-                    content: '<iframe src="' + url + '" frameBorder="0" border="0" scrolling="auto"  style="width: 100%; height: 100%;"/>',
-                    closable: true
-                });
-            } else {
-                jq('#tabs').tabs('select', title);
-            }
-        }
-
         //校验开始时间和终止时间
         function checkBeginEndTime() {
             var beginTime = $("#appealBeginTime").datetimebox("getValue"),
@@ -409,15 +393,15 @@ require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util,
 
         //dialog弹框
         //url：窗口调用地址，title：窗口标题，width：宽度，height：高度，shadow：是否显示背景阴影罩层
-        function showDialog(url, title, width, height, shadow) {
-            var content = '<iframe src="' + url + '" width="100%" height="100%" frameborder="0" scrolling="auto"></iframe>';
-            var dialogDiv = '<div id="processDetailDialog" title="' + title + '"></div>'; //style="overflow:hidden;"可以去掉滚动条
+        function showDialog(url, title, width, height) {
+            var content = '<iframe src="' + url + '" width="100%" height="100%" frameborder="0" scrolling="auto"></iframe>',
+                dialogDiv = '<div id="checkDetailDialog" title="' + title + '"></div>'; //style="overflow:hidden;"可以去掉滚动条
             $(document.body).append(dialogDiv);
-            var win = $('#processDetailDialog').dialog({
+            var win = $('#checkDetailDialog').dialog({
                 content: content,
                 width: width,
                 height: height,
-                modal: shadow,
+                modal: true,
                 title: title,
                 onClose: function () {
                     $(this).dialog('destroy');//后面可以关闭后的事件

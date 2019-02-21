@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>工单质检结果管理</title>
+    <link rel="stylesheet" type="text/css" href="../../assets/lib/easyui/themes/cmcui/cmcui.css"/>
+    <link rel="stylesheet" type="text/css" href="../../assets/lib/easyui/themes/cmcui/iconfont/iconfont.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../assets/lib/ztree/css/cmcStyle/tree.css"/>
+    <link rel="stylesheet" type="text/css" href="../../assets/components/rating/themes/fontawesome-stars.css"/>
+    <script src="../../assets/components/ckeditor/ckeditor.js"></script>
+
+    <link href="../../css/style.min.css" rel="stylesheet">
+
+
+</head>
+<body>
+<div id="page_content" data-options="region:'center'" style="height:100%;">
+    <div id='layout_content' class='easyui-layout' data-options="region:'center'" style='overflow: auto; height:100%;'>
+        <div data-options="region:'center'" style='overflow: hidden;height: 100%'>
+            <div id="page">
+                <table id='queryInfo' class='easyui-datagrid' style=' width:100%;'>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+<script type="text/javascript" src="../../js/common/requirejs-main.js"></script>
+<script type="text/javascript" src="../../assets/lib/require/require.min.js"
+        data-main="js/manage/workQmResultHistory"></script>
+
+</html>

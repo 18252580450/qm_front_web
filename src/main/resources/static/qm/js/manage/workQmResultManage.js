@@ -2,7 +2,8 @@ require(["js/manage/queryQmPlan", "jquery", 'util', "transfer", "easyui", "dateU
     //初始化方法
     initialize();
     var reqParams = null,
-        orderCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/manage/workQmResultDetail.html";
+        orderCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/manage/workQmResultDetail.html",
+        orderCheckHistory = Util.constants.URL_CONTEXT + "/qm/html/manage/workQmResultHistory.html";
 
     function initialize() {
         initPageInfo();
@@ -87,15 +88,21 @@ require(["js/manage/queryQmPlan", "jquery", 'util', "transfer", "easyui", "dateU
             columns: [[
                 {field: 'ck', checkbox: true, align: 'center'},
                 {
-                    field: 'action', title: '操作', width: '5%',
+                    field: 'action', title: '操作', width: '8%',
                     formatter: function (value, row, index) {
                         var detail = "<a href='javascript:void(0);' id ='resultDetail_" + row.inspectionId + "'>详情</a>",
+                            history = "<a href='javascript:void(0);' id ='resultHistory_" + row.inspectionId + "'>质检历史</a>",
                             appeal = "<a href='javascript:void(0);' id ='resultAppeal_" + row.inspectionId + "'>申诉</a>";
-                        return detail + "&nbsp;&nbsp;" + appeal;
+                        return history + "&nbsp;&nbsp;" + appeal;
                     }
                 },
                 {field: 'touchId', title: '工单流水号', align: 'center', width: '15%'},
-                {field: 'inspectionId', title: '质检流水号', align: 'center', width: '15%'},
+                {
+                    field: 'inspectionId', title: '质检流水号', align: 'center', width: '15%',
+                    formatter: function (value, row, index) {
+                        return '<a href="javascript:void(0);" id = "resultDetail_' + row.inspectionId + '">' + value + '</a>';
+                    }
+                },
                 {field: 'acceptNumber', title: '客户号码', align: 'center', width: '10%', hidden: true},
                 {field: 'planName', title: '计划名称', align: 'center', width: '10%'},
                 {field: 'checkedStaffId', title: '被质检人工号', align: 'center', width: '10%'},
@@ -222,7 +229,14 @@ require(["js/manage/queryQmPlan", "jquery", 'util', "transfer", "easyui", "dateU
                     $("#resultDetail_" + item.inspectionId).on("click", function () {
                         var url = createURL(orderCheckDetail, item);
                         // addTabs("质检结果-质检详情", url);
-                        showDialog(url, "质检详情", 1200, 600, false);
+                        showDialog(url, "质检详情", 1200, 600);
+                    });
+                });
+                //质检历史
+                $.each(data.rows, function (i, item) {
+                    $("#resultHistory_" + item.inspectionId).on("click", function () {
+                        var url = createURL(orderCheckHistory, item);
+                        showDialog(url, "质检历史", 1300, 600);
                     });
                 });
                 //申诉
@@ -428,15 +442,15 @@ require(["js/manage/queryQmPlan", "jquery", 'util', "transfer", "easyui", "dateU
 
     //dialog弹框
     //url：窗口调用地址，title：窗口标题，width：宽度，height：高度，shadow：是否显示背景阴影罩层
-    function showDialog(url, title, width, height, shadow) {
-        var content = '<iframe src="' + url + '" width="100%" height="100%" frameborder="0" scrolling="auto"></iframe>';
-        var dialogDiv = '<div id="processDetailDialog" title="' + title + '"></div>'; //style="overflow:hidden;"可以去掉滚动条
+    function showDialog(url, title, width, height) {
+        var content = '<iframe src="' + url + '" width="100%" height="100%" frameborder="0" scrolling="auto"></iframe>',
+            dialogDiv = '<div id="resultDialog" title="' + title + '"></div>'; //style="overflow:hidden;"可以去掉滚动条
         $(document.body).append(dialogDiv);
-        var win = $('#processDetailDialog').dialog({
+        var win = $('#resultDialog').dialog({
             content: content,
             width: width,
             height: height,
-            modal: shadow,
+            modal: true,
             title: title,
             onClose: function () {
                 $(this).dialog('destroy');//后面可以关闭后的事件
