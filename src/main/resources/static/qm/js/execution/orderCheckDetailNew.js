@@ -10,6 +10,8 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
         checkLinkData = [],         //环节考评数据（提交数据）
         totalScore = 0,             //总得分
         replyData = {},             //内外部回复数据
+        recordData = {},            //接触记录数据
+        historyData = {},           //工单历史数据
         processData = [             //轨迹测试数据
             {
                 "rmk": "工单立单提交",
@@ -404,10 +406,12 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
         //接触记录btn
         $("#recordingBtn").on("click", function () {
             changeInfoArea(2);
+            initRecord();
         });
         //工单历史btn
         $("#historyBtn").on("click", function () {
             changeInfoArea(3);
+            initHistory();
         });
         //外部回复tab
         $("#externalReplyTab").on("click", function () {
@@ -482,6 +486,63 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
                 } else {
                     replyData = data;
                     showHandlingLog(replyData.externalReply, true); //展示外回复信息
+                }
+            });
+        }
+    }
+
+    //初始化接触记录
+    function initRecord() {
+        if (JSON.stringify(recordData) === "{}") {
+            var reqParams = {
+                "provCode": orderPool.provinceId,
+                "wrkfmId": "1902211630060000136"
+            };
+            var params = $.extend({
+                "params": JSON.stringify(reqParams)
+            }, {});
+
+            Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.WRKFM_DETAIL_DNS + "/getRecordList", params, function (result) {
+                var data = result.RSP.DATAS,
+                    rspCode = result.RSP.RSP_CODE;
+                if (rspCode != null && rspCode !== "1") {
+                    $.messager.show({
+                        msg: result.RSP.RSP_DESC,
+                        timeout: 1000,
+                        style: {right: '', bottom: ''},     //居中显示
+                        showType: 'show'
+                    });
+                } else {
+                    recordData = data;
+                }
+            });
+        }
+    }
+
+    //初始化工单历史
+    function initHistory() {
+        if (JSON.stringify(historyData) === "{}") {
+            var reqParams = {
+                "provCode": orderPool.provinceId,
+                "phoneNum":"18960602019",
+                "wrkfmId":"1812221428100000076"
+            };
+            var params = $.extend({
+                "params": JSON.stringify(reqParams)
+            }, {});
+
+            Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.WRKFM_DETAIL_DNS + "/getHistoryProProce", params, function (result) {
+                var data = result.RSP.DATAS,
+                    rspCode = result.RSP.RSP_CODE;
+                if (rspCode != null && rspCode !== "1") {
+                    $.messager.show({
+                        msg: result.RSP.RSP_DESC,
+                        timeout: 1000,
+                        style: {right: '', bottom: ''},     //居中显示
+                        showType: 'show'
+                    });
+                } else {
+                    historyData = data;
                 }
             });
         }
