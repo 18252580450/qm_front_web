@@ -160,7 +160,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                 modal: true,
                 title: "新增参数"
             });
-
+            $("#paramsCode").attr("readonly",false);
             var params = {
                 "tenantId":Util.constants.TENANT_ID
             };
@@ -326,7 +326,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                 modal: true,
                 title: "修改参数"
             });
-
+            $("#paramsCode").attr("readonly",true);
             var beanStr = $(this).attr('id'); //获取选中行的数据
             var beanjson = JSON.parse(beanStr); //转成json格式
             var arr = new Array(beanjson);

@@ -280,11 +280,11 @@ define([
                 modal: true
             });
             var id = $(this).attr('id'); //获取选中行的数据
-            // var bean;
+            var bean;
             Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.QM_STRATEGY_ELES_DNS + "/" + id, {}, function (result) {
                 var rspCode = result.RSP.RSP_CODE;
                 if (rspCode == "1" && result.RSP.DATA.length > 0) {
-                    var bean = result.RSP.DATA[0];
+                    bean = result.RSP.DATA[0];
                     $("#paramsTypeId").combobox('setValue',bean.paramsTypeId);
                     $("#elementType").combobox('setValue',bean.elementType);
                     $("#elementCode").val(bean.elementCode);
@@ -319,7 +319,7 @@ define([
                     return false;
                 }
                 bean['paramsTypeId'] = paramsTypeId;
-                bean['elementType'] = elementType
+                bean['elementType'] = elementType;
                 bean['elementCode'] = elementCode;
                 bean['elementName'] = elementName;
                 bean['isRegion'] = isRegion;
