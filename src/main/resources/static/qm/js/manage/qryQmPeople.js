@@ -6,6 +6,8 @@ define([
         var listNew=[];
         var flag;
         var listData = [];
+        var treeObj;
+        var isCall = false;
         function initialize() {
             $el = $(qryQmPeopleTpl);
             initGrid();//初始化列表
@@ -52,10 +54,12 @@ define([
                             });
                         });
                     }
-
+                    treeObj = $.fn.zTree.getZTreeObj("tree");
                     setFirstPage();
                     var data = {"total":newArr.length,"rows":newArr};
                     $("#page",$el).find("#checkStaffInfo").datagrid("loadData",data);
+                    pagination(data);
+                    isCall = false;
                 }
             }
         };
@@ -69,6 +73,28 @@ define([
             pager.pagination('refresh',{
                 pageNumber:1,
                 pageSize:opts.pageSize
+            });
+        }
+
+        //分页控件
+        function pagination(data){
+            var p = $("#page",$el).find("#checkStaffInfo").datagrid("getPager");
+            p.pagination({
+                total:data.rows.length,
+                pageSize: 10,
+                pageList: [5, 10, 20, 50],
+                onSelectPage:function (pageNo, pageSize) {
+                    if(isCall){
+                        data = {"rows":listData};
+                    }
+                    var start = (pageNo - 1) * pageSize;
+                    var end = start + pageSize;
+                    $("#page",$el).find("#checkStaffInfo").datagrid("loadData", data.rows.slice(start, end));
+                    p.pagination({
+                        total:data.rows.length,
+                        pageNumber:pageNo
+                    });
+                }
             });
         }
 
@@ -128,6 +154,13 @@ define([
                 pageList: [5, 10, 20, 50],
                 rownumbers: false,
                 loader: function (param, success) {
+                    //取消树节点选中状态
+                    if(treeObj){
+                        var nodes = treeObj.getSelectedNodes();
+                        if (nodes.length>0) {
+                            treeObj.cancelSelectedNode(nodes[0]);
+                        }
+                    }
                     var addCheckStaffId = $("#addCheckStaffId",$el).val();
                     var reqParams = {
                         "groupId": "",
@@ -144,22 +177,6 @@ define([
 
                     Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.QM_PLAN_DNS + "/getQmPeople", params, function (result) {
                         var data = {"rows":result.RSP.DATA[0].jsonArray,"total":result.RSP.DATA[0].totalAll};
-                        // // 设置分页控件
-                        // var p = $("#page",$el).find("#checkStaffInfo").datagrid("getPager");
-                        // p.pagination({
-                        //     total:data.length,
-                        //     // pageSize: 10,
-                        //     // pageList: [5, 10, 20, 50],
-                        //     onSelectPage:function (pageNo, pageSize) {
-                        //         var start = (pageNo - 1) * pageSize;
-                        //         var end = start + pageSize;
-                        //         $("#page",$el).find("#checkStaffInfo").datagrid("loadData", data.rows.slice(start, end));
-                        //         p.pagination({
-                        //             total:data.rows.length,
-                        //             pageNumber:pageNo
-                        //         });
-                        //     }
-                        // });
                         listData = result.RSP.DATA[0].jsonArrayAll;
                         success(data);
                     });
@@ -171,6 +188,7 @@ define([
         function initGlobalEvent() {
             //查询
             $("#searchForm",$el).on("click", "#searchBtn", function () {
+                isCall = true;
                 $("#page",$el).find("#checkStaffInfo").datagrid("load");
             });
 

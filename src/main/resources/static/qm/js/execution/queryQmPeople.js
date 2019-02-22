@@ -6,6 +6,8 @@ define([
     var dataNew;
     var flagNew;//工单质检和语音质检标志
     var listData = [];
+    var isCall = false;
+    var treeObj;
     function initialize(ids,flag) {
         $el = $(qryQmPeopleTpl);
         dataNew = ids;
@@ -54,9 +56,12 @@ define([
                         });
                     });
                 }
+                treeObj = $.fn.zTree.getZTreeObj("tree");
                 setFirstPage();
                 var data = {"total":newArr.length,"rows":newArr};
-                $("#page",$el).find("#checkStaffInfo").datagrid("loadData",newArr);
+                $("#page",$el).find("#checkStaffInfo").datagrid("loadData",data);
+                pagination(data);
+                isCall = false;
             }
         }
     };
@@ -70,6 +75,28 @@ define([
         pager.pagination('refresh',{
             pageNumber:1,
             pageSize:opts.pageSize
+        });
+    }
+
+    //分页控件
+    function pagination(data){
+        var p = $("#page",$el).find("#checkStaffInfo").datagrid("getPager");
+        p.pagination({
+            total:data.rows.length,
+            pageSize: 10,
+            pageList: [5, 10, 20, 50],
+            onSelectPage:function (pageNo, pageSize) {
+                if(isCall){
+                    data = {"rows":listData};
+                }
+                var start = (pageNo - 1) * pageSize;
+                var end = start + pageSize;
+                $("#page",$el).find("#checkStaffInfo").datagrid("loadData", data.rows.slice(start, end));
+                p.pagination({
+                    total:data.rows.length,
+                    pageNumber:pageNo
+                });
+            }
         });
     }
 
@@ -129,6 +156,13 @@ define([
             pageList: [5, 10, 20, 50],
             rownumbers: false,
             loader: function (param, success) {
+                //取消树节点选中状态
+                if(treeObj){
+                    var nodes = treeObj.getSelectedNodes();
+                    if (nodes.length>0) {
+                        treeObj.cancelSelectedNode(nodes[0]);
+                    }
+                }
                 var addCheckStaffId = $("#addCheckStaffId",$el).val();
                 var reqParams = {
                     "groupId": "",
@@ -144,7 +178,7 @@ define([
                 };
 
                 Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.QM_PLAN_DNS + "/getQmPeople", params, function (result) {
-                    var data = {rows:result.RSP.DATA[0].jsonArray,total:result.RSP.DATA[0].totalAll};
+                    var data = {"rows":result.RSP.DATA[0].jsonArray,"total":result.RSP.DATA[0].totalAll};
                     listData = result.RSP.DATA[0].jsonArrayAll;
                     success(data);
                 });
@@ -156,6 +190,7 @@ define([
     function initGlobalEvent() {
         //查询
         $("#searchForm",$el).on("click", "#searchBtn", function () {
+            isCall = true;
             $("#page",$el).find("#checkStaffInfo").datagrid("load");
         });
 
