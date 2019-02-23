@@ -14,6 +14,7 @@ define([
 
     //批量删除
     function batchDelete(){
+        $("#batchDelete").unbind("click");
         $("#batchDelete").on("click", function () {
             var selRows = $("#elesList").datagrid("getSelections");
             if (selRows.length == 0) {
@@ -205,7 +206,7 @@ define([
             $("#isRegion1").prop("checked", true);
             $("#isNeed1").prop("checked", true);
             $("#isValidate1").prop("checked", true);
-            // $("#add_content").unbind("click");
+            $("#add_content").unbind("click");
             /*
              * 清除表单信息
              */
@@ -259,6 +260,7 @@ define([
                     var rspCode = result.RSP.RSP_CODE;
 
                     if (rspCode == "1") {
+                        $("#add_window").window("close");
                         $("#elesList").datagrid('reload'); //插入成功后，刷新页面
                     }
                 });
@@ -296,7 +298,7 @@ define([
                 }
             });
 
-            // $("#add_content").unbind("click");              //解绑事件
+            $("#add_content").unbind("click");              //解绑事件
 
             $("#add_content").on("click", "#cancel", function () {
                 $("#add_content").find('form.form').form('clear');
@@ -335,6 +337,7 @@ define([
                     });
                     var rspCode = result.RSP.RSP_CODE;
                     if (rspCode == "1") {
+                        $("#add_window").window("close");
                         $("#elesList").datagrid('reload'); //修改成功后，刷新页面
                     }
                 })
