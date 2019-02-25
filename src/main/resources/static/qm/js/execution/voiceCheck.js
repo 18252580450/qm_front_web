@@ -127,8 +127,8 @@ require(["js/manage/queryQmPlan", "jquery", 'util', "transfer", "commonAjax", "d
                 {
                     field: 'operate', title: '操作', width: '8%',
                     formatter: function (value, row, index) {
-                        var check = '<a href="javascript:void(0);" style="color: deepskyblue;" id = "voiceCheck_' + row.workFormId + '">质检</a>',
-                            checkHistory = '<a href="javascript:void(0);" style="color: deepskyblue;" id = "checkHistory_' + row.workFormId + '">质检记录</a>';
+                        var check = '<a href="javascript:void(0);" style="color: deepskyblue;" id = "voiceCheck_' + row.touchId + '">质检</a>',
+                            checkHistory = '<a href="javascript:void(0);" style="color: deepskyblue;" id = "checkHistory_' + row.touchId + '">质检记录</a>';
                         if (row.poolStatus.toString() === Util.constants.CHECK_STATUS_CHECK) {
                             return check;
                         }
@@ -272,9 +272,9 @@ require(["js/manage/queryQmPlan", "jquery", 'util', "transfer", "commonAjax", "d
                         addTabs("语音质检详情", url);
                     });
                 });
-                //语音质检详情
+                //质检记录
                 $.each(data.rows, function (i, item) {
-                    $("#checkHistory_" + item.inspectionId).on("click", function () {
+                    $("#checkHistory_" + item.touchId).on("click", function () {
                         var url = createURL(voiceCheckHistory, item);
                         showDialog(url, "质检记录", 1250, 600);
                     });
