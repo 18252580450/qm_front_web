@@ -15,7 +15,6 @@ require(["jquery", 'util', "dateUtil", "easyui"], function ($, Util) {
         var appealProcess = getRequestObj();
         //主流程基本信息
         $("#detailProcessName").val(appealProcess.processName);
-        $("#detailTenantType").val(appealProcess.tenantId);
         $("#departmentName").val(appealProcess.departmentName);
         //查询质检类型
         var checkType = "";

@@ -10,8 +10,6 @@ define(function () {
         STAFF_ID: "123",       //模拟工号
         STAFF_NAME: "石莹",    //模拟员工姓名
         CHECKED_DEPART_ID:"2231",  //模拟被质检员部门id
-        PROCESS_STATUS_START: "1", //申诉主流程启动状态
-        PROCESS_STATUS_STOP: "2",
         PROVCODE: "00030000",//省份编码
 
         //URI
@@ -40,6 +38,11 @@ define(function () {
         //考评项目录类型
         CHECK_ITEM_PARENT: "0",          //目录
         CHECK_ITEM_CHILDREN: "1",        //非目录
+
+        //申诉流程状态
+        PROCESS_STATUS_NOT_START: "0",   //未启动
+        PROCESS_STATUS_START: "1",       //启动
+        PROCESS_STATUS_PAUSE: "2",       //暂停
 
         //考评模版得分类型
         SCORE_TYPE_COMMON: '0',          //合格

@@ -21,21 +21,20 @@
                 <div class='panel-search'>
                     <form class='form form-horizontal'>
                         <div class='row cl'>
-                            <label class='form-label col-1' data-options="required:'true'">主流程名称</label>
+                            <label class='form-label col-1' data-options="required:'true'">流程名称</label>
                             <div class='formControls col-2'>
                                 <input id="processName" type='text' class='easyui-textbox'
                                        style='width:100%;height:30px'>
-                            </div>
-                            <label class='form-label col-1' style="display: none">渠道</label>
-                            <div class='formControls col-2' style="display: none">
-                                <input id="tenantType" type='text' class='easyui-textbox'
-                                       style='width:100%;height:30px' readonly>
                             </div>
                             <label class='form-label col-1'>部门</label>
                             <div class='formControls col-2'>
                                 <input id="departmentName" type='text' class='easyui-searchbox easyui-validatebox'
                                        style='width:100%;height:30px' data-options="required:true">
                                 <input id="departmentId" type='text' class='easyui-textbox' style="display:none">
+                            </div>
+                            <label class='form-label col-1'>选择流程</label>
+                            <div class='formControls col-2'>
+                                <input id="orderNo" type='text' class='easyui-textbox' style='width:100%;height:30px'>
                             </div>
                             <label class='form-label col-1'>质检类型</label>
                             <div class='formControls col-2'>
@@ -51,9 +50,10 @@
                                 <input id="maxNodeNum" type='text' class='easyui-textbox' style='width:100%;height:30px'
                                        value="10" readonly>
                             </div>
-                            <label class='form-label col-1'>选择流程</label>
+                            <label class='form-label col-1'>最大申诉次数</label>
                             <div class='formControls col-2'>
-                                <input id="orderNo" type='text' class='easyui-textbox' style='width:100%;height:30px'>
+                                <input id="maxAppealNum" type='text' class='easyui-textbox'
+                                       style='width:100%;height:30px' value="3">
                             </div>
                         </div>
                     </form>
@@ -135,7 +135,7 @@
                     </div>
                 </form>
 
-                <div class='mt-10 test-c' style="margin-top: 250px">
+                <div class='mt-10 test-c' style="margin-top: 120px">
                     <div class='formControls col-4'>
                     </div>
                     <div class='formControls col-2'>
@@ -167,10 +167,6 @@
                         <div class='formControls col-1'>
                         </div>
                         <label class='form-label col-2'>部门：</label>
-                        <!--<div class='formControls col-8'>-->
-                        <!--<input id="editDepartName" class='easyui-combotree' style='width:100%;height:30px'>-->
-                        <!--<input id="editDepartId" type='text' class='easyui-textbox' style="display:none">-->
-                        <!--</div>-->
                         <div class='formControls col-8'>
                             <input id="editDepartName" type='text' class='easyui-searchbox easyui-validatebox'
                                    style='width:100%;height:30px' data-options="required:true">
@@ -192,6 +188,12 @@
                 </div>
             </div>
         </div>
+
+        <!--查询工作组弹窗，默认隐藏-->
+        <div  id='processQryDepartWindow' style='display:none;'></div>
+
+        <!--查询员工组弹窗，默认隐藏-->
+        <div  id='processQryStaffWindow' style='display:none;'></div>
 
     </div>
 </div>

@@ -269,6 +269,10 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                 //修改
                 $.each(data.rows, function (i, item) {
                     $("#processEdit" + item.processId).on("click", function () {
+                        if (item.processStatus === Util.constants.PROCESS_STATUS_START) {
+                            $.messager.alert("提示", "已启动的流程不允许修改!");
+                            return;
+                        }
                         var url = createURL(processEditUrl, item);
                         addTabs("申诉流程-修改", url);
                     });
@@ -313,7 +317,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
 
         //暂停
         $("#stopBtn").on("click", function () {
-            changeProcessStatus(Util.constants.PROCESS_STATUS_STOP);
+            changeProcessStatus(Util.constants.PROCESS_STATUS_PAUSE);
         });
     }
 
@@ -324,7 +328,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
         var delRows = $("#appealProcessList").datagrid("getSelections");
         if (delRows.length === 0) {
             $.messager.alert("提示", "请至少选择一行数据!");
-            return false;
+            return;
         }
         var delArr = [];
         for (var i = 0; i < delRows.length; i++) {
@@ -332,7 +336,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
             delArr.push(id);
             if (delRows[i].processStatus === "1") {
                 $.messager.alert("提示", "删除失败！已启动的流程不能删除!");
-                return false;
+                return;
             }
         }
         $.messager.confirm('确认删除弹窗', '确定要删除吗？', function (confirm) {
@@ -358,7 +362,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
         var updateRows = $("#appealProcessList").datagrid("getSelections");
         if (updateRows.length === 0) {
             $.messager.alert("提示", "请至少选择一行数据!");
-            return false;
+            return;
         }
 
         var status = "";
@@ -381,7 +385,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
 
                 if (updateRows.length === 0) {
                     $.messager.alert("提示", "流程已" + status + "!");
-                    return false;
+                    return;
                 }
 
                 Util.ajax.putJson(Util.constants.CONTEXT + Util.constants.APPEAL_PROCESS_CONFIG_DNS + "/changeProcessStatus", JSON.stringify(updateRows), function (result) {

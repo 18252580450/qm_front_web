@@ -1,4 +1,4 @@
-require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
+require(["js/manage/appealProcessQryDepart", "js/manage/appealProcessQryStaff", "jquery", 'util', "transfer", "easyui"], function (QueryDepart, QueryCheckPeople, $, Util, Transfer) {
 
     var mainProcess = null,         //主流程对象
         showProcessName = true,     //防止初始化的时候主流程名被清除
@@ -23,19 +23,37 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
     function initPageInfo() {
         //获取主流程基本信息
         mainProcess = getRequestObj();
+        //主流程基本信息
+        $("#processName").val(mainProcess.processName);
+        $("#tenantType").val(mainProcess.tenantId);
+        $("#departmentId").val(mainProcess.departmentId);
+        $("#maxAppealNum").val(mainProcess.maxAppealNum);
+
         //部门搜索框
         var department = $("#departmentName");
         department.searchbox({
                 searcher: function () {
+                    var queryDepart = QueryDepart;
+                    queryDepart.initialize();
+                    $('#processQryDepartWindow').show().window({
+                        title: '部门信息',
+                        width: 600,
+                        height: 400,
+                        cache: false,
+                        content: queryDepart.$el,
+                        modal: true,
+                        onClose: function () {//弹框关闭前触发事件
+                            var checkDepart = queryDepart.getDepartment();//获取部门信息
+                            department.searchbox("setValue", checkDepart.departmentName);
+                            $("#departmentId").val(checkDepart.departmentId);
+                        }
+                    });
                 }
             }
         );
-        //主流程基本信息
-        $("#processName").val(mainProcess.processName);
-        $("#tenantType").val(mainProcess.tenantId);
-        department.val(mainProcess.departmentName);
-
         department.validatebox();
+        department.searchbox("setValue", mainProcess.departmentName);
+
         //查询质检类型
         var checkType = "";
         if (checkTypeData.length !== 0) {
@@ -97,9 +115,21 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                 //切换子流程时同时刷新子节点列表
                 if (orderNo === 0 || orderNo >= processListData.length) {
                     $("#subNodeList").datagrid("loadData", {rows: []});
-                } else {
-                    queryNodeList(processListData[orderNo]);
+                    return;
                 }
+                //刷新子节点列表
+                if (processListData[orderNo].hasOwnProperty("subNodeList")) {
+                    refreshSubNodeList(processListData[orderNo].subNodeList);
+                    return;
+                }
+                //未添加子节点的新增子流程
+                if (!processListData[orderNo].hasOwnProperty("createTime")) {
+                    $("#subNodeList").datagrid("loadData", {rows: []});
+                    return;
+                }
+
+                //查询已有子节点列表
+                queryNodeList(processListData[orderNo]);
             }
         });
         //重载下拉框数据
@@ -536,9 +566,9 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
             $.messager.alert("提示", "请先添加" + processOrderName + "!");
             return false;
         }
-        var processName = $("#processName").val();
-        var departmentId = $("#departmentId").val();
-        var departmentName = $("#departmentName").val();
+        var processName = $("#processName").val(),
+            departmentId = $("#departmentId").val(),
+            departmentName = $("#departmentName").val();
 
         if (processName == null || processName === "") {
             $.messager.alert("提示", "流程名称不能为空!");
@@ -574,31 +604,39 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
     function addSubNode(subProcessObj) {
         var processOrder = subProcessObj.orderNo;
         //新增节点弹框
-        $("#subNodeConfig").form('clear');  //清空表单
         $("#subNodeDialog").show().window({
-            width: 720,
-            height: 520,
+            width: 600,
+            height: 400,
             modal: true,
             title: "添加节点"
         });
         $("#subNodeName").validatebox();
+        //审批角色下拉框
+        var userNameInput = $("#userName");
+        userNameInput.searchbox({
+                searcher: function () {
+                    var queryCheckPeople = QueryCheckPeople;
+                    queryCheckPeople.initialize();
+                    $('#processQryStaffWindow').show().window({
+                        title: '审批人员信息',
+                        width: 1150,
+                        height: 600,
+                        cache: false,
+                        content: queryCheckPeople.$el,
+                        modal: true,
+                        onClose: function () {//弹框关闭前触发事件
+                            var checkStaff = queryCheckPeople.getCheckStaff();//获取审批人员信息
+                            userNameInput.searchbox("setValue", checkStaff.STAFF_NAME);
+                            $("#userId").val(checkStaff.STAFF_ID);
+                        }
+                    });
+                }
+            }
+        );
+        userNameInput.validatebox();
+        $("#subNodeConfig").form('clear');  //清空表单
         //显示子流程名称
         $("#subProcessName").val(subProcessObj.processName);
-        //审批角色下拉框
-        var userNameSelect = $("#userName");
-        userNameSelect.combotree({
-            url: '../../data/process_user.json',
-            method: "GET",
-            textField: "text",
-            panelHeight: "250",
-            multiple: true,
-            editable: false,
-            onBeforeExpand: function (node, param) {    // 下拉树异步
-                // console.log("onBeforeExpand - node: " + node + " param: " + param);
-                // $('#userName').combotree("tree").tree("options").url = "../../data/process_user.json";
-            }
-        });
-        userNameSelect.validatebox();
 
         //取消
         var cancelBtn = $("#subNodeCancelBtn");
@@ -612,18 +650,24 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
         var submitBtn = $("#subNodeSaveBtn");
         submitBtn.unbind("click");
         submitBtn.on("click", function () {
-            var subNodeName = $("#subNodeName").val();
-            var userNameComboTree = $("#userName");
-            //审批人员名单
-            var userNameArr = userNameComboTree.combotree("getText").split(",");
-            var userIdArr = userNameComboTree.combotree("getValues");
+            var subNodeName = $("#subNodeName").val(),
+                userName = $("#userName").val(), //审批人员名单
+                userId = $("#userId").val(),
+                userNameArr = [],
+                userIdArr = [];
 
+            if (userName !== "") {
+                userNameArr.push(userName);
+            }
+            if (userId !== "") {
+                userIdArr.push(userId);
+            }
             if (subNodeName == null || subNodeName === "") {
                 $.messager.alert("提示", "节点名称不能为空!");
                 return false;
             }
-            if (userIdArr.length === 0) {
-                $.messager.alert("提示", "请选审批角色!");
+            if (userIdArr.length === 0 || userNameArr.length === 0) {
+                $.messager.alert("提示", "请选择审批角色!");
                 return false;
             }
             //子流程已有节点数
@@ -705,13 +749,28 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
         editProcessName.validatebox();
         //原流程部门
         var editDepartName = $("#editDepartName");
-        editDepartName.val(subProcessObj.departmentName);
         editDepartName.validatebox();
         editDepartName.searchbox({
                 searcher: function () {
+                    var queryDepart = QueryDepart;
+                    queryDepart.initialize();
+                    $('#processQryDepartWindow').show().window({
+                        title: '部门信息',
+                        width: 600,
+                        height: 400,
+                        cache: false,
+                        content: queryDepart.$el,
+                        modal: true,
+                        onClose: function () {//弹框关闭前触发事件
+                            var checkDepart = queryDepart.getDepartment();//获取部门信息
+                            editDepartName.searchbox("setValue", checkDepart.departmentName);
+                            $("#editDepartId").val(checkDepart.departmentId);
+                        }
+                    });
                 }
             }
         );
+        editDepartName.searchbox("setValue", subProcessObj.departmentName);
         $("#editDepartId").val(subProcessObj.departmentId);
         //取消
         var cancelBtn = $("#editProcessCancelBtn");
@@ -782,8 +841,8 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
             subNodeList = subProcessObj.subNodeList;
         $("#subNodeConfig").form('clear');  //清空表单
         $("#subNodeDialog").show().window({
-            width: 720,
-            height: 520,
+            width: 600,
+            height: 400,
             modal: true,
             title: "修改节点"
         });
@@ -793,22 +852,32 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
         var subNodeName = $("#subNodeName");
         subNodeName.val(nodeName);
         subNodeName.validatebox();
+        //审批人id
+        $("#userId").val(subNodeObj.userId);
         //审批角色下拉框
-        var userNameTree = $("#userName");
-        userNameTree.combotree({
-            url: '../../data/process_user.json',
-            method: "GET",
-            textField: "text",
-            panelHeight: "250",
-            multiple: true,
-            editable: false,
-            onBeforeExpand: function (node, param) {    // 下拉树异步
-                // console.log("onBeforeExpand - node: " + node + " param: " + param);
-                // $('#userName').combotree("tree").tree("options").url = "../../data/process_user.json";
+        var userNameInput = $("#userName");
+        userNameInput.searchbox({
+                searcher: function () {
+                    var queryCheckPeople = QueryCheckPeople;
+                    queryCheckPeople.initialize();
+                    $('#processQryStaffWindow').show().window({
+                        title: '审批人员信息',
+                        width: 1150,
+                        height: 600,
+                        cache: false,
+                        content: queryCheckPeople.$el,
+                        modal: true,
+                        onClose: function () {//弹框关闭前触发事件
+                            var checkStaff = queryCheckPeople.getCheckStaff();//获取审批人员信息
+                            userNameInput.searchbox("setValue", checkStaff.STAFF_NAME);
+                            $("#userId").val(checkStaff.STAFF_ID);
+                        }
+                    });
+                }
             }
-        });
-        userNameTree.combotree("setValues", oldUserIdArr);
-        userNameTree.validatebox();
+        );
+        userNameInput.searchbox("setValue", subNodeObj.userName);
+        userNameInput.validatebox();
 
         //取消
         var cancelBtn = $("#subNodeCancelBtn");
@@ -822,18 +891,24 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
         var submitBtn = $("#subNodeSaveBtn");
         submitBtn.unbind("click");
         submitBtn.on("click", function () {
-            var newNodeName = $("#subNodeName").val();
-            var userNameComboTree = $("#userName");
-            //审批人员名单
-            var newUserNameArr = userNameComboTree.combotree("getText").split(",");
-            var newUserIdArr = userNameComboTree.combotree("getValues");
+            var newNodeName = $("#subNodeName").val(),
+                userName = $("#userName").val(), //审批人员名单
+                userId = $("#userId").val(),
+                newUserNameArr = [],
+                newUserIdArr = [];
 
+            if (userName !== "") {
+                newUserNameArr.push(userName);
+            }
+            if (userId !== "") {
+                newUserIdArr.push(userId);
+            }
             if (newNodeName == null || newNodeName === "") {
                 $.messager.alert("提示", "节点名称不能为空!");
                 return false;
             }
-            if (newUserIdArr.length === 0) {
-                $.messager.alert("提示", "请选审批角色!");
+            if (newUserIdArr.length === 0 || newUserNameArr.length === 0) {
+                $.messager.alert("提示", "请选择审批角色!");
                 return false;
             }
 

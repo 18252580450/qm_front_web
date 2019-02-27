@@ -1,4 +1,4 @@
-require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
+require(["js/manage/appealProcessQryDepart", "js/manage/appealProcessQryStaff", "jquery", 'util', "transfer", "easyui"], function (QueryDepart, QueryCheckPeople, $, Util, Transfer) {
 
     var appealProcessData = [],     //新增流程（新增提交入参）
         checkTypeData = [];         //质检类型静态数据
@@ -35,23 +35,26 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
 
         //部门搜索框
         var department = $("#departmentName");
-        // department.searchbox({
-        //         searcher: function () {
-        //         }
-        //     }
-        // );
-        // department.validatebox();
-        department.combotree({
-            url: '../../data/process_depart.json',
-            method: "GET",
-            textField: "text",
-            panelHeight: "250",
-            multiple: true,
-            editable: false,
-            onlyLeafCheck: true,
-            onBeforeExpand: function (node, param) {    // 下拉树异步
+        department.searchbox({
+                searcher: function () {
+                    var queryDepart = QueryDepart;
+                    queryDepart.initialize();
+                    $('#processQryDepartWindow').show().window({
+                        title: '部门信息',
+                        width: 600,
+                        height: 400,
+                        cache: false,
+                        content: queryDepart.$el,
+                        modal: true,
+                        onClose: function () {//弹框关闭前触发事件
+                            var checkDepart = queryDepart.getDepartment();//获取部门信息
+                            department.searchbox("setValue", checkDepart.departmentName);
+                            $("#departmentId").val(checkDepart.departmentId);
+                        }
+                    });
+                }
             }
-        });
+        );
         department.validatebox();
 
         //质检类型下拉框
@@ -231,8 +234,8 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                 {field: 'processId', title: '子流程序号', hidden: true},
                 {field: 'processName', title: '子流程', hidden: true},
                 {field: 'orderNo', title: '节点序号', width: '15%'},
-                {field: 'nodeName', title: '节点名称', width: '20%'},
-                {field: 'userName', title: '角色', width: '55'},
+                {field: 'nodeName', title: '节点名称', width: '25%'},
+                {field: 'userName', title: '审批人', width: '50'},
                 {
                     field: 'detail', title: '操作', width: '10%',
                     formatter: function (value, row, index) {
@@ -364,8 +367,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
             tenantType = $("#tenantType"),
             tenantName = tenantType.combobox("getText"),
             departmentId = $("#departmentId").val(),
-            // departmentName = $("#departmentName").val(),
-            departmentName = $("#departmentName").combotree("getText").split(","),
+            departmentName = $("#departmentName").val(),
             checkType = $("#checkType").combobox("getValue"),
             mainProcessFlag = "0";
         if (parseInt(orderNo) > 0) {
@@ -379,7 +381,6 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
             $.messager.alert("提示", "流程名称不能为空!");
             return false;
         }
-        debugger;
         if (departmentName == null || departmentName === "") {
             $.messager.alert("提示", "请选择部门!");
             return false;
@@ -388,9 +389,8 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
             "processName": processName,
             "tenantId": Util.constants.TENANT_ID,
             "tenantName": tenantName,
-            "departmentId": Util.constants.CHECKED_DEPART_ID,  //暂时写死
-            // "departmentName": departmentName,
-            "departmentName": departmentName[0],
+            "departmentId": departmentId,
+            "departmentName": departmentName,
             "checkType": checkType,
             "mainProcessFlag": mainProcessFlag,
             "maxAppealNum": maxAppealNum,
@@ -411,8 +411,8 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
         //新增节点弹框
         $("#subNodeConfig").form('clear');  //清空表单
         $("#subNodeDialog").show().window({
-            width: 720,
-            height: 520,
+            width: 600,
+            height: 400,
             modal: true,
             title: "添加节点"
         });
@@ -420,19 +420,28 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
         //显示子流程名称
         $("#subProcessName").val(subProcessObj.processName);
         //审批角色下拉框
-        var userNameSelect = $("#userName");
-        userNameSelect.combotree({
-            url: '../../data/process_user.json',
-            method: "GET",
-            textField: "text",
-            panelHeight: "250",
-            multiple: true,
-            editable: false,
-            onlyLeafCheck: true,
-            onBeforeExpand: function (node, param) {    // 下拉树异步
+        var userNameInput = $("#userName");
+        userNameInput.searchbox({
+                searcher: function () {
+                    var queryCheckPeople = QueryCheckPeople;
+                    queryCheckPeople.initialize();
+                    $('#processQryStaffWindow').show().window({
+                        title: '审批人员信息',
+                        width: 1150,
+                        height: 600,
+                        cache: false,
+                        content: queryCheckPeople.$el,
+                        modal: true,
+                        onClose: function () {//弹框关闭前触发事件
+                            var checkStaff = queryCheckPeople.getCheckStaff();//获取审批人员信息
+                            userNameInput.searchbox("setValue", checkStaff.STAFF_NAME);
+                            $("#userId").val(checkStaff.STAFF_ID);
+                        }
+                    });
+                }
             }
-        });
-        userNameSelect.validatebox();
+        );
+        userNameInput.validatebox();
         //取消
         var cancelBtn = $("#subNodeCancelBtn");
         cancelBtn.unbind("click");
@@ -445,16 +454,23 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
         submitBtn.unbind("click");
         submitBtn.on("click", function () {
             var subNodeName = $("#subNodeName").val(),
-                userNameComboTree = $("#userName"),
-                userNameArr = userNameComboTree.combotree("getText").split(","),//审批人员名单
-                userIdArr = userNameComboTree.combotree("getValues");
+                userName = $("#userName").val(), //审批人员名单
+                userId = $("#userId").val(),
+                userNameArr = [],
+                userIdArr = [];
 
+            if (userName !== "") {
+                userNameArr.push(userName);
+            }
+            if (userId !== "") {
+                userIdArr.push(userId);
+            }
             if (subNodeName == null || subNodeName === "") {
                 $.messager.alert("提示", "节点名称不能为空!");
                 return false;
             }
-            if (userIdArr.length === 0) {
-                $.messager.alert("提示", "请选审批角色!");
+            if (userNameArr.length === 0 || userIdArr.length === 0) {
+                $.messager.alert("提示", "请选择审批角色!");
                 return false;
             }
             //子流程已有节点数
