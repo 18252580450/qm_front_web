@@ -1,7 +1,6 @@
-require(["js/manage/queryQmPlan", "jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], function (QueryQmPlan, $, Util, Transfer, CommonAjax) {
+require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], function (QueryQmPlan, QueryQmHistory, $, Util, Transfer, CommonAjax) {
 
     var voiceCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/execution/voiceCheckDetail.html",
-        voiceCheckHistory = Util.constants.URL_CONTEXT + "/qm/html/manage/voiceQmResultHistory.html",
         poolStatusData = [];  //质检状态下拉框静态数据（待质检、待复检）
 
     initialize();
@@ -275,8 +274,18 @@ require(["js/manage/queryQmPlan", "jquery", 'util', "transfer", "commonAjax", "d
                 //质检记录
                 $.each(data.rows, function (i, item) {
                     $("#checkHistory_" + item.touchId).on("click", function () {
-                        var url = createURL(voiceCheckHistory, item);
-                        showDialog(url, "质检记录", 1250, 600);
+                        var queryQmHistory = QueryQmHistory;
+                        queryQmHistory.initialize(item.touchId);
+                        $('#qryQmHistoryWindow').show().window({
+                            title: '质检历史',
+                            width: 900,
+                            height: 500,
+                            cache: false,
+                            content: queryQmHistory.$el,
+                            modal: true,
+                            onClose: function () {//弹框关闭前触发事件
+                            }
+                        });
                     });
                 });
             }
@@ -292,12 +301,6 @@ require(["js/manage/queryQmPlan", "jquery", 'util', "transfer", "commonAjax", "d
             $("#searchForm").form('clear');
             $("#poolStatus").combobox('setValue', poolStatusData[0].paramsCode);
         });
-    }
-
-    //工单质检详情
-    function showOrderCheckDetail() {
-        var url = createURL(orderCheckDetail, null);
-        addTabs("工单质检详情", url);
     }
 
     //拼接对象到url
@@ -344,25 +347,6 @@ require(["js/manage/queryQmPlan", "jquery", 'util', "transfer", "commonAjax", "d
                 }
             });
         }
-    }
-
-    //dialog弹框
-    //url：窗口调用地址，title：窗口标题，width：宽度，height：高度，shadow：是否显示背景阴影罩层
-    function showDialog(url, title, width, height) {
-        var content = '<iframe src="' + url + '" width="100%" height="100%" frameborder="0" scrolling="auto"></iframe>',
-            dialogDiv = '<div id="resultDialog" title="' + title + '"></div>'; //style="overflow:hidden;"可以去掉滚动条
-        $(document.body).append(dialogDiv);
-        var win = $('#resultDialog').dialog({
-            content: content,
-            width: width,
-            height: height,
-            modal: true,
-            title: title,
-            onClose: function () {
-                $(this).dialog('destroy');//后面可以关闭后的事件
-            }
-        });
-        win.dialog('open');
     }
 
     return {

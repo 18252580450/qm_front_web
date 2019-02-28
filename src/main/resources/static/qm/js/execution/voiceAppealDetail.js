@@ -144,7 +144,6 @@ require(["jquery", "util", "dateUtil", "transfer", "easyui"], function ($, Util)
 
         //通过语音流水查询基本信息
         Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.VOICE_POOL_DNS + "/selectByParams", params, function (result) {
-            debugger;
             var data = result.RSP.DATA,
                 rspCode = result.RSP.RSP_CODE;
             if (rspCode !== "1") {
@@ -281,7 +280,6 @@ require(["jquery", "util", "dateUtil", "transfer", "easyui"], function ($, Util)
         }, Util.PageUtil.getParams($("#searchForm")));
 
         Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.VOICE_CHECK_DNS + "/queryVoiceCheckResult", param, function (result) {
-            debugger;
             var data = result.RSP.DATA,
                 rspCode = result.RSP.RSP_CODE;
             if (rspCode != null && rspCode === "1") {

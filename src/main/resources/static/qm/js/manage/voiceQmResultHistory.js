@@ -1,38 +1,39 @@
-require(["js/manage/queryQmPlan", "jquery", 'util', "transfer", "easyui", "dateUtil"], function (QueryQmPlan, $, Util, Transfer, easyui, dateUtil) {
-    //初始化方法
-    initialize();
-    var reqParams = null,
+define(["text!html/manage/voiceQmResultHistory.tpl", "jquery", 'util', "transfer", "easyui", "dateUtil"], function (qryQmHistoryTpl, $, Util, Transfer, easyui, dateUtil) {
+    var $el,
+        touchId,    //语音流水
         voiceCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/manage/voiceQmResultDetail.html";
 
-    function initialize() {
+    function initialize(recordId) {
+        $el = $(qryQmHistoryTpl);
+        touchId = recordId;
         initPageInfo();
+        this.$el = $el;
     }
 
     //页面信息初始化
     function initPageInfo() {
-
-        var checkResult = getRequestObj();
-
         //申诉流程列表
         var IsCheckFlag = true; //标示是否是勾选复选框选中行的，true - 是 , false - 否
-        $("#queryInfo").datagrid({
+        $("#queryInfo", $el).datagrid({
             columns: [[
+                {field: 'ck', checkbox: true, align: 'center'},
                 {
-                    field: 'action', title: '操作', width: '5%',
+                    field: 'inspectionId', title: '质检流水号', width: '20%',
                     formatter: function (value, row, index) {
-                        return "<a href='javascript:void(0);' style='color: deepskyblue;' id='resultDetail_" + row.inspectionId + "'>详情</a>";
+                        return '<a href="javascript:void(0);" style="color: deepskyblue;" id = "resultDetail_' + row.inspectionId + '">' + value + '</a>';
                     }
                 },
-                {field: 'touchId', title: '语音流水', align: 'center', width: '15%'},
-                {field: 'inspectionId', title: '质检流水', align: 'center', width: '15%'},
-                {field: 'originInspectionId', title: '原质检流水', align: 'center', width: '15%'},
-                {field: 'callingNumber', title: '主叫号码', align: 'center', width: '10%'},
-                {field: 'planName', title: '计划名称', align: 'center', width: '10%'},
-                {field: 'acceptNumber', title: '服务号码', align: 'center', width: '10%', hidden: true},
-                {field: 'checkStaffName', title: '质检人', align: 'center', width: '10%'},
-                {field: 'checkedStaffName', title: '被质检人', align: 'center', width: '10%'},
+                {field: 'planName', title: '计划名称', width: '15%'},
+                {field: 'checkStaffName', title: '质检人', width: '15%'},
+                {field: 'checkedStaffName', title: '被质检人', width: '15%'},
                 {
-                    field: 'resultStatus', title: '状态', align: 'center', width: '10%',
+                    field: 'checkEndTime', title: '质检时间', width: '20%',
+                    formatter: function (value, row, index) { //格式化时间格式
+                        return DateUtil.formatDateTime(value);
+                    }
+                },
+                {
+                    field: 'resultStatus', title: '质检状态', width: '10%',
                     formatter: function (value, row, index) {
                         return {
                             '0': '质检新生成', '1': '临时保存', '2': '放弃', '3': '复检', '4': '分检', '5': '被检人确认'
@@ -41,54 +42,51 @@ require(["js/manage/queryQmPlan", "jquery", 'util', "transfer", "easyui", "dateU
                     }
                 },
                 {
-                    field: 'errorRank', title: '差错类型', align: 'center', width: '10%',
+                    field: 'errorRank', title: '差错类型', width: '10%',
                     formatter: function (value, row, index) {
                         return {'0': '无错误', '1': '绝对错误'}[value];
                     }
                 },
-                {field: 'finalScore', title: '质检得分', align: 'center', width: '10%'},
-                {
-                    field: 'checkEndTime', title: '质检时间', align: 'center', width: '15%',
-                    formatter: function (value, row, index) { //格式化时间格式
-                        return DateUtil.formatDateTime(value);
-                    }
-                }
+                {field: 'finalScore', title: '质检得分', width: '10%'}
             ]],
             fitColumns: true,
             width: '100%',
-            height: 550,
-            pagination: false,
+            height: 440,
+            pagination: true,
+            pageSize: 10,
+            pageList: [5, 10, 20, 50],
             rownumbers: false,
+            checkOnSelect: false,
             onClickCell: function (rowIndex, field, value) {
                 IsCheckFlag = false;
             },
             onSelect: function (rowIndex, rowData) {
                 if (!IsCheckFlag) {
                     IsCheckFlag = true;
-                    $("#queryInfo").datagrid("unselectRow", rowIndex);
+                    $("#queryInfo", $el).datagrid("unselectRow", rowIndex);
                 }
             },
             onUnselect: function (rowIndex, rowData) {
                 if (!IsCheckFlag) {
                     IsCheckFlag = true;
-                    $("#queryInfo").datagrid("selectRow", rowIndex);
+                    $("#queryInfo", $el).datagrid("selectRow", rowIndex);
                 }
             },
             loader: function (param, success) {
-                reqParams = {
-                    "touchId": checkResult.touchId
+                var start = (param.page - 1) * param.rows,
+                    pageNum = param.rows;
+                var reqParams = {
+                    "touchId": touchId
                 };
                 var params = $.extend({
-                    "start": 0,
-                    "pageNum": 0,
+                    "start": start,
+                    "pageNum": pageNum,
                     "params": JSON.stringify(reqParams)
-                }, Util.PageUtil.getParams($("#queryInfo")));
+                }, Util.PageUtil.getParams($("#queryInfo", $el)));
 
                 Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.VOICE_QM_RESULT + "/selectByParams", params, function (result) {
-                    var data = {
-                        rows: result.RSP.DATA
-                    };
-                    var dataNew = [];
+                    var data = Transfer.DataGrid.transfer(result),
+                        dataNew = [];
                     for (var i = 0; i < data.rows.length; i++) {
                         var map = data.rows[i];
                         if (map.qmPlan != null) {
@@ -111,9 +109,9 @@ require(["js/manage/queryQmPlan", "jquery", 'util', "transfer", "easyui", "dateU
             onLoadSuccess: function (data) {
                 //详情
                 $.each(data.rows, function (i, item) {
-                    $("#resultDetail_" + item.inspectionId).on("click", function () {
+                    $("#resultDetail_" + item.inspectionId, $el).on("click", function () {
                         var url = createURL(voiceCheckDetail, item);
-                        showDialog(url, "质检详情", 1200, 540);
+                        showDialog(url, "质检详情", 1200, 600);
                     });
                 });
             }
@@ -149,20 +147,6 @@ require(["js/manage/queryQmPlan", "jquery", 'util', "transfer", "easyui", "dateU
             }
         });
         win.dialog('open');
-    }
-
-    //获取url对象
-    function getRequestObj() {
-        var url = decodeURI(decodeURI(location.search)); //获取url中"?"符后的字串，使用了两次decodeRUI解码
-        var requestObj = {};
-        if (url.indexOf("?") > -1) {
-            var str = url.substr(1),
-                strArr = str.split("&");
-            for (var i = 0; i < strArr.length; i++) {
-                requestObj[strArr[i].split("=")[0]] = unescape(strArr[i].split("=")[1]);
-            }
-            return requestObj;
-        }
     }
 
     return {

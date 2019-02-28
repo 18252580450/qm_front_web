@@ -144,7 +144,6 @@ require(["jquery", "util", "dateUtil", "transfer", "easyui"], function ($, Util)
 
         //通过语音流水查询基本信息
         Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.VOICE_POOL_DNS + "/selectByParams", params, function (result) {
-            debugger;
             var data = result.RSP.DATA,
                 rspCode = result.RSP.RSP_CODE;
             if (rspCode !== "1") {

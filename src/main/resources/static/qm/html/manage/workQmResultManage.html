@@ -24,7 +24,8 @@
                         <div class='row cl'>
                             <label class='form-label col-1'>工单流水号</label>
                             <div class='formControls col-2'>
-                                <input id="workOrderId" type='text' class='easyui-textbox' style='width:100%;height:30px'>
+                                <input id="workOrderId" type='text' class='easyui-textbox'
+                                       style='width:100%;height:30px'>
                             </div>
                             <label class='form-label col-1'>客户号码</label>
                             <div class='formControls col-2'>
@@ -100,8 +101,9 @@
                             </div>
                             <label class='form-label col-1'>考评计划</label>
                             <div class='formControls col-2'>
-                                <input id="planId" hidden="hidden" >
-                                <input id="planName" type='text' class="easyui-searchbox" style='width:100%;height:30px' >
+                                <input id="planId" hidden="hidden">
+                                <input id="planName" type='text' class="easyui-searchbox"
+                                       style='width:100%;height:30px'>
                             </div>
                             <div class='formControls col-1'>
                             </div>
@@ -140,7 +142,8 @@
                                 </div>
                                 <label class='form-label col-2'>申诉原因：</label>
                                 <div class='formControls col-8'>
-                                    <input id='appealReason' type='text' class='easyui-textarea' data-options="multiline:true"
+                                    <input id='appealReason' type='text' class='easyui-textarea'
+                                           data-options="multiline:true"
                                            style='width:100%;height:120px'/>
                                 </div>
                             </div>
@@ -165,13 +168,16 @@
         </div>
 
         <!--查询弹窗，默认隐藏-->
-        <div  id='qry_window' style='display:none;'>
+        <div id='qry_window' style='display:none;'>
             <div id='qry_content' style='overflow:auto'>
             </div>
         </div>
 
+        <!--质检历史弹窗，默认隐藏-->
+        <div id='qryQmHistoryWindow' style='display:none;'></div>
+
         <!-- 增加弹窗，默认隐藏  -->
-        <div  id='add_window' style='display:none;'>
+        <div id='add_window' style='display:none;'>
             <div id='add_content' style='overflow:auto'>
                 <div class='panel-search'>
                     <form id='createSkillConfig' method='POST' class='form form-horizontal'>

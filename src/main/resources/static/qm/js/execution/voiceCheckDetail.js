@@ -19,7 +19,6 @@ require(["jquery", "util", "dateUtil", "transfer", "easyui"], function ($, Util)
         //获取y语音流水、质检流水等信息
         voicePool = getRequestObj();
 
-        debugger;
         //基本信息初始化
         $("#checkedStaffName").val(voicePool.checkedStaffName);
         $("#checkedDepartName").val(voicePool.departName);
@@ -274,7 +273,6 @@ require(["jquery", "util", "dateUtil", "transfer", "easyui"], function ($, Util)
         }, Util.PageUtil.getParams($("#searchForm")));
 
         Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.VOICE_CHECK_DNS + "/queryVoiceCheckResult", param, function (result) {
-            debugger;
             var data = result.RSP.DATA,
                 rspCode = result.RSP.RSP_CODE;
             if (rspCode != null && rspCode === "1") {

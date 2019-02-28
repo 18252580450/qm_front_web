@@ -1,9 +1,8 @@
-require(["js/manage/queryQmPlan", "jquery", 'util', "transfer", "easyui", "dateUtil"], function (QueryQmPlan, $, Util, Transfer, easyui, dateUtil) {
+require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'util', "transfer", "easyui", "dateUtil"], function (QueryQmPlan, QueryQmHistory, $, Util, Transfer, easyui, dateUtil) {
     //初始化方法
     initialize();
     var reqParams = null,
-        orderCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/manage/workQmResultDetail.html",
-        orderCheckHistory = Util.constants.URL_CONTEXT + "/qm/html/manage/workQmResultHistory.html";
+        orderCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/manage/workQmResultDetail.html";
 
     function initialize() {
         initPageInfo();
@@ -116,7 +115,7 @@ require(["js/manage/queryQmPlan", "jquery", 'util', "transfer", "easyui", "dateU
                 {field: 'unqualifiedNum', title: '不合格环节数', align: 'center', width: '10%'},
                 {field: 'checkStaffId', title: '质检人工号', align: 'center', width: '10%'},
                 {
-                    field: 'resultStatus', title: '申诉结果', align: 'center', width: '10%',
+                    field: 'resultStatus', title: '质检状态', align: 'center', width: '10%',
                     formatter: function (value, row, index) {
                         return {
                             '0': '质检新生成', '1': '临时保存', '2': '放弃', '3': '复检', '4': '分检', '5': '被检人确认'
@@ -227,15 +226,24 @@ require(["js/manage/queryQmPlan", "jquery", 'util', "transfer", "easyui", "dateU
                 $.each(data.rows, function (i, item) {
                     $("#resultDetail_" + item.inspectionId).on("click", function () {
                         var url = createURL(orderCheckDetail, item);
-                        // addTabs("质检结果-质检详情", url);
                         showDialog(url, "质检详情", 1200, 600);
                     });
                 });
                 //质检历史
                 $.each(data.rows, function (i, item) {
                     $("#resultHistory_" + item.inspectionId).on("click", function () {
-                        var url = createURL(orderCheckHistory, item);
-                        showDialog(url, "质检历史", 1250, 600);
+                        var queryQmHistory = QueryQmHistory;
+                        queryQmHistory.initialize(item.touchId);
+                        $('#qryQmHistoryWindow').show().window({
+                            title: '质检历史',
+                            width: 900,
+                            height: 500,
+                            cache: false,
+                            content: queryQmHistory.$el,
+                            modal: true,
+                            onClose: function () {//弹框关闭前触发事件
+                            }
+                        });
                     });
                 });
                 //申诉
