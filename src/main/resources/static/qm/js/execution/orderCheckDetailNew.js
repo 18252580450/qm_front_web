@@ -12,47 +12,9 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
         replyData = {},             //内外部回复数据
         recordData = {},            //接触记录数据
         historyData = {},           //工单历史数据
-        processData = [             //轨迹测试数据
-            {
-                "rmk": "工单立单提交",
-                "opStaffNm": "员工10001",
-                "lgId": "1901020950440000046",
-                "opStaffId": "YN0003",
-                "nodeTypeCd": "start",
-                "handIngTime": "2小时10分",
-                "crtTime": "2019-01-02 09:50:44",
-                "opWorkGroupNm": "北京1班",
-                "opTypeNm": "填单",
-                "opTypeCd": "1",
-                "opWorkGroupId": ""
-            },
-            {
-                "rmk": "工单立单复检",
-                "opStaffNm": "员工10001",
-                "lgId": "1901021009500000047",
-                "opStaffId": "YN0003",
-                "nodeTypeCd": "review",
-                "handIngTime": "53分20秒",
-                "crtTime": "2019-01-02 10:09:50",
-                "opWorkGroupNm": "北京1班",
-                "opTypeNm": "立单",
-                "opTypeCd": "4",
-                "opWorkGroupId": ""
-            },
-            {
-                "rmk": "工单详情修改",
-                "opStaffNm": "员工10001",
-                "lgId": "1901021046340000048",
-                "opStaffId": "YN00010",
-                "nodeTypeCd": "handle",
-                "handIngTime": "1天4小时",
-                "crtTime": "2019-01-02 10:46:34",
-                "opWorkGroupNm": "北京1班",
-                "opTypeNm": "返单",
-                "opTypeCd": "1",
-                "opWorkGroupId": ""
-            }
-        ];
+        processData = [],           //轨迹数据
+        phoneNum;                   //受理号码
+
     initialize();
 
     function initialize() {
@@ -190,7 +152,8 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
     function initWrkfmDetail() {
         var reqParams = {
             "provCode": orderPool.provinceId,
-            "wrkfmId": "1901020950440000088"
+            // "wrkfmId": "1901020950440000088"
+            "wrkfmId": orderPool.wrkfmId
         };
         var params = $.extend({
             "params": JSON.stringify(reqParams)
@@ -207,6 +170,7 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
                     showType: 'show'
                 });
             } else {
+                phoneNum = data.userInfo.custNum;
                 $("#workFormId").val(orderPool.workFormId);
                 $("#custNum").val(data.userInfo.custNum);
                 $("#srvReqstTypeFullNm").val(data.acceptInfo.srvReqstTypeFullNm);
@@ -227,7 +191,8 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
     function initProcProceLocus() {
         var reqParams = {
             "provCode": orderPool.provinceId,
-            "wrkfmId": "1901020950440000088"
+            // "wrkfmId": "1901020950440000088"
+            "wrkfmId": orderPool.wrkfmId
         };
         var params = $.extend({
             "params": JSON.stringify(reqParams)
@@ -244,7 +209,7 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
                     showType: 'show'
                 });
             } else {
-                // processData = data;
+                processData = data;
                 showDealProcess(processData);  //初始化工单轨迹
                 //初始化考评项列表
                 var reqParams = {
@@ -467,7 +432,8 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
         if (JSON.stringify(replyData) === "{}") {
             var reqParams = {
                 "provCode": orderPool.provinceId,
-                "wrkfmId": "1901020950440000088"
+                // "wrkfmId": "1901020950440000088"
+                "wrkfmId": orderPool.wrkfmId
             };
             var params = $.extend({
                 "params": JSON.stringify(reqParams)
@@ -496,7 +462,8 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
         if (JSON.stringify(recordData) === "{}") {
             var reqParams = {
                 "provCode": orderPool.provinceId,
-                "wrkfmId": "1902211630060000136"
+                // "wrkfmId": "1901020950440000088"
+                "wrkfmId": orderPool.wrkfmId
             };
             var params = $.extend({
                 "params": JSON.stringify(reqParams)
@@ -524,8 +491,9 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
         if (JSON.stringify(historyData) === "{}") {
             var reqParams = {
                 "provCode": orderPool.provinceId,
-                "phoneNum":"18960602019",
-                "wrkfmId":"1812221428100000076"
+                "phoneNum": phoneNum,
+                // "wrkfmId": "1901020950440000088"
+                "wrkfmId": orderPool.wrkfmId
             };
             var params = $.extend({
                 "params": JSON.stringify(reqParams)
@@ -766,7 +734,7 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
             "scoreType": scoreType,                                  //分值类型
             "finalScore": finalScore,                                //总得分
             "checkComment": checkComment,                            //考评评语
-            "unqualifiedNum": unqualifiedNum,                         //不合格环节数
+            "unqualifiedNum": unqualifiedNum,                        //不合格环节数
             "resultStatus": checkStatus                              //质检结果状态（暂存、质检、复检）
         };
 

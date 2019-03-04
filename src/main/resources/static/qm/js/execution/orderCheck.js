@@ -115,7 +115,6 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
                         }
                     }
                 },
-                {field: 'custNum', title: '客户号码', width: '15%'},
                 {
                     field: 'crtTime', title: '提交时间', width: '15%',
                     formatter: function (value, row, index) { //格式化时间格式
