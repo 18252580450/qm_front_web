@@ -195,12 +195,7 @@ require(["js/execution/queryQmPeople","js/manage/queryQmPlan","jquery", 'util', 
         $("#queryInfo").datagrid({
             columns: [[
                 {field: 'ck', checkbox: true, align: 'center'},
-                {field: 'wrkfmShowSwftno', title: '工单流水', align: 'center', width: '15%',
-                    formatter:function(value, row, index){
-                        var bean={'wrkfmShowSwftno':row.wrkfmShowSwftno};
-                        return "<a href='javascript:void(0);' style='color:blue;'class='workformIdBtn' id =" + JSON.stringify(bean) + " >"+value+"</a>";
-                    }
-                },
+                {field: 'wrkfmShowSwftno', title: '工单流水', align: 'center', width: '15%'},
                 {field: 'bizTitle', title: '工单标题', align: 'center', width: '10%'},
                 {field: 'planName', title: '计划名称', align: 'center', width: '10%'},
                 {field: 'srvReqstTypeNm', title: '问题分类', align: 'center', width: '10%'},
@@ -307,16 +302,6 @@ require(["js/execution/queryQmPeople","js/manage/queryQmPlan","jquery", 'util', 
                         });
                     }
                     success(dataNew);
-                });
-            },
-            onLoadSuccess: function (data) {
-                $("#page").on("click", "a.workformIdBtn", function () {
-
-                    var rowData = $(this).attr('id'); //获取a标签中传递的值
-                    var sensjson = JSON.parse(rowData); //转成json格式
-                    var status = sensjson.status;
-
-                    addTabs("工单质检详情", "http://127.0.0.1:8080/qm/html/execution/orderCheckDetail.html");
                 });
             }
         });
