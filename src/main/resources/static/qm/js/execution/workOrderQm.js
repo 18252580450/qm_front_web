@@ -204,11 +204,19 @@ require(["js/execution/queryQmPeople","js/manage/queryQmPlan","jquery", 'util', 
                 {field: 'custNum', title: '客户号码', align: 'center', width: '10%'},
                 {field: 'crtTime', title: '提交时间', align: 'center', width: '10%',
                     formatter: function (value, row, index) { //格式化时间格式
-                        return DateUtil.formatDateTime(value);
+                        if(value!=null){
+                            return DateUtil.formatDateTime(value);
+                        }else{
+                            return null;
+                        }
                     }},
                 {field: 'arcTime', title: '完成时间', align: 'center', width: '10%',
                     formatter: function (value, row, index) { //格式化时间格式
-                        return DateUtil.formatDateTime(value);
+                        if(value!=null){
+                            return DateUtil.formatDateTime(value);
+                        }else{
+                            return null;
+                        }
                     }},
                 {field: 'acptStaffId', title: '立单人', align: 'center', width: '10%'},
                 {field: 'dspsComplteStaffId', title: '领取人', align: 'center', width: '10%'},
