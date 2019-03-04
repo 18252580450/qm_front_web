@@ -308,7 +308,11 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
         var urlLink = url;
         if (param != null) {
             $.each(param, function (item, value) {
-                urlLink += '&' + item + "=" + encodeURI(value);
+                if (value !== null) {
+                    urlLink += '&' + item + "=" + encodeURI(value);
+                } else {
+                    urlLink += '&' + item + "=" + encodeURI("");
+                }
             });
             urlLink = url + "?" + urlLink.substr(1);
         }

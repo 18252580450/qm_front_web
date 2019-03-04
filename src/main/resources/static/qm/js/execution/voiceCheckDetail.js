@@ -19,11 +19,16 @@ require(["jquery", "util", "dateUtil", "transfer", "easyui"], function ($, Util)
         //获取y语音流水、质检流水等信息
         voicePool = getRequestObj();
 
+        var createTime = "";
+        if (voicePool.checkedTime !== "") {
+            createTime = DateUtil.formatDateTime(voicePool.checkedTime);
+        }
+
         //基本信息初始化
         $("#checkedStaffName").val(voicePool.checkedStaffName);
         $("#checkedDepartName").val(voicePool.departName);
         $("#touchId").val(voicePool.touchId);
-        $("#createTime").val(voicePool.checkedTime);
+        $("#createTime").val(createTime);
         $("#callingNumber").val(voicePool.staffNumber);
         $("#calledNumber").val(voicePool.customerNumber);
         $("#callType").val(voicePool.callType);

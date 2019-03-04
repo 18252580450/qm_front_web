@@ -154,10 +154,14 @@ require(["jquery", "util", "dateUtil", "transfer", "easyui"], function ($, Util)
                     showType: 'slide'
                 });
             } else {
+                var createTime = "";
+                if (data[0].checkedTime !== null) {
+                    createTime = DateUtil.formatDateTime(data[0].checkedTime);
+                }
                 $("#checkedStaffName").val(data[0].checkedStaffName);
                 $("#checkedDepartName").val(data[0].departName);
                 $("#touchId").val(data[0].touchId);
-                $("#createTime").val(data[0].checkedTime);
+                $("#createTime").val(createTime);
                 $("#callingNumber").val(data[0].staffNumber);
                 $("#calledNumber").val(data[0].customerNumber);
                 $("#callType").val(data[0].callType);

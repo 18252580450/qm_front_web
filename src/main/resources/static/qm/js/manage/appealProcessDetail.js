@@ -174,8 +174,8 @@ require(["jquery", 'util', "dateUtil", "easyui"], function ($, Util) {
         var IsNodeCheckFlag = true; //标示是否是勾选复选框选中行的，true - 是 , false - 否
         $("#subNodeList").datagrid({
             columns: [[
-                {field: 'processId', title: '流程编码', width: '20%'},
                 {field: 'orderNo', title: '节点序号', width: '10%'},
+                {field: 'processId', title: '流程编码', width: '20%'},
                 {field: 'nodeName', title: '节点名称', width: '20%'},
                 {field: 'userName', title: '角色', width: '50'}
             ]],
