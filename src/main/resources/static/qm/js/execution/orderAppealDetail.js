@@ -115,7 +115,10 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
             "params": JSON.stringify(reqParams)
         }, {});
 
+        Util.loading.showLoading();
         Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.WRKFM_DETAIL_DNS + "/queryWrkfmDetail", params, function (result) {
+
+            Util.loading.destroyLoading();
             var data = result.RSP.DATA,
                 rspCode = result.RSP.RSP_CODE;
             if (rspCode != null && rspCode !== "1") {
@@ -153,7 +156,10 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
             "params": JSON.stringify(reqParams)
         }, {});
 
+        Util.loading.showLoading();
         Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.WRKFM_DETAIL_DNS + "/getProcProceLocus", params, function (result) {
+
+            Util.loading.destroyLoading();
             var data = result.RSP.DATAS,
                 rspCode = result.RSP.RSP_CODE;
             if (rspCode != null && rspCode !== "1") {
@@ -318,7 +324,10 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
                 "params": JSON.stringify(reqParams)
             }, {});
 
+            Util.loading.showLoading();
             Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.WRKFM_DETAIL_DNS + "/getHandingLog", params, function (result) {
+
+                Util.loading.destroyLoading();
                 var data = result.RSP.DATA,
                     rspCode = result.RSP.RSP_CODE;
                 if (rspCode != null && rspCode !== "1") {
