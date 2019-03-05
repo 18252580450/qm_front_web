@@ -13,7 +13,8 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
         recordData = {},            //接触记录数据
         historyData = {},           //工单历史数据
         processData = [],           //轨迹数据
-        phoneNum;                   //受理号码
+        phoneNum,                   //受理号码
+        wrkfmId;                    //工单id
 
     initialize();
 
@@ -29,12 +30,8 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
         //获取工单流水、质检流水等信息
         orderPool = getRequestObj();
 
-        //工单受理内容
-        $("#orderDealContent").textbox(
-            {
-                multiline: true
-            }
-        );
+        wrkfmId = orderPool.workFormId;
+        // wrkfmId = "1901020950440000088";
 
         //获取工单基本信息
         initWrkfmDetail();
@@ -152,8 +149,7 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
     function initWrkfmDetail() {
         var reqParams = {
             "provCode": orderPool.provinceId,
-            // "wrkfmId": "1901020950440000088"
-            "wrkfmId": orderPool.wrkfmId
+            "wrkfmId": wrkfmId
         };
         var params = $.extend({
             "params": JSON.stringify(reqParams)
@@ -171,7 +167,7 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
                 });
             } else {
                 phoneNum = data.userInfo.custNum;
-                $("#workFormId").val(orderPool.workFormId);
+                $("#workFormId").val(data.acceptInfo.wrkfmShowSwftno);
                 $("#custNum").val(data.userInfo.custNum);
                 $("#srvReqstTypeFullNm").val(data.acceptInfo.srvReqstTypeFullNm);
                 $("#custBelgCityNm").val(data.userInfo.custBelgCityNm);
@@ -191,8 +187,7 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
     function initProcProceLocus() {
         var reqParams = {
             "provCode": orderPool.provinceId,
-            // "wrkfmId": "1901020950440000088"
-            "wrkfmId": orderPool.wrkfmId
+            "wrkfmId": wrkfmId
         };
         var params = $.extend({
             "params": JSON.stringify(reqParams)
@@ -211,10 +206,11 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
             } else {
                 processData = data;
                 showDealProcess(processData);  //初始化工单轨迹
+
                 //初始化考评项列表
                 var reqParams = {
-                    "tenantId": orderPool.tenantId,
-                    "templateId": orderPool.templateId
+                    "tenantId": Util.constants.TENANT_ID,
+                    "planId": orderPool.planId
                 };
                 var params = $.extend({
                     "start": 0,
@@ -246,7 +242,7 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
 
                         //查询暂存数据
                         var reqParams = {
-                            "tenantId": orderPool.tenantId,
+                            "tenantId": Util.constants.TENANT_ID,
                             "touchId": orderPool.workFormId
                         };
                         var params = $.extend({
@@ -262,15 +258,21 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
                                 //初始化环节考评数据（暂存数据）
                                 $.each(processData, function (i, processItem) {
                                     var checkItemScoreList = [],
-                                        checkLinkScore = 0;
+                                        checkLinkScore = 0,
+                                        flag = false;  //判断环节是否有考评项
                                     $.each(savedData, function (index, data) {
                                         if (processItem.lgId === data.checkLink) {
+                                            flag = true;
                                             var checkItemData = {};
                                             checkItemData.nodeType = data.nodeType;
                                             checkItemData.nodeId = data.nodeId;
                                             checkItemData.nodeName = data.nodeName;
                                             checkItemData.scoreScope = data.scoreScope;
-                                            checkItemData.minScore = data.minScore;
+                                            if (data.minScore != null) {
+                                                checkItemData.minScore = data.minScore;
+                                            } else {
+                                                checkItemData.minScore = 0;
+                                            }
                                             checkItemData.maxScore = data.maxScore;
                                             checkItemData.realScore = data.realScore;
                                             checkItemScoreList.push(checkItemData);
@@ -278,31 +280,39 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
                                             checkLinkScore += data.realScore;
                                         }
                                     });
-                                    var checkLink = {
-                                        "checkLink": processItem.lgId,
-                                        "checkedStaffId": processItem.opStaffId,
-                                        "checkedStaffNm": processItem.opStaffNm,
-                                        "checkedDepartId": processItem.opWorkGroupId,
-                                        "checkedDepartNm": processItem.opWorkGroupNm,
-                                        "checkLinkScore": checkLinkScore,
-                                        "checkItemScoreList": checkItemScoreList
-                                    };
-                                    checkLinkData.push(checkLink);
-                                    totalScore += checkLinkScore;
-                                    $("#checkScore_" + processItem.lgId).html(checkLinkScore);
+                                    if (flag) {  //存在考评项的环节
+                                        var checkLink = {
+                                            "checkLink": processItem.lgId,
+                                            "checkedStaffId": processItem.opStaffId,
+                                            "checkedStaffNm": processItem.opStaffNm,
+                                            "checkedDepartId": processItem.opWorkGroupId,
+                                            "checkedDepartNm": processItem.opWorkGroupNm,
+                                            "checkLinkScore": checkLinkScore,
+                                            "checkItemScoreList": checkItemScoreList
+                                        };
+                                        checkLinkData.push(checkLink);
+                                        totalScore += checkLinkScore;
+                                        $("#checkScore_" + processItem.lgId).html(checkLinkScore);
+                                    }
                                 });
                             } else {  //无暂存数据则默认满分
                                 $.each(processData, function (i, processItem) {
                                     var checkItemScoreList = [],
-                                        checkLinkScore = 0;
+                                        checkLinkScore = 0,
+                                        flag = false;  //判断环节是否有考评项
                                     $.each(checkItemListData, function (index, checkItem) {
                                         if (processItem.opTypeCd === checkItem.nodeTypeCode) {
+                                            flag = true;
                                             var checkItemData = {};
                                             checkItemData.nodeType = checkItem.nodeType;
                                             checkItemData.nodeId = checkItem.nodeId;
                                             checkItemData.nodeName = checkItem.nodeName;
                                             checkItemData.scoreScope = checkItem.nodeScore;
-                                            checkItemData.minScore = checkItem.minScore;
+                                            if (checkItem.minScore != null) {
+                                                checkItemData.minScore = checkItem.minScore;
+                                            } else {
+                                                checkItemData.minScore = 0;
+                                            }
                                             checkItemData.maxScore = checkItem.maxScore;
                                             checkItemData.realScore = checkItem.nodeScore;
                                             checkItemScoreList.push(checkItemData);
@@ -310,18 +320,20 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
                                             checkLinkScore += checkItem.nodeScore;
                                         }
                                     });
-                                    var checkLink = {
-                                        "checkLink": processItem.lgId,
-                                        "checkedStaffId": processItem.opStaffId,
-                                        "checkedStaffNm": processItem.opStaffNm,
-                                        "checkedDepartId": processItem.opWorkGroupId,
-                                        "checkedDepartNm": processItem.opWorkGroupNm,
-                                        "checkLinkScore": checkLinkScore,
-                                        "checkItemScoreList": checkItemScoreList
-                                    };
-                                    checkLinkData.push(checkLink);
-                                    totalScore += checkLinkScore;
-                                    $("#checkScore_" + processItem.lgId).html(checkLinkScore);
+                                    if (flag) {  //存在考评项的环节
+                                        var checkLink = {
+                                            "checkLink": processItem.lgId,
+                                            "checkedStaffId": processItem.opStaffId,
+                                            "checkedStaffNm": processItem.opStaffNm,
+                                            "checkedDepartId": processItem.opWorkGroupId,
+                                            "checkedDepartNm": processItem.opWorkGroupNm,
+                                            "checkLinkScore": checkLinkScore,
+                                            "checkItemScoreList": checkItemScoreList
+                                        };
+                                        checkLinkData.push(checkLink);
+                                        totalScore += checkLinkScore;
+                                        $("#checkScore_" + processItem.lgId).html(checkLinkScore);
+                                    }
                                 });
                             }
                             //考评环节合格状态
@@ -338,7 +350,7 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
 
         //初始化考评评语
         var reqParam = {
-            "tenantId": orderPool.tenantId,
+            "tenantId": Util.constants.TENANT_ID,
             "touchId": orderPool.workFormId,
             "resultStatus": Util.constants.CHECK_RESULT_TEMP_SAVE
         };
@@ -432,8 +444,7 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
         if (JSON.stringify(replyData) === "{}") {
             var reqParams = {
                 "provCode": orderPool.provinceId,
-                // "wrkfmId": "1901020950440000088"
-                "wrkfmId": orderPool.wrkfmId
+                "wrkfmId": wrkfmId
             };
             var params = $.extend({
                 "params": JSON.stringify(reqParams)
@@ -462,8 +473,7 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
         if (JSON.stringify(recordData) === "{}") {
             var reqParams = {
                 "provCode": orderPool.provinceId,
-                // "wrkfmId": "1901020950440000088"
-                "wrkfmId": orderPool.wrkfmId
+                "wrkfmId": wrkfmId
             };
             var params = $.extend({
                 "params": JSON.stringify(reqParams)
@@ -492,8 +502,7 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
             var reqParams = {
                 "provCode": orderPool.provinceId,
                 "phoneNum": phoneNum,
-                // "wrkfmId": "1901020950440000088"
-                "wrkfmId": orderPool.wrkfmId
+                "wrkfmId": wrkfmId
             };
             var params = $.extend({
                 "params": JSON.stringify(reqParams)
@@ -548,7 +557,7 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
                 checkBox.attr("checked", true);
                 $("#leftSpan_" + item.lgId).attr("class", "left-span-1");
                 $("#spot_" + item.lgId).attr("class", "spot-1");
-                $("#checkLinkTitle").html(item.opTypeNm);
+                // $("#checkLinkTitle").html(item.opTypeNm);
             }
             //绑定checkBox点击事件
             checkBox.on("click", function () {
@@ -566,7 +575,7 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
                     } else {
                         $("#leftSpan_" + data.lgId).attr("class", "left-span-1");
                         $("#spot_" + data.lgId).attr("class", "spot-1");
-                        $("#checkLinkTitle").html(data.opTypeNm);
+                        // $("#checkLinkTitle").html(data.opTypeNm);
                     }
                 });
 
@@ -592,17 +601,23 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
     function checkLinkSave() {
         var checkItemScoreList = [],
             checkLinkScore = 0,
-            scoreStr = $("#checkScore_" + currentNode.lgId).html();
+            scoreStr = $("#checkScore_" + currentNode.lgId).html(),
+            flag = false; //判断环节是否有考评项
         if (scoreStr !== "") {
             checkLinkScore = parseInt(scoreStr);
         }
         for (var i = 0; i < checkLinkData.length; i++) {
             if (checkLinkData[i].checkLink === currentNode.lgId) {
+                flag = true;
                 //更新总得分
                 totalScore -= checkLinkData[i].checkLinkScore;
                 checkLinkData.splice(i, 1);
                 break;
             }
+        }
+
+        if (!flag) {  //不存在考评项则返回
+            return;
         }
 
         $.each(currentCheckItemData, function (i, item) {
@@ -611,7 +626,11 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
             checkItem.nodeId = item.nodeId;
             checkItem.nodeName = item.nodeName;
             checkItem.scoreScope = item.nodeScore;
-            checkItem.minScore = item.minScore;
+            if (item.minScore != null) {
+                checkItem.minScore = item.minScore;
+            } else {
+                checkItem.minScore = 0;
+            }
             checkItem.maxScore = item.maxScore;
             checkItem.realScore = item.nodeScore - parseInt($("#score" + item.nodeId).val());
             checkItemScoreList.push(checkItem);
@@ -642,12 +661,17 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
                     totalScore += checkItem.nodeScore;
                 }
             });
+            var checkResult = $("#checkResult_" + processItem.lgId);
+            if (totalScore === 0) { //无考评项的情况
+                checkResult.html("不考评");
+                checkResult.css("color", "#4A4A4A");
+                return;
+            }
             $.each(checkLinkData, function (i, linkItem) {
                 if (linkItem.checkLink === processItem.lgId) {
                     gainScore = linkItem.checkLinkScore;
                 }
             });
-            var checkResult = $("#checkResult_" + processItem.lgId);
             if (totalScore !== 0 && gainScore / totalScore > 0.6) {
                 checkResult.html("合格");
                 checkResult.css("color", "#4A4A4A");
@@ -691,12 +715,12 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
         }
 
         //针对提交，提交时需要对所有（必检）环节进行考评，现在默认需要对所有环节进行考评
-        if (checkStatus === Util.constants.CHECK_FLAG_NEW_BUILD || checkStatus === Util.constants.CHECK_FLAG_RECHECK) {
-            if (checkLinkData.length < processData.length) {
-                $.messager.alert("提示", "有未考评环节!考评后才能提交");
-                return;
-            }
-        }
+        // if (checkStatus === Util.constants.CHECK_FLAG_NEW_BUILD || checkStatus === Util.constants.CHECK_FLAG_RECHECK) {
+        //     if (checkLinkData.length < processData.length) {
+        //         $.messager.alert("提示", "有未考评环节!考评后才能提交");
+        //         return;
+        //     }
+        // }
 
         var currentTime = new Date(),
             checkTime = currentTime - startTime,
@@ -711,9 +735,10 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
                 unqualifiedNum++;
             }
         });
+
         //工单质检基本信息
         var orderCheckInfo = {
-            "tenantId": orderPool.tenantId,                          //租户id
+            "tenantId": Util.constants.TENANT_ID,                     //租户id
             "provinceId": orderPool.provinceId,                      //省份id
             "callingNumber": orderPool.acptStaffNum,                 //主叫号码
             "acceptNumber": orderPool.custNum,                       //受理号码
@@ -804,7 +829,7 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
             '</div>' +
             '</div>' +
             '<div class="process-left">' +
-            '<span class="left-span-2" style="margin-right: 5px" id="leftSpan_' + data.lgId + '">' + data.opTypeNm + '</span>' +
+            '<span class="left-span-2" style="margin-right: 5px" id="leftSpan_' + data.lgId + '">&nbsp;&nbsp;</span>' +
             '<input class="left-check-1" type="checkbox" id="checkBox_' + data.lgId + '"/>' +
             '</div>' +
             '<div class="process-spot">' +
