@@ -114,7 +114,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
                 });
                 var zNodes = [];
                 $.ajax({
-                    url:"http://203.57.227.53:8082/tcwf/servReqTypeManage/srvReqTypeRedisTree",
+                    url:Util.constants.SRV_REQTYPE_REDIS_TREE,
                     dataType:'json',
                     type:"POST",
                     data:{

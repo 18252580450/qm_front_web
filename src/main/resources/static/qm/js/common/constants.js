@@ -34,6 +34,7 @@ define(function () {
         APPEAL_DEAL_DNS: "/qm/configservice/appealDeal",//申诉待办
         WRKFM_DETAIL_DNS: "/qm/configservice/wrkfmDetail",//工单详情
         QM_BIND_RLN_DNS: "/qm/configservice/qmBindRln",//考评计划绑定关系
+        SRV_REQTYPE_REDIS_TREE:"http://203.57.227.53:8082/tcwf/servReqTypeManage/srvReqTypeRedisTree",//服务请求类型
 
         //考评项目录类型
         CHECK_ITEM_PARENT: "0",          //目录
