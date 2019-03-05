@@ -23,26 +23,6 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
 
     //页面信息初始化
     function initPageInfo() {
-        //模板渠道下拉框
-        $("#tenantType").combobox({
-            url: '../../data/tenant_type.json',
-            method: "GET",
-            valueField: 'codeValue',
-            textField: 'codeName',
-            panelHeight: 'auto',
-            editable: false,
-            onLoadSuccess: function () {
-                var tenantType = $("#tenantType"),
-                    data = tenantType.combobox('getData');
-                if (data.length > 0) {
-                    tenantType.combobox('select', data[0].codeValue);
-                }
-            },
-            onSelect: function () {
-                $("#checkItemList").datagrid('reload');
-                refreshTree();  //刷新左侧考评树
-            }
-        });
         //考评项类型下拉框
         $("#checkItemType").combobox({
             url: '../../data/select_init_data.json',
@@ -66,6 +46,31 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
         getSelectData("CHECK_ITEM_TYPE", true, function (data) {
             checkTypeData = data;
             $("#checkItemType").combobox('loadData', data);
+        });
+
+        //考评项环节下拉框
+        $("#nodeTypeCode").combobox({
+            url: '../../data/select_init_data.json',
+            method: "GET",
+            valueField: 'paramsCode',
+            textField: 'paramsName',
+            panelHeight: 288,
+            editable: false,
+            onLoadSuccess: function () {
+                var nodeTypeCode = $('#nodeTypeCode'),
+                    data = nodeTypeCode.combobox('getData');
+                if (data.length > 0) {
+                    nodeTypeCode.combobox('select', data[0].paramsCode);
+                }
+            },
+            onSelect: function () {
+                $("#checkItemList").datagrid('reload');
+            }
+        });
+        //重载下拉框数据
+        getSelectData("WRKFM_OPERATE_TYPE", true, function (data) {
+            checkLinkData = data;
+            $("#nodeTypeCode").combobox('loadData', data);
         });
 
         //初始化考评树
@@ -129,6 +134,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
                                 return checkTypeData[i].paramsName;
                             }
                         }
+                        return "目录";
                     }
                 },
                 {
@@ -189,23 +195,24 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
                 var parentCheckItemId = checkNode.id,
                     start = (param.page - 1) * param.rows,
                     pageNum = param.rows,
-                    checkItemName = $("#checkItemName").val(),
-                    tenantId = $("#tenantType").combobox("getValue");
-                if (tenantId === "") {
-                    tenantId = Util.constants.TENANT_ID;
-                }
+                    checkItemName = $("#checkItemName").val();
                 if (parentCheckItemId === "") {
                     parentCheckItemId = "1";
                 }
-                var checkItemType = $("#checkItemType").combobox("getValue");
+                var checkItemType = $("#checkItemType").combobox("getValue"),
+                    nodeTypeCode = $("#nodeTypeCode").combobox("getValue");
                 if (checkItemType === "-1") {
                     checkItemType = "";
+                }
+                if (nodeTypeCode === "-1") {
+                    nodeTypeCode = "";
                 }
                 var reqParams = {
                     "parentCheckItemId": parentCheckItemId,
                     "checkItemName": checkItemName,
                     "tenantId": Util.constants.TENANT_ID,
-                    "checkItemType": checkItemType
+                    "checkItemType": checkItemType,
+                    "nodeTypeCode": nodeTypeCode
                 };
                 var params = $.extend({
                     "start": start,
@@ -238,7 +245,11 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
                 //绑定考评项修改事件
                 $.each(data.rows, function (i, item) {
                     $("#checkItem" + item.checkItemId).on("click", function () {
-                        showCheckItemUpdateDialog(item);
+                        if (item.catalogFlag === Util.constants.CHECK_ITEM_CHILDREN) {
+                            showCheckItemUpdateDialog(item);
+                        } else {
+                            showCatalogUpdateDialog(item);
+                        }
                     });
                 });
             }
@@ -264,12 +275,12 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
 
         //新增类别
         $("#addCatalogBtn").on("click", function () {
-            showCheckItemCreateDialog(Util.constants.CHECK_ITEM_PARENT);
+            showCatalogCreateDialog();
         });
 
         //新增
         $("#addBtn").on("click", function () {
-            showCheckItemCreateDialog(Util.constants.CHECK_ITEM_CHILDREN);
+            showCheckItemCreateDialog();
         });
 
         //删除
@@ -279,9 +290,179 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
     }
 
     /**
+     * 新增目录弹框
+     */
+    function showCatalogCreateDialog() {
+        $("#catalogConfig").form('clear');  //清空表单
+        var disableSubmit = false;  //禁用提交按钮标志
+        $("#catalogDialog").show().window({
+            width: 600,
+            height: 400,
+            modal: true,
+            title: "目录新增"
+        });
+        var parentCatalogName = $("#parentCheckItemName").val();
+        $("#catalogParentNameConfig").val(parentCatalogName);
+        $('#catalogNameConfig').validatebox({
+            required: true
+        });
+
+        //取消
+        var cancelBtn = $("#catalogCancelBtn");
+        cancelBtn.unbind("click");
+        cancelBtn.on("click", function () {
+            $("#catalogConfig").form('clear');  //清空表单
+            $("#catalogDialog").window("close");
+        });
+        //提交
+        var submitBtn = $("#catalogSubmitBtn");
+        submitBtn.unbind("click");
+        submitBtn.on("click", function () {
+            if (disableSubmit) {
+                return;
+            }
+            disableSubmit = true;   //防止多次提交
+            submitBtn.linkbutton({disabled: true});  //禁用提交按钮（样式）
+
+            var parentCheckItemId = $("#parentCheckItemId").val(),
+                checkItemName = $("#catalogNameConfig").val(),
+                checkItemDesc = $("#catalogDescConfig").val(),
+                orderNo = checkNode.level;
+            if (checkNode.isParent) {
+                orderNo = checkNode.level + 1;
+            }
+
+            if (orderNo > 6) {
+                $.messager.alert("提示", "目录层数超过最大值!");
+                disableSubmit = false;
+                submitBtn.linkbutton({disabled: false});  //取消提交禁用
+                return;
+            }
+            if (checkItemName == null || checkItemName === "") {
+                $.messager.alert("提示", "目录名称不能为空!");
+                disableSubmit = false;
+                submitBtn.linkbutton({disabled: false});  //取消提交禁用
+                return;
+            }
+            var params = {
+                "tenantId": Util.constants.TENANT_ID,
+                "parentCheckItemId": parentCheckItemId,
+                "checkItemName": checkItemName,
+                "remark": checkItemDesc,
+                "catalogFlag": Util.constants.CHECK_ITEM_PARENT,
+                "orderNo": orderNo
+            };
+            Util.ajax.postJson(Util.constants.CONTEXT.concat(Util.constants.CHECK_ITEM_DNS).concat("/"), JSON.stringify(params), function (result) {
+                var rspCode = result.RSP.RSP_CODE;
+                if (rspCode != null && rspCode === "1") {
+                    $("#catalogDialog").window("close");  //关闭对话框
+                    checkNode.id = "";  //展示所有考评项
+                    $("#checkItemList").datagrid('reload'); //插入成功后，刷新页面
+                    refreshTree(); //刷新考评树
+                    //提示
+                    $.messager.show({
+                        msg: result.RSP.RSP_DESC,
+                        timeout: 1000,
+                        style: {right: '', bottom: ''},     //居中显示
+                        showType: 'show'
+                    });
+                } else {
+                    var errMsg = "新增失败！<br>" + result.RSP.RSP_DESC;
+                    $.messager.alert("提示", errMsg);
+                }
+                disableSubmit = false;
+                submitBtn.linkbutton({disabled: false});  //取消提交禁用
+            });
+        });
+    }
+
+    /**
+     * 修改目录弹框
+     */
+    function showCatalogUpdateDialog(item) {
+        $("#catalogConfig").form('clear');  //清空表单
+        var disableSubmit = false;  //禁用提交按钮标志
+        $("#catalogDialog").show().window({
+            width: 600,
+            height: 400,
+            modal: true,
+            title: "目录新增"
+        });
+        var parentCatalogName = $("#parentCheckItemName").val(),
+            catalogNameInput = $('#catalogNameConfig');
+        $("#catalogParentNameConfig").val(parentCatalogName);
+        catalogNameInput.validatebox({
+            required: true
+        });
+        catalogNameInput.val(item.checkItemName);
+        $("#catalogDescConfig").val(item.remark);
+        //取消
+        var cancelBtn = $("#catalogCancelBtn");
+        cancelBtn.unbind("click");
+        cancelBtn.on("click", function () {
+            $("#catalogConfig").form('clear');  //清空表单
+            $("#catalogDialog").window("close");
+        });
+        //提交
+        var submitBtn = $("#catalogSubmitBtn");
+        submitBtn.unbind("click");
+        submitBtn.on("click", function () {
+            if (disableSubmit) {
+                return;
+            }
+            disableSubmit = true;   //防止多次提交
+            submitBtn.linkbutton({disabled: true});  //禁用提交按钮（样式）
+
+            var checkItemName = $("#catalogNameConfig").val(),
+                checkItemDesc = $("#catalogDescConfig").val();
+
+            if (checkItemName == null || checkItemName === "") {
+                $.messager.alert("提示", "目录名称不能为空!");
+                disableSubmit = false;
+                submitBtn.linkbutton({disabled: false});  //取消提交禁用
+                return;
+            }
+
+            if (checkItemName === item.checkItemName && checkItemDesc === item.remark) {
+                $.messager.alert("提示", "没有作任何修改!", null, function () {
+                    $("#catalogConfig").form('clear');    //清空表单
+                    $("#catalogDialog").window("close");
+                });
+                disableSubmit = false;
+                submitBtn.linkbutton({disabled: false});  //取消提交禁用
+                return;
+            }
+
+            item.checkItemName = checkItemName;
+            item.remark = checkItemDesc;
+            Util.ajax.putJson(Util.constants.CONTEXT.concat(Util.constants.CHECK_ITEM_DNS).concat("/"), JSON.stringify(item), function (result) {
+                var rspCode = result.RSP.RSP_CODE;
+                if (rspCode != null && rspCode === "1") {
+                    checkNode.id = "";  //展示所有考评项
+                    $("#catalogDialog").window("close");  //关闭对话框
+                    $("#catalogList").datagrid('reload'); //插入成功后，刷新页面
+                    refreshTree(); //刷新考评树
+                    //提示
+                    $.messager.show({
+                        msg: result.RSP.RSP_DESC,
+                        timeout: 1000,
+                        style: {right: '', bottom: ''},     //居中显示
+                        showType: 'show'
+                    });
+                } else {
+                    var errMsg = "修改失败！<br>" + result.RSP.RSP_DESC;
+                    $.messager.alert("提示", errMsg);
+                }
+                disableSubmit = false;
+                submitBtn.linkbutton({disabled: false});  //取消提交禁用
+            });
+        });
+    }
+
+    /**
      * 新增考评项弹框
      */
-    function showCheckItemCreateDialog(catalogFlag) {
+    function showCheckItemCreateDialog() {
         $("#checkItemConfig").form('clear');  //清空表单
         var disableSubmit = false;  //禁用提交按钮标志
         $("#checkItemDialog").show().window({
@@ -366,8 +547,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
             disableSubmit = true;   //防止多次提交
             submitBtn.linkbutton({disabled: true});  //禁用提交按钮（样式）
 
-            var tenantId = $("#tenantType").combobox("getValue"),
-                parentCheckItemId = $("#parentCheckItemId").val(),
+            var parentCheckItemId = $("#parentCheckItemId").val(),
                 checkItemName = $("#checkItemNameConfig").val(),
                 checkItemType = $("#checkItemTypeConfig").combobox("getValue"),
                 checkItemVitalType = $("#checkItemVitalTypeConfig").combobox("getValue"),
@@ -380,14 +560,14 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
             if (checkItemType === Util.constants.CHECK_TYPE_ORDER) {
                 nodeTypeCode = $("#checkLinkConfig").combobox("getValue");
             }
-            if (catalogFlag === Util.constants.CHECK_ITEM_PARENT && orderNo > 6) {
-                $.messager.alert("提示", "目录层数超过最大值!");
+            if (checkItemName == null || checkItemName === "") {
+                $.messager.alert("提示", "考评项名称不能为空!");
                 disableSubmit = false;
                 submitBtn.linkbutton({disabled: false});  //取消提交禁用
                 return;
             }
-            if (checkItemName == null || checkItemName === "") {
-                $.messager.alert("提示", "考评项名称不能为空!");
+            if (checkItemType === Util.constants.CHECK_TYPE_ORDER && nodeTypeCode === "") {
+                $.messager.alert("提示", "请选择考评环节!");
                 disableSubmit = false;
                 submitBtn.linkbutton({disabled: false});  //取消提交禁用
                 return;
@@ -400,7 +580,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
                 "nodeTypeCode": nodeTypeCode,   //工单考评环节
                 "checkItemVitalType": checkItemVitalType,
                 "remark": checkItemDesc,
-                "catalogFlag": catalogFlag,
+                "catalogFlag": Util.constants.CHECK_ITEM_CHILDREN,
                 "orderNo": orderNo
             };
             Util.ajax.postJson(Util.constants.CONTEXT.concat(Util.constants.CHECK_ITEM_DNS).concat("/"), JSON.stringify(params), function (result) {
@@ -630,11 +810,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
 
     //刷新考评树
     function refreshTree() {
-        var zNodes = [],
-            tenantId = $("#tenantType").combobox("getValue");
-        if (tenantId === "") {
-            tenantId = Util.constants.TENANT_ID;
-        }
+        var zNodes = [];
         var reqParams = {
             "tenantId": Util.constants.TENANT_ID
         };
