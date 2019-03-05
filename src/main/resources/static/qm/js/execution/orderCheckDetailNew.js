@@ -3,6 +3,7 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
     var orderPool,
         showingInfo = 0,            //当前显示的基本信息（0工单基本信息、1内外部回复、2接触记录、3工单历史）
         scoreType,                  //分值类型（默认扣分）
+        templateId,                 //模版id
         startTime,                  //页面初始化时间
         checkItemListData = [],     //考评项列表数据（所有环节考评项）
         currentCheckItemData = [],  //当前考评项列表数据
@@ -220,6 +221,8 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
 
                 Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.CHECK_ITEM_DNS + "/queryCheckItemDetail", params, function (result) {
                     checkItemListData = result.RSP.DATA;
+                    //模版id
+                    templateId = checkItemListData[0].templateId;
                     //分值类型
                     scoreType = checkItemListData[0].scoreType;
                     var rspCode = result.RSP.RSP_CODE;
@@ -744,7 +747,7 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
             "acceptNumber": orderPool.custNum,                       //受理号码
             "touchId": orderPool.workFormId,                         //工单流水
             "planId": orderPool.planId,                              //考评计划
-            "templateId": orderPool.templateId,                      //考评模版ID
+            "templateId": templateId,                                //考评模版ID
             "checkModel": Util.constants.CHECK_TYPE_WITHIN_PLAN,     //质检模式、计划内质检
             "checkedStaffId": orderPool.checkedStaffId,              //被质检员id
             "checkedStaffName": orderPool.checkedStaffName,          //被质检员名
@@ -829,7 +832,7 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
             '</div>' +
             '</div>' +
             '<div class="process-left">' +
-            '<span class="left-span-2" style="margin-right: 5px" id="leftSpan_' + data.lgId + '">&nbsp;&nbsp;</span>' +
+            '<span class="left-span-2" style="margin-right: 5px" id="leftSpan_' + data.lgId + '"></span>' +
             '<input class="left-check-1" type="checkbox" id="checkBox_' + data.lgId + '"/>' +
             '</div>' +
             '<div class="process-spot">' +
