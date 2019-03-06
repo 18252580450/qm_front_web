@@ -41,8 +41,8 @@ require(["js/manage/appealProcessQryDepart", "js/manage/appealProcessQryStaff", 
                     queryDepart.initialize();
                     $('#processQryDepartWindow').show().window({
                         title: '部门信息',
-                        width: 600,
-                        height: 400,
+                        width: 750,
+                        height: 500,
                         cache: false,
                         content: queryDepart.$el,
                         modal: true,
@@ -153,7 +153,7 @@ require(["js/manage/appealProcessQryDepart", "js/manage/appealProcessQryStaff", 
                     formatter: function (value, row, index) {
                         //只允许删除主流程和最后一个子流程
                         if (parseInt(row.orderNo) === 0 || parseInt(row.orderNo) === appealProcessData.length - 1) {
-                            return '<a href="javascript:void(0);" id = "appealProcess' + row.orderNo + '">删除</a>';
+                            return '<a href="javascript:void(0);" id = "appealProcess' + row.orderNo + '" style="color: black;">删除</a>';
                         }
                     }
                 }
@@ -242,7 +242,7 @@ require(["js/manage/appealProcessQryDepart", "js/manage/appealProcessQryStaff", 
                         //只允许删除末子节点
                         var subNodeList = appealProcessData[parseInt(row.processId)].subNodeList;
                         if (parseInt(row.orderNo) === subNodeList[subNodeList.length - 1].orderNo) {
-                            return '<a href="javascript:void(0);" id = "appealNode' + row.orderNo + '">删除</a>';
+                            return '<a href="javascript:void(0);" id = "appealNode' + row.orderNo + '" style="color: black;">删除</a>';
                         }
                     }
                 }

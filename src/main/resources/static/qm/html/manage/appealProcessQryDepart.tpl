@@ -3,7 +3,7 @@
         <div data-options="region:'center'" style='overflow: hidden; height: 100%'>
             <div id = "page">
                 <!--左侧区域-->
-                <div style="float:left; width:40%; height:300px; overflow-y: auto; overflow-x: hidden;" >
+                <div style="float:left; width:50%; height:400px; overflow-y: auto; overflow-x: auto;" >
                     <div class='cl'>
                         <div id="treeDiv" title="员工组信息"  class="index-west">
                             <ul id="tree" class="ztree" style="border:#fff solid 0px;">
@@ -12,7 +12,7 @@
                     </div>
                 </div>
                 <!--右侧区域-->
-                <div style="float:right ; width:60%; height:300px;">
+                <div style="float:right ; width:50%; height:400px;">
                     <div class='panel-search ' title="">
                         <form class='form form-horizontal' id="searchForm">
                             <div class='row cl'>

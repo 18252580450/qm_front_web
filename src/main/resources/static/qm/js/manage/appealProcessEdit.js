@@ -37,8 +37,8 @@ require(["js/manage/appealProcessQryDepart", "js/manage/appealProcessQryStaff", 
                     queryDepart.initialize();
                     $('#processQryDepartWindow').show().window({
                         title: '部门信息',
-                        width: 600,
-                        height: 400,
+                        width: 750,
+                        height: 500,
                         cache: false,
                         content: queryDepart.$el,
                         modal: true,
@@ -177,10 +177,10 @@ require(["js/manage/appealProcessQryDepart", "js/manage/appealProcessQryStaff", 
                 {
                     field: 'operation', title: '操作', width: '10%',
                     formatter: function (value, row, index) {
-                        var edit = '<a href="javascript:void(0);" id = "processEdit' + row.orderNo + '">修改</a>';
+                        var edit = '<a href="javascript:void(0);" id = "processEdit' + row.orderNo + '" style="color: black;">修改</a>';
                         //只允许删除最后一个子流程
                         if (row.orderNo === processListData.length - 1) {
-                            return edit + "&nbsp;&nbsp;" + '<a href="javascript:void(0);" id = "processDel' + row.orderNo + '">删除</a>';
+                            return edit + "&nbsp;&nbsp;" + '<a href="javascript:void(0);" id = "processDel' + row.orderNo + '" style="color: black;">删除</a>';
                         }
                         return edit;
                     }
@@ -398,11 +398,11 @@ require(["js/manage/appealProcessQryDepart", "js/manage/appealProcessQryStaff", 
                     field: 'detail', title: '操作', width: '10%',
                     formatter: function (value, row, index) {
                         if (processListData[row.processOrder].hasOwnProperty("subNodeList")) {
-                            var edit = '<a href="javascript:void(0);" id = "nodeEdit' + row.orderNo + '">修改</a>';
+                            var edit = '<a href="javascript:void(0);" id = "nodeEdit' + row.orderNo + '" style="color:black;">修改</a>';
                             //只允许删除末子节点
                             var subNodeList = processListData[row.processOrder].subNodeList;
                             if (row.orderNo === subNodeList[subNodeList.length - 1].orderNo) {
-                                return edit + "&nbsp;&nbsp;" + '<a href="javascript:void(0);" id = "nodeDel' + row.orderNo + '">删除</a>';
+                                return edit + "&nbsp;&nbsp;" + '<a href="javascript:void(0);" id = "nodeDel' + row.orderNo + '" style="color: black;">删除</a>';
                             }
                             return edit;
                         }
@@ -756,8 +756,8 @@ require(["js/manage/appealProcessQryDepart", "js/manage/appealProcessQryStaff", 
                     queryDepart.initialize();
                     $('#processQryDepartWindow').show().window({
                         title: '部门信息',
-                        width: 600,
-                        height: 400,
+                        width: 750,
+                        height: 500,
                         cache: false,
                         content: queryDepart.$el,
                         modal: true,

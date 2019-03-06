@@ -19,7 +19,7 @@
 
                 <div>
                     <!--左侧区域-->
-                    <div style="float:left ; width:20%; height:100%;">
+                    <div style="float:left ; width:20%; height:100%; overflow-y: auto; overflow-x: auto;">
                         <div class='cl'>
                             <div class='panel-tool-box cl' >
                                 <div class='fl text-bold'>工作组列表</div>

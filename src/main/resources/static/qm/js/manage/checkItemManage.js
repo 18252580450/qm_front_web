@@ -69,7 +69,6 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
         });
         //重载下拉框数据
         getSelectData("WRKFM_OPERATE_TYPE", true, function (data) {
-            checkLinkData = data;
             $("#nodeTypeCode").combobox('loadData', data);
         });
 
@@ -164,13 +163,13 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
                 {
                     field: 'action', title: '操作', width: '10%',
                     formatter: function (value, row, index) {
-                        return '<a href="javascript:void(0);" id = "checkItem' + row.checkItemId + '">修改</a>';
+                        return '<a href="javascript:void(0);" style="color: black;" id = "checkItem' + row.checkItemId + '">修改</a>';
                     }
                 }
             ]],
             fitColumns: true,
             width: '100%',
-            height: 420,
+            height: 480,
             pagination: true,
             pageSize: 10,
             pageList: [5, 10, 20, 50],
