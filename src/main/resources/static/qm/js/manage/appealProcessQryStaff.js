@@ -145,17 +145,16 @@ define([
             //质检人员信息
             $("#page", $el).find("#checkStaffInfo").datagrid({
                 columns: [[
-                    {field: 'ck', checkbox: true, align: 'center'},
-                    {field: 'STAFF_ID', title: '员工工号', align: 'center', width: '20%'},
-                    {field: 'STAFF_NAME', title: '员工姓名', align: 'center', width: '20%'},
-                    {field: 'GROUP_ID', title: '工作组id', align: 'center', width: '20%'},
-                    {field: 'GROUP_NAME', title: '工作组名称', align: 'center', width: '20%'},
-                    {field: 'EMAIL', title: '邮箱', align: 'center', width: '20%'},
-                    {field: 'PHONE', title: '电话', align: 'center', width: '20%'},
-                    {field: 'ROLE_CODE', title: '角色编码', align: 'center', width: '20%'}
+                    {field: 'ck', checkbox: true , align: 'center'},
+                    {field: 'STAFF_ID', title: '工号', width: '15%'},
+                    {field: 'STAFF_NAME', title: '姓名', width: '15%'},
+                    {field: 'GROUP_NAME', title: '工作组', width: '15%'},
+                    {field: 'EMAIL', title: '邮箱', width: '20%'},
+                    {field: 'PHONE', title: '电话', width: '20%'},
+                    {field: 'ROLE_CODE', title: '角色', width: '15%'}
                 ]],
                 fitColumns: true,
-                height: 420,
+                height: 400,
                 pagination: true,
                 singleSelect: true,
                 pageSize: 10,

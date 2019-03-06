@@ -427,7 +427,7 @@ require(["js/manage/appealProcessQryDepart", "js/manage/appealProcessQryStaff", 
                     queryCheckPeople.initialize();
                     $('#processQryStaffWindow').show().window({
                         title: '审批人员信息',
-                        width: 1150,
+                        width: 1080,
                         height: 600,
                         cache: false,
                         content: queryCheckPeople.$el,

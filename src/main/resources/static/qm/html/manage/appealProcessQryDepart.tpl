@@ -1,9 +1,9 @@
 <div id="page_content" data-options ="region:'center'" style="height:100%;">
     <div id='layout_content' class='easyui-layout' data-options="region:'center'" style='overflow: auto; height:100%;'>
         <div data-options="region:'center'" style='overflow: hidden; height: 100%'>
-            <div id = "page">
+            <div id = "page" style="height:400px;">
                 <!--左侧区域-->
-                <div style="float:left; width:50%; height:400px; overflow-y: auto; overflow-x: auto;" >
+                <div style="float:left; width:35%; height:350px; overflow-y: auto; overflow-x: auto; margin-top: 20px; margin-left: 5%;" >
                     <div class='cl'>
                         <div id="treeDiv" title="员工组信息"  class="index-west">
                             <ul id="tree" class="ztree" style="border:#fff solid 0px;">
@@ -12,7 +12,7 @@
                     </div>
                 </div>
                 <!--右侧区域-->
-                <div style="float:right ; width:50%; height:400px;">
+                <div style="float:right; width:60%; margin-top: 10px;">
                     <div class='panel-search ' title="">
                         <form class='form form-horizontal' id="searchForm">
                             <div class='row cl'>
@@ -25,16 +25,16 @@
                         </form>
                     </div>
                 </div>
-                <div class='mt-10 test-c' style="margin-top: 10px">
-                    <div class='formControls col-4'>
-                        </div>
-                        <div class='formControls col-2'>
-                            <a href='javascript:void(0)' class='btn btn-green radius mt-l-20' id="confirm">确定</a>
-                        </div>
-                        <div class='formControls col-2'>
-                            <a href='javascript:void(0)' class='btn btn-secondary radius mt-l-20'
-                               id="close">关闭</a>
-                        </div>
+            </div>
+            <div class='mt-10 test-c'>
+                <div class='formControls col-4'>
+                </div>
+                <div class='formControls col-2'>
+                    <a href='javascript:void(0)' class='btn btn-green radius mt-l-20' id="confirm">确定</a>
+                </div>
+                <div class='formControls col-2'>
+                    <a href='javascript:void(0)' class='btn btn-secondary radius mt-l-20'
+                       id="close">关闭</a>
                 </div>
             </div>
         </div>
