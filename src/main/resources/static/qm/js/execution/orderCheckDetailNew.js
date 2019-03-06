@@ -538,12 +538,13 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
                     });
                 } else {
                     historyData = data;
+                    showHistory(data);
                 }
             });
         }
     }
 
-    //动态显示内外部回复
+    //显示内外部回复
     function showHandlingLog(data, showExternalReply) {
         if (showExternalReply) {
             $("#externalReply").empty();
@@ -556,6 +557,46 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
                 $("#insideReply").append(getReplyDiv(item));
             });
         }
+    }
+
+    //显示工单历史
+    function showHistory(historyData) {
+        //考评项列表
+        var IsCheckFlag = true, //标示是否是勾选复选框选中行的，true - 是 , false - 否
+            historyList = $("#historyList");
+        historyList.datagrid({
+            columns: [[
+                {field: 'wrkfmShowSwftno', title: '工单编号', width: '20%'},
+                {field: 'crtTime', title: '受理时间', width: '20%'},
+                {field: 'dspsComplteStaffNm', title: '工单责任人', width: '15%'},
+                {field: 'srvReqstTypeFullNm', title: '服务请求类型', width: '25%'},
+                {field: 'wrkfmStsNm', title: '工单状态', width: '20%'}
+            ]],
+            fitColumns: true,
+            width: '100%',
+            height: 251,
+            pagination: false,
+            pageSize: 10,
+            pageList: [5, 10, 20, 50],
+            rownumbers: false,
+            checkOnSelect: false,
+            onClickCell: function (rowIndex, field, value) {
+                IsCheckFlag = false;
+            },
+            onSelect: function (rowIndex, rowData) {
+                if (!IsCheckFlag) {
+                    IsCheckFlag = true;
+                    historyList.datagrid("unselectRow", rowIndex);
+                }
+            },
+            onUnselect: function (rowIndex, rowData) {
+                if (!IsCheckFlag) {
+                    IsCheckFlag = true;
+                    historyList.datagrid("selectRow", rowIndex);
+                }
+            }
+        });
+        historyList.datagrid("loadData", {rows: historyData}); //刷新考评项列表
     }
 
     //初始化处理过程
@@ -818,7 +859,7 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
     function getReplyDiv(data) {
         return '<div class="reply-1">' +
             '<div class="reply-2">' +
-            '<span style="margin-right:24px;">' + data.crtTime + '</span><span>' + data.opStaffId + '</span><span>|' + data.opWorkGroupNm + '</span>' +
+            '<span style="margin-right:24px;">' + data.crtTime + '</span><span>' + data.opStaffNm + '</span><span>|' + data.opWorkGroupNm + '</span>' +
             '</div>' +
             '<div class="reply-3"><span>' + data.rmk + '</span></div>' +
             '</div>';

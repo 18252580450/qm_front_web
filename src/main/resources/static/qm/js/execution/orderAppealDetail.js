@@ -449,7 +449,7 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
     function getReplyDiv(data) {
         return '<div class="reply-1">' +
             '<div class="reply-2">' +
-            '<span style="margin-right:24px;">' + data.crtTime + '</span><span>' + data.opStaffId + '</span><span>|客服</span>' +
+            '<span style="margin-right:24px;">' + data.crtTime + '</span><span>' + data.opStaffNm + '</span><span>|' + data.opWorkGroupNm + '</span>' +
             '</div>' +
             '<div class="reply-3"><span>' + data.rmk + '</span></div>' +
             '</div>';
