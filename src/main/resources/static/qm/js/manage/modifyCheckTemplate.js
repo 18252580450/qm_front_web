@@ -5,6 +5,8 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
     var templateId=null;
     var templateName=null;
     var createTime = null;
+    var operateStaffId = "1234";//操作员工
+    var crtStaffId = "9527";//创建员工
     //调用初始化方法
     initialize();
 
@@ -207,7 +209,8 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
             var map = {
                 "templateId":sensjson.templateId,
                 "nodeId":sensjson.nodeId,
-                "nodeType":sensjson.nodeType
+                "nodeType":sensjson.nodeType,
+                "reserve1":operateStaffId
             };
             var param =  {"params":JSON.stringify(map)};
             Util.ajax.getJson(Util.constants.CONTEXT.concat(Util.constants.ADD_CHECK_TEMPLATE).concat("/selectByPrimaryKey"),param, function (result) {
@@ -267,7 +270,8 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
                         "nodeScore": nodeScore,
                         "errorType": rowsData[i].errorType,
                         "nodeType": '3',
-                        "pNodeId":rowsData[i].pNodeId
+                        "pNodeId":rowsData[i].pNodeId,
+                        "createStaffId":crtStaffId//创建工号
                     };
                     jsonInsert.push(locInsert);
                 }else{//更新
@@ -276,6 +280,7 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
                         "nodeId":rowsData[i].nodeId,
                         "maxScore": maxScore,
                         "nodeScore": nodeScore,
+                        "reserve1":operateStaffId//操作工号
                     };
                     json.push(loc);
                 }
@@ -294,7 +299,7 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
                 nAllScore = nAllScore+i;
             });
             if(nAll.indexOf(0)!=-1){
-                $.messager.alert("提示", "点击行修改分数后,请点击行保持操作！");
+                $.messager.alert("提示", "点击行填写分数,然后请点击行保存操作并且每行所占分值不可为0!");
                 return false;
             }
             if(nAllScore!=100||maxAllScore>100){
@@ -358,18 +363,6 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
                 if (rspCode == "1") {
                     $("#checkTemplateManage").datagrid('reload'); //修改成功后，刷新页面
                 }
-            });
-
-            //将操作信息保存到考评模板操作日志表中
-            var params = {'tenantId': Util.constants.TENANT_ID,'operateType': '1',"templateId":num.toString(),'operateStaff':'9527','provinceId':'10000','cityId':'2002'};
-            Util.ajax.postJson(Util.constants.CONTEXT+ Util.constants.TPL_OP_LOG + "/insertTplOpLog ", JSON.stringify(params), function (result) {
-
-                $.messager.show({
-                    msg: result.RSP.RSP_DESC,
-                    timeout: 1000,
-                    style: {right: '', bottom: ''},     //居中显示
-                    showType: 'slide'
-                });
             });
             setTimeout(function () {
                 top.jQuery('#tabs').tabs('close', "修改考评模板");

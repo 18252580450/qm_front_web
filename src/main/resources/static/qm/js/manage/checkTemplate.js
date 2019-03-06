@@ -2,6 +2,8 @@
 require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, Transfer,dateUtil) {
     //调用初始化方法
     initialize();
+    var operStaffId = "1234";
+    var crtStaffId="9527";
 
     function initialize() {
         initGrid();
@@ -187,13 +189,17 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
 
             var ids = [];
             for (var i = 0; i < selRows.length; i++) {
-                var id = selRows[i].templateId;
-                ids.push(id);
+                var map = {};
+                // var id = selRows[i].templateId;
+                // ids.push(id);
+                map["templateId"]=selRows[i].templateId;
+                map["operateId"]=operStaffId;
+                ids.push(map);
             }
             $.messager.confirm('确认删除弹窗', '确定要删除吗？', function (confirm) {
 
                 if (confirm) {
-                    Util.ajax.deleteJson(Util.constants.CONTEXT.concat(Util.constants.CHECK_TEMPLATE).concat("/deleteByIds/").concat(ids), {}, function (result) {
+                    Util.ajax.deleteJson(Util.constants.CONTEXT.concat(Util.constants.CHECK_TEMPLATE).concat("/deleteByIds"), JSON.stringify(ids), function (result) {
                         var rspCode = result.RSP.RSP_CODE;
                         $.messager.show({
                             msg: result.RSP.RSP_DESC,
@@ -208,7 +214,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
 
                         if(rspCode!="2"){
                             // 根据templateId删除t_qm_templatedetail对应的数据
-                            Util.ajax.putJson(Util.constants.CONTEXT.concat(Util.constants.ADD_CHECK_TEMPLATE).concat("/deleteByIds/").concat(ids), {}, function (result) {
+                            Util.ajax.putJson(Util.constants.CONTEXT.concat(Util.constants.ADD_CHECK_TEMPLATE).concat("/deleteByIds"),JSON.stringify(ids), function (result) {
 
                                 $.messager.show({
                                     msg: result.RSP.RSP_DESC,
@@ -217,11 +223,6 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
                                     showType: 'slide'
                                 });
                             })
-
-                            //将操作信息保存到考评模板操作日志表中
-                            var params = {'operateType': '2',"templateId":JSON.stringify(ids)};
-                            Util.ajax.postJson(Util.constants.CONTEXT+ Util.constants.TPL_OP_LOG + "/insertTplOpLog ", JSON.stringify(params), function (result) {
-                            });
                         }
                     });
                 }
@@ -292,6 +293,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
             var status = sensjson.status;
             var templateStatus = {'release':'1','stop':'2'}[status];
             sensjson.templateStatus=templateStatus;
+            sensjson.operateStaffId = operStaffId;//操作工号
             params.push(sensjson);
             $.messager.confirm('确认', '确定更改模板状态吗？', function (confirm) {
 
@@ -330,7 +332,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
                     $.messager.alert("提示", "复制的考评模板不可再次复制!");
                     return false;
                 }
-
+                selRows[0].createStaffId = crtStaffId;//创建工号
                 Util.ajax.postJson(Util.constants.CONTEXT+ Util.constants.CHECK_TEMPLATE + "/copyTemplate", JSON.stringify(selRows[0]), function (result) {
                     $.messager.show({
                         msg: result.RSP.RSP_DESC,

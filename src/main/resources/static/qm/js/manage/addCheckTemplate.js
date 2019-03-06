@@ -2,9 +2,10 @@
 require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], function ($, Util, Transfer,dateUtil) {
     var data = [];
     var i = 0;
-    var disableSubmit = false;  //禁用提交按钮标志
     var num = Math.random()*15000 + 800;//随机生成
     num = parseInt(num, 10);
+    var flag = true;
+    var createStaffId = "9527";//创建工号
     //调用初始化方法
     initialize();
 
@@ -193,7 +194,6 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
 
     //保存操作。将表中的数据保存到数据库中（新增）。
     function insertTempDetail(){
-        return  new Promise(function(resolve, reject){
             //将表中数据保存到详情信息表中
             //获取datagrid中的所有数据，将其拼接成json格式字符串数组
             var rowsData = $('#peopleManage').datagrid('getRows');
@@ -201,8 +201,6 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
             var maxAll = [];// 扣分范围
             var nAll = [];//所占分值
             var loc;
-            // var num = Math.random()*15000 + 800;//随机生成
-            // num = parseInt(num, 10);
             $.each(rowsData, function (i)
             {
                 var maxScore =  parseInt(rowsData[i].maxScore);
@@ -222,10 +220,12 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
                     "errorType": rowsData[i].errorType,
                     "nodeType": '3',
                     "pNodeId":rowsData[i].pNodeId,
+                    "createStaffId":createStaffId//创建工号
                 };
                 json.push(loc);
             });
             if(maxAll.length!=rowsData.length||nAll.length!=rowsData.length){
+                flag = false;
                 $.messager.alert("提示", "扣分范围不能高于所占分值！");
                 disableSubmit = false;
                 return false;
@@ -240,17 +240,19 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
                 nAllScore = nAllScore+i;
             });
             if(nAll.indexOf(0)!=-1){
-                $.messager.alert("提示", "点击行修改分数后,请点击行保持操作！");
+                flag = false;
+                $.messager.alert("提示", "点击行填写分数,然后请点击行保存操作并且每行所占分值不可为0!");
                 return false;
             }
             if(nAllScore!=100||maxAllScore>100){
+                flag = false;
                 $.messager.alert("提示", "所占分值总和必须为100以及扣分范围总和不得高于100!");
-                disableSubmit = false;
+                // disableSubmit = false;
                 return false;
             }
             var param =  {"params":json};
             Util.ajax.postJson(Util.constants.CONTEXT.concat(Util.constants.ADD_CHECK_TEMPLATE).concat("/insertTempDetail"),JSON.stringify(param), function (result) {
-
+                flag = true;
                 $.messager.show({
                     msg: result.RSP.RSP_DESC,
                     timeout: 1000,
@@ -259,24 +261,22 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
                 });
                 var rspCode = result.RSP.RSP_CODE;
                 if (rspCode == "1") {
-                    $('#add_content').window('close'); // 关闭窗口
-                    $("#peopleManage").datagrid('reload'); //插入成功后，刷新页面
+                    // $('#add_content').window('close'); // 关闭窗口
+                    // $("#peopleManage").datagrid('reload'); //插入成功后，刷新页面
                 }
             });
-            resolve();
-        });
     }
 
     function insertCheckTemplate(){
-        return  new Promise(function(resolve, reject){
             //将基本信息保存到基本信息表中
             var templateName = $("#templateName").val();
             var templatChannel = $("#templatChannel").combobox("getValue");//模板渠道
             var templateType = $("#templateType").combobox("getValue");
             var templateStatus = $("#templateStatus").combobox("getValue");
             var templateDesc = $("#templateDesc").val();
+            var crtStaffId = createStaffId;
 
-            var params = {'tenantId': Util.constants.TENANT_ID,'templateName': templateName,
+            var params = {'createStaffId':crtStaffId,'tenantId': Util.constants.TENANT_ID,'templateName': templateName,
                 'templateStatus': templateStatus, 'operateType': '0','remark':templateDesc,'templateType':templateType,"templateId":num.toString(),"scoreType":'2'};
             Util.ajax.postJson(Util.constants.CONTEXT+ Util.constants.CHECK_TEMPLATE + "/insertCheckTemplate ", JSON.stringify(params), function (result) {
 
@@ -288,52 +288,26 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
                 });
                 var rspCode = result.RSP.RSP_CODE;
                 if (rspCode == "1") {
-                    $("#checkTemplateManage").datagrid('reload'); //插入成功后，刷新页面
+                    top.jQuery('#tabs').tabs('close', "新增考评模板");
+                    // $("#checkTemplateManage").datagrid('reload'); //插入成功后，刷新页面
                 }
             });
-            resolve();
-        });
-    }
-
-    function insertTplOpLog(){
-        return  new Promise(function(resolve, reject){
-            //将操作信息保存到考评模板操作日志表中
-            var params = {'tenantId': Util.constants.TENANT_ID,'operateType': '0','operateStaff':'9527','provinceId':'10000','cityId':'2002','templateId':num.toString()};
-            Util.ajax.postJson(Util.constants.CONTEXT+ Util.constants.TPL_OP_LOG + "/insertTplOpLog ", JSON.stringify(params), function (result) {
-                $.messager.show({
-                    msg: result.RSP.RSP_DESC,
-                    timeout: 1000,
-                    style: {right: '', bottom: ''},     //居中显示
-                    showType: 'slide'
-                });
-                top.jQuery('#tabs').tabs('close', "新增考评模板");
-            });
-            resolve();
-        });
     }
 
     function saveEvent() {
         $("#page").on("click", "#saveBut", function () {
-            if(disableSubmit){
-                return;
-            }
-
+            $("#saveBut").unbind("click");//解绑，避免多次提交
             $('#templateName').validatebox({required: true});//非空校验
             $('#templateDesc').validatebox({required: true});//非空校验
             if ($("#templateName").val() == "" || $("#templateDesc").val() == "") {
+                flag = false;
                 $.messager.alert('警告', '必填项不可为空!');
                 return false;
             }
-            insertTempDetail().then(function () {
-                return insertCheckTemplate();
-            })
-                .then(function () {
-                    return insertTplOpLog();
-                })
-                .catch(function(e){
-                    $.messager.alert('警告', '操作错误!');
-                });
-            disableSubmit = true;   //防止多次提交
+            insertTempDetail();
+            if(flag){
+                insertCheckTemplate();
+            }
         });
     }
 
