@@ -349,7 +349,7 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
 
             var map = {'templateName': templateName,'templateStatus': templateStatus,
                 'operateType': '1','remark':templateDesc,
-                'templateType':templateType,"templateId":templateId};
+                'templateType':templateType,"templateId":templateId,"operateStaffId":operateStaffId};
             var params = [];
             params.push(map);
             Util.ajax.putJson(Util.constants.CONTEXT.concat(Util.constants.CHECK_TEMPLATE).concat("/updateTemplate"), JSON.stringify(params), function (result) {
