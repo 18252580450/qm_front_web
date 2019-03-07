@@ -457,9 +457,14 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
 
     //处理过程div
     function getProcessDiv(data, isFinal) {
-        var divClass = "content4-2";
+        var handIngTime = DateUtil.formatDateTime2(data.handIngTime),
+            divClass = "content4-2",
+            color = "#4A4A4A";
         if (isFinal) {
             divClass = "content4-3";
+        }
+        if (data.handIngTime > 7200) {
+            color = "#F5A623";
         }
         return '<div class="' + divClass + '">' +
             '<div class="process-right">' +
@@ -471,7 +476,7 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
             '<div class="leftTop-border"></div>' +
             '<div class="processRight-21">' +
             '<span>建单时间：</span><span class="processRight-211">' + data.crtTime + '</span>' +
-            '<span>处理时长：</span><span class="processRight-212">' + data.handIngTime + '</span>' +
+            '<span>处理时长：</span><span class="processRight-212" style="color:' + color + '">' + handIngTime + '</span>' +
             '<span>考评结果：</span><span id="checkResult_' + data.lgId + '">合格</span>' +
             '</div>' +
             '<div class="processRight-22"><span>处理意见：</span><span>' + data.rmk + '</span></div>' +
