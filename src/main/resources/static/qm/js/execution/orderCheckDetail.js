@@ -98,7 +98,7 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
             loader: function (param, success) {
                 //查询分值类型
                 var templateReqParams = {
-                    "tenantId": orderPool.tenantId,
+                    "tenantId": Util.constants.TENANT_ID,
                     "templateId": orderPool.templateId
                 };
                 var templateParams = $.extend({
@@ -129,7 +129,7 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
 
                 //考评模版详细信息
                 var reqParams = {
-                    "tenantId": orderPool.tenantId,
+                    "tenantId": Util.constants.TENANT_ID,
                     "templateId": orderPool.templateId
                 };
                 var params = $.extend({
@@ -363,7 +363,7 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
 
         //工单质检基本信息
         var orderCheckInfo = {
-            "tenantId": orderPool.tenantId,                          //租户id
+            "tenantId": Util.constants.TENANT_ID,                          //租户id
             "callingNumber": orderPool.acptStaffNum,                 //主叫号码
             "acceptNumber": orderPool.custNum,                       //受理号码
             "touchId": orderPool.wrkfmId,                            //工单流水

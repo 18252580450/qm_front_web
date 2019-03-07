@@ -146,7 +146,7 @@ require(["jquery", "util", "dateUtil", "transfer", "easyui"], function ($, Util)
     //初始化考评项列表
     function initCheckArea() {
         var planReqParams = {
-            "tenantId": voicePool.tenantId,
+            "tenantId": Util.constants.TENANT_ID,
             "planId": voicePool.planId
         };
         var planParams = $.extend({
@@ -172,7 +172,7 @@ require(["jquery", "util", "dateUtil", "transfer", "easyui"], function ($, Util)
 
                 //考评项详细信息
                 var reqParams = {
-                    "tenantId": voicePool.tenantId,
+                    "tenantId": Util.constants.TENANT_ID,
                     "templateId": templateId
                 };
                 var params = $.extend({
@@ -208,7 +208,7 @@ require(["jquery", "util", "dateUtil", "transfer", "easyui"], function ($, Util)
 
                         //查询暂存数据
                         var reqParams = {
-                            "tenantId": voicePool.tenantId,
+                            "tenantId": Util.constants.TENANT_ID,
                             "touchId": voicePool.touchId
                         };
                         var params = $.extend({
@@ -267,7 +267,7 @@ require(["jquery", "util", "dateUtil", "transfer", "easyui"], function ($, Util)
         });
         //初始化考评评语
         var reqParam = {
-            "tenantId": voicePool.tenantId,
+            "tenantId": Util.constants.TENANT_ID,
             "touchId": voicePool.touchId,
             "resultStatus": Util.constants.CHECK_RESULT_TEMP_SAVE
         };
@@ -337,7 +337,7 @@ require(["jquery", "util", "dateUtil", "transfer", "easyui"], function ($, Util)
             checkStartTime = DateUtil.formatDateTime(parseInt(voicePool.operateTime)),
             checkComment = $("#checkComment").val();
         var voiceCheckResult = {
-            "tenantId": voicePool.tenantId,                          //租户id
+            "tenantId": Util.constants.TENANT_ID,                          //租户id
             "provinceId": voicePool.provinceId,                      //省份id
             "callingNumber": voicePool.staffNumber,                  //主叫号码
             "acceptNumber": voicePool.customerNumber,                //受理号码

@@ -580,7 +580,7 @@ require(["js/manage/appealProcessQryDepart", "js/manage/appealProcessQryStaff", 
         }
         var data = {
             "processName": processName,
-            "tenantId": mainProcess.tenantId,
+            "tenantId": Util.constants.TENANT_ID,
             "departmentId": departmentId,
             "departmentName": departmentName,
             "checkType": mainProcess.checkType,
@@ -672,8 +672,6 @@ require(["js/manage/appealProcessQryDepart", "js/manage/appealProcessQryStaff", 
             }
             //子流程已有节点数
             var subNodeNum = subProcessObj.subNodeNum;
-            //子流程租户ID
-            var tenantId = subProcessObj.tenantId;
             //子流程子节点列表
             var subNodeList = [];
             if (subProcessObj.hasOwnProperty("subNodeList")) {
@@ -682,7 +680,7 @@ require(["js/manage/appealProcessQryDepart", "js/manage/appealProcessQryStaff", 
 
             for (var i = 0; i < userIdArr.length; i++) {
                 var data = {
-                    "tenantId": tenantId,
+                    "tenantId": Util.constants.TENANT_ID,
                     "processOrder": processOrder,
                     "nodeId": subNodeNum + 1,
                     "nodeName": subNodeName,
@@ -935,7 +933,7 @@ require(["js/manage/appealProcessQryDepart", "js/manage/appealProcessQryStaff", 
                 //子节点新增
                 for (var n = 0; n < newUserIdArr.length; n++) {
                     var data = {
-                        "tenantId": subProcessObj.tenantId,
+                        "tenantId": Util.constants.TENANT_ID,
                         "processId": subProcessObj.processId,
                         "processOrder": processOrder,
                         "nodeId": subNodeObj.orderNo,

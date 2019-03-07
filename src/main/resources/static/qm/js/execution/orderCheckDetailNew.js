@@ -11,8 +11,8 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
         checkLinkData = [],         //环节考评数据（提交数据）
         totalScore = 0,             //总得分
         replyData = {},             //内外部回复数据
-        recordData = {},            //接触记录数据
-        historyData = {},           //工单历史数据
+        recordData = [],            //接触记录数据
+        historyData = [],           //工单历史数据
         processData = [],           //轨迹数据
         phoneNum,                   //受理号码
         wrkfmId;                    //工单id
@@ -482,7 +482,7 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
 
     //初始化接触记录
     function initRecord() {
-        if (JSON.stringify(recordData) === "{}") {
+        if (recordData.length === 0) {
             var reqParams = {
                 "provCode": orderPool.provinceId,
                 "wrkfmId": wrkfmId
@@ -513,11 +513,10 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
 
     //初始化工单历史
     function initHistory() {
-        if (JSON.stringify(historyData) === "{}") {
+        if (historyData.length === 0) {
             var reqParams = {
                 "provCode": orderPool.provinceId,
-                "phoneNum": phoneNum,
-                "wrkfmId": wrkfmId
+                "phoneNum": phoneNum
             };
             var params = $.extend({
                 "params": JSON.stringify(reqParams)
@@ -873,7 +872,7 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
         if (isFinal) {
             divClass = "content4-3";
         }
-        if(data.handIngTime > 7200){
+        if (data.handIngTime > 7200) {
             color = "#F5A623";
         }
         return '<div class="' + divClass + '">' +

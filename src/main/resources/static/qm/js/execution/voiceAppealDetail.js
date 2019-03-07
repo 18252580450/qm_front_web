@@ -173,7 +173,7 @@ require(["jquery", "util", "dateUtil", "transfer", "easyui"], function ($, Util)
     //初始化考评区
     function initCheckArea() {
         var planReqParams = {
-            "tenantId": voicePool.tenantId,
+            "tenantId": Util.constants.TENANT_ID,
             "planId": voicePool.planId
         };
         var planParams = $.extend({
@@ -199,7 +199,7 @@ require(["jquery", "util", "dateUtil", "transfer", "easyui"], function ($, Util)
 
                 //考评项详细信息
                 var reqParams = {
-                    "tenantId": voicePool.tenantId,
+                    "tenantId": Util.constants.TENANT_ID,
                     "templateId": templateId
                 };
                 var params = $.extend({
@@ -274,7 +274,7 @@ require(["jquery", "util", "dateUtil", "transfer", "easyui"], function ($, Util)
 
         //初始化考评评语
         var reqParam = {
-            "tenantId": voicePool.tenantId,
+            "tenantId": Util.constants.TENANT_ID,
             "inspectionId": voicePool.inspectionId
         };
         var param = $.extend({

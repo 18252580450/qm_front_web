@@ -1,6 +1,7 @@
 require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util) {
 
     var orderPool,
+        showingInfo = 0,            //当前显示的基本信息（0工单基本信息、1内外部回复、2接触记录、3工单历史）
         scoreType,                  //分值类型（默认扣分）
         startTime,                  //页面初始化时间
         checkItemListData = [],     //考评项列表数据（所有环节考评项）
@@ -10,6 +11,8 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
         totalScore = 0,             //总得分
         replyData = {},             //内外部回复数据
         processData = [],           //轨迹数据
+        recordData = [],            //接触记录数据
+        historyData = [],           //工单历史数据
         phoneNum,                   //受理号码
         wrkfmId;                    //工单id
 
@@ -174,7 +177,7 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
                 showDealProcess(processData);  //初始化工单轨迹
                 //初始化考评项列表
                 var reqParams = {
-                    "tenantId": orderPool.tenantId,
+                    "tenantId": Util.constants.TENANT_ID,
                     "planId": orderPool.planId
                 };
                 var params = $.extend({
@@ -268,7 +271,7 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
 
         //初始化考评评语
         var reqParam = {
-            "tenantId": orderPool.tenantId,
+            "tenantId": Util.constants.TENANT_ID,
             "inspectionId": orderPool.inspectionId
         };
         var param = $.extend({
@@ -290,12 +293,22 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
     function initEvent() {
         //基本信息btn
         $("#baseInfoBtn").on("click", function () {
-            changeInfoArea(true);
+            changeInfoArea(0);
         });
         //内外部回复btn
         $("#handlingLogBtn").on("click", function () {
-            changeInfoArea(false);
+            changeInfoArea(1);
             initHandlingLog();
+        });
+        //接触记录btn
+        $("#recordingBtn").on("click", function () {
+            changeInfoArea(2);
+            initRecord();
+        });
+        //工单历史btn
+        $("#historyBtn").on("click", function () {
+            changeInfoArea(3);
+            initHistory();
         });
         //外部回复tab
         $("#externalReplyTab").on("click", function () {
@@ -345,6 +358,69 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
         }
     }
 
+    //初始化接触记录
+    function initRecord() {
+        if (recordData.length === 0) {
+            var reqParams = {
+                "provCode": orderPool.provinceId,
+                "wrkfmId": wrkfmId
+            };
+            var params = $.extend({
+                "params": JSON.stringify(reqParams)
+            }, {});
+
+            Util.loading.showLoading();
+            Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.WRKFM_DETAIL_DNS + "/getRecordList", params, function (result) {
+
+                Util.loading.destroyLoading();
+                var data = result.RSP.DATAS,
+                    rspCode = result.RSP.RSP_CODE;
+                if (rspCode != null && rspCode !== "1") {
+                    $.messager.show({
+                        msg: result.RSP.RSP_DESC,
+                        timeout: 1000,
+                        style: {right: '', bottom: ''},     //居中显示
+                        showType: 'show'
+                    });
+                } else {
+                    recordData = data;
+                }
+            });
+        }
+    }
+
+    //初始化工单历史
+    function initHistory() {
+        if (historyData.length === 0) {
+            var reqParams = {
+                "provCode": orderPool.provinceId,
+                "phoneNum": phoneNum
+            };
+            var params = $.extend({
+                "params": JSON.stringify(reqParams)
+            }, {});
+
+            Util.loading.showLoading();
+            Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.WRKFM_DETAIL_DNS + "/getHistoryProProce", params, function (result) {
+
+                Util.loading.destroyLoading();
+                var data = result.RSP.DATAS,
+                    rspCode = result.RSP.RSP_CODE;
+                if (rspCode != null && rspCode !== "1") {
+                    $.messager.show({
+                        msg: result.RSP.RSP_DESC,
+                        timeout: 1000,
+                        style: {right: '', bottom: ''},     //居中显示
+                        showType: 'show'
+                    });
+                } else {
+                    historyData = data;
+                    showHistory(data);
+                }
+            });
+        }
+    }
+
     //动态显示内外部回复
     function showHandlingLog(data, showExternalReply) {
         if (showExternalReply) {
@@ -358,6 +434,46 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
                 $("#insideReply").append(getReplyDiv(item));
             });
         }
+    }
+
+    //显示工单历史
+    function showHistory(historyData) {
+        //考评项列表
+        var IsCheckFlag = true, //标示是否是勾选复选框选中行的，true - 是 , false - 否
+            historyList = $("#historyList");
+        historyList.datagrid({
+            columns: [[
+                {field: 'wrkfmShowSwftno', title: '工单编号', width: '20%'},
+                {field: 'crtTime', title: '受理时间', width: '20%'},
+                {field: 'dspsComplteStaffNm', title: '工单责任人', width: '15%'},
+                {field: 'srvReqstTypeFullNm', title: '服务请求类型', width: '25%'},
+                {field: 'wrkfmStsNm', title: '工单状态', width: '20%'}
+            ]],
+            fitColumns: true,
+            width: '100%',
+            height: 251,
+            pagination: false,
+            pageSize: 10,
+            pageList: [5, 10, 20, 50],
+            rownumbers: false,
+            checkOnSelect: false,
+            onClickCell: function (rowIndex, field, value) {
+                IsCheckFlag = false;
+            },
+            onSelect: function (rowIndex, rowData) {
+                if (!IsCheckFlag) {
+                    IsCheckFlag = true;
+                    historyList.datagrid("unselectRow", rowIndex);
+                }
+            },
+            onUnselect: function (rowIndex, rowData) {
+                if (!IsCheckFlag) {
+                    IsCheckFlag = true;
+                    historyList.datagrid("selectRow", rowIndex);
+                }
+            }
+        });
+        historyList.datagrid("loadData", {rows: historyData}); //刷新考评项列表
     }
 
     //初始化处理过程
@@ -520,24 +636,60 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
     }
 
     //基本信息、内外部回复切换
-    function changeInfoArea(showBaseInfo) {
+    function changeInfoArea(curShowingInfo) {
         var baseInfoBtn = $("#baseInfoBtn"),
-            handlingLogBtn = $("#handlingLogBtn");
-        if (showBaseInfo) {
-            baseInfoBtn.removeClass();
-            handlingLogBtn.removeClass();
-            baseInfoBtn.addClass("button-1");
-            handlingLogBtn.addClass("button-2");
-            $("#baseInfo").show();
-            $("#handlingLog").hide();
-        } else {
-            baseInfoBtn.removeClass();
-            handlingLogBtn.removeClass();
-            baseInfoBtn.addClass("button-2");
-            handlingLogBtn.addClass("button-1");
-            $("#baseInfo").hide();
-            $("#handlingLog").show();
+            handlingLogBtn = $("#handlingLogBtn"),
+            recordingBtn = $("#recordingBtn"),
+            historyBtn = $("#historyBtn"),
+            baseInfo = $("#baseInfo"),
+            handlingLog = $("#handlingLog"),
+            recording = $("#recording"),
+            history = $("#history");
+        switch (showingInfo) {
+            case 0:
+                baseInfoBtn.removeClass();
+                baseInfoBtn.addClass("button-2");
+                baseInfo.hide();
+                break;
+            case 1:
+                handlingLogBtn.removeClass();
+                handlingLogBtn.addClass("button-2");
+                handlingLog.hide();
+                break;
+            case 2:
+                recordingBtn.removeClass();
+                recordingBtn.addClass("button-2");
+                recording.hide();
+                break;
+            case 3:
+                historyBtn.removeClass();
+                historyBtn.addClass("button-2");
+                history.hide();
+                break;
         }
+        switch (curShowingInfo) {
+            case 0:
+                baseInfoBtn.removeClass();
+                baseInfoBtn.addClass("button-1");
+                baseInfo.show();
+                break;
+            case 1:
+                handlingLogBtn.removeClass();
+                handlingLogBtn.addClass("button-1");
+                handlingLog.show();
+                break;
+            case 2:
+                recordingBtn.removeClass();
+                recordingBtn.addClass("button-1");
+                recording.show();
+                break;
+            case 3:
+                historyBtn.removeClass();
+                historyBtn.addClass("button-1");
+                history.show();
+                break;
+        }
+        showingInfo = curShowingInfo;
     }
 
     //内部回复、外部回复切换

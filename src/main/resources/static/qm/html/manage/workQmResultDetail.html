@@ -12,6 +12,8 @@
     <div class="content-1">
         <button class="button-1" id="baseInfoBtn">基本信息</button>
         <button class="button-2" id="handlingLogBtn">内外回复</button>
+        <button class="button-2" id="recordingBtn">接触记录</button>
+        <button class="button-2" id="historyBtn">工单历史</button>
     </div>
     <!--工单基本信息-->
     <div class="content-2" id="baseInfo">
@@ -52,6 +54,14 @@
         </div>
         <div id="insideReply" style="display:none;">
         </div>
+    </div>
+    <!--接触记录-->
+    <div class="content-2" id="recording" style="height:261px; overflow: auto; display:none;">
+    </div>
+    <!--工单历史-->
+    <div class="content-2" id="history" style="height:261px; overflow: auto; display:none;">
+        <table id='historyList' class='easyui-datagrid' style=' width:100%;'>
+        </table>
     </div>
 
     <div class="content-3">质量评价</div>
