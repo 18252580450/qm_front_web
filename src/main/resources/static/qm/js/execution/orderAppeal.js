@@ -37,13 +37,6 @@ require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util,
                 }
             });
 
-            //申诉人
-            $("#appealStaffId").searchbox({
-                    searcher: function () {
-                    }
-                }
-            );
-
             //申诉处理列表
             var IsCheckFlag = true; //标示是否是勾选复选框选中行的，true - 是 , false - 否
             $("#appealCheckList").datagrid({

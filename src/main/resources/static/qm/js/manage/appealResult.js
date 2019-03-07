@@ -40,19 +40,6 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                 }
             });
 
-            //申诉发起人
-            $("#appealStaffId").searchbox({
-                    searcher: function () {
-                    }
-                }
-            );
-
-            //申诉处理人
-            $("#appealDealStaffId").searchbox({
-                    searcher: function () {
-                    }
-                }
-            );
             //申诉状态下拉框
             $("#appealStatus").combobox({
                 url: '../../data/select_init_data.json',
@@ -136,7 +123,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                 ]],
                 fitColumns: true,
                 width: '100%',
-                height: 420,
+                height: 480,
                 pagination: true,
                 pageSize: 10,
                 pageList: [5, 10, 20, 50],
@@ -161,8 +148,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                     var start = (param.page - 1) * param.rows;
                     var pageNum = param.rows;
 
-                    var inspectionId = $("#inspectionId").val(),
-                        appealTimeBegin = $("#appealBeginTime").datetimebox("getValue"),
+                    var appealTimeBegin = $("#appealBeginTime").datetimebox("getValue"),
                         appealTimeEnd = $("#appealEndTime").datetimebox("getValue"),
                         appealStaffId = $("#appealStaffId").val(),
                         appealId = $("#appealId").val(),
@@ -172,8 +158,6 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                     }
 
                     var reqParams = {
-                        "staffId": Util.constants.STAFF_ID,
-                        "inspectionId": inspectionId,
                         "appealTimeBegin": appealTimeBegin,
                         "appealTimeEnd": appealTimeEnd,
                         "appealStaffId": appealStaffId,
