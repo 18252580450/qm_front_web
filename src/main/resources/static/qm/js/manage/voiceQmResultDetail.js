@@ -1,7 +1,6 @@
 require(["jquery", "util", "dateUtil", "transfer", "easyui"], function ($, Util) {
 
     var voicePool,               //质检数据
-        templateId,              //考评模版Id
         scoreType,               //分值类型（默认扣分）
         startTime,               //页面初始化时间
         checkItemScoreList = []; //考评项评分列表
@@ -172,35 +171,45 @@ require(["jquery", "util", "dateUtil", "transfer", "easyui"], function ($, Util)
 
     //初始化考评区
     function initCheckArea() {
-        var planReqParams = {
-            "tenantId": voicePool.tenantId,
+        //考评项详细信息
+        var reqParams = {
+            "tenantId": Util.constants.TENANT_ID,
             "planId": voicePool.planId
         };
-        var planParams = $.extend({
+        var params = $.extend({
             "start": 0,
             "pageNum": 0,
-            "params": JSON.stringify(planReqParams)
+            "params": JSON.stringify(reqParams)
         }, Util.PageUtil.getParams($("#searchForm")));
 
-        //通过考评计划id查询模版id
-        Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.QM_PLAN_DNS + "/selectByParams", planParams, function (result) {
-            var data = result.RSP.DATA,
+        Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.CHECK_ITEM_DNS + "/queryCheckItemDetail", params, function (result) {
+            var checkItemData = result.RSP.DATA,
                 rspCode = result.RSP.RSP_CODE;
-            if (rspCode !== "1") {
+            if (rspCode != null && rspCode !== "1") {
                 $.messager.show({
                     msg: result.RSP.RSP_DESC,
                     timeout: 1000,
                     style: {right: '', bottom: ''},     //居中显示
-                    showType: 'slide'
+                    showType: 'show'
                 });
-            }
-            if (data.length !== 0) {
-                templateId = data[0].templateId;
+            } else {
+                //分值类型
+                scoreType = result.RSP.DATA[0].scoreType;
+                if (scoreType === "0") {
+                    $("#scoreType").val("合格");
+                }
+                if (scoreType === "1") {
+                    $("#scoreType").val("得分");
+                }
+                if (scoreType === "2") {
+                    $("#scoreType").val("扣分");
+                }
+                //初始化考评项列表
+                $("#checkItemList").datagrid("loadData", {rows: checkItemData});
 
-                //考评项详细信息
+                //质检结果详情
                 var reqParams = {
-                    "tenantId": voicePool.tenantId,
-                    "templateId": templateId
+                    "inspectionId": voicePool.inspectionId
                 };
                 var params = $.extend({
                     "start": 0,
@@ -208,66 +217,30 @@ require(["jquery", "util", "dateUtil", "transfer", "easyui"], function ($, Util)
                     "params": JSON.stringify(reqParams)
                 }, Util.PageUtil.getParams($("#searchForm")));
 
-                Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.CHECK_ITEM_DNS + "/queryCheckItemDetail", params, function (result) {
-                    var checkItemData = result.RSP.DATA,
-                        rspCode = result.RSP.RSP_CODE;
-                    if (rspCode != null && rspCode !== "1") {
-                        $.messager.show({
-                            msg: result.RSP.RSP_DESC,
-                            timeout: 1000,
-                            style: {right: '', bottom: ''},     //居中显示
-                            showType: 'show'
+                Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.VOICE_CHECK_DNS + "/queryVoiceCheckResultDetail", params, function (result) {
+                    debugger;
+                    var savedData = result.RSP.DATA,
+                        rspCode = result.RSP.RSP_CODE,
+                        totalScore = 0;    //考评项总得分
+                    if (rspCode != null && rspCode === "1") {
+                        $.each(savedData, function (i, item) {
+                            var checkItem = {};
+                            checkItem.nodeType = item.nodeType;
+                            checkItem.nodeId = item.nodeId;
+                            checkItem.nodeName = item.nodeName;
+                            checkItem.scoreScope = item.scoreScope;
+                            checkItem.realScore = item.realScore;
+                            checkItem.minScore = item.minScore;
+                            checkItem.maxScore = item.maxScore;
+                            checkItemScoreList.push(checkItem);
+                            //考评项总得分
+                            totalScore += item.realScore;
                         });
                     } else {
-                        //分值类型
-                        scoreType = result.RSP.DATA[0].scoreType;
-                        if (scoreType === "0") {
-                            $("#scoreType").val("合格");
-                        }
-                        if (scoreType === "1") {
-                            $("#scoreType").val("得分");
-                        }
-                        if (scoreType === "2") {
-                            $("#scoreType").val("扣分");
-                        }
-                        //初始化考评项列表
-                        $("#checkItemList").datagrid("loadData", {rows: checkItemData});
-
-                        //质检结果详情
-                        var reqParams = {
-                            "inspectionId": voicePool.inspectionId
-                        };
-                        var params = $.extend({
-                            "start": 0,
-                            "pageNum": 0,
-                            "params": JSON.stringify(reqParams)
-                        }, Util.PageUtil.getParams($("#searchForm")));
-
-                        Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.VOICE_CHECK_DNS + "/queryVoiceCheckResultDetail", params, function (result) {
-                            var savedData = result.RSP.DATA,
-                                rspCode = result.RSP.RSP_CODE,
-                                totalScore = 0;    //考评项总得分
-                            if (rspCode != null && rspCode === "1") {
-                                $.each(savedData, function (i, item) {
-                                    var checkItem = {};
-                                    checkItem.nodeType = item.nodeType;
-                                    checkItem.nodeId = item.nodeId;
-                                    checkItem.nodeName = item.nodeName;
-                                    checkItem.scoreScope = item.scoreScope;
-                                    checkItem.realScore = item.realScore;
-                                    checkItem.minScore = item.minScore;
-                                    checkItem.maxScore = item.maxScore;
-                                    checkItemScoreList.push(checkItem);
-                                    //考评项总得分
-                                    totalScore += item.realScore;
-                                });
-                            } else {
-                                $.messager.alert("提示", result.RSP.RSP_DESC);
-                            }
-                            //刷新评价区数据
-                            refreshCheckArea(totalScore);
-                        });
+                        $.messager.alert("提示", result.RSP.RSP_DESC);
                     }
+                    //刷新评价区数据
+                    refreshCheckArea(totalScore);
                 });
             }
         });
