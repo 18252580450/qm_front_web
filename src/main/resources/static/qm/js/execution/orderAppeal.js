@@ -229,6 +229,7 @@ require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util,
                                     if (record[j].processId === processData[i].processId && record[j].nodeId === parseInt(processData[i].nodeId)) {
                                         processData.splice(i, 1);
                                         i--;
+                                        break;
                                     }
                                 }
                             }
