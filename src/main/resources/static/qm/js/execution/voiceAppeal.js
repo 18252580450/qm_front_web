@@ -177,8 +177,11 @@ require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util,
                 modal: true,
                 title: "审批记录"
             });
+
+            //查询审批流程
             var reqParams = {
-                "appealId": data.appealId
+                "tenantId": Util.constants.TENANT_ID,
+                "processId": data.mainProcessId
             };
             var params = $.extend({
                 "start": 0,
@@ -186,8 +189,9 @@ require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util,
                 "params": JSON.stringify(reqParams)
             }, Util.PageUtil.getParams($("#searchForm")));
 
-            Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.APPEAL_DEAL_DNS + "/queryDealRecord", params, function (result) {
-                var record = result.RSP.DATA,
+            Util.loading.showLoading();
+            Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.APPEAL_PROCESS_CONFIG_DNS + "/queryAppealProcessDetail", params, function (result) {
+                var processData = result.RSP.DATA,
                     rspCode = result.RSP.RSP_CODE;
                 if (rspCode != null && rspCode !== "1") {
                     $.messager.show({
@@ -197,7 +201,48 @@ require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util,
                         showType: 'show'
                     });
                 } else {
-                    showAppealDealProcess(record, data.userName);
+                    //查询审批记录
+                    var reqParams = {
+                        "appealId": data.appealId
+                    };
+                    var params = $.extend({
+                        "start": 0,
+                        "pageNum": 0,
+                        "params": JSON.stringify(reqParams)
+                    }, Util.PageUtil.getParams($("#searchForm")));
+
+                    Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.APPEAL_DEAL_DNS + "/queryDealRecord", params, function (result) {
+                        Util.loading.destroyLoading();
+
+                        var record = result.RSP.DATA,
+                            rspCode = result.RSP.RSP_CODE;
+                        if (rspCode != null && rspCode !== "1") {
+                            $.messager.show({
+                                msg: result.RSP.RSP_DESC,
+                                timeout: 1000,
+                                style: {right: '', bottom: ''},     //居中显示
+                                showType: 'show'
+                            });
+                        } else {
+                            for (var i = 0; i < processData.length; i++) {
+                                for (var j = 0; j < record.length; j++) {
+                                    if (record[j].processId === processData[i].processId && record[j].nodeId === parseInt(processData[i].nodeId)) {
+                                        processData.splice(i, 1);
+                                        i--;
+                                    }
+                                }
+                            }
+                            $.each(processData, function (i, item) {
+                                var map = {};
+                                map.approveStaffName = item.userName;
+                                map.approveStatus = "待审批";
+                                map.approveSuggestion = "";
+                                map.approveTime = "";
+                                record.push(map);
+                            });
+                            showAppealDealProcess(record);
+                        }
+                    });
                 }
             });
         }
@@ -319,7 +364,7 @@ require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util,
         }
 
         //显示审批记录
-        function showAppealDealProcess(record, currentDealStaff) {
+        function showAppealDealProcess(record) {
             var leftDiv = $("#appealLeftDiv"),
                 rightDiv = $("#appealRightDiv");
             $.each(record, function (i, item) {
@@ -329,11 +374,6 @@ require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util,
                 leftDiv.append(getLeftDiv(item));
                 rightDiv.append(getRightDiv(item));
             });
-            if (record.length > 0) {
-                leftDiv.append(getProcessLine());
-            }
-            leftDiv.append(getLeftDiv());
-            rightDiv.append(getCurrentDealDiv(currentDealStaff))
         }
 
         //左侧操作区域
@@ -353,11 +393,16 @@ require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util,
 
         //右侧流程处理过程列表
         function getRightDiv(item) {
-            var approveStatus = "";
+            var approveStatus = item.approveStatus;
             if (item.approveStatus === Util.constants.APPROVE_STATUS_PASS) {
                 approveStatus = "通过";
-            } else {
+            }
+            if (item.approveStatus === Util.constants.APPROVE_STATUS_DENY) {
                 approveStatus = "驳回";
+            }
+            var approveTime = "";
+            if(item.approveTime !== ""){
+                approveTime = DateUtil.formatDateTime(item.approveTime)
             }
             return '<div style="margin-bottom:30px;">' +
                 '<div class="panel-transparent-20 cl"><form class="form form-horizontal"><div class="cl">' +
@@ -370,17 +415,8 @@ require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util,
                 '<div class="formControls col-12"><div class="fl text-small">审批意见：' + item.approveSuggestion + '</div></div>' +
                 '</div></form></div>' +
                 '<div class="panel-transparent-20 cl"><form class="form form-horizontal"><div class="cl">' +
-                '<div class="formControls col-12"><div class="fl text-small">审批时间：' + DateUtil.formatDateTime(item.approveTime) + '</div></div>' +
+                '<div class="formControls col-12"><div class="fl text-small">审批时间：' + approveTime + '</div></div>' +
                 '</div></form> </div>' +
-                '</div>';
-        }
-
-        //当前处理人
-        function getCurrentDealDiv(item) {
-            return '<div style="margin-bottom:30px;">' +
-                '<div class="panel-transparent-20 cl"><form class="form form-horizontal"><div class="cl">' +
-                '<div class="formControls col-12"><div class="fl text-small">当前审批人：' + item + '</div></div>' +
-                '</div></form></div>' +
                 '</div>';
         }
 
