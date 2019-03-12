@@ -365,6 +365,7 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
                     });
                 } else {
                     recordData = data;
+                    showRecord(data);
                 }
             });
         }
@@ -415,6 +416,69 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
                 $("#insideReply").append(getReplyDiv(item));
             });
         }
+    }
+
+    //显示接触记录
+    function showRecord(record) {
+        var IsCheckFlag = true, //标示是否是勾选复选框选中行的，true - 是 , false - 否
+            recordList = $("#recordList");
+        recordList.datagrid({
+            columns: [[
+                {field: 'cntmngSwftno', title: '接触流水', width: '20%'},
+                {field: 'startTime', title: '接触时间', width: '20%'},
+                {
+                    field: 'cntmngDuration', title: '接触时长', width: '10%',
+                    formatter: function (value, row, index) {
+                        return DateUtil.formatDateTime2(value);
+                    }
+                },
+                {field: 'callingNumber', title: '主叫号码', width: '15%'},
+                {field: 'calledNumber', title: '被叫号码', width: '15%'},
+                {
+                    field: 'callTypeNm', title: '呼叫类型', width: '10%',
+                    formatter: function (value, row, index) {
+                        if (value === "0") {
+                            return "呼入";
+                        }
+                        if (value === "1") {
+                            return "呼出";
+                        }
+                    }
+                },
+                {
+                    field: 'operate', title: '操作', width: '10%',
+                    formatter: function (value, row, index) {
+                        var play = '<a href="javascript:void(0);" style="color: deepskyblue;" id = "recordPlay_' + row.cntmngSwftno + '">播放</a>',
+                            download = '<a href="javascript:void(0);" style="color: deepskyblue;" id = "recordDownload_' + row.cntmngSwftno + '">下载</a>';
+                        return play + "&nbsp;&nbsp;" + download;
+                    }
+                }
+            ]],
+            fitColumns: true,
+            width: '100%',
+            height: 251,
+            pagination: false,
+            pageSize: 10,
+            pageList: [5, 10, 20, 50],
+            rownumbers: false,
+            checkOnSelect: false,
+            onClickCell: function (rowIndex, field, value) {
+                IsCheckFlag = false;
+            },
+            onSelect: function (rowIndex, rowData) {
+                if (!IsCheckFlag) {
+                    IsCheckFlag = true;
+                    recordList.datagrid("unselectRow", rowIndex);
+                }
+            },
+            onUnselect: function (rowIndex, rowData) {
+                if (!IsCheckFlag) {
+                    IsCheckFlag = true;
+                    recordList.datagrid("selectRow", rowIndex);
+                }
+            }
+        });
+        recordList.datagrid("loadData", {rows: record}); //刷新考评项列表
     }
 
     //显示工单历史
