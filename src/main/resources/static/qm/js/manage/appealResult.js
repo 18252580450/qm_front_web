@@ -71,6 +71,37 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                 }
             });
 
+            //质检类型下拉框
+            $("#checkType").combobox({
+                url: '../../data/select_init_data.json',
+                method: "GET",
+                valueField: 'paramsCode',
+                textField: 'paramsName',
+                panelHeight: 'auto',
+                editable: false,
+                onLoadSuccess: function () {
+                    var checkTypeSelect = $("#checkType"),
+                        data = checkTypeSelect.combobox('getData');
+                    if (data.length > 0) {
+                        checkTypeSelect.combobox('select', data[0].paramsCode);
+                    }
+                },
+                onSelect: function () {
+                    $("#appealCheckList").datagrid("load");
+                }
+            });
+            CommonAjax.getStaticParams("CHECK_TYPE", function (datas) {
+                if (datas) {
+                    appealStatusData = datas;
+                    var data = {
+                        "paramsCode": "-1",
+                        "paramsName": "全部"
+                    };
+                    datas.unshift(data);
+                    $("#checkType").combobox('loadData', datas);
+                }
+            });
+
             //申诉处理列表
             var IsCheckFlag = true; //标示是否是勾选复选框选中行的，true - 是 , false - 否
             $("#appealCheckList").datagrid({
@@ -152,17 +183,21 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                         appealTimeEnd = $("#appealEndTime").datetimebox("getValue"),
                         appealStaffId = $("#appealStaffId").val(),
                         appealId = $("#appealId").val(),
-                        appealStatus = $("#appealStatus").combobox("getValue");
+                        appealStatus = $("#appealStatus").combobox("getValue"),
+                        checkType = $("#checkType").combobox("getValue");
                     if (appealStatus === "-1") {
                         appealStatus = "";
                     }
-
+                    if (checkType === "-1") {
+                        checkType = "";
+                    }
                     var reqParams = {
                         "appealTimeBegin": appealTimeBegin,
                         "appealTimeEnd": appealTimeEnd,
                         "appealStaffId": appealStaffId,
                         "appealId": appealId,
-                        "appealStatus": appealStatus
+                        "appealStatus": appealStatus,
+                        "checkType":checkType
                     };
                     var params = $.extend({
                         "start": start,
