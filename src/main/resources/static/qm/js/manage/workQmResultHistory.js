@@ -114,7 +114,7 @@ define(["text!html/manage/workQmResultHistory.tpl", "jquery", 'util', "transfer"
                 $.each(data.rows, function (i, item) {
                     $("#resultDetail_" + item.inspectionId, $el).on("click", function () {
                         var url = createURL(orderCheckDetail, item);
-                        showDialog(url, "质检详情", 1200, 600);
+                        showDialog(url, "质检详情", 1000, 580);
                     });
                 });
             }

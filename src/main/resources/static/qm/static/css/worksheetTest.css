@@ -151,6 +151,14 @@
     border-radius: 0 8px 8px 8px;
 }
 
+.processRight-3 {
+    width: 700px;
+    height: 72px;
+    background: #F8F8F9;
+    border: 1px solid #EAEAEA;
+    border-radius: 0 8px 8px 8px;
+}
+
 .check-right {
     margin-left: 20px;
     display: inline-block;

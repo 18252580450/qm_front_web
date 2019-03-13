@@ -22,16 +22,18 @@
                 <span class="formBox-1">工单流水</span><input id="workFormId" class="formBox-2" readonly/>
                 <span class="formBox-1">受理号码</span><input id="custNum" class="formBox-2" readonly/>
                 <span class="formBox-1">工单类型</span><input id="srvReqstTypeFullNm" class="formBox-2" readonly/>
-                <span class="formBox-1">号码归属地</span><input id="custBelgCityNm" class="formBox-2" readonly/>
             </div>
             <div class="formDiv">
+                <span class="formBox-1">号码归属地</span><input id="custBelgCityNm" class="formBox-2" readonly/>
                 <span class="formBox-1">客户等级</span><input id="isVipNm" class="formBox-2" readonly/>
                 <span class="formBox-1">受理渠道</span><input id="acptChnlNm" class="formBox-2" readonly/>
-                <span class="formBox-1">是否重复投诉</span><input id="dplctCmplntsFlagNm" class="formBox-2" readonly/>
-                <span class="formBox-1">是否重大投诉</span><input id="isMajorCmplntsNm" class="formBox-2" readonly/>
             </div>
             <div class="formDiv">
+                <span class="formBox-1">是否重复投诉</span><input id="dplctCmplntsFlagNm" class="formBox-2" readonly/>
+                <span class="formBox-1">是否重大投诉</span><input id="isMajorCmplntsNm" class="formBox-2" readonly/>
                 <span class="formBox-1">故障等级</span><input id="faultLvlNm" class="formBox-2" readonly/>
+            </div>
+            <div class="formDiv">
                 <span class="formBox-1">紧急程度</span><input id="urgntExtentNm" class="formBox-2" readonly/>
                 <span class="formBox-1">客户情绪</span><input id="custMoodTypeNm" class="formBox-2" readonly/>
             </div>
@@ -41,7 +43,7 @@
         </div>
     </div>
     <!--内外部回复-->
-    <div class="content-2" id="handlingLog" style="height:261px; overflow: auto; display:none;">
+    <div class="content-2" id="handlingLog" style="height:308px; overflow: auto; display:none;">
         <div class="formBox">
             <div class="tab-1" id="externalReplyTab">
                 <span id="externalReplySpan" style="margin-left: 18px; color: #4A90E2;">外回复</span>
@@ -56,12 +58,12 @@
         </div>
     </div>
     <!--接触记录-->
-    <div class="content-2" id="recording" style="height:261px; overflow: auto; display:none;">
+    <div class="content-2" id="recording" style="height:308px; overflow: auto; display:none;">
         <table id='recordList' class='easyui-datagrid' style=' width:100%;'>
         </table>
     </div>
     <!--工单历史-->
-    <div class="content-2" id="history" style="height:261px; overflow: auto; display:none;">
+    <div class="content-2" id="history" style="height:308px; overflow: auto; display:none;">
         <table id='historyList' class='easyui-datagrid' style=' width:100%;'>
         </table>
     </div>

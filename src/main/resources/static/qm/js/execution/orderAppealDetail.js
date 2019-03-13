@@ -81,7 +81,7 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
                 }
             ]],
             fitColumns: true,
-            width: '80%',
+            width: 820,
             height: 200,
             rownumbers: false,
             checkOnSelect: false,
@@ -475,7 +475,7 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
             ]],
             fitColumns: true,
             width: '100%',
-            height: 251,
+            height: 298,
             pagination: false,
             pageSize: 10,
             pageList: [5, 10, 20, 50],
@@ -515,7 +515,7 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
             ]],
             fitColumns: true,
             width: '100%',
-            height: 251,
+            height: 298,
             pagination: false,
             pageSize: 10,
             pageList: [5, 10, 20, 50],
@@ -652,7 +652,7 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
             '<span>部门：</span><span class="processRight-11">' + data.opWorkGroupNm + '</span><span>工号</span><span class="processRight-12">' + data.opStaffId + '</span>' +
             '<span>操作环节：</span><span class="processRight-13">' + data.opTypeNm +
             '</div>' +
-            '<div class="processRight-2">' +
+            '<div class="processRight-3">' +
             '<div class="leftTop-border"></div>' +
             '<div class="processRight-21">' +
             '<span>建单时间：</span><span class="processRight-211">' + data.crtTime + '</span>' +

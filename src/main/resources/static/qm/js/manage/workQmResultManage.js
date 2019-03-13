@@ -226,7 +226,7 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
                 $.each(data.rows, function (i, item) {
                     $("#resultDetail_" + item.inspectionId).on("click", function () {
                         var url = createURL(orderCheckDetail, item);
-                        showDialog(url, "质检详情", 1200, 600);
+                        showDialog(url, "质检详情", 1000, 580);
                     });
                 });
                 //质检历史
