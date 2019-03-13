@@ -1,6 +1,7 @@
 
 require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], function ($, Util, Transfer,dateUtil) {
     var data = [];
+    var allChildrenNodes = [];
     var i = 0;
     var templateId=null;
     var templateName=null;
@@ -52,12 +53,25 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
         callback : {
             onClick: function (e, id, node) {//点击事件
                 if (node.isParent) {//父节点
+                    data = [];
+                    allChildrenNodes = [];//清空原数组中的数据
+                    allChildrenNodes = getAllChildrenNodes(node,allChildrenNodes);
+                    for(var i=0;i<allChildrenNodes.length;i++){
+                        var map = {};
+                        map['id'] = allChildrenNodes[i].id;
+                        map['text'] = allChildrenNodes[i].name;
+                        map['type'] = allChildrenNodes[i].type;
+                        map['pId'] = allChildrenNodes[i].pId;
+                        data.push(map);
+                    }
                     $("#page").off("click","#addTemplate");//解决点击多次ztree之后再点击按钮后，被多次调用
                     $("#page").on("click", "#addTemplate", function () {//点击父节点,然后跳出弹出框，右侧新增
                         addWindowEvent(node,true);
                     });
 
                 } else {//点击子节点，右侧直接新增
+                    data = [];
+                    allChildrenNodes = [];//清空原数组中的数据
                     $("#page").off("click","#addTemplate");
                     $("#page").on("click", "#addTemplate", function () {//点击子节点,然后右侧新增
                         addWindowEvent(node,false);
@@ -66,6 +80,21 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
             }
         }
     };
+
+    //递归获取该节点下所有的子节点
+    function getAllChildrenNodes(node,allChildrenNodes) {
+        if(node.isParent){
+            var childrenNodes = node.children;
+            if(childrenNodes){
+                for (var i = 0;i<childrenNodes.length;i++){
+                    allChildrenNodes.push(childrenNodes[i]);
+                    getAllChildrenNodes(childrenNodes[i],allChildrenNodes);
+                }
+            }
+        }
+        return allChildrenNodes;
+    }
+
 
     function showTree(){
         var zNodes = [];
@@ -82,15 +111,8 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
             var resultNew = result.RSP.DATA;
             for(var i=0;i<resultNew.length;i++){
                 var nodeMap =
-                    {id: resultNew[i].checkItemId, pId: resultNew[i].parentCheckItemId, name: resultNew[i].checkItemName}
+                    {id: resultNew[i].checkItemId, pId: resultNew[i].parentCheckItemId, name: resultNew[i].checkItemName,type:resultNew[i].checkItemVitalType}
                 zNodes.push(nodeMap);
-
-                var map = {};
-                map['id'] = resultNew[i].checkItemId;
-                map['text'] = resultNew[i].checkItemName;
-                map['type'] = resultNew[i].checkItemVitalType;
-                map['pId'] = resultNew[i].parentCheckItemId;
-                data.push(map);
             }
             $.fn.zTree.init($("#tree"), setting, zNodes);
         });
