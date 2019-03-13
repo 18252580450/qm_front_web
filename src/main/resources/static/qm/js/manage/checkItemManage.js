@@ -852,6 +852,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
                     for (var j = 0; j < openCheckItem.length; j++) {
                         if (nodeMap.id === openCheckItem[j]) {
                             nodeMap.open = true;
+                            break;
                         }
                     }
                 }

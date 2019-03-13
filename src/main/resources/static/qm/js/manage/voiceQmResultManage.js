@@ -211,7 +211,7 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
                 $.each(data.rows, function (i, item) {
                     $("#resultDetail_" + item.inspectionId).on("click", function () {
                         var url = createURL(voiceCheckDetail, item);
-                        showDialog(url, "质检详情", 1200, 600);
+                        showDialog(url, "质检详情", 1000, 580);
                     });
                 });
                 //质检历史

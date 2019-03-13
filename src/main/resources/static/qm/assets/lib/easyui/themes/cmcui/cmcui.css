@@ -3202,6 +3202,10 @@ y:focus, .btn-secondary:active, .btn-secondary.active {
 	box-sizing: border-box;
     padding-right: 8%;background:#FFF
 }
+.row-2 {
+  box-sizing: border-box;
+  background:#FFF
+}
 [class^="col-"], [class*=" col-"] {
 	box-sizing:border-box;
 	float:left;

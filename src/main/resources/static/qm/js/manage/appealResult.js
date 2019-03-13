@@ -242,11 +242,11 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                         $("#checkFlow_" + item.appealId).on("click", function () {
                             if (item.checkType === Util.constants.CHECK_TYPE_VOICE) {
                                 var voiceUrl = createURL(voiceCheckDetail, item);
-                                showDialog(voiceUrl, "质检详情", 1200, 650);
+                                showDialog(voiceUrl, "质检详情", 1000, 580);
                             }
                             if (item.checkType === Util.constants.CHECK_TYPE_ORDER) {
                                 var orderUrl = createURL(orderCheckDetail, item);
-                                showDialog(orderUrl, "质检详情", 1200, 650);
+                                showDialog(orderUrl, "质检详情", 1000, 580);
                             }
                         });
                     });
