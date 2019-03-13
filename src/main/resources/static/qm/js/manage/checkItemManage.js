@@ -3,6 +3,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
     var setting,               //ztree配置
         checkTypeData = [],    //考评项下拉框静态数据
         checkItemListData = [],//所有考评项
+        openCheckItem = [],    //记录展开的目录路径（保存节点id）
         checkItemData = [],    //新增考评项下拉框静态数据
         checkLinkData = [],    //工单考评环节静态数据
         vitalTypeData = [],    //新增致命类别下拉框静态数据
@@ -113,6 +114,17 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
                         });
                         $("#checkItemList").datagrid('loadData', data);
                     }
+                },
+                onCollapse: function (e, id, node) {  //目录折叠，保存目录展开路径
+                    for (var i = 0; i < openCheckItem.length; i++) {
+                        if (openCheckItem[i] === node.id) {
+                            openCheckItem.splice(i, 1);
+                            break;
+                        }
+                    }
+                },
+                onExpand: function (e, id, node) {    //目录展开，保存目录展开路径
+                    openCheckItem.push(node.id);
                 }
             }
         };
@@ -830,13 +842,26 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
                         name: data[i].checkItemName,
                         catalogFlag: data[i].catalogFlag
                     };
+                if (openCheckItem.length === 0) {  //初次加载默认展开一级目录
+                    if (data[i].orderNo <= 1) {
+                        nodeMap.open = true;
+                        openCheckItem.push(nodeMap.id);
+                    }
+                } else {
+                    //展开刷新前的目录路径
+                    for (var j = 0; j < openCheckItem.length; j++) {
+                        if (nodeMap.id === openCheckItem[j]) {
+                            nodeMap.open = true;
+                        }
+                    }
+                }
                 zNodes.push(nodeMap);
             }
             $.fn.zTree.init($("#checkItemTree"), setting, zNodes);
             fixIcon();  //将空文件夹显示为文件夹图标
 
             if (data.length > 0) {
-                //父节点名称
+                //更新选中节点
                 checkNode.id = data[0].checkItemId;
                 checkNode.parentId = data[0].parentCheckItemId;
                 checkNode.name = data[0].checkItemName;
