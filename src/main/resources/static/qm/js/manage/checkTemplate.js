@@ -16,7 +16,6 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
 
     //初始化列表
     function initGrid() {
-
         //模板渠道下拉框
         $("#templatChannel").combobox({
             url: '../../data/checkTemp_type.json',
