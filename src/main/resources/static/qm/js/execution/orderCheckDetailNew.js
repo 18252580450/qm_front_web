@@ -261,9 +261,8 @@ require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util,
                         }, Util.PageUtil.getParams($("#searchForm")));
 
                         Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.ORDER_CHECK_DNS + "/querySavedResult", params, function (result) {
-                            var savedData = result.RSP.DATA,
-                                rspCode = result.RSP.RSP_CODE;
-                            if (rspCode != null && rspCode === "1") {
+                            if (result.RSP.RSP_CODE === "1") {
+                                var savedData = result.RSP.DATA;
                                 //初始化环节考评数据（暂存数据）
                                 $.each(processData, function (i, processItem) {
                                     var checkItemScoreList = [],
@@ -370,10 +369,8 @@ require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util,
         }, Util.PageUtil.getParams($("#searchForm")));
 
         Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.ORDER_CHECK_DNS + "/queryOrderCheckResult", param, function (result) {
-            var data = result.RSP.DATA,
-                rspCode = result.RSP.RSP_CODE;
-            if (rspCode != null && rspCode === "1") {
-                $("#checkComment").html(data[0].checkComment);
+            if (result.RSP.RSP_CODE === "1") {
+                $("#checkComment").html(result.RSP.DATA[0].checkComment);
             }
         });
     }
@@ -392,7 +389,9 @@ require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util,
         //接触记录btn
         $("#recordingBtn").on("click", function () {
             changeInfoArea(2);
-            initRecord();
+            if (recordData.length === 0) {
+                initRecord();
+            }
         });
         //工单历史btn
         $("#historyBtn").on("click", function () {
@@ -465,18 +464,16 @@ require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util,
             Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.WRKFM_DETAIL_DNS + "/getHandingLog", params, function (result) {
 
                 Util.loading.destroyLoading();
-                var data = result.RSP.DATA,
-                    rspCode = result.RSP.RSP_CODE;
-                if (rspCode != null && rspCode !== "1") {
+                if (result.RSP.RSP_CODE === "1") {
+                    replyData = result.RSP.DATA;
+                    showHandlingLog(replyData.externalReply, true); //展示外回复信息
+                } else {
                     $.messager.show({
                         msg: result.RSP.RSP_DESC,
                         timeout: 1000,
                         style: {right: '', bottom: ''},     //居中显示
                         showType: 'show'
                     });
-                } else {
-                    replyData = data;
-                    showHandlingLog(replyData.externalReply, true); //展示外回复信息
                 }
             });
         }
@@ -484,34 +481,100 @@ require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util,
 
     //初始化接触记录
     function initRecord() {
-        if (recordData.length === 0) {
-            var reqParams = {
-                "provCode": orderPool.provinceId,
-                "wrkfmId": wrkfmId
-            };
-            var params = $.extend({
-                "params": JSON.stringify(reqParams)
-            }, {});
-
-            Util.loading.showLoading();
-            Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.WRKFM_DETAIL_DNS + "/getRecordList", params, function (result) {
-
-                Util.loading.destroyLoading();
-                var data = result.RSP.DATAS,
-                    rspCode = result.RSP.RSP_CODE;
-                if (rspCode != null && rspCode !== "1") {
-                    $.messager.show({
-                        msg: result.RSP.RSP_DESC,
-                        timeout: 1000,
-                        style: {right: '', bottom: ''},     //居中显示
-                        showType: 'show'
-                    });
-                } else {
-                    recordData = data;
-                    showRecord(data);
+        var IsCheckFlag = true, //标示是否是勾选复选框选中行的，true - 是 , false - 否
+            recordList = $("#recordList");
+        recordList.datagrid({
+            columns: [[
+                {field: 'cntmngSwftno', title: '接触流水', width: '20%'},
+                {field: 'startTime', title: '接触时间', width: '20%'},
+                {
+                    field: 'cntmngDuration', title: '接触时长', width: '10%',
+                    formatter: function (value, row, index) {
+                        return DateUtil.formatDateTime2(value);
+                    }
+                },
+                {field: 'callingNumber', title: '主叫号码', width: '15%'},
+                {field: 'calledNumber', title: '被叫号码', width: '15%'},
+                {
+                    field: 'callTypeNm', title: '呼叫类型', width: '10%',
+                    formatter: function (value, row, index) {
+                        if (value === "0") {
+                            return "呼入";
+                        }
+                        if (value === "1") {
+                            return "呼出";
+                        }
+                    }
+                },
+                {
+                    field: 'operate', title: '操作', width: '10%',
+                    formatter: function (value, row, index) {
+                        var play = '<a href="javascript:void(0);" style="color: deepskyblue;" id = "recordPlay_' + row.cntmngSwftno + '">播放</a>',
+                            download = '<a href="javascript:void(0);" style="color: deepskyblue;" id = "recordDownload_' + row.cntmngSwftno + '">下载</a>';
+                        return play + "&nbsp;&nbsp;" + download;
+                    }
                 }
-            });
-        }
+            ]],
+            fitColumns: true,
+            width: '100%',
+            height: 251,
+            pagination: true,
+            pageSize: 10,
+            pageList: [5, 10, 20, 50],
+            rownumbers: false,
+            checkOnSelect: false,
+            onClickCell: function (rowIndex, field, value) {
+                IsCheckFlag = false;
+            },
+            onSelect: function (rowIndex, rowData) {
+                if (!IsCheckFlag) {
+                    IsCheckFlag = true;
+                    recordList.datagrid("unselectRow", rowIndex);
+                }
+            },
+            onUnselect: function (rowIndex, rowData) {
+                if (!IsCheckFlag) {
+                    IsCheckFlag = true;
+                    recordList.datagrid("selectRow", rowIndex);
+                }
+            },
+            loader: function (param, success) {
+                var start = (param.page - 1) * param.rows,
+                    pageNum = param.rows;
+                var reqParams = {
+                    "start": start,
+                    "limit": pageNum,
+                    "provCode": orderPool.provinceId,
+                    "wrkfmId": wrkfmId
+                };
+                var params = $.extend({
+                    "params": JSON.stringify(reqParams)
+                }, {});
+
+                Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.WRKFM_DETAIL_DNS + "/getRecordList", params, function (result) {
+                    if (result.RSP.RSP_CODE === "1") {
+                        var data = {
+                            rows: result.RSP.DATAS,
+                            total: result.RSP.ATTACH.TOTAL
+                        };
+                        recordData = result.RSP.DATAS;
+                        success(data);
+                    } else {
+                        $.messager.show({
+                            msg: result.RSP.RSP_DESC,
+                            timeout: 1000,
+                            style: {right: '', bottom: ''},     //居中显示
+                            showType: 'show'
+                        });
+                        var emptyData = {
+                            rows: [],
+                            total: 0
+                        };
+                        success(emptyData);
+                    }
+                });
+            }
+        });
     }
 
     //初始化工单历史
@@ -597,69 +660,6 @@ require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util,
                 $("#insideReply").append(getReplyDiv(item));
             });
         }
-    }
-
-    //显示接触记录
-    function showRecord(record) {
-        var IsCheckFlag = true, //标示是否是勾选复选框选中行的，true - 是 , false - 否
-            recordList = $("#recordList");
-        recordList.datagrid({
-            columns: [[
-                {field: 'cntmngSwftno', title: '接触流水', width: '20%'},
-                {field: 'startTime', title: '接触时间', width: '20%'},
-                {
-                    field: 'cntmngDuration', title: '接触时长', width: '10%',
-                    formatter: function (value, row, index) {
-                        return DateUtil.formatDateTime2(value);
-                    }
-                },
-                {field: 'callingNumber', title: '主叫号码', width: '15%'},
-                {field: 'calledNumber', title: '被叫号码', width: '15%'},
-                {
-                    field: 'callTypeNm', title: '呼叫类型', width: '10%',
-                    formatter: function (value, row, index) {
-                        if (value === "0") {
-                            return "呼入";
-                        }
-                        if (value === "1") {
-                            return "呼出";
-                        }
-                    }
-                },
-                {
-                    field: 'operate', title: '操作', width: '10%',
-                    formatter: function (value, row, index) {
-                        var play = '<a href="javascript:void(0);" style="color: deepskyblue;" id = "recordPlay_' + row.cntmngSwftno + '">播放</a>',
-                            download = '<a href="javascript:void(0);" style="color: deepskyblue;" id = "recordDownload_' + row.cntmngSwftno + '">下载</a>';
-                        return play + "&nbsp;&nbsp;" + download;
-                    }
-                }
-            ]],
-            fitColumns: true,
-            width: '100%',
-            height: 251,
-            pagination: false,
-            pageSize: 10,
-            pageList: [5, 10, 20, 50],
-            rownumbers: false,
-            checkOnSelect: false,
-            onClickCell: function (rowIndex, field, value) {
-                IsCheckFlag = false;
-            },
-            onSelect: function (rowIndex, rowData) {
-                if (!IsCheckFlag) {
-                    IsCheckFlag = true;
-                    recordList.datagrid("unselectRow", rowIndex);
-                }
-            },
-            onUnselect: function (rowIndex, rowData) {
-                if (!IsCheckFlag) {
-                    IsCheckFlag = true;
-                    recordList.datagrid("selectRow", rowIndex);
-                }
-            }
-        });
-        recordList.datagrid("loadData", {rows: record}); //刷新考评项列表
     }
 
     //初始化处理过程

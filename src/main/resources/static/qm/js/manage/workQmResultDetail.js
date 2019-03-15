@@ -284,12 +284,16 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
         //接触记录btn
         $("#recordingBtn").on("click", function () {
             changeInfoArea(2);
-            initRecord();
+            if (recordData.length === 0) {
+                initRecord();
+            }
         });
         //工单历史btn
         $("#historyBtn").on("click", function () {
             changeInfoArea(3);
-            initHistory();
+            if (historyData.length === 0) {
+                initHistory();
+            }
         });
         //外部回复tab
         $("#externalReplyTab").on("click", function () {
@@ -341,85 +345,6 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
 
     //初始化接触记录
     function initRecord() {
-        if (recordData.length === 0) {
-            var reqParams = {
-                "provCode": orderResult.provinceId,
-                "wrkfmId": wrkfmId
-            };
-            var params = $.extend({
-                "params": JSON.stringify(reqParams)
-            }, {});
-
-            Util.loading.showLoading();
-            Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.WRKFM_DETAIL_DNS + "/getRecordList", params, function (result) {
-
-                Util.loading.destroyLoading();
-                var data = result.RSP.DATAS,
-                    rspCode = result.RSP.RSP_CODE;
-                if (rspCode != null && rspCode !== "1") {
-                    $.messager.show({
-                        msg: result.RSP.RSP_DESC,
-                        timeout: 1000,
-                        style: {right: '', bottom: ''},     //居中显示
-                        showType: 'show'
-                    });
-                } else {
-                    recordData = data;
-                    showRecord(data);
-                }
-            });
-        }
-    }
-
-    //初始化工单历史
-    function initHistory() {
-        if (historyData.length === 0) {
-            var reqParams = {
-                "provCode": orderResult.provinceId,
-                "phoneNum": phoneNum
-            };
-            var params = $.extend({
-                "params": JSON.stringify(reqParams)
-            }, {});
-
-            Util.loading.showLoading();
-            Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.WRKFM_DETAIL_DNS + "/getHistoryProProce", params, function (result) {
-
-                Util.loading.destroyLoading();
-                var data = result.RSP.DATAS,
-                    rspCode = result.RSP.RSP_CODE;
-                if (rspCode != null && rspCode !== "1") {
-                    $.messager.show({
-                        msg: result.RSP.RSP_DESC,
-                        timeout: 1000,
-                        style: {right: '', bottom: ''},     //居中显示
-                        showType: 'show'
-                    });
-                } else {
-                    historyData = data;
-                    showHistory(data);
-                }
-            });
-        }
-    }
-
-    //动态显示内外部回复
-    function showHandlingLog(data, showExternalReply) {
-        if (showExternalReply) {
-            $("#externalReply").empty();
-            $.each(data, function (i, item) {
-                $("#externalReply").append(getReplyDiv(item));
-            });
-        } else {
-            $("#insideReply").empty();
-            $.each(data, function (i, item) {
-                $("#insideReply").append(getReplyDiv(item));
-            });
-        }
-    }
-
-    //显示接触记录
-    function showRecord(record) {
         var IsCheckFlag = true, //标示是否是勾选复选框选中行的，true - 是 , false - 否
             recordList = $("#recordList");
         recordList.datagrid({
@@ -457,7 +382,7 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
             fitColumns: true,
             width: '100%',
             height: 298,
-            pagination: false,
+            pagination: true,
             pageSize: 10,
             pageList: [5, 10, 20, 50],
             rownumbers: false,
@@ -476,14 +401,48 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
                     IsCheckFlag = true;
                     recordList.datagrid("selectRow", rowIndex);
                 }
+            },
+            loader: function (param, success) {
+                var start = (param.page - 1) * param.rows,
+                    pageNum = param.rows;
+                var reqParams = {
+                    "start": start,
+                    "limit": pageNum,
+                    "provCode": orderResult.provinceId,
+                    "wrkfmId": wrkfmId
+                };
+                var params = $.extend({
+                    "params": JSON.stringify(reqParams)
+                }, {});
+
+                Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.WRKFM_DETAIL_DNS + "/getRecordList", params, function (result) {
+                    if (result.RSP.RSP_CODE === "1") {
+                        var data = {
+                            rows: result.RSP.DATAS,
+                            total: result.RSP.ATTACH.TOTAL
+                        };
+                        recordData = result.RSP.DATAS;
+                        success(data);
+                    } else {
+                        $.messager.show({
+                            msg: result.RSP.RSP_DESC,
+                            timeout: 1000,
+                            style: {right: '', bottom: ''},     //居中显示
+                            showType: 'show'
+                        });
+                        var emptyData = {
+                            rows: [],
+                            total: 0
+                        };
+                        success(emptyData);
+                    }
+                });
             }
         });
-        recordList.datagrid("loadData", {rows: record}); //刷新考评项列表
     }
 
-    //显示工单历史
-    function showHistory(historyData) {
-        //考评项列表
+    //初始化工单历史
+    function initHistory() {
         var IsCheckFlag = true, //标示是否是勾选复选框选中行的，true - 是 , false - 否
             historyList = $("#historyList");
         historyList.datagrid({
@@ -497,7 +456,7 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
             fitColumns: true,
             width: '100%',
             height: 298,
-            pagination: false,
+            pagination: true,
             pageSize: 10,
             pageList: [5, 10, 20, 50],
             rownumbers: false,
@@ -516,9 +475,55 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
                     IsCheckFlag = true;
                     historyList.datagrid("selectRow", rowIndex);
                 }
+            },
+            loader: function (param, success) {
+                var start = (param.page - 1) * param.rows,
+                    pageNum = param.rows;
+                var reqParams = {
+                    "start": start,
+                    "limit": pageNum,
+                    "provCode": orderResult.provinceId,
+                    "phoneNum": phoneNum
+                };
+                var params = $.extend({
+                    "params": JSON.stringify(reqParams)
+                }, {});
+
+                Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.WRKFM_DETAIL_DNS + "/getHistoryProProce", params, function (result) {
+                    var data = {
+                            rows: result.RSP.DATAS,
+                            total: result.RSP.ATTACH.TOTAL
+                        },
+                        rspCode = result.RSP.RSP_CODE;
+                    if (rspCode != null && rspCode !== "1") {
+                        $.messager.show({
+                            msg: result.RSP.RSP_DESC,
+                            timeout: 1000,
+                            style: {right: '', bottom: ''},     //居中显示
+                            showType: 'show'
+                        });
+                    } else {
+                        historyData = result.RSP.DATAS;
+                        success(data);
+                    }
+                });
             }
         });
-        historyList.datagrid("loadData", {rows: historyData}); //刷新考评项列表
+    }
+
+    //动态显示内外部回复
+    function showHandlingLog(data, showExternalReply) {
+        if (showExternalReply) {
+            $("#externalReply").empty();
+            $.each(data, function (i, item) {
+                $("#externalReply").append(getReplyDiv(item));
+            });
+        } else {
+            $("#insideReply").empty();
+            $.each(data, function (i, item) {
+                $("#insideReply").append(getReplyDiv(item));
+            });
+        }
     }
 
     //初始化处理过程
