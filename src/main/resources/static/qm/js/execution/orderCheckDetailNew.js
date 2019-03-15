@@ -1,4 +1,4 @@
-require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util) {
+require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util, Transfer) {
 
     var orderPool,
         showingInfo = 0,            //当前显示的基本信息（0工单基本信息、1内外部回复、2接触记录、3工单历史）
@@ -397,7 +397,9 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
         //工单历史btn
         $("#historyBtn").on("click", function () {
             changeInfoArea(3);
-            initHistory();
+            if (historyData.length === 0) {
+                initHistory();
+            }
         });
         //外部回复tab
         $("#externalReplyTab").on("click", function () {
@@ -514,34 +516,75 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
 
     //初始化工单历史
     function initHistory() {
-        if (historyData.length === 0) {
-            var reqParams = {
-                "provCode": orderPool.provinceId,
-                "phoneNum": phoneNum
-            };
-            var params = $.extend({
-                "params": JSON.stringify(reqParams)
-            }, {});
-
-            Util.loading.showLoading();
-            Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.WRKFM_DETAIL_DNS + "/getHistoryProProce", params, function (result) {
-
-                Util.loading.destroyLoading();
-                var data = result.RSP.DATAS,
-                    rspCode = result.RSP.RSP_CODE;
-                if (rspCode != null && rspCode !== "1") {
-                    $.messager.show({
-                        msg: result.RSP.RSP_DESC,
-                        timeout: 1000,
-                        style: {right: '', bottom: ''},     //居中显示
-                        showType: 'show'
-                    });
-                } else {
-                    historyData = data;
-                    showHistory(data);
+        var IsCheckFlag = true, //标示是否是勾选复选框选中行的，true - 是 , false - 否
+            historyList = $("#historyList");
+        historyList.datagrid({
+            columns: [[
+                {field: 'wrkfmShowSwftno', title: '工单编号', width: '20%'},
+                {field: 'crtTime', title: '受理时间', width: '20%'},
+                {field: 'dspsComplteStaffNm', title: '工单责任人', width: '15%'},
+                {field: 'srvReqstTypeFullNm', title: '服务请求类型', width: '25%'},
+                {field: 'wrkfmStsNm', title: '工单状态', width: '20%'}
+            ]],
+            fitColumns: true,
+            width: '100%',
+            height: 251,
+            pagination: true,
+            pageSize: 10,
+            pageList: [5, 10, 20, 50],
+            rownumbers: false,
+            checkOnSelect: false,
+            onClickCell: function (rowIndex, field, value) {
+                IsCheckFlag = false;
+            },
+            onSelect: function (rowIndex, rowData) {
+                if (!IsCheckFlag) {
+                    IsCheckFlag = true;
+                    historyList.datagrid("unselectRow", rowIndex);
                 }
-            });
-        }
+            },
+            onUnselect: function (rowIndex, rowData) {
+                if (!IsCheckFlag) {
+                    IsCheckFlag = true;
+                    historyList.datagrid("selectRow", rowIndex);
+                }
+            },
+            loader: function (param, success) {
+                var start = (param.page - 1) * param.rows,
+                    pageNum = param.rows;
+                var reqParams = {
+                    "start": start,
+                    "limit": pageNum,
+                    "provCode": orderPool.provinceId,
+                    "phoneNum": phoneNum
+                };
+                var params = $.extend({
+                    "params": JSON.stringify(reqParams)
+                }, {});
+
+                Util.loading.showLoading();
+                Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.WRKFM_DETAIL_DNS + "/getHistoryProProce", params, function (result) {
+
+                    Util.loading.destroyLoading();
+                    var data = {
+                            rows: result.RSP.DATAS,
+                            total: result.RSP.ATTACH.TOTAL
+                        },
+                        rspCode = result.RSP.RSP_CODE;
+                    if (rspCode != null && rspCode !== "1") {
+                        $.messager.show({
+                            msg: result.RSP.RSP_DESC,
+                            timeout: 1000,
+                            style: {right: '', bottom: ''},     //居中显示
+                            showType: 'show'
+                        });
+                    } else {
+                        historyData = result.RSP.DATAS;
+                        success(data);
+                    }
+                });
+            }
+        });
     }
 
     //显示内外部回复
@@ -620,45 +663,6 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
             }
         });
         recordList.datagrid("loadData", {rows: record}); //刷新考评项列表
-    }
-
-    //显示工单历史
-    function showHistory(historyData) {
-        var IsCheckFlag = true, //标示是否是勾选复选框选中行的，true - 是 , false - 否
-            historyList = $("#historyList");
-        historyList.datagrid({
-            columns: [[
-                {field: 'wrkfmShowSwftno', title: '工单编号', width: '20%'},
-                {field: 'crtTime', title: '受理时间', width: '20%'},
-                {field: 'dspsComplteStaffNm', title: '工单责任人', width: '15%'},
-                {field: 'srvReqstTypeFullNm', title: '服务请求类型', width: '25%'},
-                {field: 'wrkfmStsNm', title: '工单状态', width: '20%'}
-            ]],
-            fitColumns: true,
-            width: '100%',
-            height: 251,
-            pagination: false,
-            pageSize: 10,
-            pageList: [5, 10, 20, 50],
-            rownumbers: false,
-            checkOnSelect: false,
-            onClickCell: function (rowIndex, field, value) {
-                IsCheckFlag = false;
-            },
-            onSelect: function (rowIndex, rowData) {
-                if (!IsCheckFlag) {
-                    IsCheckFlag = true;
-                    historyList.datagrid("unselectRow", rowIndex);
-                }
-            },
-            onUnselect: function (rowIndex, rowData) {
-                if (!IsCheckFlag) {
-                    IsCheckFlag = true;
-                    historyList.datagrid("selectRow", rowIndex);
-                }
-            }
-        });
-        historyList.datagrid("loadData", {rows: historyData}); //刷新考评项列表
     }
 
     //初始化处理过程
