@@ -562,10 +562,7 @@ require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util,
                     "params": JSON.stringify(reqParams)
                 }, {});
 
-                Util.loading.showLoading();
                 Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.WRKFM_DETAIL_DNS + "/getHistoryProProce", params, function (result) {
-
-                    Util.loading.destroyLoading();
                     var data = {
                             rows: result.RSP.DATAS,
                             total: result.RSP.ATTACH.TOTAL
@@ -838,14 +835,6 @@ require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util,
             $.messager.alert("提示", "未对任何环节进行考评!");
             return;
         }
-
-        //针对提交，提交时需要对所有（必检）环节进行考评，现在默认需要对所有环节进行考评
-        // if (checkStatus === Util.constants.CHECK_FLAG_NEW_BUILD || checkStatus === Util.constants.CHECK_FLAG_RECHECK) {
-        //     if (checkLinkData.length < processData.length) {
-        //         $.messager.alert("提示", "有未考评环节!考评后才能提交");
-        //         return;
-        //     }
-        // }
 
         var currentTime = new Date(),
             checkTime = currentTime - startTime,
