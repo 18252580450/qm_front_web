@@ -69,7 +69,9 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
             var childrenNodes = node.children;
             if(childrenNodes){
                 for (var i = 0;i<childrenNodes.length;i++){
-                    allChildrenNodes.push(childrenNodes[i]);
+                    if(!childrenNodes[i].children){
+                        allChildrenNodes.push(childrenNodes[i]);
+                    }
                     getAllChildrenNodes(childrenNodes[i],allChildrenNodes);
                 }
             }
@@ -308,8 +310,18 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
                 });
                 var rspCode = result.RSP.RSP_CODE;
                 if (rspCode == "1") {
+                    //插入成功后，刷新页面
+                    var url = "http://127.0.0.1:8080/qm/html/manage/checkTemplate.html";
+                    var jq = top.jQuery;
+                    jq('#tabs').tabs('select', '考评模板');
+                    var tab = jq('#tabs').tabs('getSelected');
+                    jq('#tabs').tabs('update', {
+                        tab : tab,
+                        options : {
+                            content: '<iframe src="' + url + '" frameBorder="0" border="0" scrolling="auto"  style="width: 100%; height: 100%;"/>',
+                        }
+                    });
                     top.jQuery('#tabs').tabs('close', "新增考评模板");
-                    // $("#checkTemplateManage").datagrid('reload'); //插入成功后，刷新页面
                 }
             });
     }
@@ -370,7 +382,7 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
 
         //模板状态下拉框
         $("#templateStatus").combobox({
-            url: '../../data/checkStatus_type.json',
+            url: '../../data/checkStatus.json',
             method: "GET",
             valueField: 'codeValue',
             textField: 'codeName',
@@ -380,7 +392,7 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
                 var templateStatus = $("#templateStatus");
                 var data = templateStatus.combobox('getData');
                 if (data.length > 0) {
-                    templateStatus.combobox('select', data[4].codeValue);
+                    templateStatus.combobox('select', data[0].codeValue);
                 }
             }
         });

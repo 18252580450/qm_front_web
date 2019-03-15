@@ -22,13 +22,5 @@
     "codeDesc": "暂停",
     "sortId": 0,
     "state": "1"
-  },
-  {
-    "codeType": "TENANT_TYPE@CS_IR",
-    "codeValue": "3",
-    "codeName": "全部",
-    "codeDesc": "全部",
-    "sortId": 0,
-    "state": "1"
   }
 ]

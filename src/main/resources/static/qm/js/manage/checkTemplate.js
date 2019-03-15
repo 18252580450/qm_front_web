@@ -45,7 +45,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
                 var templateStatus = $("#templateStatus");
                 var data = templateStatus.combobox('getData');
                 if (data.length > 0) {
-                    templateStatus.combobox('select', data[4].codeValue);
+                    templateStatus.combobox('select', data[3].codeValue);
                 }
             }
         });
@@ -128,7 +128,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
                 var templateName = $("#templateName").val();
                 var tenantId = $("#templatChannel").combobox("getValue");
                 var templateStatus = $("#templateStatus").combobox("getValue");
-                if(templateStatus == '4'){
+                if(templateStatus == '3'){
                     templateStatus = null;
                 }
                 var reqParams = {
@@ -261,16 +261,17 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
             var templateId = selRows[0].templateId;
             var templateName = selRows[0].templateName;
             var createTime = selRows[0].createTime;
+            var templateStatus = selRows[0].templateStatus;
             var jq = top.jQuery;
             //编码，解决中文乱码问题
-            var url = encodeURI("http://127.0.0.1:8080/qm/html/manage/modifyCheckTemplate.html?templateId="+templateId+"&templateName="+templateName+"&createTime="+createTime);
+            var url = encodeURI("http://127.0.0.1:8080/qm/html/manage/modifyCheckTemplate.html?templateId="+templateId+"&templateName="+templateName+"&createTime="+createTime+"&templateStatus="+templateStatus);
             if (!jq('#tabs').tabs('exists', '修改考评模板')) {
                 jq('#tabs').tabs('add', {
                     title: '修改考评模板',
                     content: '<iframe src="' + url + '" frameBorder="0" border="0" scrolling="auto"  style="width: 100%; height: 100%;"/>',
                     closable: true
                 });
-            }else {//刷新tab页
+            }else { //刷新tab页
                 jq('#tabs').tabs('select', '修改考评模板');
                 var tab = jq('#tabs').tabs('getSelected');
                 jq('#tabs').tabs('update', {
