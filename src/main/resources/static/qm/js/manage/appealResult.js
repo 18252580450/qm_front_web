@@ -92,7 +92,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
             });
             CommonAjax.getStaticParams("CHECK_TYPE", function (datas) {
                 if (datas) {
-                    appealStatusData = datas;
+                    checkTypeData = datas;
                     var data = {
                         "paramsCode": "-1",
                         "paramsName": "全部"
