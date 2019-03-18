@@ -84,7 +84,7 @@ define([
 
 
             //关闭窗口
-            $("#page", $el).on("click", "#close", function () {
+            $("#close", $el).on("click", function () {
                 $("#processQryDepartWindow").window("close");// 成功后，关闭窗口
             });
         }

@@ -169,7 +169,7 @@ define([
                 });
             }
         });
-        addToolsDom();
+        // addToolsDom();
     }
 
     //初始化事件

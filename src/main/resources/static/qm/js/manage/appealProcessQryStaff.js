@@ -219,7 +219,7 @@ define([
 
 
             //关闭窗口
-            $("#page", $el).on("click", "#close", function () {
+            $("#close", $el).on("click", function () {
                 $("#searchForm", $el).form('clear');
                 $("#checkStaffInfo", $el).datagrid('clearChecked');//清除所有勾选状态
                 $("#processQryStaffWindow").window("close");// 成功后，关闭窗口
