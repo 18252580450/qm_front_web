@@ -88,6 +88,20 @@ require(["js/execution/queryQmPeople","js/manage/queryQmPlan","jquery", 'util', 
         //页面信息初始化
     function initPageInfo() {
 
+        $('#checkStaffName').searchbox({ //质检人员查询
+            searcher: function(value){
+                var queryQmPeople = new QueryQmPeople();
+                $('#qry_people_window').show().window({
+                    title: '查询质检人员信息',
+                    width: 1150,
+                    height: 650,
+                    cache: false,
+                    content:queryQmPeople.$el,
+                    modal: true
+                });
+            }
+        });
+
         $('#planName').searchbox({//输入框点击查询事件
             searcher: function(value){
                 var queryQmPlan = new QueryQmPlan();
@@ -95,7 +109,7 @@ require(["js/execution/queryQmPeople","js/manage/queryQmPlan","jquery", 'util', 
                 $('#qry_window').show().window({
                     title: '查询考评计划',
                     width: 1150,
-                    height: 600,
+                    height: 650,
                     cache: false,
                     content:queryQmPlan.$el,
                     modal: true

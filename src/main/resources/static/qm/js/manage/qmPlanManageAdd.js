@@ -49,13 +49,13 @@ define([
         $("#addQmStaffBtn",$el).on("click", function () {
             var div = $("#content",$el);
             div.append(getQmPeopleDiv());
-            require(["js/manage/qryQmPeople"], function (qryQmPeople) {
+            require(["js/manage/queryQmPeople"], function (qryQmPeople) {
                 var queryQmPeople = qryQmPeople;
                 queryQmPeople.initialize();
                 $('#qry_people_window').show().window({
                     title: '查询质检人员信息',
                     width: 1150,
-                    height: 600,
+                    height: 650,
                     cache: false,
                     content:queryQmPeople.$el,
                     modal: true,
@@ -74,13 +74,13 @@ define([
         $("#addCheckedStaffBtn",$el).on("click", function () {
             var div = $("#content",$el);
             div.append(getQmPeopleDiv());
-            require(["js/manage/qryQmPeople"], function (qryQmPeople) {
+            require(["js/manage/queryQmPeople"], function (qryQmPeople) {
                 var queryQmPeople = qryQmPeople;
                 queryQmPeople.initialize();
                 $('#qry_people_window').show().window({
                     title: '查询质检人员信息',
                     width: 1150,
-                    height: 600,
+                    height: 650,
                     cache: false,
                     content:queryQmPeople.$el,
                     modal: true,

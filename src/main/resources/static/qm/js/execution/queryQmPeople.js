@@ -177,11 +177,11 @@ define([
                     "params": JSON.stringify(reqParams)
                 };
 
-                Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.QM_PLAN_DNS + "/getQmPeople", params, function (result) {
-                    var data = {"rows":result.RSP.DATA[0].jsonArray,"total":result.RSP.DATA[0].totalAll};
-                    listData = result.RSP.DATA[0].jsonArrayAll;
-                    success(data);
-                });
+                // Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.QM_PLAN_DNS + "/getQmPeople", params, function (result) {
+                //     var data = {"rows":result.RSP.DATA[0].jsonArray,"total":result.RSP.DATA[0].totalAll};
+                //     listData = result.RSP.DATA[0].jsonArrayAll;
+                //     success(data);
+                // });
             }
         });
     }

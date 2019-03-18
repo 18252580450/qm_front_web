@@ -53,6 +53,12 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
                     });
                 } else {//点击子节点，右侧直接新增
                     data = [];
+                    var map = {};
+                    map['id'] = node.id;
+                    map['text'] = node.name;
+                    map['type'] = node.type;
+                    map['pId'] = node.pId;
+                    data.push(map);
                     allChildrenNodes = [];//清空原数组中的数据
                     $("#page").off("click","#addTemplate");
                     $("#page").on("click", "#addTemplate", function () {//点击子节点,然后右侧新增

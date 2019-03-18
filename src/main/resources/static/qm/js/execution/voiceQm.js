@@ -88,6 +88,34 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
     //页面信息初始化
     function initPageInfo() {
 
+        $('#checkStaffName').searchbox({ //质检人员查询
+            searcher: function(value){
+                var queryQmPeople = new QueryQmPeople();
+                $('#qry_people_window').show().window({
+                    title: '查询质检人员信息',
+                    width: 1150,
+                    height: 650,
+                    cache: false,
+                    content:queryQmPeople.$el,
+                    modal: true
+                });
+            }
+        });
+
+        $('#checkedStaffName').searchbox({ //质检人员查询
+            searcher: function(value){
+                var queryQmPeople = new QueryQmPeople();
+                $('#qry_people_window').show().window({
+                    title: '查询质检人员信息',
+                    width: 1150,
+                    height: 650,
+                    cache: false,
+                    content:queryQmPeople.$el,
+                    modal: true
+                });
+            }
+        });
+
         $('#planName').searchbox({//输入框点击查询事件
             searcher: function(value){
                 var queryQmPlan = new QueryQmPlan();
@@ -112,7 +140,6 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
                     cache: false,
                     modal: true
                 });
-                var zNodes = [];
                 $.ajax({
                     url:Util.constants.SRV_REQTYPE_REDIS_TREE,
                     dataType:'json',
@@ -212,7 +239,10 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
                 {field: 'staffNumber', title: '坐席号码', align: 'center', width: '10%'},
                 {field: 'customerNumber', title: '客户号码', align: 'center', width: '10%'},
                 {field: 'planName', title: '计划名称', align: 'center', width: '10%'},
-                {field: 'callType', title: '呼叫类型', align: 'center', width: '10%'},
+                {field: 'callType', title: '呼叫类型', align: 'center', width: '10%',
+                    formatter: function (value, row, index) {
+                        return {'0':'呼入','1':'呼出'}[value];
+                }},
                 {
                     field: 'checkedTime', title: '抽取时间', align: 'center', width: '15%',
                     formatter: function (value, row, index) { //格式化时间格式
