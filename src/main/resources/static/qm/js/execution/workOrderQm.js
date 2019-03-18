@@ -322,7 +322,8 @@ require(["js/execution/queryQmPeople","js/manage/queryQmPlan","jquery", 'util', 
                             showType: 'show'
                         });
                     }
-                    success(dataNew);
+                    var json = {"rows":dataNew,"total":result.RSP.ATTACH.TOTAL};
+                    success(json);
                 });
             }
         });

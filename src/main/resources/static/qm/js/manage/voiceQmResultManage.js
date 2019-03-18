@@ -203,7 +203,8 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
                             showType: 'show'
                         });
                     }
-                    success(dataNew);
+                    var json = {"rows":dataNew,"total":result.RSP.ATTACH.TOTAL};
+                    success(json);
                 });
             },
             onLoadSuccess: function (data) {

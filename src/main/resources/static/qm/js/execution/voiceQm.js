@@ -357,7 +357,8 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
                             showType: 'show'
                         });
                     }
-                    success(dataNew);
+                    var json = {"rows":dataNew,"total":result.RSP.ATTACH.TOTAL};
+                    success(json);
                 });
             }
         });

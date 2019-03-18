@@ -218,7 +218,8 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
                             showType: 'show'
                         });
                     }
-                    success(dataNew);
+                    var json = {"rows":dataNew,"total":result.RSP.ATTACH.TOTAL};
+                    success(json);
                 });
             },
             onLoadSuccess: function (data) {
