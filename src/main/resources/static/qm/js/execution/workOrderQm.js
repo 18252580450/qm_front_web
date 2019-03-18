@@ -198,7 +198,7 @@ require(["js/execution/queryQmPeople","js/manage/queryQmPlan","jquery", 'util', 
                 {field: 'wrkfmShowSwftno', title: '工单流水', align: 'center', width: '15%'},
                 {field: 'bizTitle', title: '工单标题', align: 'center', width: '10%'},
                 {field: 'planName', title: '计划名称', align: 'center', width: '10%'},
-                {field: 'srvReqstTypeNm', title: '问题分类', align: 'center', width: '10%'},
+                {field: 'srvReqstTypeFullNm', title: '问题分类', align: 'center', width: '10%'},
                 {field: 'custEmail', title: '客户账号', align: 'center', width: '10%'},
                 {field: 'custName', title: '客户名称', align: 'center', width: '10%'},
                 {field: 'custNum', title: '客户号码', align: 'center', width: '10%'},
@@ -223,7 +223,6 @@ require(["js/execution/queryQmPeople","js/manage/queryQmPlan","jquery", 'util', 
 
                 {field: 'handleDuration', title: '处理时长', align: 'center', width: '10%'},
                 {field: 'planId', title: '计划编码', align: 'center', width: '10%',hidden: true},
-                {field: 'checkLink', title: '考评环节', align: 'center', width: '10%'},
                 {field: 'isOperate', title: '是否分配', align: 'center', width: '10%',
                     formatter:function(value, row, index){
                         return {'0':'未分配','1':'已分配'}[value];
