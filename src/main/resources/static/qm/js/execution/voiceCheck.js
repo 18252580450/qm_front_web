@@ -144,7 +144,7 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
                     field: 'checkedTime', title: '抽取时间', width: '15%',
                     formatter: function (value, row, index) { //格式化时间格式
                         if (row.checkedTime != null) {
-                            return DateUtil.formatDateTime(row.operateTime);
+                            return DateUtil.formatDateTime(row.checkedTime);
                         }
                     }
                 },

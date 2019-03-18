@@ -20,8 +20,9 @@ require(["jquery", "util", "dateUtil", "transfer", "easyui"], function ($, Util)
         voicePool = getRequestObj();
 
         var createTime = "";
+
         if (voicePool.checkedTime !== "") {
-            createTime = DateUtil.formatDateTime(voicePool.checkedTime);
+            createTime = DateUtil.formatDateTime(parseInt(voicePool.checkedTime));
         }
 
         //基本信息初始化
