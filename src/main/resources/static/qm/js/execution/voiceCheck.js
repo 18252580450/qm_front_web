@@ -234,12 +234,9 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
 
                 Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.VOICE_POOL_DNS + "/selectByParams", params, function (result) {
                     var data = Transfer.DataGrid.transfer(result);
-                    var dataNew = [];
                     for (var i = 0; i < data.rows.length; i++) {
-                        var map = data.rows[i];
-                        if (map.qmPlan != null) {
-                            map["planName"] = map.qmPlan.planName;
-                            dataNew.push(map);
+                        if (data.rows[i].qmPlan != null) {
+                            data.rows[i]["planName"] = data.rows[i].qmPlan.planName;
                         }
                     }
                     var rspCode = result.RSP.RSP_CODE;
@@ -252,12 +249,12 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
                         });
                     }
                     if (poolStatusData.length > 0) {
-                        success(dataNew);
+                        success(data);
                     } else {
                         CommonAjax.getStaticParams("POOL_STATUS", function (datas) {
                             if (datas) {
                                 poolStatusData = datas;
-                                success(dataNew);
+                                success(data);
                             }
                         });
                     }

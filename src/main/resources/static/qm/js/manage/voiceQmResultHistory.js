@@ -85,14 +85,11 @@ define(["text!html/manage/voiceQmResultHistory.tpl", "jquery", 'util', "transfer
                 }, Util.PageUtil.getParams($("#queryInfo", $el)));
 
                 Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.VOICE_QM_RESULT + "/selectByParams", params, function (result) {
-                    var data = Transfer.DataGrid.transfer(result),
-                        dataNew = [];
+                    var data = Transfer.DataGrid.transfer(result);
                     for (var i = 0; i < data.rows.length; i++) {
-                        var map = data.rows[i];
-                        if (map.qmPlan != null) {
-                            map["planName"] = map.qmPlan.planName;
+                        if (data.rows[i].qmPlan != null) {
+                            data.rows[i]["planName"] = data.rows[i].qmPlan.planName;
                         }
-                        dataNew.push(map);
                     }
                     var rspCode = result.RSP.RSP_CODE;
                     if (rspCode != null && rspCode !== "1") {
@@ -103,7 +100,7 @@ define(["text!html/manage/voiceQmResultHistory.tpl", "jquery", 'util', "transfer
                             showType: 'show'
                         });
                     }
-                    success(dataNew);
+                    success(data);
                 });
             },
             onLoadSuccess: function (data) {
