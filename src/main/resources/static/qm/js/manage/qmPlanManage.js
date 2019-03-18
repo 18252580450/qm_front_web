@@ -189,7 +189,7 @@ define([
             ]],
             fitColumns: true,
             width: '100%',
-            height: "auto",
+            height: 420,
             pagination: true,
             pageSize: 10,
             pageList: [5, 10, 20, 50],
@@ -259,7 +259,7 @@ define([
                 });
             }
         });
-        addToolsDom();
+        // addToolsDom();
     }
 
     //初始化事件

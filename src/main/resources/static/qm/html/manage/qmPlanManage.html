@@ -15,7 +15,7 @@
 </head>
 <body>
 <div id="page_content" data-options ="region:'center'" style="height:100%;">
-    <div id='layout_content' class='easyui-layout' data-options="region:'center'" style='overflow: auto; height:100%;'>,
+    <div id='layout_content' class='easyui-layout' data-options="region:'center'" style='overflow: auto; height:100%;'>
         <div data-options="region:'center'" style='overflow: hidden;height: 100%'>
             <div id = "page">
                 <div class='panel-search ' title="">
@@ -58,6 +58,10 @@
                         <div class='fl text-bold'>考评计划列表</div>
                         <div class="formControls col-2" style="text-align: right;width: 90%">
                             <a href='javascript:void(0)' class='btn btn-green radius mt-l-20' id="addBtn"><i class='iconfont iconfont-add'></i>新增</a>
+                            <a href='javascript:void(0)' class='btn btn-secondary radius mt-l-20' id="batchStart">发布</a>
+                            <a href='javascript:void(0)' class='btn btn-secondary radius mt-l-20' id="batchStop">暂停</a>
+                            <a href='javascript:void(0)' class='btn btn-secondary radius mt-l-20' id="batchDelete"><i
+                                    class='iconfont iconfont-del2'></i>删除</a>
                         </div>
                     </div>
                         <table id='planList' class='easyui-datagrid'  style=' width:100%;'>
