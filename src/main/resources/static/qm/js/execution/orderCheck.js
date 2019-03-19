@@ -105,7 +105,7 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
                         }
                     }
                 },
-                {field: 'workFormId', title: '工单流水', width: '15%'},
+                {field: 'wrkfmShowSwftno', title: '工单流水', width: '15%'},
                 {field: 'srvReqstTypeFullNm', title: '服务请求类型', width: '15%'},
                 {
                     field: 'planName', title: '计划名称', width: '15%',
@@ -180,7 +180,7 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
                 var start = (param.page - 1) * param.rows;
                 var pageNum = param.rows;
 
-                var wrkfmId = $("#orderId").val(),
+                var wrkfmShowSwftno = $("#orderId").val(),
                     distStartTime = $("#assignBeginTime").datetimebox("getValue"),
                     distEndTime = $("#assignEndTime").datetimebox("getValue"),
                     checkLink = $("#checkLink").val(),
@@ -192,7 +192,7 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
                 }
                 var reqParams = {
                     // "checkStaffId": Util.constants.STAFF_ID,     //暂时不考虑工号
-                    "wrkfmId": wrkfmId,
+                    "wrkfmShowSwftno": wrkfmShowSwftno,
                     "isOperate": Util.constants.ORDER_DISTRIBUTE,        //已分配
                     "poolStatus": poolStatus,
                     "operateTimeBegin": distStartTime,
