@@ -857,6 +857,7 @@ require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util,
             "callingNumber": orderPool.acptStaffNum,                 //主叫号码
             "acceptNumber": orderPool.custNum,                       //受理号码
             "touchId": orderPool.workFormId,                         //工单流水
+            "wrkfmShowSwftno": orderPool.wrkfmShowSwftno,            //工单显示流水
             "planId": orderPool.planId,                              //考评计划
             "templateId": templateId,                                //考评模版ID
             "checkModel": Util.constants.CHECK_TYPE_WITHIN_PLAN,     //质检模式、计划内质检

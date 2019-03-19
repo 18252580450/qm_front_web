@@ -94,7 +94,7 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
                         return appeal + "&nbsp;&nbsp;" + checkHistory;
                     }
                 },
-                {field: 'touchId', title: '工单流水号', align: 'center', width: '15%'},
+                {field: 'wrkfmShowSwftno', title: '工单流水号', align: 'center', width: '15%'},
                 {
                     field: 'inspectionId', title: '质检流水号', align: 'center', width: '15%',
                     formatter: function (value, row, index) {
@@ -172,11 +172,11 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
                     return false;
                 }
                 var qmResult = $("#qmResult").combobox("getValue");
-                if(qmResult=="10"){
+                if (qmResult == "10") {
                     qmResult = "";
                 }
                 var errorType = $("#errorType").combobox("getValue");
-                if(errorType=="2"){
+                if (errorType == "2") {
                     errorType = "";
                 }
                 var planId = $("#planId").val();
@@ -224,7 +224,7 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
                             showType: 'show'
                         });
                     }
-                    var json = {"rows":dataNew,"total":result.RSP.ATTACH.TOTAL};
+                    var json = {"rows": dataNew, "total": result.RSP.ATTACH.TOTAL};
                     success(json);
                 });
             },
@@ -317,11 +317,12 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
                 "provinceId": data.provinceId,
                 "checkType": Util.constants.CHECK_TYPE_ORDER,
                 "touchId": data.touchId,
+                "wrkfmShowSwftno": data.wrkfmShowSwftno,
                 "inspectionId": data.inspectionId,
                 "planId": data.planId,
                 "templateId": data.templateId,
-                "appealStaffId": data.checkedStaffId,
-                "appealStaffName": data.checkedStaffName,
+                "appealStaffId": Util.constants.STAFF_ID,   //暂时用模拟登陆工号
+                "appealStaffName": Util.constants.STAFF_NAME,
                 "appealReason": appealReason
             };
             Util.loading.showLoading();

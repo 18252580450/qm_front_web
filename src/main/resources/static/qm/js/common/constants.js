@@ -7,7 +7,7 @@ define(function () {
         CONTEXT: "http://localhost:9002",
         URL_CONTEXT: "http://127.0.0.1:8080",
         TENANT_ID: "10010000",
-        STAFF_ID: "123",       //模拟工号
+        STAFF_ID: "123",       //模拟登陆工号
         STAFF_NAME: "石莹",    //模拟员工姓名
         CHECKED_DEPART_ID:"2231",  //模拟被质检员部门id
         PROVCODE: "00030000",//省份编码

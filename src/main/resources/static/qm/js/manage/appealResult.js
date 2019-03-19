@@ -122,7 +122,15 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                             }
                         }
                     },
-                    {field: 'touchId', title: '接触流水', width: '14%'},
+                    {
+                        field: 'touchId', title: '接触流水', width: '14%',
+                        formatter: function (value, row, index) {
+                            if (row.checkType === Util.constants.CHECK_TYPE_ORDER) {
+                                return row.wrkfmShowSwftno;    //展示工单显示流水号
+                            }
+                            return value;
+                        }
+                    },
                     {
                         field: 'inspectionId', title: '质检流水', width: '14%',
                         formatter: function (value, row, index) {
@@ -197,7 +205,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                         "appealStaffId": appealStaffId,
                         "appealId": appealId,
                         "appealStatus": appealStatus,
-                        "checkType":checkType
+                        "checkType": checkType
                     };
                     var params = $.extend({
                         "start": start,
@@ -417,7 +425,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                 approveStatus = "驳回";
             }
             var approveTime = "";
-            if(item.approveTime !== ""){
+            if (item.approveTime !== "") {
                 approveTime = DateUtil.formatDateTime(item.approveTime)
             }
             return '<div style="margin-bottom:30px;">' +

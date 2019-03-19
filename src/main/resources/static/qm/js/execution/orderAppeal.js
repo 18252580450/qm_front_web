@@ -49,7 +49,7 @@ require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util,
                             return detail + "&nbsp;&nbsp;" + deal;
                         }
                     },
-                    {field: 'touchId', title: '工单流水', width: '14%'},
+                    {field: 'wrkfmShowSwftno', title: '工单流水', width: '14%'},
                     {
                         field: 'inspectionId', title: '质检流水', width: '14%',
                         formatter: function (value, row, index) {
