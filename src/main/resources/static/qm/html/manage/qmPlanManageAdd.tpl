@@ -57,6 +57,12 @@
                                 <input id="remark" type='text' class="easyui-textbox" style='width:100%;height:30px'>
                             </div>
                         </div>
+                        <div class='row cl'>
+                            <label class='form-label col-3'>抽取数量</label>
+                            <div class='formControls col-3'>
+                                <input id='extractCount' type="text" class="easyui-textbox easyui-validatebox" data-options="required:true" style='width:100%;height:30px'>
+                            </div>
+                        </div>
                     </form>
                     <div style="width: 95%; height: 365px; overflow-y: auto; overflow-x: hidden;margin-top: 10px">
                         <!--左侧区域-->
@@ -86,14 +92,14 @@
                                 </div>
                                 <table id='checkedStaffList' class='easyui-datagrid' style='width:100%;height:100%;'>
                                 </table>
+                                <label class='form-label col-5'></label>
+                                <a href='javascript:void(0)' id='addPlan' class='btn btn-green radius  mt-l-20'>确定</a>
+                                <a href='javascript:void(0)' id='close' class='btn btn-secondary radius  mt-l-20'>关闭</a>
                             </div>
                         </div>
-                </div>
-                    <div class='mt-10 test-c'>
-                        <label class='form-label col-5'></label>
-                        <a href='javascript:void(0)' id='addPlan' class='btn btn-green radius  mt-l-20'>确定</a>
-                        <a href='javascript:void(0)' id='close' class='btn btn-secondary radius  mt-l-20'>关闭</a>
                     </div>
+
+                </div>
             </div>
         </div>
         <!--删除弹窗，默认隐藏-->

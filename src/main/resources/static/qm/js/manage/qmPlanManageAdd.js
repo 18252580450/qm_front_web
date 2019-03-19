@@ -219,6 +219,7 @@ define([
             var planStarttime = $('#planStarttime',$el).datetimebox('getValue');
             var planEndtime = $('#planEndtime',$el).datetimebox('getValue');
             var remark = $('#remark',$el).val();
+            var extractCount = $('#extractCount',$el).val();
 
             //质检关系
             var qmBindRlnListNew = [];
@@ -258,17 +259,17 @@ define([
                 'planStarttime': planStarttime,
                 'planEndtime': planEndtime,
                 'remark':remark,
-                'qmBindRlnList':qmBindRlnList
+                'qmBindRlnList':qmBindRlnList,
+                'extractCount':extractCount
             };
 
             if (planName == null || planName == "" || planType == null || planType == "" || templateId == null || templateId == ""
-                || pId == null || pId == "" || manOrAuto == null || manOrAuto == "" || planRuntype == null || planRuntype == ""|| planRuntime == null || planRuntime == "") {
+                || pId == null || pId == "" || manOrAuto == null || manOrAuto == "" || planRuntype == null || planRuntype == ""|| planRuntime == null || planRuntime == ""|| extractCount == null || extractCount == "") {
                 $.messager.alert('警告', '必填项不能为空!');
 
                 $("#addPlan",$el).linkbutton({disabled: false});  //按钮可用
                 return false;
             }
-            var rspCode;
             if(planBean){
                 planBean.planName = planName;
                 planBean.planType = planType;
@@ -288,8 +289,7 @@ define([
                         style: {right: '', bottom: ''},     //居中显示
                         showType: 'slide'
                     });
-                    rspCode = result.RSP.RSP_CODE;
-                    if (rspCode == "1") {
+                    if (result.RSP.RSP_CODE == "1") {
                         $("#planList").datagrid('reload'); //修改成功后，刷新页面
                         $("#add_window").window("close"); // 关闭窗口
                     }
@@ -302,12 +302,11 @@ define([
                         style: {right: '', bottom: ''},     //居中显示
                         showType: 'slide'
                     });
+                    if (result.RSP.RSP_CODE == "1") {
+                        $("#planList").datagrid('reload'); //新增成功后，刷新页面
+                        $("#add_window").window("close"); // 关闭窗口
+                    }
                 });
-                rspCode = result.RSP.RSP_CODE;
-                if (rspCode == "1") {
-                    $("#planList").datagrid('reload'); //新增成功后，刷新页面
-                    $("#add_window").window("close"); // 关闭窗口
-                }
             }
             disableSubmit = true;   //防止多次提交
         });
@@ -553,7 +552,7 @@ define([
                 data:checkedStaffs,
                 idField:"checkedObjectId",
                 checkOnSelect: false,
-                height : "300px"
+                height : "260px"
             });
         }else if(checkedDeparts && checkedDeparts.length > 0){
             $("#checkedStaffList",$el).datagrid({
@@ -578,7 +577,7 @@ define([
                 ],
                 data:checkedDeparts,
                 checkOnSelect: false,
-                height : "300px"
+                height : "260px"
             });
         }else{
             $("#checkedStaffList",$el).datagrid({
@@ -607,7 +606,7 @@ define([
                 ],
                 idField:"checkedObjectId",
                 checkOnSelect: false,
-                height : "300px"
+                height : "260px"
             });
         }
     }
@@ -738,7 +737,6 @@ define([
             initTree();
             initTable();
         }
-        // initDelBut();
     }
     return initialize;
 });
