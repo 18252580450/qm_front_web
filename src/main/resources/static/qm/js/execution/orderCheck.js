@@ -115,19 +115,25 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
                         }
                     }
                 },
+                {field: 'custEmail', title: '客户账号', align: 'center', width: '10%'},
+                {field: 'custName', title: '客户名称', align: 'center', width: '10%'},
+                {field: 'custNum', title: '客户号码', align: 'center', width: '10%'},
                 {
-                    field: 'crtTime', title: '提交时间', width: '15%',
+                    field: 'crtTime', title: '创建时间', width: '15%',
                     formatter: function (value, row, index) { //格式化时间格式
-                        return DateUtil.formatDateTime(value);
+                        if (value != null) {
+                            return DateUtil.formatDateTime(value);
+                        }
                     }
                 },
                 {
-                    field: 'arcTime', title: '完成时间', width: '15%',
+                    field: 'arcTime', title: '归档时间', width: '15%',
                     formatter: function (value, row, index) { //格式化时间格式
-                        return DateUtil.formatDateTime(value);
+                        if (value != null) {
+                            return DateUtil.formatDateTime(value);
+                        }
                     }
                 },
-                {field: 'checkedStaffName', title: '被检人员', width: '15%'},
                 {
                     field: 'operateTime', title: '分配时间', width: '15%',
                     formatter: function (value, row, index) { //格式化时间格式
