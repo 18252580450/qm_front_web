@@ -22,5 +22,13 @@
     "codeDesc": "已质检",
     "sortId": 2,
     "state": "1"
+  },
+  {
+    "codeType": "CHECK_ITEM_TYPE@CS_IR",
+    "codeValue": "3",
+    "codeName": "全部",
+    "codeDesc": "全部",
+    "sortId": 3,
+    "state": "1"
   }
 ]

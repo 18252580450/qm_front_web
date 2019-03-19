@@ -27,19 +27,19 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
             }
         });
 
-        //差错类型
-        $("#errorType").combobox({
-            url: '../../data/errorType.json',
+        //质检状态
+        $("#resultStatus").combobox({
+            url: '../../data/releaseResult.json',
             method: "GET",
             valueField: 'codeValue',
             textField: 'codeName',
             panelHeight: 'auto',
             editable: false,
             onLoadSuccess: function () {
-                var isDis = $("#errorType");
-                var data = isDis.combobox('getData');
+                var resultStatus = $("#resultStatus");
+                var data = resultStatus.combobox('getData');
                 if (data.length > 0) {
-                    isDis.combobox('select', data[0].codeValue);
+                    resultStatus.combobox('select', data[11].codeValue);
                 }
             }
         });
@@ -55,7 +55,7 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
                 var isDis = $("#qmResult");
                 var data = isDis.combobox('getData');
                 if (data.length > 0) {
-                    isDis.combobox('select', data[0].codeValue);
+                    isDis.combobox('select', data[11].codeValue);
                 }
             }
         });
@@ -164,7 +164,10 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
                 var endTime = $("#endTime").datetimebox("getValue");
                 var checkedStaffId = $("#checkedStaffId").val();
                 var inspectionId = $("#inspectionId").val();
-                var resultStatus = $("#resultStatus").val();
+                var resultStatus = $("#resultStatus").combobox("getValue");
+                if(resultStatus=="10"){
+                    resultStatus = "";
+                }
                 var planId = $("#planId").val();
 
                 reqParams = {

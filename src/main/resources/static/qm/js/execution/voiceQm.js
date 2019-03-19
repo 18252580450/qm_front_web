@@ -175,7 +175,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
                 var isOperate = $("#isOperate");
                 var data = isOperate.combobox('getData');
                 if (data.length > 0) {
-                    isOperate.combobox('select', data[0].codeValue);
+                    isOperate.combobox('select', data[2].codeValue);
                 }
             }
         });
@@ -192,7 +192,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
                 var poolStatus = $("#poolStatus");
                 var data = poolStatus.combobox('getData');
                 if (data.length > 0) {
-                    poolStatus.combobox('select', data[0].codeValue);
+                    poolStatus.combobox('select', data[3].codeValue);
                 }
             }
         });
@@ -289,8 +289,8 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
                 var touchId = $("#touchId").val();
                 var planId = $("#planId").val();
                 var isOperate = $("#isOperate").combobox("getValue");
-                if(isOperate==""){
-                    isOperate = "0";
+                if(isOperate=="2"){
+                    isOperate = "";
                 }
                 var startTime = $("#startTime").datetimebox("getValue");
                 var endTime = $("#endTime").datetimebox("getValue");
@@ -310,8 +310,8 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
                 var mediaType = $("#mediaType").val();
                 var serviceTypeId = $("#serviceTypeId").val();
                 var poolStatus = $("#poolStatus").combobox("getValue");
-                if(poolStatus==""){
-                    poolStatus = "0";
+                if(poolStatus=="3"){
+                    poolStatus = "";
                 }
                 reqParams = {
                     "touchId": touchId,
@@ -642,7 +642,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
              reqParams= {
                 "touchId": "",
                 "planId": "",
-                "isOperate": "0",
+                "isOperate": "",
                 "extractBeginTime": "",
                 "extractEndTime": "",
                 "checkStaffId": "",
@@ -656,7 +656,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
                 "satisfyExtentType":"",
                 "mediaType":"",
                 "srvReqstTypeId":"",
-                "poolStatus": "0",
+                "poolStatus": "",
             };
         }
         var params = {

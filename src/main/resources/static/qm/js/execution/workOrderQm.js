@@ -162,7 +162,7 @@ require(["js/execution/queryQmPeople","js/manage/queryQmPlan","jquery", 'util', 
                 var isDis = $("#isDis");
                 var data = isDis.combobox('getData');
                 if (data.length > 0) {
-                    isDis.combobox('select', data[0].codeValue);
+                    isDis.combobox('select', data[2].codeValue);
                 }
             }
         });
@@ -179,7 +179,7 @@ require(["js/execution/queryQmPeople","js/manage/queryQmPlan","jquery", 'util', 
                 var poolStatus = $("#poolStatus");
                 var data = poolStatus.combobox('getData');
                 if (data.length > 0) {
-                    poolStatus.combobox('select', data[0].codeValue);
+                    poolStatus.combobox('select', data[3].codeValue);
                 }
             }
         });
@@ -274,12 +274,12 @@ require(["js/execution/queryQmPeople","js/manage/queryQmPlan","jquery", 'util', 
                 var planId = $("#planId").val();
                 var serviceTypeId = $("#serviceTypeId").val();
                 var isOperate = $("#isDis").combobox("getValue");
-                if(isOperate==""){
-                    isOperate = "0";
+                if(isOperate=="2"){
+                    isOperate = "";
                 }
                 var poolStatus = $("#poolStatus").combobox("getValue");
-                if(poolStatus==""){
-                    poolStatus = "0";
+                if(poolStatus=="3"){
+                    poolStatus = "";
                 }
                 var planStartTime = $("#planStartTime").datetimebox("getValue");
                 var planEndTime = $("#planEndTime").datetimebox("getValue");
@@ -556,8 +556,8 @@ require(["js/execution/queryQmPeople","js/manage/queryQmPlan","jquery", 'util', 
                 "wrkfmShowSwftno": "",
                 "planId": "",
                 "srvReqstTypeId": "",
-                "poolStatus": "0",
-                "isOperate":"0",
+                "poolStatus": "",
+                "isOperate":"",
                 "planStartTime": "",
                 "planEndTime": "",
                 "checkLink": "",

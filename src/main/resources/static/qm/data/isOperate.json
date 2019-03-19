@@ -14,5 +14,13 @@
     "codeDesc": "已分派",
     "sortId": 1,
     "state": "1"
+  },
+  {
+    "codeType": "CHECK_ITEM_TYPE@CS_IR",
+    "codeValue": "2",
+    "codeName": "全部",
+    "codeDesc": "全部",
+    "sortId": 2,
+    "state": "1"
   }
 ]

@@ -39,11 +39,11 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
                 var isDis = $("#errorType");
                 var data = isDis.combobox('getData');
                 if (data.length > 0) {
-                    isDis.combobox('select', data[0].codeValue);
+                    isDis.combobox('select', data[2].codeValue);
                 }
             }
         });
-        //申诉结果
+        //质检结果
         $("#qmResult").combobox({
             url: '../../data/releaseResult.json',
             method: "GET",
@@ -55,7 +55,7 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
                 var isDis = $("#qmResult");
                 var data = isDis.combobox('getData');
                 if (data.length > 0) {
-                    isDis.combobox('select', data[0].codeValue);
+                    isDis.combobox('select', data[11].codeValue);
                 }
             }
         });
@@ -172,7 +172,13 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
                     return false;
                 }
                 var qmResult = $("#qmResult").combobox("getValue");
+                if(qmResult=="10"){
+                    qmResult = "";
+                }
                 var errorType = $("#errorType").combobox("getValue");
+                if(errorType=="2"){
+                    errorType = "";
+                }
                 var planId = $("#planId").val();
 
                 reqParams = {
@@ -390,8 +396,8 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
                 "checkLink": "",
                 "minScore": "",
                 "maxScore": "",
-                "resultStatus": "0",
-                "errorRank": "0",
+                "resultStatus": "",
+                "errorRank": "",
                 "planId": "",
                 "reqTypeEndNode": "",
                 "lastResultFlag": "1"
