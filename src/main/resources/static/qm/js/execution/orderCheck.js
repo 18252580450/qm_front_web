@@ -106,7 +106,7 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
                     }
                 },
                 {field: 'workFormId', title: '工单流水', width: '15%'},
-                {field: 'srvReqstTypeNm', title: '服务请求类型', width: '15%'},
+                {field: 'srvReqstTypeFullNm', title: '服务请求类型', width: '15%'},
                 {
                     field: 'planName', title: '计划名称', width: '15%',
                     formatter: function (value, row, index) {
