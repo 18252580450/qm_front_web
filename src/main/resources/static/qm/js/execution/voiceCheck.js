@@ -33,35 +33,6 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
                 }
             }
         );
-        //抽取开始时间选择框
-        // var extractBeginDate = (DateUtil.formatDateTime(new Date() - 24 * 60 * 60 * 1000)).substr(0, 11) + "00:00:00";
-        var extractBeginDate = "2018-10-10 00:00:00";
-        $("#extractBeginTime").datetimebox({
-            // value: extractBeginDate,
-            onShowPanel: function () {
-                $("#extractBeginTime").datetimebox("spinner").timespinner("setValue", "00:00:00");
-            },
-            onChange: function () {
-                var beginDate = $("#extractBeginTime").datetimebox("getValue"),
-                    endDate = $("#extractEndTime").datetimebox("getValue");
-                checkBeginEndTime(beginDate, endDate);
-            }
-        });
-
-        //抽取结束时间选择框
-        var extractEndDate = (DateUtil.formatDateTime(new Date())).substr(0, 11) + "00:00:00";
-        // var endDate = (DateUtil.formatDateTime(new Date()-24*60*60*1000)).substr(0,11) + "23:59:59";
-        $('#extractEndTime').datetimebox({
-            // value: extractEndDate,
-            onShowPanel: function () {
-                $("#extractEndTime").datetimebox("spinner").timespinner("setValue", "23:59:59");
-            },
-            onChange: function () {
-                var beginDate = $("#extractBeginTime").datetimebox("getValue"),
-                    endDate = $("#extractEndTime").datetimebox("getValue");
-                checkBeginEndTime(beginDate, endDate);
-            }
-        });
 
         //分配开始时间选择框
         // var distributeBeginDate = (DateUtil.formatDateTime(new Date() - 24 * 60 * 60 * 1000)).substr(0, 11) + "00:00:00";
@@ -199,8 +170,6 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
                     planId = $("#planId").val(),
                     callingNumber = $("#callingNumber").val(),
                     calledNumber = $("#calledNumber").val(),
-                    extractBeginTime = $("#extractBeginTime").datetimebox("getValue"),
-                    extractEndTime = $("#extractEndTime").datetimebox("getValue"),
                     distributeBeginTime = $("#distributeBeginTime").datetimebox("getValue"),
                     distributeEndTime = $("#distributeEndTime").datetimebox("getValue"),
                     minRecordTime = $("#minRecordTime").val(),
@@ -219,8 +188,6 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
                     "poolStatus": poolStatus,
                     "staffNumber": callingNumber,
                     "customerNumber": calledNumber,
-                    "extractBeginTime": extractBeginTime,
-                    "extractEndTime": extractEndTime,
                     "distributeBeginTime": distributeBeginTime,
                     "distributeEndTime": distributeEndTime,
                     "minRecordTime": minRecordTime,

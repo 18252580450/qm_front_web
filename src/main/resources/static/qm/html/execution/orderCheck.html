@@ -11,16 +11,12 @@
 
     <link href="../../css/style.min.css" rel="stylesheet">
 
-
 </head>
 <body>
 <div id="page_content" data-options="region:'center'" style="height:100%;">
     <div id='layout_content' class='easyui-layout' data-options="region:'center'" style='overflow: auto; height:100%;'>
         <div data-options="region:'center'" style='overflow: hidden;height: 100%'>
             <div id="page">
-                <div class='panel-tool-box cl' style="background: #f5f5f5">
-                    <div class='fl text-bold'>待办区信息查询</div>
-                </div>
                 <div class='panel-search ' title="">
                     <form class='form form-horizontal' id="searchForm">
                         <div class='row cl'>
@@ -47,6 +43,11 @@
                             <label class='form-label col-1'>质检状态</label>
                             <div class='formControls col-2'>
                                 <input id="poolStatus" type='text' class='easyui-textbox'
+                                       style='width:100%;height:30px'>
+                            </div>
+                            <label class='form-label col-1'>客户号码</label>
+                            <div class='formControls col-2'>
+                                <input id="customNum" type='text' class='easyui-textbox'
                                        style='width:100%;height:30px'>
                             </div>
                             <div class="formControls col-1">

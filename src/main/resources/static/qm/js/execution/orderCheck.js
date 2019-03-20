@@ -119,7 +119,7 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
                 {field: 'custName', title: '客户名称', align: 'center', width: '10%'},
                 {field: 'custNum', title: '客户号码', align: 'center', width: '10%'},
                 {
-                    field: 'crtTime', title: '创建时间', width: '15%',
+                    field: 'crtTime', title: '立单时间', width: '15%',
                     formatter: function (value, row, index) { //格式化时间格式
                         if (value != null) {
                             return DateUtil.formatDateTime(value);
@@ -185,6 +185,7 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
                     distEndTime = $("#assignEndTime").datetimebox("getValue"),
                     checkLink = $("#checkLink").val(),
                     planId = $("#planId").val(),
+                    custNum = $("#customNum").val(),
                     poolStatus = $("#poolStatus").combobox("getValue");
 
                 if (poolStatus === "" || poolStatus === "-1") {
@@ -194,11 +195,12 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
                     // "checkStaffId": Util.constants.STAFF_ID,     //暂时不考虑工号
                     "wrkfmShowSwftno": wrkfmShowSwftno,
                     "isOperate": Util.constants.ORDER_DISTRIBUTE,        //已分配
-                    "poolStatus": poolStatus,
+                    "planId": planId,
                     "operateTimeBegin": distStartTime,
                     "operateTimeEnd": distEndTime,
                     "checkLink": checkLink,
-                    "planId": planId
+                    "poolStatus": poolStatus,
+                    "custNum": custNum
                 };
                 var params = $.extend({
                     "start": start,
