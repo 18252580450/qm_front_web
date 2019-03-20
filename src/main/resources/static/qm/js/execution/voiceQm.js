@@ -381,11 +381,6 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
             dao();
         });
 
-        //删除
-        $("#delBut").on("click", function () {
-            deleteCheck();
-        });
-
         //强制释放
         $("#releaseBut").on("click", function () {
             release();
@@ -593,36 +588,6 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
             if (rspCode == "1") {
                 $('#add_window').window('close'); // 成功后，关闭窗口
                 $("#queryInfo").datagrid('reload'); //成功后，刷新页面
-            }
-        });
-    }
-
-    //删除
-    function deleteCheck(){
-        var delRows = $("#queryInfo").datagrid("getSelections");
-        if (delRows.length === 0) {
-            $.messager.alert("提示", "请至少选择一行数据!");
-            return false;
-        }
-        var delArr = [];
-        for (var i = 0; i < delRows.length; i++) {
-            var id = delRows[i].touchId;
-            delArr.push(id);
-        }
-        $.messager.confirm('确认删除弹窗', '确定要删除吗？', function (confirm) {
-            if (confirm) {
-                Util.ajax.deleteJson(Util.constants.CONTEXT.concat(Util.constants.VOICE_POOL_DNS).concat("/").concat(delArr), {}, function (result) {
-                    $.messager.show({
-                        msg: result.RSP.RSP_DESC,
-                        timeout: 1000,
-                        style: {right: '', bottom: ''},     //居中显示
-                        showType: 'show'
-                    });
-                    var rspCode = result.RSP.RSP_CODE;
-                    if (rspCode != null && rspCode === "1") {
-                        $("#queryInfo").datagrid('reload'); //删除成功后，刷新页面
-                    }
-                });
             }
         });
     }

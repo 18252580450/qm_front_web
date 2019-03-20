@@ -329,38 +329,6 @@ require(["js/execution/queryQmPeople","js/manage/queryQmPlan","jquery", 'util', 
         });
     }
 
-    /**
-     * 删除
-     */
-    function showCheckItemDeleteDialog() {
-        var delRows = $("#queryInfo").datagrid("getSelections");
-        if (delRows.length === 0) {
-            $.messager.alert("提示", "请至少选择一行数据!");
-            return false;
-        }
-        var delArr = [];
-        for (var i = 0; i < delRows.length; i++) {
-            var id = delRows[i].wrkfmShowSwftno;
-            delArr.push(id);
-        }
-        $.messager.confirm('确认删除弹窗', '确定要删除吗？', function (confirm) {
-            if (confirm) {
-                Util.ajax.deleteJson(Util.constants.CONTEXT.concat(Util.constants.ORDER_POOL_DNS).concat("/").concat(delArr), {}, function (result) {
-                    $.messager.show({
-                        msg: result.RSP.RSP_DESC,
-                        timeout: 1000,
-                        style: {right: '', bottom: ''},     //居中显示
-                        showType: 'show'
-                    });
-                    var rspCode = result.RSP.RSP_CODE;
-                    if (rspCode != null && rspCode === "1") {
-                        $("#queryInfo").datagrid('reload'); //删除成功后，刷新页面
-                    }
-                });
-            }
-        });
-    }
-
     // // 前端导出
     // function dao(){
     //     var oXL = new ActiveXObject("Excel.Application");
@@ -399,11 +367,6 @@ require(["js/execution/queryQmPeople","js/manage/queryQmPlan","jquery", 'util', 
         //清空
         $("#clearBtn").on("click", function () {
             $("#page input").val("");
-        });
-
-        //删除
-        $("#delBut").on("click", function () {
-            showCheckItemDeleteDialog();
         });
 
         //导出
