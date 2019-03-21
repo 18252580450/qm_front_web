@@ -232,7 +232,7 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
                 $.each(data.rows, function (i, item) {
                     $("#voiceCheck_" + item.touchId).on("click", function () {
                         var url = createURL(voiceCheckDetail, item);
-                        addTabs("语音质检详情", url);
+                        addTabs("语音质检" + item.touchId, url);
                     });
                 });
                 //质检记录

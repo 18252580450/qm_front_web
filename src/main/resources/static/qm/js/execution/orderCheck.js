@@ -237,7 +237,7 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
                 $.each(data.rows, function (i, item) {
                     $("#orderCheck_" + item.workFormId).on("click", function () {
                         var url = createURL(orderCheckDetail, item);
-                        addTabs("工单质检详情", url);
+                        addTabs("工单质检" + item.wrkfmShowSwftno, url);
                     });
                 });
                 //质检记录
