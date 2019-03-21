@@ -90,7 +90,7 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui","dateUti
             searcher: function(value){
                 require(["js/execution/queryQmPeople"], function (qryQmPeople) {
                 var queryQmPeople = qryQmPeople;
-                queryQmPeople.initialize("","2");
+                queryQmPeople.initialize("","");
                 $('#qry_people_window').show().window({
                     title: '查询质检人员信息',
                     width: 1150,

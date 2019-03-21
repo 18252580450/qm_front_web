@@ -3,8 +3,6 @@ define([
     function (qryQmPeopleTpl,$, Util, CommonAjax,Transfer,easyui,crossAPI,dateUtil) {
 
         var $el;
-        var listNew=[];
-        var flag;
         function initialize() {
             $el = $(qryQmPeopleTpl);
             initGrid();//初始化列表
@@ -159,13 +157,12 @@ define([
 
             //确定
             $("#page",$el).on("click", "#confirm", function () {
-                flag = true;
                 var selRows = $("#checkStaffInfo",$el).datagrid("getSelections");//选中多行
                 if(selRows.length == 0){
                     $.messager.alert('警告', '请至少选择一条数据！');
                     return;
                 }
-                getVal();
+                // getVal();
                 $('#qry_people_window').window('destroy'); // 成功后，销毁窗口（注意：用close会会对原先已有的dom结构造成影响）
             });
 
@@ -197,15 +194,8 @@ define([
             return list;
         }
 
-        function getList(){
-            if(flag){
-                listNew = getVal();
-            }
-            return listNew;
-        }
-
         return {
             initialize:initialize,
-            getList:getList
+            getList:getVal
         };
     });

@@ -4,7 +4,7 @@ define([
 
     var $el;
     var dataNew;
-    var flagNew;//工单质检(0),语音质检(1)和查询质检员(2)标志
+    var flagNew;//工单质检(0),语音质检(1)标志
     var mapNew = {};
     function initialize(ids,flag) {
         $el = $(qryQmPeopleTpl);
@@ -163,11 +163,7 @@ define([
                 $.messager.alert("提示", "请只选择一行数据!");
                 return false;
             }
-            if(flagNew=="0"||flagNew=="1"){
-                updateCheck(dataNew);
-            }else if(flagNew=="2"){
-                getVal();
-            }
+            updateCheck(dataNew);
             $("#qry_people_window").window("close");// 关闭窗口
         });
 
@@ -242,15 +238,8 @@ define([
         return map;
     }
 
-    function getMap(){
-        if(flagNew=="2"){
-            mapNew = getVal();
-        }
-        return mapNew;
-    }
-
     return {
         initialize:initialize,
-        getMap:getMap
+        getMap:getVal
     };
 });
