@@ -40,7 +40,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
                 }
             },
             onSelect: function () {
-                $("#checkItemList").datagrid('reload');
+                $("#checkItemList").datagrid('load');
             }
         });
         //重载下拉框数据
@@ -65,7 +65,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
                 }
             },
             onSelect: function () {
-                $("#checkItemList").datagrid('reload');
+                $("#checkItemList").datagrid('load');
             }
         });
         //重载下拉框数据
@@ -100,7 +100,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
                     if (node.isParent) {
                         $("#parentCheckItemName").val(node.name);
                         $("#parentCheckItemId").val(node.id);
-                        $("#checkItemList").datagrid('reload');
+                        $("#checkItemList").datagrid('load');
                     } else {
                         var data = [];
                         $.each(checkItemListData, function (i, item) {
@@ -272,7 +272,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
         //查询
         $("#queryBtn").on("click", function () {
             if (checkNode.isParent) {
-                $("#checkItemList").datagrid('reload');
+                $("#checkItemList").datagrid('load');
             } else {
                 var data = [];
                 $.each(checkItemListData, function (i, item) {

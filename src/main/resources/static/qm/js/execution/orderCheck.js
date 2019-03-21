@@ -264,7 +264,7 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
     //事件初始化
     function initEvent() {
         $("#queryBtn").on("click", function () {
-            $("#orderCheckList").datagrid('reload');
+            $("#orderCheckList").datagrid('load');
         });
         $("#resetBtn").on("click", function () {
             $("#searchForm").form('clear');

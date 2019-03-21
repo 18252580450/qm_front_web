@@ -259,7 +259,7 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
     //事件初始化
     function initEvent() {
         $("#queryBtn").on("click", function () {
-            $("#voiceCheckList").datagrid('reload');
+            $("#voiceCheckList").datagrid('load');
         });
         $("#resetBtn").on("click", function () {
             $("#searchForm").form('clear');
