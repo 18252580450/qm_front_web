@@ -1,20 +1,17 @@
 define([
-        "text!html/execution/qryQmPeople.tpl","jquery", 'util', "commonAjax","transfer", "easyui","crossAPI","dateUtil","ztree-exedit"],
+        "text!html/execution/queryQmPeople.tpl","jquery", 'util', "commonAjax","transfer", "easyui","crossAPI","dateUtil","ztree-exedit"],
     function (qryQmPeopleTpl,$, Util, CommonAjax,Transfer,easyui,crossAPI,dateUtil) {
 
     var $el;
     var dataNew;
-    var flagNew;//工单质检和语音质检标志
-    var listData = [];
-    var isCall = false;
-    var treeObj;
+    var flagNew;//工单质检(0),语音质检(1)和查询质检员(2)标志
+    var mapNew = {};
     function initialize(ids,flag) {
         $el = $(qryQmPeopleTpl);
         dataNew = ids;
         flagNew = flag;
         initGrid();//初始化列表
         initGlobalEvent();
-        showTree();
         this.$el = $el;
     };
 
@@ -25,7 +22,6 @@ define([
         },
         data : {
             key: {
-                //将treeNode的checkItemName属性当做节点名称
                 name: "GROUP_NAME"
             },
             simpleData : {
@@ -36,103 +32,17 @@ define([
             }
         },
         callback : {
-            onClick: function (e, id, node) {//点击事件
-                var newArr = [];
-                if(node.isParent==false){//判断是否点击的是父节点
-                    newArr = listData.filter(function(item,index){
-                        if(item.GROUP_ID==node.GROUP_ID){
-                            return item;
-                        }
-                    });
-                }else{
-                    var allChildrenNodesIdSet = new Set();
-                    allChildrenNodesIdSet.add(node.GROUP_ID);
-                    allChildrenNodesIdSet = getAllChildrenNodes(node,allChildrenNodesIdSet);
-                    allChildrenNodesIdSet.forEach(function(childrenValue, childrenIndex, childrenArr){
-                        listData.forEach(function(listDataValue, listDataIndex, listDataArr){
-                            if(childrenValue==listDataValue.GROUP_ID){
-                                newArr.push(listDataValue);
-                            }
-                        });
-                    });
+            onDblClick: function (e, id, node) { //点击事件
+                if(node.isParent){
+                    $.messager.alert("提示", "请选择子节点!");
+                    return false;
                 }
-                treeObj = $.fn.zTree.getZTreeObj("tree");
-                setFirstPage();
-                var data = {"total":newArr.length,"rows":newArr};
-                $("#page",$el).find("#checkStaffInfo").datagrid("loadData",data);
-                pagination(data);
-                isCall = false;
+                $('#groupName',$el).searchbox("setValue",node.GROUP_NAME);
+                $("#groupId",$el).val(node.GROUP_ID);
+                $('#qry_worklist_window2').window('destroy');//销毁临时窗口
             }
         }
     };
-
-    //返回第一页
-    function setFirstPage(){
-        var opts =  $("#page",$el).find("#checkStaffInfo").datagrid('options');
-        var pager = $("#page",$el).find("#checkStaffInfo").datagrid('getPager');
-        opts.pageNumber = 1;
-        opts.pageSize = opts.pageSize;
-        pager.pagination('refresh',{
-            pageNumber:1,
-            pageSize:opts.pageSize
-        });
-    }
-
-    //分页控件
-    function pagination(data){
-        var p = $("#page",$el).find("#checkStaffInfo").datagrid("getPager");
-        p.pagination({
-            total:data.rows.length,
-            pageSize: 10,
-            pageList: [5, 10, 20, 50],
-            onSelectPage:function (pageNo, pageSize) {
-                if(isCall){
-                    data = {"rows":listData};
-                }
-                var start = (pageNo - 1) * pageSize;
-                var end = start + pageSize;
-                $("#page",$el).find("#checkStaffInfo").datagrid("loadData", data.rows.slice(start, end));
-                p.pagination({
-                    total:data.rows.length,
-                    pageNumber:pageNo
-                });
-            }
-        });
-    }
-
-    //递归获取该节点下所有的子节点的id
-    function getAllChildrenNodes(node,allChildrenNodesIdSet) {
-        if(node.isParent){
-            var childrenNodes = node.children;
-            if(childrenNodes){
-                for (var i = 0;i<childrenNodes.length;i++){
-                    allChildrenNodesIdSet.add(childrenNodes[i].GROUP_ID);
-                    getAllChildrenNodes(childrenNodes[i],allChildrenNodesIdSet);
-                }
-            }
-        }
-        return allChildrenNodesIdSet;
-    }
-
-    function showTree(){
-        var zNodes = [];
-        var reqParams = {
-            "parentId": "",
-            "groupId": "",
-            "groupName": "",
-            "provCode":""
-        };
-        var param = {"params":JSON.stringify(reqParams)};
-        Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.QM_PLAN_DNS + "/getWorkList", param, function (result) {
-            var resultNew = result.RSP.DATA;
-            for(var i=0;i<resultNew.length;i++){
-                var nodeMap =
-                    {GROUP_ID: resultNew[i].GROUP_ID, PARENT_ID: resultNew[i].PARENT_ID, GROUP_NAME: resultNew[i].GROUP_NAME}
-                zNodes.push(nodeMap);
-            }
-            $.fn.zTree.init($("#tree",$el), setting, zNodes);
-        });
-    }
 
     //初始化列表
     function initGrid() {
@@ -156,18 +66,13 @@ define([
             pageList: [5, 10, 20, 50],
             rownumbers: false,
             loader: function (param, success) {
-                //取消树节点选中状态
-                if(treeObj){
-                    var nodes = treeObj.getSelectedNodes();
-                    if (nodes.length>0) {
-                        treeObj.cancelSelectedNode(nodes[0]);
-                    }
-                }
-                var addCheckStaffId = $("#addCheckStaffId",$el).val();
+                var groupId = $("#groupId",$el).val();
+                var staffName = $("#staffName",$el).val();
+                var staffId = $("#staffId",$el).val();
                 var reqParams = {
-                    "groupId": "",
-                    "staffName":addCheckStaffId,
-                    "staffId": "",
+                    "groupId": groupId,
+                    "staffName":staffName,
+                    "staffId": staffId,
                     "start":param.page,
                     "limit": param.rows,
                     "provCode": "",
@@ -177,32 +82,98 @@ define([
                     "params": JSON.stringify(reqParams)
                 };
 
-                // Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.QM_PLAN_DNS + "/getQmPeople", params, function (result) {
-                //     var data = {"rows":result.RSP.DATA[0].jsonArray,"total":result.RSP.DATA[0].totalAll};
-                //     listData = result.RSP.DATA[0].jsonArrayAll;
-                //     success(data);
-                // });
+                Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.QM_PLAN_DNS + "/getQmPeople", params, function (result) {
+                    var data = {"rows":[],"total":0};;
+                    var rspCode = result.RSP.RSP_CODE;
+                    if (rspCode != null && rspCode !== "1") {
+                        $.messager.show({
+                            msg: "人员信息无数据",
+                            timeout: 1000,
+                            style: {right: '', bottom: ''},     //居中显示
+                            showType: 'show'
+                        });
+                    }else{
+                        data = {"rows":result.RSP.DATA[0].jsonArray,"total":result.RSP.DATA[0].totalAll};
+                    }
+                    success(data);
+                });
             }
         });
     }
 
+    //工作组弹窗，默认隐藏
+    function getWorkListDiv() {
+        return '<div id="qry_worklist_window2" style="display:none;"><div class="panel-tool-box cl">'+
+            '<div class="fl text-bold">'+'请选择工作组[双击数据选中]'+'</div></div><div id="treeDiv" class="index-west">'+
+            '<ul id="tree2" class="ztree" style="border:#fff solid 0px;"></ul></div></div>';
+    }
+
     //初始化事件
     function initGlobalEvent() {
+
+        $('#groupName',$el).searchbox({ //工作组查询
+            searcher: function(value){
+                var div = $("#content",$el);
+                div.append(getWorkListDiv());
+                $('#qry_worklist_window2',$el).show().window({
+                    title: '工作组信息',
+                    width: 300,
+                    height: 500,
+                    cache: false,
+                    modal: true
+                });
+                var zNodes = [];
+                var reqParams = {
+                    "parentId": "",
+                    "groupId": "",
+                    "groupName": "",
+                    "provCode":""
+                };
+                var param = {"params":JSON.stringify(reqParams)};
+                Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.QM_PLAN_DNS + "/getWorkList", param, function (result) {
+                    var rspCode = result.RSP.RSP_CODE;
+                    if (rspCode != null && rspCode !== "1") {
+                        $.messager.show({
+                            msg: "工作组"+result.RSP.RSP_DESC,
+                            timeout: 1000,
+                            style: {right: '', bottom: ''},     //居中显示
+                            showType: 'show'
+                        });
+                    }
+                    var resultNew = result.RSP.DATA;
+                    for(var i=0;i<resultNew.length;i++){
+                        var nodeMap =
+                            {GROUP_ID: resultNew[i].GROUP_ID, PARENT_ID: resultNew[i].PARENT_ID, GROUP_NAME: resultNew[i].GROUP_NAME}
+                        zNodes.push(nodeMap);
+                    }
+                    $.fn.zTree.init($("#tree2"), setting, zNodes);
+                });
+            }
+        });
+
         //查询
-        $("#searchForm",$el).on("click", "#searchBtn", function () {
-            isCall = true;
+        $("#form",$el).on("click", "#searchBtn", function () {
             $("#page",$el).find("#checkStaffInfo").datagrid("load");
         });
 
         //确定
         $("#confirm",$el).on("click", function () {
-            updateCheck(dataNew);
+            var selRows = $("#checkStaffInfo",$el).datagrid("getSelections");//选中多行
+            if (selRows.length==0||selRows.length>1) {
+                $.messager.alert("提示", "请只选择一行数据!");
+                return false;
+            }
+            if(flagNew=="0"||flagNew=="1"){
+                updateCheck(dataNew);
+            }else if(flagNew=="2"){
+                getVal();
+            }
+            $("#qry_people_window").window("close");// 关闭窗口
         });
-
 
         //关闭窗口
         $("#page",$el).on("click", "#close", function () {
-            $("#searchForm",$el).form('clear');
+            $("#form",$el).form('clear');
             $("#checkStaffInfo",$el).datagrid('clearChecked');//清除所有勾选状态
             $("#qry_people_window").window("close");// 成功后，关闭窗口
         });
@@ -210,10 +181,6 @@ define([
 
     function updateCheck(ids) {
         var selRows = $("#checkStaffInfo",$el).datagrid("getSelections");//选中多行
-        if (selRows.length == 0||selRows.length>1) {
-            $.messager.alert("提示", "请只选择一行数据!");
-            return false;
-        }
         var params=[];
         for(var i=0;i<dataNew.length;i++){
             var map = {};
@@ -221,14 +188,14 @@ define([
             var checkStaffCode = selRows[0].STAFF_NAME;
             map["checkStaffName"]=checkStaffCode;
             map["checkStaffId"]=checkStaffId;
-            if(flagNew){
+            if(flagNew =="0"){
                 map["wrkfmShowSwftno"]=dataNew[i];
-            }else{
+            }else if(flagNew =="1"){
                 map["touchId"]=dataNew[i];
             }
             params.push(map);
         }
-        if(flagNew){
+        if(flagNew=="0"){
             Util.ajax.putJson(Util.constants.CONTEXT.concat(Util.constants.ORDER_POOL_DNS).concat("/updateCheck"), JSON.stringify(params), function (result) {
                 $.messager.show({
                     msg: result.RSP.RSP_DESC,
@@ -242,7 +209,7 @@ define([
                     $('#qry_people_window').window('close'); // 成功后，关闭窗口
                 }
             });
-        }else{
+        }else if(flagNew =="1"){
             Util.ajax.putJson(Util.constants.CONTEXT.concat(Util.constants.VOICE_POOL_DNS).concat("/updateCheck"), JSON.stringify(params), function (result) {
                 $.messager.show({
                     msg: result.RSP.RSP_DESC,
@@ -259,5 +226,31 @@ define([
         }
     }
 
-    return initialize;
+    function getVal(){
+        var map = {};
+        var selRows = $("#checkStaffInfo",$el).datagrid("getSelections");//选中多行
+        selRows.forEach(function(value,index,array){
+            var staffId = selRows[index].STAFF_ID;
+            var staffName = selRows[index].STAFF_NAME;
+            var groupId = selRows[index].GROUP_ID;
+            var groupName = selRows[index].GROUP_NAME;
+            map["staffId"]=staffId;
+            map["staffName"]=staffName;
+            map["groupId"]=groupId;
+            map["groupName"]=groupName;
+        });
+        return map;
+    }
+
+    function getMap(){
+        if(flagNew=="2"){
+            mapNew = getVal();
+        }
+        return mapNew;
+    }
+
+    return {
+        initialize:initialize,
+        getMap:getMap
+    };
 });

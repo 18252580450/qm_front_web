@@ -1,0 +1,26 @@
+[
+  {
+    "codeType": "CHECK_ITEM_TYPE@CS_IR",
+    "codeValue": "0",
+    "codeName": "呼入",
+    "codeDesc": "呼入",
+    "sortId": 0,
+    "state": "1"
+  },
+  {
+    "codeType": "CHECK_ITEM_TYPE@CS_IR",
+    "codeValue": "1",
+    "codeName": "呼出",
+    "codeDesc": "呼出",
+    "sortId": 1,
+    "state": "1"
+  },
+  {
+    "codeType": "CHECK_ITEM_TYPE@CS_IR",
+    "codeValue": "2",
+    "codeName": "全部",
+    "codeDesc": "全部",
+    "sortId": 2,
+    "state": "1"
+  }
+]

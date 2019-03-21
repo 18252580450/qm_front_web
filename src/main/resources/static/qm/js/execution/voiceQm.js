@@ -1,4 +1,4 @@
-require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPlan","js/execution/queryQmPeople"], function ($, Util, Transfer,easyui,dateUtil,QueryQmPlan,QueryQmPeople) {
+require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPlan"], function ($, Util, Transfer,easyui,dateUtil,QueryQmPlan) {
     //初始化方法
     initialize();
     var reqParams = null;
@@ -90,28 +90,44 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
 
         $('#checkStaffName').searchbox({ //质检人员查询
             searcher: function(value){
-                var queryQmPeople = new QueryQmPeople();
-                $('#qry_people_window').show().window({
-                    title: '查询质检人员信息',
-                    width: 1150,
-                    height: 650,
-                    cache: false,
-                    content:queryQmPeople.$el,
-                    modal: true
+                require(["js/execution/queryQmPeople"], function (qryQmPeople) {
+                    var queryQmPeople = qryQmPeople;
+                    queryQmPeople.initialize("","2");
+                    $('#qry_people_window').show().window({
+                        title: '查询质检人员信息',
+                        width: 1150,
+                        height: 650,
+                        cache: false,
+                        content:queryQmPeople.$el,
+                        modal: true,
+                        onBeforeClose:function(){//弹框关闭前触发事件
+                            var map = queryQmPeople.getMap();//获取值
+                            $('#checkStaffId').val(map.staffId);
+                            $('#checkStaffName').searchbox("setValue",map.staffName);
+                        }
+                    });
                 });
             }
         });
 
         $('#checkedStaffName').searchbox({ //质检人员查询
             searcher: function(value){
-                var queryQmPeople = new QueryQmPeople();
-                $('#qry_people_window').show().window({
-                    title: '查询质检人员信息',
-                    width: 1150,
-                    height: 650,
-                    cache: false,
-                    content:queryQmPeople.$el,
-                    modal: true
+                require(["js/execution/queryQmPeople"], function (qryQmPeople) {
+                    var queryQmPeople = qryQmPeople;
+                    queryQmPeople.initialize("","2");
+                    $('#qry_people_window').show().window({
+                        title: '查询质检人员信息',
+                        width: 1150,
+                        height: 650,
+                        cache: false,
+                        content:queryQmPeople.$el,
+                        modal: true,
+                        onBeforeClose:function(){//弹框关闭前触发事件
+                            var map = queryQmPeople.getMap();//获取值
+                            $('#checkedStaffId').val(map.staffId);
+                            $('#checkedStaffName').searchbox("setValue",map.staffName);
+                        }
+                    });
                 });
             }
         });
@@ -160,6 +176,23 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
                         });
                     }
                 });
+            }
+        });
+
+        //呼叫类型下拉框
+        $("#callType").combobox({
+            url: '../../data/callType.json',
+            method: "GET",
+            valueField: 'codeValue',
+            textField: 'codeName',
+            panelHeight: 'auto',
+            editable: false,
+            onLoadSuccess: function () {
+                var callType = $("#callType");
+                var data = callType.combobox('getData');
+                if (data.length > 0) {
+                    callType.combobox('select', data[2].codeValue);
+                }
             }
         });
 
@@ -292,12 +325,15 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
                 if(isOperate=="2"){
                     isOperate = "";
                 }
+                var callType = $("#callType").combobox("getValue");
+                if(callType=="2"){
+                    callType = "";
+                }
                 var startTime = $("#startTime").datetimebox("getValue");
                 var endTime = $("#endTime").datetimebox("getValue");
                 var checkStaffId = $("#checkStaffId").val();
                 var checkedStaffId = $("#checkedStaffId").val();
                 var hungupType = $("#hungupType").val();
-                var callType = $("#callType").val();
                 var recordTimeMin = $("#recordTimeMin").val();
                 var recordTimeMax = $("#recordTimeMax").val();
                 if(parseInt(recordTimeMin)>parseInt(recordTimeMax)){
@@ -388,7 +424,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
 
         //分配
         $("#detailBut").on("click", function () {
-            var flag = false;//语音分配标志
+            var flag = "1";//语音分配标志
             var selRows = $("#queryInfo").datagrid("getSelections");
             if (selRows.length == 0) {
                 $.messager.alert("提示", "请至少选择一行数据!");
@@ -405,15 +441,17 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
                 var id = selRows[i].touchId;
                 ids.push(id);
             }
-            var queryQmPeople = new QueryQmPeople(ids,flag);
-
-            $('#qry_people_window').show().window({
-                title: '查询质检人员信息',
-                width: 1150,
-                height: 600,
-                cache: false,
-                content:queryQmPeople.$el,
-                modal: true
+            require(["js/execution/queryQmPeople"], function (qryQmPeople) {
+                var queryQmPeople = qryQmPeople;
+                queryQmPeople.initialize(ids,flag);
+                $('#qry_people_window').show().window({
+                    title: '查询质检人员信息',
+                    width: 1150,
+                    height: 650,
+                    cache: false,
+                    content:queryQmPeople.$el,
+                    modal: true
+                });
             });
         });
 

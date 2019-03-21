@@ -12,6 +12,50 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
     //页面信息初始化
     function initPageInfo() {
 
+        $('#checkStaffName').searchbox({ //质检人员查询
+            searcher: function(value){
+                require(["js/execution/queryQmPeople"], function (qryQmPeople) {
+                    var queryQmPeople = qryQmPeople;
+                    queryQmPeople.initialize("","2");
+                    $('#qry_people_window').show().window({
+                        title: '查询质检人员信息',
+                        width: 1150,
+                        height: 650,
+                        cache: false,
+                        content:queryQmPeople.$el,
+                        modal: true,
+                        onBeforeClose:function(){//弹框关闭前触发事件
+                            var map = queryQmPeople.getMap();//获取值
+                            $('#checkStaffId').val(map.staffId);
+                            $('#checkStaffName').searchbox("setValue",map.staffName);
+                        }
+                    });
+                });
+            }
+        });
+
+        $('#checkedStaffName').searchbox({ //质检人员查询
+            searcher: function(value){
+                require(["js/execution/queryQmPeople"], function (qryQmPeople) {
+                    var queryQmPeople = qryQmPeople;
+                    queryQmPeople.initialize("","2");
+                    $('#qry_people_window').show().window({
+                        title: '查询质检人员信息',
+                        width: 1150,
+                        height: 650,
+                        cache: false,
+                        content:queryQmPeople.$el,
+                        modal: true,
+                        onBeforeClose:function(){//弹框关闭前触发事件
+                            var map = queryQmPeople.getMap();//获取值
+                            $('#checkedStaffId').val(map.staffId);
+                            $('#checkedStaffName').searchbox("setValue",map.staffName);
+                        }
+                    });
+                });
+            }
+        });
+
         $('#planName').searchbox({//输入框点击查询事件
             searcher: function (value) {
                 var queryQmPlan = new QueryQmPlan();

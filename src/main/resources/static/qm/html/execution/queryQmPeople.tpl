@@ -4,7 +4,7 @@
         <div id="content" data-options="region:'center'" style='overflow: hidden;height: 100%'>
             <div id = "page">
                 <div class='panel-search ' title="">
-                    <form id="form" class='form form-horizontal' id="searchForm">
+                    <form id="form" class='form form-horizontal'>
                         <div class='row cl'>
                             <label class='form-label col-3'>工作组</label>
                             <div class='formControls col-3'>

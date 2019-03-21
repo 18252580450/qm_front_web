@@ -12,6 +12,28 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
     //页面信息初始化
     function initPageInfo() {
 
+        $('#checkStaffName').searchbox({ //质检人员查询
+            searcher: function(value){
+                require(["js/execution/queryQmPeople"], function (qryQmPeople) {
+                    var queryQmPeople = qryQmPeople;
+                    queryQmPeople.initialize("","2");
+                    $('#qry_people_window').show().window({
+                        title: '查询质检人员信息',
+                        width: 1150,
+                        height: 650,
+                        cache: false,
+                        content:queryQmPeople.$el,
+                        modal: true,
+                        onBeforeClose:function(){//弹框关闭前触发事件
+                            var map = queryQmPeople.getMap();//获取值
+                            $('#checkStaffId').val(map.staffId);
+                            $('#checkStaffName').searchbox("setValue",map.staffName);
+                        }
+                    });
+                });
+            }
+        });
+
         $('#planName').searchbox({//输入框点击查询事件
             searcher: function (value) {
                 var queryQmPlan = new QueryQmPlan();
@@ -103,8 +125,6 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
                 },
                 {field: 'acceptNumber', title: '客户号码', align: 'center', width: '10%', hidden: true},
                 {field: 'planName', title: '计划名称', align: 'center', width: '10%'},
-                {field: 'checkedStaffId', title: '被质检人工号', align: 'center', width: '10%'},
-                {field: 'checkedDepartId', title: '被质检人班组', align: 'center', width: '10%'},
                 {
                     field: 'errorRank', title: '差错类型', align: 'center', width: '10%',
                     formatter: function (value, row, index) {
@@ -114,6 +134,7 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
                 {field: 'finalScore', title: '质检得分', align: 'center', width: '10%'},
                 {field: 'unqualifiedNum', title: '不合格环节数', align: 'center', width: '10%'},
                 {field: 'checkStaffId', title: '质检人工号', align: 'center', width: '10%'},
+                {field: 'checkStaffName', title: '质检人', align: 'center', width: '10%'},
                 {
                     field: 'resultStatus', title: '质检状态', align: 'center', width: '10%',
                     formatter: function (value, row, index) {
@@ -159,12 +180,8 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
                 var cusNumber = $("#cusNumber").val();
                 var qmStartTime = $("#qmStartTime").datetimebox("getValue");
                 var qmEndTime = $("#qmEndTime").datetimebox("getValue");
-                var qmDepart = $("#qmDepart").val();
-                var qmStaffId = $("#qmStaffId").val();
-                var qmedStaffId = $("#qmedStaffId").val();
-                var qmedTeam = $("#qmedTeam").val();
+                var checkStaffId = $("#checkStaffId").val();
                 var reqTypeEndNode = $("#reqTypeEndNode").val();
-                var checkLink = $("#checkLink").val();
                 var minScore = $("#minScore").val();
                 var maxScore = $("#maxScore").val();
                 if (parseInt(maxScore) < parseInt(minScore)) {
@@ -184,13 +201,9 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
                 reqParams = {
                     "touchId": workOrderId,
                     "acceptNumber": cusNumber,
-                    "checkDepartName": qmDepart,
-                    "checkStaffId": qmStaffId,
                     "qmStartTime": qmStartTime,
                     "qmEndTime": qmEndTime,
-                    "checkedStaffId": qmedStaffId,
-                    "checkedDepartName": qmedTeam,
-                    "checkLink": checkLink,
+                    "checkStaffId": checkStaffId,
                     "minScore": minScore,
                     "maxScore": maxScore,
                     "resultStatus": qmResult,
@@ -417,6 +430,7 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
 
     //事件初始化
     function initEvent() {
+
         //查询
         $("#queryBtn").on("click", function () {
             $("#queryInfo").datagrid("load");

@@ -19,7 +19,6 @@ define([
             },
             data : {
                 key: {
-                    //将treeNode的checkItemName属性当做节点名称
                     name: "GROUP_NAME"
                 },
                 simpleData : {
@@ -30,10 +29,14 @@ define([
                 }
             },
             callback : {
-                onClick: function (e, id, node) { //点击事件
-                    $('#groupName',$el).searchbox("setValue","");
-                    $("#groupId",$el).val("");
-                    $('#qry_worklist_window',$el).window('destroy');//销毁临时窗口
+                onDblClick: function (e, id, node) { //双击事件
+                    if(node.isParent){
+                        $.messager.alert("提示", "请选择子节点!");
+                        return false;
+                    }
+                    $('#groupName',$el).searchbox("setValue",node.GROUP_NAME);
+                    $("#groupId",$el).val(node.GROUP_ID);
+                    $('#qry_worklist_window').window('destroy');//销毁临时窗口
                 }
             }
         };
@@ -80,7 +83,7 @@ define([
                         var rspCode = result.RSP.RSP_CODE;
                         if (rspCode != null && rspCode !== "1") {
                             $.messager.show({
-                                msg: "人员信息"+result.RSP.RSP_DESC,
+                                msg: "人员信息无数据",
                                 timeout: 1000,
                                 style: {right: '', bottom: ''},     //居中显示
                                 showType: 'show'
@@ -97,14 +100,14 @@ define([
         //工作组弹窗，默认隐藏
         function getWorkListDiv() {
             return '<div id="qry_worklist_window" style="display:none;"><div class="panel-tool-box cl">'+
-                '<div class="fl text-bold">'+'请选择工作组'+'</div></div><div id="treeDiv" class="index-west">'+
-                '<ul id="tree" class="ztree" style="border:#fff solid 0px;"></ul></div></div>'
+                '<div class="fl text-bold">'+'请选择工作组[双击数据选中]'+'</div></div><div id="treeDiv" class="index-west">'+
+                '<ul id="tree" class="ztree" style="border:#fff solid 0px;"></ul></div></div>';
         }
 
         //初始化事件
         function initGlobalEvent() {
 
-            $('#groupName',$el).searchbox({ //质检人员查询
+            $('#groupName',$el).searchbox({ //工作组查询
                 searcher: function(value){
                     var div = $("#content",$el);
                     div.append(getWorkListDiv());
@@ -139,7 +142,7 @@ define([
                                 {GROUP_ID: resultNew[i].GROUP_ID, PARENT_ID: resultNew[i].PARENT_ID, GROUP_NAME: resultNew[i].GROUP_NAME}
                             zNodes.push(nodeMap);
                         }
-                        $.fn.zTree.init($("#tree",$el), setting, zNodes);
+                        $.fn.zTree.init($("#tree"), setting, zNodes);
                     });
                 }
             });
@@ -150,7 +153,7 @@ define([
             });
 
             //查询
-            $("#searchForm",$el).on("click", "#searchBtn", function () {
+            $("#form",$el).on("click", "#searchBtn", function () {
                 $("#page",$el).find("#checkStaffInfo").datagrid("load");
             });
 
@@ -168,7 +171,7 @@ define([
 
             //关闭窗口
             $("#page",$el).on("click", "#close", function () {
-                $("#searchForm").form('clear');
+                $("#form").form('clear');
                 $("#checkStaffInfo",$el).datagrid('clearChecked');//清除所有勾选状态
                 $('#qry_people_window').window('destroy');
             });

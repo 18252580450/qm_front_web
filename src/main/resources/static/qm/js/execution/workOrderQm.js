@@ -1,4 +1,4 @@
-require(["js/execution/queryQmPeople","js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui","dateUtil","ztree-exedit"], function (QueryQmPeople,QueryQmPlan,$, Util, Transfer,easyui,dateUtil) {
+require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui","dateUtil","ztree-exedit"], function (QueryQmPlan,$, Util, Transfer,easyui,dateUtil) {
     //初始化方法
     initialize();
     var reqParams = null;
@@ -84,21 +84,27 @@ require(["js/execution/queryQmPeople","js/manage/queryQmPlan","jquery", 'util', 
             });
         }
 
-
-        //页面信息初始化
+    //页面信息初始化
     function initPageInfo() {
-
         $('#checkStaffName').searchbox({ //质检人员查询
             searcher: function(value){
-                var queryQmPeople = new QueryQmPeople();
+                require(["js/execution/queryQmPeople"], function (qryQmPeople) {
+                var queryQmPeople = qryQmPeople;
+                queryQmPeople.initialize("","2");
                 $('#qry_people_window').show().window({
                     title: '查询质检人员信息',
                     width: 1150,
                     height: 650,
                     cache: false,
                     content:queryQmPeople.$el,
-                    modal: true
+                    modal: true,
+                    onBeforeClose:function(){//弹框关闭前触发事件
+                        var map = queryQmPeople.getMap();//获取值
+                        $('#checkStaffId').val(map.staffId);
+                        $('#checkStaffName').searchbox("setValue",map.staffName);
+                    }
                 });
+             });
             }
         });
 
@@ -270,6 +276,7 @@ require(["js/execution/queryQmPeople","js/manage/queryQmPlan","jquery", 'util', 
             loader: function (param, success) {
                 var start = (param.page - 1) * param.rows;
                 var pageNum = param.rows;
+                var checkStaffId = $("#checkStaffId").val();
                 var wrkfmShowSwftno = $("#workOrderId").val();
                 var planId = $("#planId").val();
                 var serviceTypeId = $("#serviceTypeId").val();
@@ -284,7 +291,6 @@ require(["js/execution/queryQmPeople","js/manage/queryQmPlan","jquery", 'util', 
                 var planStartTime = $("#planStartTime").datetimebox("getValue");
                 var planEndTime = $("#planEndTime").datetimebox("getValue");
                 var qmLink = $("#qmLink").val();
-                var qmPeople = $("#qmPeople").val();
 
                 reqParams = {
                     "wrkfmShowSwftno": wrkfmShowSwftno,
@@ -295,7 +301,7 @@ require(["js/execution/queryQmPeople","js/manage/queryQmPlan","jquery", 'util', 
                     "planStartTime": planStartTime,
                     "planEndTime": planEndTime,
                     "checkLink": qmLink,
-                    "checkStaffName":qmPeople
+                    "checkStaffId":checkStaffId
                 };
                 var params = $.extend({
                     "start": start,
@@ -400,7 +406,7 @@ require(["js/execution/queryQmPeople","js/manage/queryQmPlan","jquery", 'util', 
 
         //分配(管理员分配质检员)
         $("#disBut").on("click", function () {
-            var flag = true;//工单分配标志
+            var flag = "0";//工单分配标志
             var selRows = $("#queryInfo").datagrid("getSelections");
             if (selRows.length == 0) {
                 $.messager.alert("提示", "请至少选择一行数据!");
@@ -417,15 +423,17 @@ require(["js/execution/queryQmPeople","js/manage/queryQmPlan","jquery", 'util', 
                 var id = selRows[i].wrkfmShowSwftno;
                 ids.push(id);
             }
-            var queryQmPeople = new QueryQmPeople(ids,flag);
-
-            $('#qry_people_window').show().window({
-                title: '查询质检人员信息',
-                width: 1150,
-                height: 600,
-                cache: false,
-                content:queryQmPeople.$el,
-                modal: true
+            require(["js/execution/queryQmPeople"], function (qryQmPeople) {
+                var queryQmPeople = qryQmPeople;
+                queryQmPeople.initialize(ids,flag);
+                $('#qry_people_window').show().window({
+                    title: '查询质检人员信息',
+                    width: 1150,
+                    height: 650,
+                    cache: false,
+                    content:queryQmPeople.$el,
+                    modal: true
+                });
             });
         });
 
