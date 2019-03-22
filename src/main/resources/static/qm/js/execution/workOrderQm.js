@@ -290,7 +290,6 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui","dateUti
                 }
                 var planStartTime = $("#planStartTime").datetimebox("getValue");
                 var planEndTime = $("#planEndTime").datetimebox("getValue");
-                var qmLink = $("#qmLink").val();
 
                 reqParams = {
                     "wrkfmShowSwftno": wrkfmShowSwftno,
@@ -300,7 +299,6 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui","dateUti
                     "isOperate":isOperate,
                     "planStartTime": planStartTime,
                     "planEndTime": planEndTime,
-                    "checkLink": qmLink,
                     "checkStaffId":checkStaffId
                 };
                 var params = $.extend({
