@@ -28,7 +28,6 @@ var DateUtil = {
      * 时间转换 秒转换成xx天xx小时xx分xx秒
      */
     formatDateTime2: function (inputTime) {
-        debugger;
         var day = parseInt(inputTime / 24 / 60 / 60),
             hour = parseInt((inputTime - day * 24 * 60 * 60) / 60 / 60),
             minute = parseInt((inputTime - day * 24 * 60 * 60 - hour * 60 * 60) / 60),

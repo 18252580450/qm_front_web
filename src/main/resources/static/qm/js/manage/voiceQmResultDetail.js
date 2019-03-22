@@ -1,23 +1,15 @@
 require(["jquery", "util", "dateUtil", "transfer", "easyui"], function ($, Util) {
-    var userInfo,
-        roleCode,
-        voicePool,               //质检数据
+    var voicePool,               //质检数据
         scoreType,               //分值类型（默认扣分）
         startTime,               //页面初始化时间
         checkItemScoreList = []; //考评项评分列表
     initialize();
 
     function initialize() {
-        Util.getLogInData(function (data) {
-            userInfo = data;//用户角色
-            Util.getRoleCode(userInfo,function(dataNew){
-                roleCode = dataNew;//用户信息
-                initPageInfo();
-                initEvent();
+        initPageInfo();
+        initEvent();
 
-                startTime = new Date();
-            });
-        });
+        startTime = new Date();
     }
 
     //页面信息初始化

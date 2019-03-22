@@ -1,21 +1,13 @@
 define(["text!html/manage/voiceQmResultHistory.tpl", "jquery", 'util', "transfer", "easyui", "dateUtil"], function (qryQmHistoryTpl, $, Util, Transfer, easyui, dateUtil) {
-    var userInfo,
-        roleCode,
-        $el,
+    var $el,
         touchId,    //语音流水
         voiceCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/manage/voiceQmResultDetail.html";
 
     function initialize(recordId) {
         $el = $(qryQmHistoryTpl);
-        Util.getLogInData(function (data) {
-            userInfo = data;//用户角色
-            Util.getRoleCode(userInfo,function(dataNew){
-                roleCode = dataNew;//用户信息
-                touchId = recordId;
-                initPageInfo();
-                this.$el = $el;
-            });
-        });
+        touchId = recordId;
+        initPageInfo();
+        this.$el = $el;
     }
 
     //页面信息初始化
