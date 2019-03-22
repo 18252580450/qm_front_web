@@ -1,13 +1,20 @@
 require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], function (QueryQmPlan, QueryQmHistory, $, Util, Transfer, CommonAjax) {
-
-    var orderCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/execution/orderCheckDetailNew.html",
+    var userInfo,
+        roleCode,
+        orderCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/execution/orderCheckDetailNew.html",
         poolStatusData = [];  //质检状态下拉框静态数据（待质检、待复检）
 
     initialize();
 
     function initialize() {
-        initPageInfo();
-        initEvent();
+        Util.getLogInData(function (data) {
+            userInfo = data;//用户角色
+            Util.getRoleCode(userInfo,function(dataNew){
+                roleCode = dataNew;//用户信息
+                initPageInfo();
+                initEvent();
+            });
+        });
     }
 
     //页面信息初始化

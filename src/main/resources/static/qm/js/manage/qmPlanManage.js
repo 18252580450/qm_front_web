@@ -2,14 +2,22 @@ define([
     "js/manage/qmPlanManageAdd","commonAjax",
     "jquery", 'util', "transfer", "easyui","crossAPI","dateUtil"],
     function (qmPlanManageAdd,CommonAjax,$, Util, Transfer,crossAPI) {
+    var userInfo;
+    var roleCode;
     //调用初始化方法
     initialize();
     var planTypes = [];
 
     function initialize() {
-        initSearchForm();//初始化表单数据
-        initGrid();//初始化列表
-        initGlobalEvent();//初始化按钮事件
+        Util.getLogInData(function (data) {
+            userInfo = data;//用户角色
+            Util.getRoleCode(userInfo,function(dataNew){
+                roleCode = dataNew;//用户信息
+                initSearchForm();//初始化表单数据
+                initGrid();//初始化列表
+                initGlobalEvent();//初始化按钮事件
+            });
+        });
     };
 
     //批量更新计划  发布和暂停

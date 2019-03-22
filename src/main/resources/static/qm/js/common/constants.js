@@ -37,6 +37,8 @@ define(function () {
         WRKFM_DETAIL_DNS: "/qm/configservice/wrkfmDetail",//工单详情
         QM_BIND_RLN_DNS: "/qm/configservice/qmBindRln",//考评计划绑定关系
         SRV_REQTYPE_REDIS_TREE:"http://203.57.227.53:8082/tcwf/servReqTypeManage/srvReqTypeRedisTree",//服务请求类型
+        IS_LOG_IN:"http://203.57.226.107:9500/isLognIn",//登入验证
+        PAGE_LOGIN:"http://203.57.226.107:9500",
 
         //考评项目录类型
         CHECK_ITEM_PARENT: "0",          //目录

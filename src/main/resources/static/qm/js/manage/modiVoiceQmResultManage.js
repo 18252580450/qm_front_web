@@ -1,6 +1,8 @@
 require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, Transfer,easyui,dateUtil) {
     //初始化方法
     initialize();
+    var userInfo;
+    var roleCode;
     var acceptNumber = null;
     var inspectionId = null;
     var touchId = null;
@@ -20,8 +22,14 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
         inspectionId=theRequest["inspectionId"];
         touchId=theRequest["touchId"];
         checkedStaffId=theRequest["checkedStaffId"];
-        initPageInfo();
-        initEvent();
+        Util.getLogInData(function (data) {
+            userInfo = data;//用户角色
+            Util.getRoleCode(userInfo,function(dataNew){
+                roleCode = dataNew;//用户信息
+                initPageInfo();
+                initEvent();
+            });
+        });
     }
 
     //页面信息初始化

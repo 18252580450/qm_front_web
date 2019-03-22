@@ -1,15 +1,23 @@
 require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], function ($, Util, Transfer, CommonAjax) {
 
-        var voiceCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/execution/voiceAppealDetail.html",
-            orderCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/execution/orderAppealDetail.html",
-            checkTypeData = [],      //质检类型静态数据
-            appealStatusData = [];   //申诉状态静态数据
+    var userInfo,
+        roleCode,
+        voiceCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/execution/voiceAppealDetail.html",
+        orderCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/execution/orderAppealDetail.html",
+        checkTypeData = [],      //质检类型静态数据
+        appealStatusData = [];   //申诉状态静态数据
 
         initialize();
 
         function initialize() {
-            initPageInfo();
-            initEvent();
+            Util.getLogInData(function (data) {
+                userInfo = data;//用户角色
+                Util.getRoleCode(userInfo,function(dataNew){
+                    roleCode = dataNew;//用户信息
+                    initPageInfo();
+                    initEvent();
+                });
+            });
         }
 
         //页面信息初始化

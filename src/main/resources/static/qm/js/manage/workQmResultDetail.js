@@ -1,6 +1,7 @@
 require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util) {
-
-    var orderResult,
+    var userInfo,
+        roleCode,
+        orderResult,
         showingInfo = 0,            //当前显示的基本信息（0工单基本信息、1内外部回复、2接触记录、3工单历史）
         scoreType,                  //分值类型（默认扣分）
         startTime,                  //页面初始化时间
@@ -19,10 +20,16 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
     initialize();
 
     function initialize() {
-        initPageInfo();
-        initEvent();
+        Util.getLogInData(function (data) {
+            userInfo = data;//用户角色
+            Util.getRoleCode(userInfo,function(dataNew){
+                roleCode = dataNew;//用户信息
+                initPageInfo();
+                initEvent();
 
-        startTime = new Date();
+                startTime = new Date();
+            });
+        });
     }
 
     //页面信息初始化

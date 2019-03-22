@@ -1,14 +1,21 @@
 define(["text!html/manage/workQmResultHistory.tpl", "jquery", 'util', "transfer", "easyui", "dateUtil"], function (qryQmHistoryTpl, $, Util, Transfer, easyui, dateUtil) {
-
-    var $el,
+    var userInfo,
+        roleCode,
+        $el,
         touchId,    //工单流水
         orderCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/manage/workQmResultDetail.html";
 
     function initialize(workFormId) {
         $el = $(qryQmHistoryTpl);
-        touchId = workFormId;
-        initPageInfo();
-        this.$el = $el;
+        Util.getLogInData(function (data) {
+            userInfo = data;//用户角色
+            Util.getRoleCode(userInfo,function(dataNew){
+                roleCode = dataNew;//用户信息
+                touchId = workFormId;
+                initPageInfo();
+                this.$el = $el;
+            });
+        });
     }
 
     //页面信息初始化

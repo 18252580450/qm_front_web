@@ -2,13 +2,21 @@ define([
     "js/manage/qmStrategyManageAdd",
     "jquery", 'util', "transfer", "commonAjax","easyui","dateUtil"],
     function (qmStrategyManageAdd,$, Util, Transfer,CommonAjax) {
+    var userInfo;
+    var roleCode;
     //调用初始化方法
     initialize();
     var paramsType;
     function initialize() {
-        initSearchForm();//初始化表单数据
-        initGrid();//初始化列表
-        initGlobalEvent();//初始化按钮事件
+        Util.getLogInData(function (data) {
+            userInfo = data;//用户角色
+            Util.getRoleCode(userInfo,function(dataNew){
+                roleCode = dataNew;//用户信息
+                initSearchForm();//初始化表单数据
+                initGrid();//初始化列表
+                initGlobalEvent();//初始化按钮事件
+            });
+        });
     };
 
     //批量删除

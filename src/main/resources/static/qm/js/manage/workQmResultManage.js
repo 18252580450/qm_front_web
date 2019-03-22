@@ -1,12 +1,20 @@
 require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'util', "transfer", "easyui", "dateUtil"], function (QueryQmPlan, QueryQmHistory, $, Util, Transfer, easyui, dateUtil) {
     //初始化方法
     initialize();
-    var reqParams = null,
+    var userInfo,
+        roleCode,
+        reqParams = null,
         orderCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/manage/workQmResultDetail.html";
 
     function initialize() {
-        initPageInfo();
-        initEvent();
+        Util.getLogInData(function (data) {
+            userInfo = data;//用户角色
+            Util.getRoleCode(userInfo,function(dataNew){
+                roleCode = dataNew;//用户信息
+                initPageInfo();
+                initEvent();
+            });
+        });
     }
 
     //页面信息初始化

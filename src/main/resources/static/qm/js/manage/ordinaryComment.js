@@ -1,13 +1,20 @@
 require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, Transfer,dateUtil) {
-
+    var userInfo;
+    var roleCode;
     //调用初始化方法
     initialize();
 
     function initialize() {
-        initGrid();
-        initGlobalEvent();
-        initWindowEvent();
-        initReviseEvent();
+        Util.getLogInData(function (data) {
+            userInfo = data;//用户角色
+            Util.getRoleCode(userInfo,function(dataNew){
+                roleCode = dataNew;//用户信息
+                initGrid();
+                initGlobalEvent();
+                initWindowEvent();
+                initReviseEvent();
+            });
+        });
     };
 
     //初始化列表

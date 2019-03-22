@@ -1,7 +1,6 @@
 define([
         "text!html/execution/queryQmPeople.tpl","jquery", 'util', "commonAjax","transfer", "easyui","crossAPI","dateUtil","ztree-exedit"],
     function (qryQmPeopleTpl,$, Util, CommonAjax,Transfer,easyui,crossAPI,dateUtil) {
-
     var $el;
     var dataNew;
     var flagNew;//工单质检(0),语音质检(1)标志

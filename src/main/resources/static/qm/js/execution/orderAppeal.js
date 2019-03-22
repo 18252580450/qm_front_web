@@ -1,12 +1,19 @@
 require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util, Transfer) {
-
-        var orderCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/execution/orderAppealDetail.html";
+    var userInfo,
+        roleCode,
+        orderCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/execution/orderAppealDetail.html";
 
         initialize();
 
         function initialize() {
-            initPageInfo();
-            initEvent();
+            Util.getLogInData(function (data) {
+                userInfo = data;//用户角色
+                Util.getRoleCode(userInfo,function(dataNew){
+                    roleCode = dataNew;//用户信息
+                    initPageInfo();
+                    initEvent();
+                });
+            });
         }
 
         //页面信息初始化

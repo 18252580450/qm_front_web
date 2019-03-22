@@ -1,5 +1,7 @@
 
 require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], function ($, Util, Transfer,dateUtil) {
+    var userInfo;
+    var roleCode;
     var data = [];
     var allChildrenNodes = [];
     var i = 0;
@@ -11,10 +13,16 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
     initialize();
 
     function initialize() {
-        showTree();
-        initGrid();
-        delEvent();
-        saveEvent();
+        Util.getLogInData(function (data) {
+            userInfo = data;//用户角色
+            Util.getRoleCode(userInfo,function(dataNew){
+                roleCode = dataNew;//用户信息
+                showTree();
+                initGrid();
+                delEvent();
+                saveEvent();
+            });
+        });
     };
     //zTree的配置信息
     var setting = {
