@@ -26,8 +26,7 @@ define(['constants', 'page-util', 'ajax', 'loading'], function (constants, PageU
                 callback(userInfo);
             },
             error:function(error){
-                top.location.href = constants.PAGE_LOGIN;
-                throw "用户未登录";
+                jumpToLogin();
             }
         });
     }
@@ -53,6 +52,11 @@ define(['constants', 'page-util', 'ajax', 'loading'], function (constants, PageU
                 callback(roleCode);
             }
         });
+    }
+
+    function jumpToLogin(){
+        top.location.href = constants.PAGE_LOGIN;
+        throw "用户未登录";
     }
 
     return {
