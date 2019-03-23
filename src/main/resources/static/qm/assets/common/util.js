@@ -4,7 +4,6 @@
 define(['constants', 'page-util', 'ajax', 'loading'], function (constants, PageUtil, ajax, loading) {
     function getLogInData(callback) {
         var userInfo = {};
-        var roleCode = "";
         jQuery.ajax({
             async:false,
             url:constants.IS_LOG_IN,
@@ -27,7 +26,7 @@ define(['constants', 'page-util', 'ajax', 'loading'], function (constants, PageU
                 callback(userInfo);
             },
             error:function(error){
-                top.location.href = util.constants.PAGE_LOGIN;
+                top.location.href = constants.PAGE_LOGIN;
                 throw "用户未登录";
             }
         });
