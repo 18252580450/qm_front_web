@@ -355,7 +355,7 @@ require(["jquery", "util", "dateUtil", "transfer", "easyui"], function ($, Util)
                 $.messager.alert("提示", result.RSP.RSP_DESC, null, function () {
                     var jq = top.jQuery;
                     //刷新语音质检待办区
-                    jq('#tabs').tabs('close', "语音质检详情");
+                    jq('#tabs').tabs('close', "语音质检" + voicePool.touchId);
                     var tab = jq('#tabs').tabs('getTab', "质检待办区"),
                         iframe = jq(tab.panel('options').content),
                         content = '<iframe scrolling="auto" frameborder="0"  src="' + iframe.attr('src') + '" style="width:100%;height:100%;"></iframe>';

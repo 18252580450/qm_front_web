@@ -261,7 +261,13 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                                 showDialog(voiceUrl, "质检详情", 1000, 580);
                             }
                             if (item.checkType === Util.constants.CHECK_TYPE_ORDER) {
-                                var orderUrl = createURL(orderCheckDetail, item);
+                                var param = {
+                                    "provinceId": item.provinceId,
+                                    "wrkfmId": item.touchId,
+                                    "inspectionId": item.inspectionId,
+                                    "templateId": item.templateId
+                                };
+                                var orderUrl = createURL(orderCheckDetail, param);
                                 showDialog(orderUrl, "质检详情", 1000, 580);
                             }
                         });

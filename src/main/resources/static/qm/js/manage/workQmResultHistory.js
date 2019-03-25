@@ -110,7 +110,14 @@ define(["text!html/manage/workQmResultHistory.tpl", "jquery", 'util', "transfer"
                 //详情
                 $.each(data.rows, function (i, item) {
                     $("#resultDetail_" + item.inspectionId, $el).on("click", function () {
-                        var url = createURL(orderCheckDetail, item);
+                        var param = {
+                            "provinceId": item.provinceId,
+                            "wrkfmId": item.touchId,
+                            "inspectionId": item.inspectionId,
+                            "templateId": item.templateId,
+                            "checkComment": item.checkComment
+                        };
+                        var url = createURL(orderCheckDetail, param);
                         showDialog(url, "质检详情", 1000, 580);
                     });
                 });

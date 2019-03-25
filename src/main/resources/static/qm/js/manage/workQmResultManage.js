@@ -9,7 +9,7 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
     function initialize() {
         Util.getLogInData(function (data) {
             userInfo = data;//用户角色
-            Util.getRoleCode(userInfo,function(dataNew){
+            Util.getRoleCode(userInfo, function (dataNew) {
                 roleCode = dataNew;//用户信息
                 initPageInfo();
                 initEvent();
@@ -21,21 +21,21 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
     function initPageInfo() {
 
         $('#checkStaffName').searchbox({ //质检人员查询
-            searcher: function(value){
+            searcher: function (value) {
                 require(["js/execution/queryQmPeople"], function (qryQmPeople) {
                     var queryQmPeople = qryQmPeople;
-                    queryQmPeople.initialize("","2");
+                    queryQmPeople.initialize("", "2");
                     $('#qry_people_window').show().window({
                         title: '查询质检人员信息',
                         width: 1150,
                         height: 650,
                         cache: false,
-                        content:queryQmPeople.$el,
+                        content: queryQmPeople.$el,
                         modal: true,
-                        onBeforeClose:function(){//弹框关闭前触发事件
+                        onBeforeClose: function () {//弹框关闭前触发事件
                             var map = queryQmPeople.getMap();//获取值
                             $('#checkStaffId').val(map.staffId);
-                            $('#checkStaffName').searchbox("setValue",map.staffName);
+                            $('#checkStaffName').searchbox("setValue", map.staffName);
                         }
                     });
                 });
@@ -253,7 +253,14 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
                 //详情
                 $.each(data.rows, function (i, item) {
                     $("#resultDetail_" + item.inspectionId).on("click", function () {
-                        var url = createURL(orderCheckDetail, item);
+                        var param = {
+                            "provinceId": item.provinceId,
+                            "wrkfmId": item.touchId,
+                            "inspectionId": item.inspectionId,
+                            "templateId": item.templateId,
+                            "checkComment": item.checkComment
+                        };
+                        var url = createURL(orderCheckDetail, param);
                         showDialog(url, "质检详情", 1000, 580);
                     });
                 });

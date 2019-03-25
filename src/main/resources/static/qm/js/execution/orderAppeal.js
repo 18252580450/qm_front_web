@@ -1,14 +1,14 @@
 require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util, Transfer) {
-    var userInfo,
-        roleCode,
-        orderCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/execution/orderAppealDetail.html";
+        var userInfo,
+            roleCode,
+            orderCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/execution/orderAppealDetail.html";
 
         initialize();
 
         function initialize() {
             Util.getLogInData(function (data) {
                 userInfo = data;//用户角色
-                Util.getRoleCode(userInfo,function(dataNew){
+                Util.getRoleCode(userInfo, function (dataNew) {
                     roleCode = dataNew;//用户信息
                     initPageInfo();
                     initEvent();
@@ -156,7 +156,13 @@ require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util,
                     //质检详情
                     $.each(data.rows, function (i, item) {
                         $("#checkFlow_" + item.appealId).on("click", function () {
-                            var url = createURL(orderCheckDetail, item);
+                            var param = {
+                                "provinceId": item.provinceId,
+                                "wrkfmId": item.touchId,
+                                "inspectionId": item.inspectionId,
+                                "templateId": item.templateId
+                            };
+                            var url = createURL(orderCheckDetail, param);
                             showDialog(url, "质检详情", 1000, 580);
                         });
                     });
@@ -409,7 +415,7 @@ require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util,
                 approveStatus = "驳回";
             }
             var approveTime = "";
-            if(item.approveTime !== ""){
+            if (item.approveTime !== "") {
                 approveTime = DateUtil.formatDateTime(item.approveTime)
             }
             return '<div style="margin-bottom:30px;">' +

@@ -1,59 +1,17 @@
-require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], function (QueryQmPlan, QueryQmHistory, $, Util, Transfer, CommonAjax) {
-    var userInfo,
-        roleCode,
-        orderCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/execution/orderCheckDetailNew.html",
+require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], function (QueryQmPlan, QueryQmHistory, $, Util, Transfer, CommonAjax) {
+
+    var voiceCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/execution/voiceCheckDetail.html",
         poolStatusData = [];  //质检状态下拉框静态数据（待质检、待复检）
 
     initialize();
 
     function initialize() {
-        Util.getLogInData(function (data) {
-            userInfo = data;//用户角色
-            Util.getRoleCode(userInfo, function (dataNew) {
-                roleCode = dataNew;//用户信息
-                initPageInfo();
-                initEvent();
-            });
-        });
+        initPageInfo();
+        initEvent();
     }
 
     //页面信息初始化
     function initPageInfo() {
-
-        //分配开始时间选择框
-        // var beginDate = (DateUtil.formatDateTime(new Date() - 24 * 60 * 60 * 1000)).substr(0, 11) + "00:00:00";
-        var beginDate = "2018-10-10 00:00:00";
-        $("#assignBeginTime").datetimebox({
-            // value: beginDate,
-            onShowPanel: function () {
-                $("#assignBeginTime").datetimebox("spinner").timespinner("setValue", "00:00:00");
-            },
-            onChange: function () {
-                checkBeginEndTime();
-            }
-        });
-
-        //分配结束时间选择框
-        var endDate = (DateUtil.formatDateTime(new Date())).substr(0, 11) + "00:00:00";
-        // var endDate = (DateUtil.formatDateTime(new Date()-24*60*60*1000)).substr(0,11) + "23:59:59";
-        $('#assignEndTime').datetimebox({
-            // value: endDate,
-            onShowPanel: function () {
-                $("#assignEndTime").datetimebox("spinner").timespinner("setValue", "23:59:59");
-            },
-            onChange: function () {
-                checkBeginEndTime();
-            }
-        });
-
-        //考评环节搜索框
-        $("#checkLink").searchbox({
-                searcher: function () {
-                }
-            }
-        );
-
-        //计划名称搜索框
         $('#planName').searchbox({//输入框点击查询事件
             searcher: function (value) {
                 var queryQmPlan = new QueryQmPlan();
@@ -66,6 +24,72 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
                     content: queryQmPlan.$el,
                     modal: true
                 });
+            }
+        });
+
+        //计划名称搜索框
+        $("#qmPlanName").searchbox({
+                searcher: function () {
+                }
+            }
+        );
+        //抽取开始时间选择框
+        // var extractBeginDate = (DateUtil.formatDateTime(new Date() - 24 * 60 * 60 * 1000)).substr(0, 11) + "00:00:00";
+        var extractBeginDate = "2018-10-10 00:00:00";
+        $("#extractBeginTime").datetimebox({
+            // value: extractBeginDate,
+            onShowPanel: function () {
+                $("#extractBeginTime").datetimebox("spinner").timespinner("setValue", "00:00:00");
+            },
+            onChange: function () {
+                var beginDate = $("#extractBeginTime").datetimebox("getValue"),
+                    endDate = $("#extractEndTime").datetimebox("getValue");
+                checkBeginEndTime(beginDate, endDate);
+            }
+        });
+
+        //抽取结束时间选择框
+        var extractEndDate = (DateUtil.formatDateTime(new Date())).substr(0, 11) + "00:00:00";
+        // var endDate = (DateUtil.formatDateTime(new Date()-24*60*60*1000)).substr(0,11) + "23:59:59";
+        $('#extractEndTime').datetimebox({
+            // value: extractEndDate,
+            onShowPanel: function () {
+                $("#extractEndTime").datetimebox("spinner").timespinner("setValue", "23:59:59");
+            },
+            onChange: function () {
+                var beginDate = $("#extractBeginTime").datetimebox("getValue"),
+                    endDate = $("#extractEndTime").datetimebox("getValue");
+                checkBeginEndTime(beginDate, endDate);
+            }
+        });
+
+        //分配开始时间选择框
+        // var distributeBeginDate = (DateUtil.formatDateTime(new Date() - 24 * 60 * 60 * 1000)).substr(0, 11) + "00:00:00";
+        var distributeBeginDate = "2018-10-10 00:00:00";
+        $("#distributeBeginTime").datetimebox({
+            // value: distributeBeginDate,
+            onShowPanel: function () {
+                $("#distributeBeginTime").datetimebox("spinner").timespinner("setValue", "00:00:00");
+            },
+            onChange: function () {
+                var beginDate = $("#distributeBeginTime").datetimebox("getValue"),
+                    endDate = $("#distributeEndTime").datetimebox("getValue");
+                checkBeginEndTime(beginDate, endDate);
+            }
+        });
+
+        //分配结束时间选择框
+        var distributeEndDate = (DateUtil.formatDateTime(new Date())).substr(0, 11) + "00:00:00";
+        // var endDate = (DateUtil.formatDateTime(new Date()-24*60*60*1000)).substr(0,11) + "23:59:59";
+        $('#distributeEndTime').datetimebox({
+            // value: distributeEndDate,
+            onShowPanel: function () {
+                $("#distributeEndTime").datetimebox("spinner").timespinner("setValue", "23:59:59");
+            },
+            onChange: function () {
+                var beginDate = $("#distributeBeginTime").datetimebox("getValue"),
+                    endDate = $("#distributeEndTime").datetimebox("getValue");
+                checkBeginEndTime(beginDate, endDate);
             }
         });
 
@@ -85,7 +109,7 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
                 }
             },
             onSelect: function () {
-                $("#orderCheckList").datagrid("load");
+                $("#voiceCheckList").datagrid("load");
             }
         });
         CommonAjax.getStaticParams("POOL_STATUS", function (datas) {
@@ -95,15 +119,15 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
             }
         });
 
-        //待质检工单列表
+        //待质检语音列表
         var IsCheckFlag = true; //标示是否是勾选复选框选中行的，true - 是 , false - 否
-        $("#orderCheckList").datagrid({
+        $("#voiceCheckList").datagrid({
             columns: [[
                 {
                     field: 'operate', title: '操作', width: '8%',
                     formatter: function (value, row, index) {
-                        var check = '<a href="javascript:void(0);" style="color: deepskyblue;" id = "orderCheck_' + row.workFormId + '">质检</a>',
-                            checkHistory = '<a href="javascript:void(0);" style="color: deepskyblue;" id = "checkHistory_' + row.workFormId + '">质检记录</a>';
+                        var check = '<a href="javascript:void(0);" style="color: deepskyblue;" id = "voiceCheck_' + row.touchId + '">质检</a>',
+                            checkHistory = '<a href="javascript:void(0);" style="color: deepskyblue;" id = "checkHistory_' + row.touchId + '">质检记录</a>';
                         if (row.poolStatus.toString() === Util.constants.CHECK_STATUS_CHECK) {
                             return check;
                         }
@@ -112,43 +136,27 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
                         }
                     }
                 },
-                {field: 'wrkfmShowSwftno', title: '工单流水', width: '15%'},
-                {field: 'srvReqstTypeFullNm', title: '服务请求类型', width: '15%'},
+                {field: 'touchId', title: '语音流水', width: '15%'},
+                {field: 'planName', title: '计划名称', width: '15%'},
+                {field: 'staffNumber', title: '坐席号码', width: '15%'},
+                {field: 'customerNumber', title: '客户号码', width: '15%'},
                 {
-                    field: 'planName', title: '计划名称', width: '15%',
-                    formatter: function (value, row, index) {
-                        if (row.qmPlan != null) {
-                            return row.qmPlan.planName;
-                        }
-                    }
-                },
-                {field: 'custEmail', title: '客户账号', align: 'center', width: '10%'},
-                {field: 'custName', title: '客户名称', align: 'center', width: '10%'},
-                {field: 'custNum', title: '客户号码', align: 'center', width: '10%'},
-                {
-                    field: 'crtTime', title: '立单时间', width: '15%',
+                    field: 'checkedTime', title: '抽取时间', width: '15%',
                     formatter: function (value, row, index) { //格式化时间格式
-                        if (value != null) {
-                            return DateUtil.formatDateTime(value);
+                        if (row.checkedTime != null) {
+                            return DateUtil.formatDateTime(row.checkedTime);
                         }
                     }
                 },
                 {
-                    field: 'arcTime', title: '归档时间', width: '15%',
-                    formatter: function (value, row, index) { //格式化时间格式
-                        if (value != null) {
-                            return DateUtil.formatDateTime(value);
-                        }
-                    }
-                },
-                {
-                    field: 'operateTime', title: '分配时间', width: '15%',
+                    field: 'operateTime', title: '分派时间', width: '15%',
                     formatter: function (value, row, index) { //格式化时间格式
                         if (row.operateTime != null) {
                             return DateUtil.formatDateTime(row.operateTime);
                         }
                     }
                 },
+                {field: 'checkedStaffName', title: '被检人员', width: '15%'},
                 {
                     field: 'poolStatus', title: '状态', width: '15%',
                     formatter: function (value, row, index) {
@@ -174,40 +182,49 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
             onSelect: function (rowIndex, rowData) {
                 if (!IsCheckFlag) {
                     IsCheckFlag = true;
-                    $("#orderCheckList").datagrid("unselectRow", rowIndex);
+                    $("#voiceCheckList").datagrid("unselectRow", rowIndex);
                 }
             },
             onUnselect: function (rowIndex, rowData) {
                 if (!IsCheckFlag) {
                     IsCheckFlag = true;
-                    $("#orderCheckList").datagrid("selectRow", rowIndex);
+                    $("#voiceCheckList").datagrid("selectRow", rowIndex);
                 }
             },
             loader: function (param, success) {
                 var start = (param.page - 1) * param.rows;
                 var pageNum = param.rows;
 
-                var wrkfmShowSwftno = $("#orderId").val(),
-                    distStartTime = $("#assignBeginTime").datetimebox("getValue"),
-                    distEndTime = $("#assignEndTime").datetimebox("getValue"),
-                    checkLink = $("#checkLink").val(),
+                var touchId = $("#touchId").val(),
                     planId = $("#planId").val(),
-                    custNum = $("#customNum").val(),
+                    callingNumber = $("#callingNumber").val(),
+                    calledNumber = $("#calledNumber").val(),
+                    extractBeginTime = $("#extractBeginTime").datetimebox("getValue"),
+                    extractEndTime = $("#extractEndTime").datetimebox("getValue"),
+                    distributeBeginTime = $("#distributeBeginTime").datetimebox("getValue"),
+                    distributeEndTime = $("#distributeEndTime").datetimebox("getValue"),
+                    minRecordTime = $("#minRecordTime").val(),
+                    maxRecordTime = $("#maxRecordTime").val(),
                     poolStatus = $("#poolStatus").combobox("getValue");
 
                 if (poolStatus === "" || poolStatus === "-1") {
                     return;
                 }
+
                 var reqParams = {
-                    // "checkStaffId": Util.constants.STAFF_ID,     //暂时不考虑工号
-                    "wrkfmShowSwftno": wrkfmShowSwftno,
-                    "isOperate": Util.constants.ORDER_DISTRIBUTE,        //已分配
+                    "tenantId": Util.constants.TENANT_ID,
+                    "touchId": touchId,
                     "planId": planId,
-                    "operateTimeBegin": distStartTime,
-                    "operateTimeEnd": distEndTime,
-                    "checkLink": checkLink,
+                    "isOperate": Util.constants.VOICE_DISTRIBUTE,        //已分配
                     "poolStatus": poolStatus,
-                    "custNum": custNum
+                    "staffNumber": callingNumber,
+                    "customerNumber": calledNumber,
+                    "extractBeginTime": extractBeginTime,
+                    "extractEndTime": extractEndTime,
+                    "distributeBeginTime": distributeBeginTime,
+                    "distributeEndTime": distributeEndTime,
+                    "minRecordTime": minRecordTime,
+                    "maxRecordTime": maxRecordTime
                 };
                 var params = $.extend({
                     "start": start,
@@ -215,9 +232,13 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
                     "params": JSON.stringify(reqParams)
                 }, Util.PageUtil.getParams($("#searchForm")));
 
-                Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.ORDER_POOL_DNS + "/selectByParams", params, function (result) {
+                Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.VOICE_POOL_DNS + "/selectByParams", params, function (result) {
                     var data = Transfer.DataGrid.transfer(result);
-
+                    for (var i = 0; i < data.rows.length; i++) {
+                        if (data.rows[i].qmPlan != null) {
+                            data.rows[i]["planName"] = data.rows[i].qmPlan.planName;
+                        }
+                    }
                     var rspCode = result.RSP.RSP_CODE;
                     if (rspCode != null && rspCode !== "1") {
                         $.messager.show({
@@ -240,34 +261,18 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
                 });
             },
             onLoadSuccess: function (data) {
-                //工单质检详情
+                //语音质检详情
                 $.each(data.rows, function (i, item) {
-                    $("#orderCheck_" + item.workFormId).on("click", function () {
-                        var templateId = "",
-                            planId = "";
-                        if (item.planId != null && item.planId !== "") {
-                            planId = item.planId;   //计划内质检
-                        } else {
-                            templateId = item.templateId;  //计划外质检
-                        }
-                        var param = {
-                            "provinceId": item.provinceId,
-                            "wrkfmId": item.workFormId,
-                            "planId": planId,
-                            "templateId": templateId,
-                            "acptStaffNum": item.acptStaffNum,
-                            "checkStaffId": item.checkStaffId,
-                            "checkStaffName": item.checkStaffName
-                        };
-                        var url = createURL(orderCheckDetail, param);
-                        addTabs("工单质检" + item.wrkfmShowSwftno, url);
+                    $("#voiceCheck_" + item.touchId).on("click", function () {
+                        var url = createURL(voiceCheckDetail, item);
+                        addTabs("语音质检详情", url);
                     });
                 });
                 //质检记录
                 $.each(data.rows, function (i, item) {
-                    $("#checkHistory_" + item.workFormId).on("click", function () {
+                    $("#checkHistory_" + item.touchId).on("click", function () {
                         var queryQmHistory = QueryQmHistory;
-                        queryQmHistory.initialize(item.workFormId);
+                        queryQmHistory.initialize(item.touchId);
                         $('#qryQmHistoryWindow').show().window({
                             title: '质检历史',
                             width: 900,
@@ -287,7 +292,7 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
     //事件初始化
     function initEvent() {
         $("#queryBtn").on("click", function () {
-            $("#orderCheckList").datagrid('load');
+            $("#voiceCheckList").datagrid('reload');
         });
         $("#resetBtn").on("click", function () {
             $("#searchForm").form('clear');
@@ -300,7 +305,11 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
         var urlLink = url;
         if (param != null) {
             $.each(param, function (item, value) {
-                urlLink += '&' + item + "=" + encodeURI(value);
+                if (value !== null) {
+                    urlLink += '&' + item + "=" + encodeURI(value);
+                } else {
+                    urlLink += '&' + item + "=" + encodeURI("");
+                }
             });
             urlLink = url + "?" + urlLink.substr(1);
         }
@@ -323,9 +332,7 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
     }
 
     //校验开始时间和终止时间
-    function checkBeginEndTime() {
-        var beginTime = $("#assignBeginTime").datetimebox("getValue");
-        var endTime = $("#assignEndTime").datetimebox("getValue");
+    function checkBeginEndTime(beginTime, endTime) {
         var d1 = new Date(beginTime.replace(/-/g, "\/"));
         var d2 = new Date(endTime.replace(/-/g, "\/"));
 

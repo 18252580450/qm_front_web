@@ -145,7 +145,7 @@ require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util,
     //初始化工单基本信息
     function initWrkfmDetail() {
         var reqParams = {
-            "provCode": workForm.provinceId,
+            "provCode": workForm.provCode,
             "wrkfmId": workForm.wrkfmId
         };
         var params = $.extend({
@@ -186,7 +186,7 @@ require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util,
     //初始化工单轨迹、考评项列表、考评评语
     function initProcProceLocus() {
         var reqParams = {
-            "provCode": workForm.provinceId,
+            "provCode": workForm.provCode,
             "wrkfmId": workForm.wrkfmId
         };
         var params = $.extend({
@@ -213,7 +213,6 @@ require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util,
                 //初始化考评项列表
                 var reqParams = {
                     "tenantId": Util.constants.TENANT_ID,
-                    "planId": workForm.planId,
                     "templateId": workForm.templateId
                 };
                 var params = $.extend({
@@ -420,19 +419,11 @@ require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util,
         });
         //保存
         $("#saveBtn").on("click", function () {
-            if (workForm.poolStatus === Util.constants.CHECK_STATUS_RECHECK) {
-                checkSubmit(Util.constants.CHECK_FLAG_RECHECK_SAVE);  //复检保存
-            } else {
-                checkSubmit(Util.constants.CHECK_FLAG_CHECK_SAVE);  //质检保存
-            }
+            checkSubmit(Util.constants.CHECK_FLAG_CHECK_SAVE);  //质检保存
         });
         //提交
         $("#submitBtn").on("click", function () {
-            if (workForm.poolStatus === Util.constants.CHECK_STATUS_RECHECK) {
-                checkSubmit(Util.constants.CHECK_FLAG_RECHECK);  //复检
-            } else {
-                checkSubmit(Util.constants.CHECK_FLAG_NEW_BUILD);
-            }
+            checkSubmit(Util.constants.CHECK_FLAG_NEW_BUILD);  //质检提交
         });
         //取消
         $("#cancelBtn").on("click", function () {
@@ -450,7 +441,7 @@ require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util,
     function initHandlingLog() {
         if (JSON.stringify(replyData) === "{}") {
             var reqParams = {
-                "provCode": workForm.provinceId,
+                "provCode": workForm.provCode,
                 "wrkfmId": workForm.wrkfmId
             };
             var params = $.extend({
@@ -541,7 +532,7 @@ require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util,
                 var reqParams = {
                     "start": start,
                     "limit": pageNum,
-                    "provCode": workForm.provinceId,
+                    "provCode": workForm.provCode,
                     "wrkfmId": workForm.wrkfmId
                 };
                 var params = $.extend({
@@ -615,7 +606,7 @@ require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util,
                 var reqParams = {
                     "start": start,
                     "limit": pageNum,
-                    "provCode": workForm.provinceId,
+                    "provCode": workForm.provCode,
                     "phoneNum": workFormDetail.userInfo.custNum
                 };
                 var params = $.extend({
@@ -835,7 +826,7 @@ require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util,
 
         var currentTime = new Date(),
             checkTime = currentTime - startTime,
-            checkStartTime = DateUtil.formatDateTime(parseInt(workForm.operateTime)),
+            checkStartTime = DateUtil.formatDateTime(currentTime),
             finalScore = totalScore / checkLinkData.length,  //最终得分，暂时按各个环节的平局分统计
             checkComment = $("#checkComment").val(),
             unqualifiedNum = 0;  //不合格环节数
@@ -847,37 +838,52 @@ require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util,
             }
         });
 
-        var planId = "",
-            checkModel = Util.constants.CHECK_TYPE_BEYOND_PLAN;  //计划外质检
-        if (workForm.planId != null && workForm.planId !== "") {
-            planId = workForm.planId;
-            checkModel = Util.constants.CHECK_TYPE_WITHIN_PLAN;  //计划内质检
-        }
         //工单质检基本信息
         var orderCheckInfo = {
-            "tenantId": Util.constants.TENANT_ID,                          //租户id
-            "provinceId": workForm.provinceId,                             //省份id
-            "callingNumber": workForm.acptStaffNum,                        //主叫号码
-            "acceptNumber": workFormDetail.userInfo.custNum,               //受理号码
-            "touchId": workForm.wrkfmId,                                   //工单流水
-            "wrkfmShowSwftno": workFormDetail.acceptInfo.wrkfmShowSwftno,  //工单显示流水
-            "planId": planId,                                              //考评计划
-            "templateId": templateId,                                      //考评模版ID
-            "checkModel": checkModel,                                      //质检模式、计划内质检
-            "checkStaffId": workForm.checkStaffId,                         //质检员id
-            "checkStaffName": workForm.checkStaffName,                     //质检员名
-            "checkStartTime": checkStartTime,                              //质检开始时间（质检分配时间）
-            "checkTime": checkTime,                                        //质检时长
-            "scoreType": scoreType,                                        //分值类型
-            "finalScore": finalScore,                                      //总得分
-            "checkComment": checkComment,                                  //考评评语
-            "unqualifiedNum": unqualifiedNum,                              //不合格环节数
-            "resultStatus": checkStatus                                    //质检结果状态（暂存、质检、复检）
+            "tenantId": Util.constants.TENANT_ID,                               //租户id
+            "provinceId": workForm.provCode,                                    //省份id
+            "callingNumber": workForm.acptStaffNum,                             //主叫号码
+            "acceptNumber": workFormDetail.userInfo.custNum,                    //受理号码
+            "touchId": workForm.wrkfmId,                                        //工单流水
+            "wrkfmShowSwftno": workFormDetail.acceptInfo.wrkfmShowSwftno,       //工单显示流水
+            "planId": "",                                                       //考评计划（计划外质检不绑定计划）
+            "templateId": templateId,                                           //考评模版ID
+            "checkModel": Util.constants.CHECK_TYPE_BEYOND_PLAN,                //质检模式、计划内质检
+            "checkStaffId": Util.constants.STAFF_ID,                            //质检员id
+            "checkStaffName": Util.constants.STAFF_NAME,                        //质检员名
+            "checkStartTime": checkStartTime,                                   //质检开始时间（质检分配时间）
+            "checkTime": checkTime,                                             //质检时长
+            "scoreType": scoreType,                                             //分值类型
+            "finalScore": finalScore,                                           //总得分
+            "checkComment": checkComment,                                       //考评评语
+            "unqualifiedNum": unqualifiedNum,                                   //不合格环节数
+            "resultStatus": checkStatus                                         //质检结果状态（暂存、质检、复检）
+        };
+
+        //工单基本信息
+        workFormInfo = {
+            "srvReqstTypeId": workFormDetail.acceptInfo.srvReqstTypeId,         //服务请求类型id
+            "srvReqstTypeNm": workForm.srvReqstTypeNm,                          //服务请求类型名称
+            "srvReqstTypeFullNm": workFormDetail.acceptInfo.srvReqstTypeFullNm, //服务请求类型全称
+            "bizCntt": workFormDetail.acceptInfo.bizCntt,                       //工单内容
+            "bizTitle": workFormDetail.acceptInfo.bizTitle,                     //工单标题
+            "handleDuration": workFormDetail.acceptInfo.handleDuration,         //处理时长
+            "actualHandleDuration": workForm.actualHandleDuration,              //实际处理时长
+            "custEmail": workFormDetail.userInfo.custEmail,                     //客户邮箱
+            "custName": workFormDetail.userInfo.custName,                       //客户姓名
+            "custNum": workFormDetail.userInfo.custNum,                         //客户号码
+            "acptStaffId": workFormDetail.acceptInfo.acptStaffId,               //立单人工号
+            "acptStaffNum": workForm.acptStaffNum,                              //立单人号码
+            "crtTime": workFormDetail.acceptInfo.acptTime,                      //受理时间/立单时间
+            "arcTime": workFormDetail.acceptInfo.arcTime,                       //归档时间
+            "modfTime": workFormDetail.acceptInfo.modfTime,                     //修改时间
+            "checkedStaffId": workFormDetail.acceptInfo.dspsComplteStaffId      //工单责任人（待定）
         };
 
         var params = {
-            "orderCheckInfo": orderCheckInfo,
-            "checkLinkData": checkLinkData
+            "workFormInfo": workFormInfo,       //工单基本信息
+            "orderCheckInfo": orderCheckInfo,   //质检基本信息
+            "checkLinkData": checkLinkData      //质检环节详情
         };
 
         Util.loading.showLoading();
@@ -894,7 +900,7 @@ require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util,
                     var jq = top.jQuery;
                     //刷新语音质检待办区
                     jq('#tabs').tabs('close', "工单质检" + workFormDetail.acceptInfo.wrkfmShowSwftno);
-                    var tab = jq('#tabs').tabs('getTab', "质检待办区"),
+                    var tab = jq('#tabs').tabs('getTab', "计划外质检池"),
                         iframe = jq(tab.panel('options').content),
                         content = '<iframe scrolling="auto" frameborder="0"  src="' + iframe.attr('src') + '" style="width:100%;height:100%;"></iframe>';
                     jq('#tabs').tabs('update', {

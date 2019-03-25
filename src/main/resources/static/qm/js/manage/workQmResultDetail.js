@@ -1,5 +1,5 @@
 require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util) {
-    var orderResult,
+    var workForm,
         showingInfo = 0,            //当前显示的基本信息（0工单基本信息、1内外部回复、2接触记录、3工单历史）
         scoreType,                  //分值类型（默认扣分）
         startTime,                  //页面初始化时间
@@ -12,8 +12,7 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
         processData = [],           //轨迹数据
         recordData = [],            //接触记录数据
         historyData = [],           //工单历史数据
-        phoneNum,                   //受理号码
-        wrkfmId;                    //工单id
+        phoneNum;                   //受理号码
 
     initialize();
 
@@ -27,10 +26,7 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
     //页面信息初始化
     function initPageInfo() {
         //获取工单流水、质检流水等信息
-        orderResult = getRequestObj();
-
-        wrkfmId = orderResult.touchId;
-        // wrkfmId = "1901020950440000088";
+        workForm = getRequestObj();
 
         //获取工单基本信息
         initWrkfmDetail();
@@ -104,14 +100,14 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
         //获取工单轨迹、初始化考评项列表、环节考评数据
         initProcProceLocus();
         //初始化考评评语
-        $("#checkComment").html(orderResult.checkComment);
+        $("#checkComment").html(workForm.checkComment);
     }
 
     //初始化工单基本信息
     function initWrkfmDetail() {
         var reqParams = {
-            "provCode": orderResult.provinceId,
-            "wrkfmId": wrkfmId
+            "provCode": workForm.provinceId,
+            "wrkfmId": workForm.wrkfmId
         };
         var params = $.extend({
             "params": JSON.stringify(reqParams)
@@ -151,8 +147,8 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
     //初始化工单轨迹、考评项列表
     function initProcProceLocus() {
         var reqParams = {
-            "provCode": orderResult.provinceId,
-            "wrkfmId": wrkfmId
+            "provCode": workForm.provinceId,
+            "wrkfmId": workForm.wrkfmId
         };
         var params = $.extend({
             "params": JSON.stringify(reqParams)
@@ -177,7 +173,7 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
                 //初始化考评项列表
                 var reqParams = {
                     "tenantId": Util.constants.TENANT_ID,
-                    "planId": orderResult.planId
+                    "templateId": workForm.templateId
                 };
                 var params = $.extend({
                     "start": 0,
@@ -209,7 +205,7 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
 
                         //查询质检结果详情
                         var reqParams = {
-                            "inspectionId": orderResult.inspectionId
+                            "inspectionId": workForm.inspectionId
                         };
                         var params = $.extend({
                             "start": 0,
@@ -314,8 +310,8 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
     function initHandlingLog() {
         if (JSON.stringify(replyData) === "{}") {
             var reqParams = {
-                "provCode": orderResult.provinceId,
-                "wrkfmId": wrkfmId
+                "provCode": workForm.provinceId,
+                "wrkfmId": workForm.wrkfmId
             };
             var params = $.extend({
                 "params": JSON.stringify(reqParams)
@@ -407,8 +403,8 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
                 var reqParams = {
                     "start": start,
                     "limit": pageNum,
-                    "provCode": orderResult.provinceId,
-                    "wrkfmId": wrkfmId
+                    "provCode": workForm.provinceId,
+                    "wrkfmId": workForm.wrkfmId
                 };
                 var params = $.extend({
                     "params": JSON.stringify(reqParams)
@@ -481,7 +477,7 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
                 var reqParams = {
                     "start": start,
                     "limit": pageNum,
-                    "provCode": orderResult.provinceId,
+                    "provCode": workForm.provinceId,
                     "phoneNum": phoneNum
                 };
                 var params = $.extend({
