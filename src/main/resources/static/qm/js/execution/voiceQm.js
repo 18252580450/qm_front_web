@@ -389,8 +389,8 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
                         var map=data.rows[i];
                         if(map.qmPlan!=null){
                             map["planName"]=map.qmPlan.planName;
-                            dataNew.push(map);
                         }
+                        dataNew.push(map);
                     }
                     var rspCode = result.RSP.RSP_CODE;
                     if (rspCode != null && rspCode !== "1") {
