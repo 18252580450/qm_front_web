@@ -1,20 +1,16 @@
 require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
     var userInfo;
-    var roleCode;
     //调用初始化方法
     initialize();
 
     function initialize() {
         Util.getLogInData(function (data) {
             userInfo = data;//用户角色
-            Util.getRoleCode(userInfo,function(dataNew){
-                roleCode = dataNew;//用户信息
-                initGrid();
-                initGlobalEvent();
-                initTypeWindowEvent();
-                initWindowEvent();
-                initReviseEvent();
-            });
+            initGrid();
+            initGlobalEvent();
+            initTypeWindowEvent();
+            initWindowEvent();
+            initReviseEvent();
         });
     };
 

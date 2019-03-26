@@ -2,17 +2,13 @@ require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util,
 
         var voiceCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/execution/voiceAppealDetail.html";
         var userInfo;
-        var roleCode;
         initialize();
 
         function initialize() {
             Util.getLogInData(function (data) {
                 userInfo = data;//用户角色
-                Util.getRoleCode(userInfo,function(dataNew){
-                    roleCode = dataNew;//用户信息
-                    initPageInfo();
-                    initEvent();
-                });
+                initPageInfo();
+                initEvent();
             });
         }
 

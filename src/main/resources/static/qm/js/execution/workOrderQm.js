@@ -2,7 +2,7 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui","dateUti
     //初始化方法
     initialize();
     var userInfo;
-    var roleCode;
+    var userPermission;
     var reqParams = null;
     var isCheckParent=false;//设置父节点是否可被选 true 可选 false不可选 默认可选
     var isChoice=false; //节点是否区分可选标志 true区分 false不区分 默认不区分(节点是否可被选)
@@ -11,7 +11,7 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui","dateUti
         Util.getLogInData(function (data) {
             userInfo = data;//用户角色
             Util.getRoleCode(userInfo,function(dataNew){
-                roleCode = dataNew;//用户信息
+                userPermission = dataNew;//用户权限
                 initPageInfo();
                 initEvent();
             });
@@ -262,7 +262,6 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui","dateUti
                     }
                 },
                 {field: 'checkStaffName', title: '质检员', align: 'center', width: '10%'},
-                {field: 'checkedStaffName', title: '被质检员', align: 'center', width: '10%'},
                 {
                     field: 'operateTime', title: '分配时间', align: 'center', width: '15%',
                     formatter: function (value, row, index) { //格式化时间格式
@@ -371,6 +370,16 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui","dateUti
 
     //事件初始化
     function initEvent() {
+
+        if(userPermission=="checker"){//质检员
+           $("#disBut").attr("style","display:none;"); //不可以分配
+            $("#releaseBut").attr("style","display:none;");
+        }else if(userPermission=="staffer"){//话务员（没有任何功能权限）
+            $("#disBut").attr("style","display:none;");
+            $("#claimBut").attr("style","display:none;");
+            $("#releaseBut").attr("style","display:none;");
+        }
+
         //查询
         $("#queryBtn").on("click", function () {
             $("#queryInfo").datagrid("load");
@@ -456,8 +465,8 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui","dateUti
         var params=[];
         for(var i=0;i<dataNew.length;i++){
             var map = {};
-            map["checkStaffName"]="开心";//质检员信息先写死
-            map["checkStaffId"]="112233";
+            map["checkStaffName"]=userInfo.staffName;
+            map["checkStaffId"]=userInfo.staffId;
             map["wrkfmShowSwftno"]=dataNew[i];
             params.push(map);
         }

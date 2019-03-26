@@ -47,9 +47,19 @@ define(['constants', 'page-util', 'ajax', 'loading'], function (constants, PageU
         };
         ajax.getJson(constants.CONTEXT + constants.QM_PLAN_DNS + "/getQmPeople", params, function (result) {
             var rspCode = result.RSP.RSP_CODE;
+            var userPermission = "";
             if(rspCode=="1"){
                 roleCode =  result.RSP.DATA[0].jsonArray[0].ROLE_CODE;//角色编码
-                callback(roleCode);
+                var arr = roleCode.split(',');
+                var params = {
+                    "params": JSON.stringify(arr)
+                };
+                ajax.getJson(constants.CONTEXT + constants.USER_PERMISSION + "/qryUserPermission", params, function (result) {
+                    if( result.RSP_CODE=="1"){
+                        userPermission = result.DATA[0].permissionCode;
+                        callback(userPermission);
+                    }
+                });
             }
         });
     }

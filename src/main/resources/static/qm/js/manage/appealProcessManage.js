@@ -1,7 +1,6 @@
 require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], function ($, Util, Transfer, CommonAjax) {
 
     var userInfo,
-        roleCode,
         processStatusData = [],   //流程状态下拉框静态数据
         checkTypeData = [],       //质检类型静态数据
         processDetailUrl = Util.constants.URL_CONTEXT + "/qm/html/manage/appealProcessDetail.html",
@@ -13,11 +12,8 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
     function initialize() {
         Util.getLogInData(function (data) {
             userInfo = data;//用户角色
-            Util.getRoleCode(userInfo,function(dataNew){
-                roleCode = dataNew;//用户信息
-                initPageInfo();
-                initEvent();
-            });
+            initPageInfo();
+            initEvent();
         });
     }
 

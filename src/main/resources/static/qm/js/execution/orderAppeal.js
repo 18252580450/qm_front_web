@@ -8,11 +8,8 @@ require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util,
         function initialize() {
             Util.getLogInData(function (data) {
                 userInfo = data;//用户角色
-                Util.getRoleCode(userInfo, function (dataNew) {
-                    roleCode = dataNew;//用户信息
-                    initPageInfo();
-                    initEvent();
-                });
+                initPageInfo();
+                initEvent();
             });
         }
 

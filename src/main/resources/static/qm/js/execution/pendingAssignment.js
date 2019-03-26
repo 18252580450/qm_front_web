@@ -3,16 +3,12 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util) {
     var orderCheckUrl = Util.constants.URL_CONTEXT + "/qm/html/manage/appealProcessAdd.html",
         appealCheckUrl = Util.constants.URL_CONTEXT + "/qm/html/manage/appealProcessEdit.html";
     var userInfo;
-    var roleCode;
     initialize();
 
     function initialize() {
         Util.getLogInData(function (data) {
             userInfo = data;//用户角色
-            Util.getRoleCode(userInfo,function(dataNew){
-                roleCode = dataNew;//用户信息
-                initPageInfo();
-            });
+            initPageInfo();
         });
     }
 

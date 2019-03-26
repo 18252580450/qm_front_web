@@ -1,7 +1,6 @@
 require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], function ($, Util, Transfer, CommonAjax) {
 
     var userInfo,
-        roleCode,
         voiceCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/execution/voiceAppealDetail.html",
         orderCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/execution/orderAppealDetail.html",
         checkTypeData = [],      //质检类型静态数据
@@ -12,11 +11,8 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
         function initialize() {
             Util.getLogInData(function (data) {
                 userInfo = data;//用户角色
-                Util.getRoleCode(userInfo,function(dataNew){
-                    roleCode = dataNew;//用户信息
-                    initPageInfo();
-                    initEvent();
-                });
+                initPageInfo();
+                initEvent();
             });
         }
 
