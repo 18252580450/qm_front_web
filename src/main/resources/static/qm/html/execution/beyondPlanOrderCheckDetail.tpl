@@ -1,13 +1,3 @@
-<!doctype html>
-<html>
-<head>
-    <meta charset="utf-8"/>
-    <title>工单质检详情</title>
-    <link rel="stylesheet" type="text/css" href="../../assets/lib/easyui/themes/cmcui/cmcui.css"/>
-    <link rel="stylesheet" type="text/css" href="../../static/css/common.css"/>
-    <link rel="stylesheet" type="text/css" href="../../static/css/worksheetTest.css"/>
-</head>
-<body>
 <div class="test-body">
     <div class="content-1">
         <button class="button-1" id="baseInfoBtn">基本信息</button>
@@ -112,10 +102,3 @@
         </div>
     </div>
 </div>
-
-<script type="text/javascript" src="../../js/common/requirejs-main.js"></script>
-<script type="text/javascript" src="../../assets/lib/require/require.min.js"
-        data-main="js/execution/beyondPlanOrderCheckDetail.js"></script>
-
-</body>
-</html>

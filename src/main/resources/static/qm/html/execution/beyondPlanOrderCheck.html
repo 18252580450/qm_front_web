@@ -7,13 +7,14 @@
     <link rel="stylesheet" type="text/css" href="../../assets/lib/easyui/themes/cmcui/iconfont/iconfont.min.css"/>
     <link rel="stylesheet" type="text/css" href="../../assets/lib/ztree/css/cmcStyle/tree.css"/>
     <link rel="stylesheet" type="text/css" href="../../assets/components/rating/themes/fontawesome-stars.css"/>
+    <link rel="stylesheet" type="text/css" href="../../static/css/worksheetTest.css"/>
     <script src="../../assets/components/ckeditor/ckeditor.js"></script>
 
     <link href="../../css/style.min.css" rel="stylesheet">
 
 </head>
 <body>
-<div id="page_content" data-options="region:'center'" style="height:100%;">
+<div id="beyondPlanCheckContent" data-options="region:'center'" style="height:100%;">
     <div id='layout_content' class='easyui-layout' data-options="region:'center'" style='overflow: auto; height:100%;'>
         <div data-options="region:'center'" style='overflow: hidden;height: 100%'>
             <div id="page">
@@ -67,17 +68,26 @@
                 <div class='cl'>
                     <div class='panel-tool-box cl'>
                         <div class='fl text-bold'>查询信息</div>
+                        <div class="formControls col-2" style="text-align: right;width: 90%">
+                            <a href='javascript:void(0)' class='btn btn-secondary radius mt-l-20' id="allocateBtn">分配</a>
+                        </div>
                     </div>
-                    <table id='orderCheckList' class='easyui-datagrid' style=' width:100%;'>
+                    <table id='workFormList' class='easyui-datagrid' style=' width:100%;'>
                     </table>
                 </div>
 
             </div>
         </div>
 
-        <!--查询弹窗，默认隐藏-->
+        <!--模版弹窗，默认隐藏-->
         <div  id='qry_window' style='display:none;'>
             <div id='qry_content' style='overflow:auto'>
+            </div>
+        </div>
+
+        <!--分配弹窗，默认隐藏-->
+        <div  id='qry_people_window' style='display:none;'>
+            <div id='qry_people_content' style='overflow:auto'>
             </div>
         </div>
 

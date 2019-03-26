@@ -438,7 +438,7 @@ require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util,
         $("#cancelBtn").on("click", function () {
             var jq = top.jQuery;
             //关闭语音质检详情
-            jq('#tabs').tabs('close', "工单质检详情");
+            jq('#tabs').tabs('close', "工单质检" + workForm.wrkfmShowSwftno);
         });
         //案例收集
         $("#caseCollectBtn").on("click", function () {

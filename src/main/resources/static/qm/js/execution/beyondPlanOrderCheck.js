@@ -1,9 +1,8 @@
 require([
-        "js/execution/qryCheckTemplate",
+        "js/execution/beyondPlanChooseTemplate",
+        "js/execution/beyondPlanOrderCheckDetail",
         "jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"],
-    function (QryCheckTemplate, $, Util, Transfer, CommonAjax) {
-
-        var orderCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/execution/beyondPlanOrderCheckDetail.html";
+    function (QryCheckTemplate, OrderCheckDetail, $, Util, Transfer, CommonAjax) {
 
         initialize();
 
@@ -42,14 +41,14 @@ require([
             //立单人搜索框
             $('#acptStaffName').searchbox({//输入框点击查询事件
                 searcher: function (value) {
-
                 }
             });
 
             //待质检工单列表
             var IsCheckFlag = true; //标示是否是勾选复选框选中行的，true - 是 , false - 否
-            $("#orderCheckList").datagrid({
+            $("#workFormList").datagrid({
                 columns: [[
+                    {field: 'ck', checkbox: true},
                     {
                         field: 'operate', title: '操作', width: '8%',
                         formatter: function (value, row, index) {
@@ -94,13 +93,13 @@ require([
                 onSelect: function (rowIndex, rowData) {
                     if (!IsCheckFlag) {
                         IsCheckFlag = true;
-                        $("#orderCheckList").datagrid("unselectRow", rowIndex);
+                        $("#workFormList").datagrid("unselectRow", rowIndex);
                     }
                 },
                 onUnselect: function (rowIndex, rowData) {
                     if (!IsCheckFlag) {
                         IsCheckFlag = true;
-                        $("#orderCheckList").datagrid("selectRow", rowIndex);
+                        $("#workFormList").datagrid("selectRow", rowIndex);
                     }
                 },
                 loader: function (param, success) {
@@ -147,7 +146,8 @@ require([
                     $.each(data.rows, function (i, item) {
                         $("#orderCheck_" + item.wrkfmId).on("click", function () {
                             if (item.templateId == null) {
-                                var qryCheckTemplate = new QryCheckTemplate(Util.constants.CHECK_TYPE_ORDER, item);
+                                var qryCheckTemplate = QryCheckTemplate;
+                                qryCheckTemplate.initialize(Util.constants.CHECK_TYPE_ORDER, "0", item);
                                 $('#qry_window').show().window({
                                     title: '选择考评模版',
                                     width: 950,
@@ -157,16 +157,16 @@ require([
                                     modal: true
                                 });
                             } else {
-                                var param = {
-                                    "provCode": item.provCode,
-                                    "wrkfmId": item.wrkfmId,
-                                    "templateId": item.templateId,
-                                    "acptStaffNum": item.acptStaffNum,
-                                    "srvReqstTypeNm": item.srvReqstTypeNm,
-                                    "actualHandleDuration": item.actualHandleDuration
-                                };
-                                var url = createURL(orderCheckDetail, param);
-                                addTabs("工单质检" + item.wrkfmShowSwftno, url);
+                                $("#beyondPlanCheckContent").append(getCheckDialog());
+                                var orderCheckDetail = new OrderCheckDetail(item);
+                                $('#check_window').show().window({
+                                    title: '质检详情',
+                                    width: 1200,
+                                    height: 600,
+                                    cache: false,
+                                    content: orderCheckDetail.$el,
+                                    modal: true
+                                });
                             }
                         });
                     });
@@ -177,38 +177,41 @@ require([
         //事件初始化
         function initEvent() {
             $("#queryBtn").on("click", function () {
-                $("#orderCheckList").datagrid('load');
+                $("#workFormList").datagrid('load');
             });
             $("#resetBtn").on("click", function () {
                 $("#searchForm").form('clear');
             });
+            $("#allocateBtn").on("click", function () {
+                var allocateData = $("#workFormList").datagrid("getSelections");
+                if (allocateData.length === 0) {
+                    $.messager.alert("提示", "请至少选择一行数据!");
+                    return;
+                }
+                showAllocateDialog(Util.constants.CHECK_TYPE_ORDER, allocateData);
+            });
         }
 
-        //拼接对象到url
-        function createURL(url, param) {
-            var urlLink = url;
-            if (param != null) {
-                $.each(param, function (item, value) {
-                    urlLink += '&' + item + "=" + encodeURI(value);
+        //分配
+        function showAllocateDialog(checkType, allocateData) {
+            require(["js/execution/beyondPlanAllocate"], function (WorkFormAllocate) {
+                var workFormAllocate = new WorkFormAllocate(checkType, allocateData);
+                $('#qry_people_window').show().window({
+                    title: '工单质检分配',
+                    width: 1000,
+                    height: 600,
+                    cache: false,
+                    content: workFormAllocate.$el,
+                    modal: true,
+                    onBeforeClose: function () {//弹框关闭前触发事件
+                    }
                 });
-                urlLink = url + "?" + urlLink.substr(1);
-            }
-            return urlLink.replace(' ', '');
+            });
         }
 
-        //添加一个选项卡面板
-        function addTabs(title, url) {
-            var jq = top.jQuery;
-
-            if (!jq('#tabs').tabs('exists', title)) {
-                jq('#tabs').tabs('add', {
-                    title: title,
-                    content: '<iframe src="' + url + '" frameBorder="0" border="0" scrolling="auto"  style="width: 100%; height: 100%;"/>',
-                    closable: true
-                });
-            } else {
-                jq('#tabs').tabs('select', title);
-            }
+        //动态添加质检详情弹框
+        function getCheckDialog() {
+            return "<div  id='check_window' style='display:none;'></div>";
         }
 
         return {

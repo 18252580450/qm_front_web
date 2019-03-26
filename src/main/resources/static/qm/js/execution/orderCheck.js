@@ -250,6 +250,7 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
                         var param = {
                             "provinceId": item.provinceId,
                             "wrkfmId": item.workFormId,
+                            "wrkfmShowSwftno":item.wrkfmShowSwftno,
                             "planId": planId,
                             "templateId": templateId,
                             "acptStaffNum": item.acptStaffNum,
