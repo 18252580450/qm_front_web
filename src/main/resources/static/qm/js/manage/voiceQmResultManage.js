@@ -3,6 +3,7 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
     initialize();
     var userInfo,
         roleCode,
+        departmentId,  //虚拟组id
         reqParams = null,
         voiceCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/manage/voiceQmResultDetail.html";
 
@@ -14,6 +15,7 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
                 initPageInfo();
                 initEvent();
             });
+            getStaffDepart();
         });
     }
 
@@ -442,7 +444,7 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
                 return false;
             }
             var params = {
-                "departmentId": userInfo.bssGroupId,
+                "departmentId": departmentId,
                 "tenantId": data.tenantId,
                 "provinceId": data.provinceId,
                 "checkType": Util.constants.CHECK_TYPE_VOICE,
@@ -522,6 +524,29 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
 
         addTabs("工单质检详情", "");
     });
+
+    //获取虚拟组信息
+    function getStaffDepart() {
+        var reqParams = {
+            "groupId": "",
+            "staffName": "",
+            "staffId": userInfo.staffId,
+            "start": 0,
+            "limit": 0,
+            "provCode": "",
+            "roleCode": ""
+        };
+        var params = {
+            "params": JSON.stringify(reqParams)
+        };
+
+        Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.QM_PLAN_DNS + "/getQmPeople", params, function (result) {
+            var rspCode = result.RSP.RSP_CODE;
+            if (rspCode != null && rspCode === "1") {
+                departmentId = result.RSP.DATA[0].jsonArray[0].GROUP_ID;
+            }
+        });
+    }
 
     return {
         initialize: initialize

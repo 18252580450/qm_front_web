@@ -2,12 +2,14 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
     //初始化方法
     initialize();
     var userInfo,
+        departmentId,   //虚拟组id
         reqParams = null,
         orderCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/manage/workQmResultDetail.html";
 
     function initialize() {
         Util.getLogInData(function (data) {
             userInfo = data;//用户角色
+            getStaffDepart();
             initPageInfo();
             initEvent();
         });
@@ -336,7 +338,7 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
                 return false;
             }
             var params = {
-                "departmentId": userInfo.bssGroupId,
+                "departmentId": departmentId,
                 "tenantId": data.tenantId,
                 "provinceId": data.provinceId,
                 "checkType": Util.constants.CHECK_TYPE_ORDER,
@@ -504,6 +506,29 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
 
         addTabs("工单质检详情", "");
     });
+
+    //获取虚拟组信息
+    function getStaffDepart() {
+        var reqParams = {
+            "groupId": "",
+            "staffName": "",
+            "staffId": userInfo.staffId,
+            "start": 0,
+            "limit": 0,
+            "provCode": "",
+            "roleCode": ""
+        };
+        var params = {
+            "params": JSON.stringify(reqParams)
+        };
+
+        Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.QM_PLAN_DNS + "/getQmPeople", params, function (result) {
+            var rspCode = result.RSP.RSP_CODE;
+            if (rspCode != null && rspCode === "1") {
+                departmentId = result.RSP.DATA[0].jsonArray[0].GROUP_ID;
+            }
+        });
+    }
 
     return {
         initialize: initialize
