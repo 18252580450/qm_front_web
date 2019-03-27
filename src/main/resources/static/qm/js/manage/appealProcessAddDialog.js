@@ -1,47 +1,33 @@
-require(["js/manage/appealProcessQryDepart", "js/manage/appealProcessQryStaff", "jquery", 'util', "transfer", "commonAjax", "easyui"], function (QueryDepart, QueryCheckPeople, $, Util, Transfer, CommonUtil) {
+define([
+    "text!html/manage/appealProcessAdd.tpl",
+    "js/manage/appealProcessQryDepart",
+    "js/manage/appealProcessQryStaff",
+    "jquery", 'util', "transfer", "easyui"], function (tpl, QueryDepart, QueryCheckPeople, $, Util, Transfer) {
 
-    var staffInfo,                  //员工信息
-        appealProcessData = [],     //新增流程（新增提交入参）
+    var $el,
+        staffInfo,                  //员工信息
+        appealProcessData,          //新增流程（新增提交入参）
         checkTypeData = [];         //质检类型静态数据
 
-    initialize();
-
-    function initialize() {
-        staffInfo = CommonUtil.getUrlParams();
+    function initialize(userInfo) {
+        $el = $(tpl);
+        appealProcessData = [];
+        staffInfo = userInfo;
         initPageInfo();
         initEvent();
+        this.$el = $el;
     }
 
     //页面信息初始化
     function initPageInfo() {
-        $("#processName").validatebox();
-        //模板渠道下拉框
-        $("#tenantType").combobox({
-            url: '../../data/tenant_type.json',
-            method: "GET",
-            valueField: 'codeValue',
-            textField: 'codeName',
-            panelHeight: 'auto',
-            editable: false,
-            onLoadSuccess: function () {
-                var tenantType = $("#tenantType");
-                var data = tenantType.combobox('getData');
-                if (data.length > 0) {
-                    tenantType.combobox('select', data[0].codeValue);
-                }
-            },
-            onSelect: function () {
-                $("#appealProcessList").datagrid("load");
-            }
-        });
-
+        $("#addProcessName", $el).validatebox();
         //部门搜索框
-        var department = $("#departmentName");
+        var department = $("#addDepartmentName", $el);
         department.searchbox({
                 searcher: function () {
                     var queryDepart = QueryDepart;
                     queryDepart.initialize();
-                    $('#processQryDepartWindow').show().window({
+                    $('#processQryDepartWindow', $el).show().window({
                         title: '部门信息',
                         width: 750,
                         height: 500,
@@ -51,7 +37,7 @@ require(["js/manage/appealProcessQryDepart", "js/manage/appealProcessQryStaff", 
                         onClose: function () {//弹框关闭前触发事件
                             var checkDepart = queryDepart.getDepartment();//获取部门信息
                             department.searchbox("setValue", checkDepart.departmentName);
-                            $("#departmentId").val(checkDepart.departmentId);
+                            $("#addDepartmentId", $el).val(checkDepart.departmentId);
                         }
                     });
                 }
@@ -60,7 +46,7 @@ require(["js/manage/appealProcessQryDepart", "js/manage/appealProcessQryStaff", 
         department.validatebox();
 
         //质检类型下拉框
-        $("#checkType").combobox({
+        $("#addCheckType", $el).combobox({
             url: '../../data/select_init_data.json',
             method: "GET",
             valueField: 'paramsCode',
@@ -68,21 +54,21 @@ require(["js/manage/appealProcessQryDepart", "js/manage/appealProcessQryStaff", 
             panelHeight: 'auto',
             editable: false,
             onLoadSuccess: function () {
-                var tenantType = $("#checkType");
+                var tenantType = $("#addCheckType", $el);
                 var data = tenantType.combobox('getData');
                 if (data.length > 0) {
                     tenantType.combobox('select', data[0].paramsCode);
                 }
             },
             onSelect: function () {
-                $("#appealProcessList").datagrid("load");
+                $("#appealProcessList", $el).datagrid("load");
             }
         });
         //重载下拉框数据
-        reloadSelectData("CHECK_TYPE", "checkType", false);
+        reloadSelectData("CHECK_TYPE", "addCheckType", false);
 
         //流程顺序下拉框
-        $("#orderNo").combobox({
+        $("#orderNo", $el).combobox({
             url: '../../data/select_init_data.json',
             method: "GET",
             valueField: 'paramsCode',
@@ -90,7 +76,7 @@ require(["js/manage/appealProcessQryDepart", "js/manage/appealProcessQryStaff", 
             panelHeight: 'auto',
             editable: false,
             onLoadSuccess: function () {
-                var orderNo = $("#orderNo");
+                var orderNo = $("#orderNo", $el);
                 var data = orderNo.combobox('getData');
                 if (data.length > 0) {
                     orderNo.combobox('select', data[0].paramsCode);
@@ -98,23 +84,23 @@ require(["js/manage/appealProcessQryDepart", "js/manage/appealProcessQryStaff", 
             },
             onSelect: function () {
                 //重置流程名称
-                $("#processName").val("");
+                $("#addProcessName", $el).val("");
                 //新增子流程时，禁用渠道和质检类型下拉框，保证子流程渠道和质检类型和主流程保持一致
-                var orderNo = $("#orderNo").combobox("getValue");
+                var orderNo = $("#orderNo", $el).combobox("getValue");
                 if (orderNo === "00") {
-                    $("#departmentName").combotree('enable');
-                    $("#tenantType").combobox('enable');
-                    $("#checkType").combobox('enable');
-                    $("#maxAppealNum").attr("readOnly", false)
+                    $("#addDepartmentName", $el).combotree('enable');
+                    $("#tenantType", $el).combobox('enable');
+                    $("#addCheckType", $el).combobox('enable');
+                    $("#maxAppealNum", $el).attr("readOnly", false)
                 } else {
-                    $("#departmentName").combotree('disable');
-                    $("#tenantType").combobox('disable');
-                    $("#checkType").combobox('disable');
-                    $("#maxAppealNum").attr("readOnly", true);
+                    $("#addDepartmentName", $el).combotree('disable');
+                    $("#tenantType", $el).combobox('disable');
+                    $("#addCheckType", $el).combobox('disable');
+                    $("#maxAppealNum", $el).attr("readOnly", true);
                 }
                 //切换子流程时同时刷新子节点列表
                 if (orderNo === "-1" || orderNo === "00" || parseInt(orderNo) >= appealProcessData.length) {
-                    $("#subNodeList").datagrid("loadData", {rows: []});
+                    $("#addSubNodeList", $el).datagrid("loadData", {rows: []});
                 } else {
                     var subNodeList = appealProcessData[parseInt(orderNo)].subNodeList;
                     refreshSubNodeList(subNodeList);
@@ -126,7 +112,7 @@ require(["js/manage/appealProcessQryDepart", "js/manage/appealProcessQryStaff", 
 
         //申诉流程添加列表
         var IsCheckFlag = true; //标示是否是勾选复选框选中行的，true - 是 , false - 否
-        $("#processList").datagrid({
+        $("#addProcessList", $el).datagrid({
             columns: [[
                 {field: 'orderName', title: '流程顺序', width: '15%'},
                 {field: 'orderNo', title: '流程序号', hidden: true},
@@ -172,13 +158,13 @@ require(["js/manage/appealProcessQryDepart", "js/manage/appealProcessQryStaff", 
             onSelect: function (rowIndex, rowData) {
                 if (!IsCheckFlag) {
                     IsCheckFlag = true;
-                    $("#processList").datagrid("unselectRow", rowIndex);
+                    $("#addProcessList", $el).datagrid("unselectRow", rowIndex);
                 }
             },
             onUnselect: function (rowIndex, rowData) {
                 if (!IsCheckFlag) {
                     IsCheckFlag = true;
-                    $("#processList").datagrid("selectRow", rowIndex);
+                    $("#addProcessList", $el).datagrid("selectRow", rowIndex);
                 }
             },
             onLoadSuccess: function (data) {
@@ -189,13 +175,13 @@ require(["js/manage/appealProcessQryDepart", "js/manage/appealProcessQryStaff", 
                         $("#appealProcess" + item.orderNo).on("click", function () {
                             if (appealProcessData.length === 1) {
                                 appealProcessData = [];
-                                $("#processList").datagrid("loadData", {rows: appealProcessData});
+                                $("#addProcessList", $el).datagrid("loadData", {rows: appealProcessData});
                             } else {
                                 $.messager.confirm('确认删除弹窗', '子流程将被全部删除! 确定删除主流程？', function (confirm) {
                                     if (confirm) {
                                         appealProcessData = [];
-                                        $("#processList").datagrid("loadData", {rows: appealProcessData});
-                                        $("#subNodeList").datagrid("loadData", {rows: []});
+                                        $("#addProcessList", $el).datagrid("loadData", {rows: appealProcessData});
+                                        $("#addSubNodeList", $el).datagrid("loadData", {rows: []});
                                     }
                                 });
                             }
@@ -206,9 +192,9 @@ require(["js/manage/appealProcessQryDepart", "js/manage/appealProcessQryStaff", 
                         $("#appealProcess" + item.orderNo).on("click", function () {
                             appealProcessData.splice(appealProcessData.length - 1, 1);
                             //刷新流程列表
-                            $("#processList").datagrid("loadData", {rows: appealProcessData});
+                            $("#addProcessList", $el).datagrid("loadData", {rows: appealProcessData});
                             //刷新子节点列表（当前展示的子节点的父流程被删除时）
-                            var orderNoSelect = $("#orderNo");
+                            var orderNoSelect = $("#orderNo", $el);
                             if (item.orderNo === orderNoSelect.combobox("getValue")) {
                                 if (item.orderNo !== "00") {
                                     orderNoSelect.combobox("setValue", appealProcessData[parseInt(item.orderNo) - 1].orderNo);
@@ -225,13 +211,13 @@ require(["js/manage/appealProcessQryDepart", "js/manage/appealProcessQryStaff", 
                 var subNodeList = data.subNodeList;
                 refreshSubNodeList(subNodeList);
                 //刷新选择流程下拉框
-                $("#orderNo").combobox("setValue", data.orderNo);
+                $("#orderNo", $el).combobox("setValue", data.orderNo);
             }
         });
 
         //申诉节点添加列表
         var IsNodeCheckFlag = true; //标示是否是勾选复选框选中行的，true - 是 , false - 否
-        $("#subNodeList").datagrid({
+        $("#addSubNodeList", $el).datagrid({
             columns: [[
                 {field: 'processId', title: '子流程序号', hidden: true},
                 {field: 'processName', title: '子流程', hidden: true},
@@ -261,13 +247,13 @@ require(["js/manage/appealProcessQryDepart", "js/manage/appealProcessQryStaff", 
             onSelect: function (rowIndex, rowData) {
                 if (!IsNodeCheckFlag) {
                     IsNodeCheckFlag = true;
-                    $("#subNodeList").datagrid("unselectRow", rowIndex);
+                    $("#addSubNodeList", $el).datagrid("unselectRow", rowIndex);
                 }
             },
             onUnselect: function (rowIndex, rowData) {
                 if (!IsNodeCheckFlag) {
                     IsNodeCheckFlag = true;
-                    $("#subNodeList").datagrid("selectRow", rowIndex);
+                    $("#addSubNodeList", $el).datagrid("selectRow", rowIndex);
                 }
             },
             onLoadSuccess: function (data) {
@@ -301,13 +287,13 @@ require(["js/manage/appealProcessQryDepart", "js/manage/appealProcessQryStaff", 
     //事件初始化
     function initEvent() {
         //新增流程
-        $("#addAppealProcess").on("click", function () {
+        $("#addAppealProcess", $el).on("click", function () {
             addProcess();
         });
 
         //新增子节点
-        $("#addSubNode").on("click", function () {
-            var orderNo = $("#orderNo"),
+        $("#addSubNode", $el).on("click", function () {
+            var orderNo = $("#orderNo", $el),
                 processOrder = orderNo.combobox("getValue"),
                 processOrderName = orderNo.combobox("getText");
             //主流程则返回
@@ -324,25 +310,22 @@ require(["js/manage/appealProcessQryDepart", "js/manage/appealProcessQryStaff", 
         });
 
         //新增提交
-        $("#submitBtn").on("click", function () {
+        $("#submitBtn", $el).on("click", function () {
             createProcess();
         });
 
         //新增取消
-        $("#cancelBtn").on("click", function () {
-            var jq = top.jQuery;
-            if (jq('#tabs').tabs('exists', "申诉流程-新增")) {
-                jq('#tabs').tabs('close', "申诉流程-新增");
-            }
+        $("#cancelBtn", $el).on("click", function () {
+            //todo
         });
     }
 
     //添加流程
     function addProcess() {
-        var orderNoSelect = $("#orderNo"),
+        var orderNoSelect = $("#orderNo", $el),
             orderNo = orderNoSelect.combobox("getValue"),
             orderName = orderNoSelect.combobox("getText"),
-            maxAppealNum = $("#maxAppealNum").val();
+            maxAppealNum = $("#maxAppealNum", $el).val();
         //判断主流程是否已添加
         if (appealProcessData.length === 0 && parseInt(orderNo) > 0) {
             $.messager.alert("提示", "请先添加主流程!");
@@ -365,12 +348,10 @@ require(["js/manage/appealProcessQryDepart", "js/manage/appealProcessQryStaff", 
             return false;
         }
 
-        var processName = $("#processName").val(),
-            tenantType = $("#tenantType"),
-            tenantName = tenantType.combobox("getText"),
-            departmentId = $("#departmentId").val(),
-            departmentName = $("#departmentName").val(),
-            checkType = $("#checkType").combobox("getValue"),
+        var processName = $("#addProcessName", $el).val(),
+            departmentId = $("#addDepartmentId", $el).val(),
+            departmentName = $("#addDepartmentName", $el).val(),
+            checkType = $("#addCheckType", $el).combobox("getValue"),
             mainProcessFlag = "0";
         if (parseInt(orderNo) > 0) {
             //更新主流程的子流程数
@@ -391,7 +372,6 @@ require(["js/manage/appealProcessQryDepart", "js/manage/appealProcessQryStaff", 
             "processName": processName,
             "tenantId": Util.constants.TENANT_ID,
             "createStaffId": staffInfo.staffId,
-            "tenantName": tenantName,
             "departmentId": departmentId,
             "departmentName": departmentName,
             "checkType": checkType,
@@ -404,7 +384,7 @@ require(["js/manage/appealProcessQryDepart", "js/manage/appealProcessQryStaff", 
             "subNodeList": []
         };
         appealProcessData.push(data);
-        $("#processList").datagrid("loadData", {rows: appealProcessData});
+        $("#addProcessList", $el).datagrid("loadData", {rows: appealProcessData});
     }
 
     //新增子节点，subProcessObj父流程对象
@@ -412,23 +392,23 @@ require(["js/manage/appealProcessQryDepart", "js/manage/appealProcessQryStaff", 
         var processOrder = subProcessObj.orderNo,
             processOrderName = subProcessObj.orderName;
         //新增节点弹框
-        $("#subNodeConfig").form('clear');  //清空表单
-        $("#subNodeDialog").show().window({
+        $("#subNodeConfig", $el).form('clear');  //清空表单
+        $("#subNodeDialog", $el).show().window({
             width: 600,
             height: 400,
             modal: true,
             title: "添加节点"
         });
-        $("#subNodeName").validatebox();
+        $("#subNodeName", $el).validatebox();
         //显示子流程名称
-        $("#subProcessName").val(subProcessObj.processName);
+        $("#subProcessName", $el).val(subProcessObj.processName);
         //审批角色下拉框
-        var userNameInput = $("#userName");
+        var userNameInput = $("#userName", $el);
         userNameInput.searchbox({
                 searcher: function () {
                     var queryCheckPeople = QueryCheckPeople;
                     queryCheckPeople.initialize();
-                    $('#processQryStaffWindow').show().window({
+                    $('#processQryStaffWindow', $el).show().window({
                         title: '审批人员信息',
                         width: 1080,
                         height: 600,
@@ -438,7 +418,7 @@ require(["js/manage/appealProcessQryDepart", "js/manage/appealProcessQryStaff", 
                         onClose: function () {//弹框关闭前触发事件
                             var checkStaff = queryCheckPeople.getCheckStaff();//获取审批人员信息
                             userNameInput.searchbox("setValue", checkStaff.STAFF_NAME);
-                            $("#userId").val(checkStaff.STAFF_ID);
+                            $("#userId", $el).val(checkStaff.STAFF_ID);
                         }
                     });
                 }
@@ -446,19 +426,19 @@ require(["js/manage/appealProcessQryDepart", "js/manage/appealProcessQryStaff", 
         );
         userNameInput.validatebox();
         //取消
-        var cancelBtn = $("#subNodeCancelBtn");
+        var cancelBtn = $("#subNodeCancelBtn", $el);
         cancelBtn.unbind("click");
         cancelBtn.on("click", function () {
-            $("#subNodeConfig").form('clear');  //清空表单
-            $("#subNodeDialog").window("close");
+            $("#subNodeConfig", $el).form('clear');  //清空表单
+            $("#subNodeDialog", $el).window("close");
         });
         //提交
-        var submitBtn = $("#subNodeAddBtn");
+        var submitBtn = $("#subNodeAddBtn", $el);
         submitBtn.unbind("click");
         submitBtn.on("click", function () {
-            var subNodeName = $("#subNodeName").val(),
-                userName = $("#userName").val(), //审批人员名单
-                userId = $("#userId").val(),
+            var subNodeName = $("#subNodeName", $el).val(),
+                userName = $("#userName", $el).val(), //审批人员名单
+                userId = $("#userId", $el).val(),
                 userNameArr = [],
                 userIdArr = [];
 
@@ -506,8 +486,8 @@ require(["js/manage/appealProcessQryDepart", "js/manage/appealProcessQryStaff", 
             refreshSubNodeList(subNodeList);
 
             //关闭弹窗
-            $("#subNodeConfig").form('clear');  //清空表单
-            $("#subNodeDialog").window("close");
+            $("#subNodeConfig", $el).form('clear');  //清空表单
+            $("#subNodeDialog", $el).window("close");
         });
     }
 
@@ -518,7 +498,7 @@ require(["js/manage/appealProcessQryDepart", "js/manage/appealProcessQryStaff", 
             $.messager.alert("提示", "请添加主流程!");
             return false;
         }
-        var maxAppealNum = $("#maxAppealNum").val();
+        var maxAppealNum = $("#maxAppealNum", $el).val();
         if (parseInt(maxAppealNum) > 3) {
             $.messager.alert("提示", "最大申诉次数不能超过3!");
             return false;
@@ -533,16 +513,16 @@ require(["js/manage/appealProcessQryDepart", "js/manage/appealProcessQryStaff", 
             var rspCode = result.RSP.RSP_CODE;
             if (rspCode != null && rspCode === "1") {   //新增成功
                 $.messager.alert("提示", result.RSP.RSP_DESC, null, function () {
-                    var jq = top.jQuery;
-                    //刷新申诉流程tab页
-                    jq('#tabs').tabs('close', "申诉流程-新增");
-                    var tab = jq('#tabs').tabs('getTab', "申诉流程"),
-                        iframe = jq(tab.panel('options').content),
-                        content = '<iframe scrolling="auto" frameborder="0"  src="' + iframe.attr('src') + '" style="width:100%;height:100%;"></iframe>';
-                    jq('#tabs').tabs('update', {
-                        tab: tab,
-                        options: {content: content, closable: true}
-                    });
+                    // var jq = top.jQuery;
+                    // //刷新申诉流程tab页
+                    // jq('#tabs').tabs('close', "申诉流程-新增");
+                    // var tab = jq('#tabs').tabs('getTab', "申诉流程"),
+                    //     iframe = jq(tab.panel('options').content),
+                    //     content = '<iframe scrolling="auto" frameborder="0"  src="' + iframe.attr('src') + '" style="width:100%;height:100%;"></iframe>';
+                    // jq('#tabs').tabs('update', {
+                    //     tab: tab,
+                    //     options: {content: content, closable: true}
+                    // }); //todo
                 });
             } else {  //新增失败
                 $.messager.show({
@@ -557,7 +537,7 @@ require(["js/manage/appealProcessQryDepart", "js/manage/appealProcessQryStaff", 
 
     //子节点列表刷新（同一节点合并到同一行）
     function refreshSubNodeList(subNodeList) {
-        var subNodeTable = $("#subNodeList");
+        var subNodeTable = $("#addSubNodeList", $el);
         //为空时返回
         if (subNodeList.length === 0) {
             subNodeTable.datagrid("loadData", {rows: []});
@@ -627,7 +607,5 @@ require(["js/manage/appealProcessQryDepart", "js/manage/appealProcessQryStaff", 
         });
     }
 
-    return {
-        initialize: initialize
-    };
+    return initialize;
 });

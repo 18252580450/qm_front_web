@@ -21,11 +21,6 @@
                 <div class='panel-search ' title="">
                     <form class='form form-horizontal' id="searchForm">
                         <div class='row cl'>
-                            <label class='form-label col-1'>申诉人工号</label>
-                            <div class='formControls col-2'>
-                                <input id="appealStaffId" type='text' class='easyui-textbox'
-                                       style='width:100%;height:30px'>
-                            </div>
                             <label class='form-label col-1'>申诉单号</label>
                             <div class='formControls col-2'>
                                 <input id="appealId" type='text' class='easyui-textbox'
@@ -39,6 +34,11 @@
                             <div class='formControls col-2'>
                                 <input id="appealEndTime" class="easyui-datetimebox" style='width:100%;height:30px'>
                             </div>
+                            <label class='form-label col-1'>质检类型</label>
+                            <div class='formControls col-2'>
+                                <input id="checkType" type='text' class='easyui-searchbox'
+                                       style='width:100%;height:30px'>
+                            </div>
                         </div>
                         <div class='row cl'>
                             <label class='form-label col-1'>申请状态</label>
@@ -46,10 +46,10 @@
                                 <input id="appealStatus" type='text' class='easyui-searchbox'
                                        style='width:100%;height:30px'>
                             </div>
-                            <label class='form-label col-1'>质检类型</label>
+                            <label id="appealStaffLabel" class='form-label col-1' style="display: none">申诉人工号</label>
                             <div class='formControls col-2'>
-                                <input id="checkType" type='text' class='easyui-searchbox'
-                                       style='width:100%;height:30px'>
+                                <input id="appealStaffId" type='text' class='easyui-textbox'
+                                       style='width:100%;height:30px;display:none;'>
                             </div>
                             <div class="formControls col-1">
                             </div>

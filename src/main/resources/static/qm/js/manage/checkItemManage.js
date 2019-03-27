@@ -1,6 +1,5 @@
 require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], function ($, Util, Transfer, CommonAjax) {
     var userInfo,
-        roleCode,
         setting,               //ztree配置
         checkTypeData = [],    //考评项下拉框静态数据
         checkItemListData = [],//所有考评项
@@ -21,11 +20,8 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
     function initialize() {
         Util.getLogInData(function (data) {
             userInfo = data;//用户角色
-            Util.getRoleCode(userInfo,function(dataNew){
-                roleCode = dataNew;//用户信息
-                initPageInfo();
-                initEvent();
-            });
+            initPageInfo();
+            initEvent();
         });
     }
 
@@ -368,7 +364,8 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
                 "checkItemName": checkItemName,
                 "remark": checkItemDesc,
                 "catalogFlag": Util.constants.CHECK_ITEM_PARENT,
-                "orderNo": orderNo
+                "orderNo": orderNo,
+                "createStaffId": userInfo.staffId
             };
             Util.ajax.postJson(Util.constants.CONTEXT.concat(Util.constants.CHECK_ITEM_DNS).concat("/"), JSON.stringify(params), function (result) {
                 var rspCode = result.RSP.RSP_CODE;
@@ -453,6 +450,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
 
             item.checkItemName = checkItemName;
             item.remark = checkItemDesc;
+            item.operateStaffId = userInfo.staffId;
             Util.ajax.putJson(Util.constants.CONTEXT.concat(Util.constants.CHECK_ITEM_DNS).concat("/"), JSON.stringify(item), function (result) {
                 var rspCode = result.RSP.RSP_CODE;
                 if (rspCode != null && rspCode === "1") {
@@ -599,7 +597,8 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
                 "checkItemVitalType": checkItemVitalType,
                 "remark": checkItemDesc,
                 "catalogFlag": Util.constants.CHECK_ITEM_CHILDREN,
-                "orderNo": orderNo
+                "orderNo": orderNo,
+                "createStaffId": userInfo.staffId
             };
             Util.ajax.postJson(Util.constants.CONTEXT.concat(Util.constants.CHECK_ITEM_DNS).concat("/"), JSON.stringify(params), function (result) {
                 var rspCode = result.RSP.RSP_CODE;
@@ -763,7 +762,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
             if (checkItemVitalType != null && checkItemVitalType !== "") {
                 item.checkItemVitalType = checkItemVitalType;
             }
-
+            item.operateStaffId = userInfo.staffId;
             Util.ajax.putJson(Util.constants.CONTEXT.concat(Util.constants.CHECK_ITEM_DNS).concat("/"), JSON.stringify(item), function (result) {
                 var rspCode = result.RSP.RSP_CODE;
                 if (rspCode != null && rspCode === "1") {

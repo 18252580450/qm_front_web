@@ -113,7 +113,10 @@ define([
                         width: 300,
                         height: 500,
                         cache: false,
-                        modal: true
+                        modal: true,
+                        onBeforeClose: function () {//弹框关闭前触发事件
+                            $("#qryWorkGroup", $el).window("destroy");
+                        }
                     });
                     var zNodes = [],
                         reqParams = {

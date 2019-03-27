@@ -165,7 +165,10 @@ require([
                                     height: 600,
                                     cache: false,
                                     content: orderCheckDetail.$el,
-                                    modal: true
+                                    modal: true,
+                                    onBeforeClose: function () {//弹框关闭前触发事件
+                                        $("#check_window").window("destroy");
+                                    }
                                 });
                             }
                         });

@@ -1,4 +1,6 @@
-require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], function ($, Util, Transfer, CommonAjax) {
+require([
+    "js/manage/appealProcessAddDialog",
+    "jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], function (AppealProcessAdd, $, Util, Transfer, CommonAjax) {
 
     var userInfo,
         processStatusData = [],   //流程状态下拉框静态数据
@@ -306,7 +308,17 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
 
         //新增
         $("#addBtn").on("click", function () {
-            addTabs("申诉流程-新增", processAddUrl);
+            var url = createURL(processAddUrl, userInfo);
+            addTabs("申诉流程-新增", url);
+            // var appealProcessAdd = new AppealProcessAdd(userInfo);
+            // $('#process_add_window').show().window({
+            //     title: '新增流程',
+            //     width: 1200,
+            //     height: 600,
+            //     cache: false,
+            //     content: appealProcessAdd.$el,
+            //     modal: true
+            // });
         });
 
         //删除

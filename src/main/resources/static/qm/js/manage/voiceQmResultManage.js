@@ -9,7 +9,7 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
     function initialize() {
         Util.getLogInData(function (data) {
             userInfo = data;//用户角色
-            Util.getRoleCode(userInfo,function(dataNew){
+            Util.getRoleCode(userInfo, function (dataNew) {
                 roleCode = dataNew;//用户信息
                 initPageInfo();
                 initEvent();
@@ -21,21 +21,21 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
     function initPageInfo() {
 
         $('#checkStaffName').searchbox({ //质检人员查询
-            searcher: function(value){
+            searcher: function (value) {
                 require(["js/execution/queryQmPeople"], function (qryQmPeople) {
                     var queryQmPeople = qryQmPeople;
-                    queryQmPeople.initialize("","2");
+                    queryQmPeople.initialize("", "2");
                     $('#qry_people_window').show().window({
                         title: '查询质检人员信息',
                         width: 1150,
                         height: 650,
                         cache: false,
-                        content:queryQmPeople.$el,
+                        content: queryQmPeople.$el,
                         modal: true,
-                        onBeforeClose:function(){//弹框关闭前触发事件
+                        onBeforeClose: function () {//弹框关闭前触发事件
                             var map = queryQmPeople.getMap();//获取值
                             $('#checkStaffId').val(map.staffId);
-                            $('#checkStaffName').searchbox("setValue",map.staffName);
+                            $('#checkStaffName').searchbox("setValue", map.staffName);
                         }
                     });
                 });
@@ -43,21 +43,21 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
         });
 
         $('#checkedStaffName').searchbox({ //质检人员查询
-            searcher: function(value){
+            searcher: function (value) {
                 require(["js/execution/queryQmPeople"], function (qryQmPeople) {
                     var queryQmPeople = qryQmPeople;
-                    queryQmPeople.initialize("","2");
+                    queryQmPeople.initialize("", "2");
                     $('#qry_people_window').show().window({
                         title: '查询质检人员信息',
                         width: 1150,
                         height: 650,
                         cache: false,
-                        content:queryQmPeople.$el,
+                        content: queryQmPeople.$el,
                         modal: true,
-                        onBeforeClose:function(){//弹框关闭前触发事件
+                        onBeforeClose: function () {//弹框关闭前触发事件
                             var map = queryQmPeople.getMap();//获取值
                             $('#checkedStaffId').val(map.staffId);
-                            $('#checkedStaffName').searchbox("setValue",map.staffName);
+                            $('#checkedStaffName').searchbox("setValue", map.staffName);
                         }
                     });
                 });
@@ -217,7 +217,7 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
                 var checkedStaffId = $("#checkedStaffId").val();
                 var inspectionId = $("#inspectionId").val();
                 var resultStatus = $("#resultStatus").combobox("getValue");
-                if(resultStatus=="10"){
+                if (resultStatus == "10") {
                     resultStatus = "";
                 }
                 var planId = $("#planId").val();
@@ -258,7 +258,7 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
                             showType: 'show'
                         });
                     }
-                    var json = {"rows":dataNew,"total":result.RSP.ATTACH.TOTAL};
+                    var json = {"rows": dataNew, "total": result.RSP.ATTACH.TOTAL};
                     success(json);
                 });
             },
@@ -442,7 +442,7 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
                 return false;
             }
             var params = {
-                "departmentId": data.checkedDepartId,
+                "departmentId": userInfo.bssGroupId,
                 "tenantId": data.tenantId,
                 "provinceId": data.provinceId,
                 "checkType": Util.constants.CHECK_TYPE_VOICE,
@@ -450,8 +450,8 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
                 "inspectionId": data.inspectionId,
                 "planId": data.planId,
                 "templateId": data.templateId,
-                "appealStaffId": data.checkedStaffId,
-                "appealStaffName": data.checkedStaffName,
+                "appealStaffId": userInfo.staffId,
+                "appealStaffName": userInfo.staffName,
                 "appealReason": appealReason
             };
             Util.loading.showLoading();

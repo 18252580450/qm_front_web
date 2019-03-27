@@ -1,6 +1,5 @@
 require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util, Transfer) {
         var userInfo,
-            roleCode,
             orderCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/execution/orderAppealDetail.html";
 
         initialize();
@@ -107,7 +106,7 @@ require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util,
                         appealId = $("#appealId").val();
 
                     var reqParams = {
-                        "staffId": Util.constants.STAFF_ID,
+                        "staffId": userInfo.staffId.toString(),
                         "checkType": Util.constants.CHECK_TYPE_ORDER,
                         "inspectionId": inspectionId,
                         "appealTimeBegin": appealTimeBegin,

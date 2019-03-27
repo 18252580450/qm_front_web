@@ -1,7 +1,8 @@
 require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util, Transfer) {
 
-        var voiceCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/execution/voiceAppealDetail.html";
-        var userInfo;
+        var userInfo,
+            voiceCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/execution/voiceAppealDetail.html";
+
         initialize();
 
         function initialize() {
@@ -106,7 +107,7 @@ require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util,
                         appealId = $("#appealId").val();
 
                     var reqParams = {
-                        "staffId": Util.constants.STAFF_ID,
+                        "staffId": userInfo.staffId.toString(),
                         "checkType": Util.constants.CHECK_TYPE_VOICE,
                         "inspectionId": inspectionId,
                         "appealTimeBegin": appealTimeBegin,

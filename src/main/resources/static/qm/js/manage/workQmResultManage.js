@@ -336,7 +336,7 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
                 return false;
             }
             var params = {
-                "departmentId": data.checkedDepartId,
+                "departmentId": userInfo.bssGroupId,
                 "tenantId": data.tenantId,
                 "provinceId": data.provinceId,
                 "checkType": Util.constants.CHECK_TYPE_ORDER,
@@ -345,8 +345,8 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
                 "inspectionId": data.inspectionId,
                 "planId": data.planId,
                 "templateId": data.templateId,
-                "appealStaffId": Util.constants.STAFF_ID,   //暂时用模拟登陆工号
-                "appealStaffName": Util.constants.STAFF_NAME,
+                "appealStaffId": userInfo.staffId,
+                "appealStaffName": userInfo.staffName,
                 "appealReason": appealReason
             };
             Util.loading.showLoading();

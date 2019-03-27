@@ -1,6 +1,5 @@
 require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], function (QueryQmPlan, QueryQmHistory, $, Util, Transfer, CommonAjax) {
     var userInfo,
-        roleCode,
         orderCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/execution/orderCheckDetailNew.html",
         poolStatusData = [];  //质检状态下拉框静态数据（待质检、待复检）
 
@@ -8,7 +7,7 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
 
     function initialize() {
         Util.getLogInData(function (data) {
-            userInfo = data;//用户角色
+            userInfo = data;    //用户信息
             initPageInfo();
             initEvent();
         });
@@ -196,7 +195,7 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
                     return;
                 }
                 var reqParams = {
-                    // "checkStaffId": Util.constants.STAFF_ID,     //暂时不考虑工号
+                    "checkStaffId": userInfo.staffId.toString(),
                     "wrkfmShowSwftno": wrkfmShowSwftno,
                     "isOperate": Util.constants.ORDER_DISTRIBUTE,        //已分配
                     "planId": planId,
@@ -250,7 +249,7 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
                         var param = {
                             "provinceId": item.provinceId,
                             "wrkfmId": item.workFormId,
-                            "wrkfmShowSwftno":item.wrkfmShowSwftno,
+                            "wrkfmShowSwftno": item.wrkfmShowSwftno,
                             "planId": planId,
                             "templateId": templateId,
                             "acptStaffNum": item.acptStaffNum,

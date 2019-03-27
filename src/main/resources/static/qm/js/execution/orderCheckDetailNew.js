@@ -1,4 +1,4 @@
-require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util, Transfer) {
+require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], function ($, Util, Transfer, CommonUtil) {
 
     var workForm,
         workFormDetail,             //工单基本信息
@@ -28,7 +28,7 @@ require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util,
     //页面信息初始化
     function initPageInfo() {
         //获取工单流水、质检流水等信息
-        workForm = getRequestObj();
+        workForm = CommonUtil.getUrlParams();
 
         //获取工单基本信息
         initWrkfmDetail();
@@ -1061,20 +1061,6 @@ require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util,
             $("#insideReplySpan").css("color", "#4A90E2");
             $("#externalReply").hide();
             $("#insideReply").show();
-        }
-    }
-
-    //获取url对象
-    function getRequestObj() {
-        var url = decodeURI(decodeURI(location.search)); //获取url中"?"符后的字串，使用了两次decodeRUI解码
-        var requestObj = {};
-        if (url.indexOf("?") > -1) {
-            var str = url.substr(1),
-                strArr = str.split("&");
-            for (var i = 0; i < strArr.length; i++) {
-                requestObj[strArr[i].split("=")[0]] = unescape(strArr[i].split("=")[1]);
-            }
-            return requestObj;
         }
     }
 

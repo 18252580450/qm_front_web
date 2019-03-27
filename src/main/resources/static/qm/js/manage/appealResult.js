@@ -1,18 +1,27 @@
 require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], function ($, Util, Transfer, CommonAjax) {
 
-    var userInfo,
-        voiceCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/execution/voiceAppealDetail.html",
-        orderCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/execution/orderAppealDetail.html",
-        checkTypeData = [],      //质检类型静态数据
-        appealStatusData = [];   //申诉状态静态数据
+        var userInfo,
+            roleCode,
+            voiceCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/execution/voiceAppealDetail.html",
+            orderCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/execution/orderAppealDetail.html",
+            checkTypeData = [],      //质检类型静态数据
+            appealStatusData = [];   //申诉状态静态数据
 
         initialize();
 
         function initialize() {
             Util.getLogInData(function (data) {
                 userInfo = data;//用户角色
-                initPageInfo();
-                initEvent();
+                Util.getRoleCode(userInfo, function (dataNew) {
+                    roleCode = dataNew;//用户权限
+                    //管理员或质检员显示申诉工号查询框
+                    if (roleCode === "checker" || roleCode === "manager") {
+                        $("#appealStaffLabel").show();
+                        $("#appealStaffId").show();
+                    }
+                    initPageInfo();
+                    initEvent();
+                });
             });
         }
 
@@ -202,6 +211,9 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                     }
                     if (checkType === "-1") {
                         checkType = "";
+                    }
+                    if (roleCode === "staffer") {  //话务员只能查自己的申诉结果
+                        appealId = userInfo.staffId;
                     }
                     var reqParams = {
                         "appealTimeBegin": appealTimeBegin,

@@ -1,4 +1,4 @@
-require(["js/manage/appealProcessQryDepart", "js/manage/appealProcessQryStaff", "jquery", 'util', "transfer", "easyui"], function (QueryDepart, QueryCheckPeople, $, Util, Transfer) {
+require(["js/manage/appealProcessQryDepart", "js/manage/appealProcessQryStaff", "jquery", 'util', "transfer", "commonAjax", "easyui"], function (QueryDepart, QueryCheckPeople, $, Util, Transfer, CommonUtil) {
 
     var mainProcess = null,         //主流程对象
         showProcessName = true,     //防止初始化的时候主流程名被清除
@@ -22,7 +22,7 @@ require(["js/manage/appealProcessQryDepart", "js/manage/appealProcessQryStaff", 
     //页面信息初始化
     function initPageInfo() {
         //获取主流程基本信息
-        mainProcess = getRequestObj();
+        mainProcess = CommonUtil.getUrlParams();
         //主流程基本信息
         $("#processName").val(mainProcess.processName);
         $("#tenantType").val(mainProcess.tenantId);
@@ -581,6 +581,7 @@ require(["js/manage/appealProcessQryDepart", "js/manage/appealProcessQryStaff", 
         var data = {
             "processName": processName,
             "tenantId": Util.constants.TENANT_ID,
+            "createStaffId": mainProcess.createStaffId,
             "departmentId": departmentId,
             "departmentName": departmentName,
             "checkType": mainProcess.checkType,
@@ -1195,20 +1196,6 @@ require(["js/manage/appealProcessQryDepart", "js/manage/appealProcessQryStaff", 
                 }
             }
         });
-    }
-
-    //获取url对象
-    function getRequestObj() {
-        var url = decodeURI(decodeURI(location.search)); //获取url中"?"符后的字串，使用了两次decodeRUI解码
-        var requestObj = {};
-        if (url.indexOf("?") > -1) {
-            var str = url.substr(1),
-                strArr = str.split("&");
-            for (var i = 0; i < strArr.length; i++) {
-                requestObj[strArr[i].split("=")[0]] = unescape(strArr[i].split("=")[1]);
-            }
-            return requestObj;
-        }
     }
 
     //流程序号转流程顺序下拉框对应paramsCode（0转"00"）

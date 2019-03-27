@@ -1,19 +1,16 @@
 require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], function (QueryQmPlan, QueryQmHistory, $, Util, Transfer, CommonAjax) {
 
-    var voiceCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/execution/voiceCheckDetail.html",
+    var userInfo,
+        voiceCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/execution/voiceCheckDetail.html",
         poolStatusData = [];  //质检状态下拉框静态数据（待质检、待复检）
-    var userInfo;
-    var roleCode;
+
     initialize();
 
     function initialize() {
         Util.getLogInData(function (data) {
-            userInfo = data;//用户角色
-            Util.getRoleCode(userInfo,function(dataNew){
-                roleCode = dataNew;//用户信息
-                initPageInfo();
-                initEvent();
-            });
+            userInfo = data;    //用户信息
+            initPageInfo();
+            initEvent();
         });
     }
 
@@ -170,8 +167,8 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
                 }
             },
             loader: function (param, success) {
-                var start = (param.page - 1) * param.rows;
-                var pageNum = param.rows;
+                var start = (param.page - 1) * param.rows,
+                    pageNum = param.rows;
 
                 var touchId = $("#touchId").val(),
                     planId = $("#planId").val(),
@@ -188,7 +185,7 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
                 }
 
                 var reqParams = {
-                    "tenantId": Util.constants.TENANT_ID,
+                    "checkStaffId": userInfo.staffId.toString(),
                     "touchId": touchId,
                     "planId": planId,
                     "isOperate": Util.constants.VOICE_DISTRIBUTE,        //已分配
@@ -207,13 +204,13 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
                 }, Util.PageUtil.getParams($("#searchForm")));
 
                 Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.VOICE_POOL_DNS + "/selectByParams", params, function (result) {
-                    var data = Transfer.DataGrid.transfer(result);
+                    var data = Transfer.DataGrid.transfer(result),
+                        rspCode = result.RSP.RSP_CODE;
                     for (var i = 0; i < data.rows.length; i++) {
                         if (data.rows[i].qmPlan != null) {
                             data.rows[i]["planName"] = data.rows[i].qmPlan.planName;
                         }
                     }
-                    var rspCode = result.RSP.RSP_CODE;
                     if (rspCode != null && rspCode !== "1") {
                         $.messager.show({
                             msg: result.RSP.RSP_DESC,
