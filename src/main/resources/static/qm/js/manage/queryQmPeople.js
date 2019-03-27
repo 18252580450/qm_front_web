@@ -114,7 +114,10 @@ define([
                         width: 300,
                         height: 500,
                         cache: false,
-                        modal: true
+                        modal: true,
+                        onBeforeClose:function(){//弹框关闭前触发事件
+                            $('#qry_worklist_window').window('destroy');//销毁临时窗口
+                        }
                     });
                     var zNodes = [];
                     var reqParams = {
