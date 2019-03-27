@@ -21,7 +21,9 @@ define(['constants', 'page-util', 'ajax', 'loading'], function (constants, PageU
                     staffId: data.staffId,
                     bssGroupId: data.bssGroupId,
                     bssId: data.bssOpId,
-                    staffName:data.uname
+                    staffName:data.uname,
+                    OrgName:data.OrgName,
+                    orgId:data.orgId,
                 };
                 callback(userInfo);
             },

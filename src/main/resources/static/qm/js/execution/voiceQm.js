@@ -1,4 +1,4 @@
-require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPlan"], function ($, Util, Transfer,easyui,dateUtil,QueryQmPlan) {
+require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPlan","ztree-exedit"], function ($, Util, Transfer,easyui,dateUtil,QueryQmPlan) {
     //初始化方法
     initialize();
     var userInfo;
@@ -45,7 +45,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
     }
 
     function initTree(data) {
-        var url = "http://203.57.227.53:8082/tcwf/servReqTypeManage/srvReqTypeRedisTree";
+        var url = Util.constants.SRV_REQTYPE_REDIS_TREE;
         var setting = {
             async: {
                 dataType: "json",
@@ -71,6 +71,10 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
             },
             callback : {
                 onClick: function (e, id, node) {//点击事件
+                    if(node.isParent){
+                        $.messager.alert("提示", "请点击子节点!");
+                        return false;
+                    }
                     $('#serviceTypeName').searchbox("setValue",node.srvReqstTypeNm);
                     $('#serviceTypeId').val(node.srvReqstTypeId);
                     $("#qry_service_window").window('close'); // 关闭窗口
@@ -155,7 +159,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
             }
         });
 
-        $('#serviceTypeName').searchbox({//服务请求类型输入框点击查询事件
+        $('#serviceTypeName').searchbox({ //服务请求类型输入框点击查询事件
             searcher: function(value){
                 $('#qry_service_window').show().window({
                     title: '查询服务请求类型',

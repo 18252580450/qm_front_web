@@ -44,7 +44,7 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui","dateUti
     }
 
     function initTree(data) {
-        var url = "http://203.57.227.53:8082/tcwf/servReqTypeManage/srvReqTypeRedisTree";
+        var url = Util.constants.SRV_REQTYPE_REDIS_TREE;
         var setting = {
             async: {
                 dataType: "json",
@@ -70,6 +70,10 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui","dateUti
             },
             callback : {
                 onClick: function (e, id, node) {//点击事件
+                    if(node.isParent){
+                        $.messager.alert("提示", "请点击子节点!");
+                        return false;
+                    }
                     $('#serviceTypeName').searchbox("setValue",node.srvReqstTypeNm);
                     $('#serviceTypeId').val(node.srvReqstTypeId);
                     $("#qry_service_window").window('close'); // 关闭窗口
