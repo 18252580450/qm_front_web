@@ -1,4 +1,6 @@
-require(["js/manage/appealProcessQryDepart", "js/manage/appealProcessQryStaff", "jquery", 'util', "transfer", "commonAjax", "easyui"], function (QueryDepart, QueryCheckPeople, $, Util, Transfer, CommonUtil) {
+require([
+    "js/manage/appealProcessQryDepart",
+    "jquery", 'util', "transfer", "commonAjax", "easyui"], function (QueryDepart, $, Util, Transfer, CommonUtil) {
 
     var mainProcess = null,         //主流程对象
         showProcessName = true,     //防止初始化的时候主流程名被清除
@@ -616,20 +618,22 @@ require(["js/manage/appealProcessQryDepart", "js/manage/appealProcessQryStaff", 
         var userNameInput = $("#userName");
         userNameInput.searchbox({
                 searcher: function () {
-                    var queryCheckPeople = QueryCheckPeople;
-                    queryCheckPeople.initialize();
-                    $('#processQryStaffWindow').show().window({
-                        title: '审批人员信息',
-                        width: 1080,
-                        height: 600,
-                        cache: false,
-                        content: queryCheckPeople.$el,
-                        modal: true,
-                        onClose: function () {//弹框关闭前触发事件
-                            var checkStaff = queryCheckPeople.getCheckStaff();//获取审批人员信息
-                            userNameInput.searchbox("setValue", checkStaff.STAFF_NAME);
-                            $("#userId").val(checkStaff.STAFF_ID);
-                        }
+                    require(["js/execution/queryQmPeople"], function (qryQmPeople) {
+                        var queryQmPeople = qryQmPeople;
+                        queryQmPeople.initialize();
+                        $('#qry_people_window').show().window({
+                            title: '审批人员信息',
+                            width: 1080,
+                            height: 650,
+                            cache: false,
+                            content:queryQmPeople.$el,
+                            modal: true,
+                            onClose: function () {//弹框关闭前触发事件
+                                var checkStaff = queryQmPeople.getMap();//获取审批人员信息
+                                userNameInput.searchbox("setValue", checkStaff.staffName);
+                                $("#userId").val(checkStaff.staffId);
+                            }
+                        });
                     });
                 }
             }
@@ -857,20 +861,22 @@ require(["js/manage/appealProcessQryDepart", "js/manage/appealProcessQryStaff", 
         var userNameInput = $("#userName");
         userNameInput.searchbox({
                 searcher: function () {
-                    var queryCheckPeople = QueryCheckPeople;
-                    queryCheckPeople.initialize();
-                    $('#processQryStaffWindow').show().window({
-                        title: '审批人员信息',
-                        width: 1080,
-                        height: 600,
-                        cache: false,
-                        content: queryCheckPeople.$el,
-                        modal: true,
-                        onClose: function () {//弹框关闭前触发事件
-                            var checkStaff = queryCheckPeople.getCheckStaff();//获取审批人员信息
-                            userNameInput.searchbox("setValue", checkStaff.STAFF_NAME);
-                            $("#userId").val(checkStaff.STAFF_ID);
-                        }
+                    require(["js/execution/queryQmPeople"], function (qryQmPeople) {
+                        var queryQmPeople = qryQmPeople;
+                        queryQmPeople.initialize();
+                        $('#qry_people_window').show().window({
+                            title: '审批人员信息',
+                            width: 1080,
+                            height: 650,
+                            cache: false,
+                            content:queryQmPeople.$el,
+                            modal: true,
+                            onClose: function () {//弹框关闭前触发事件
+                                var checkStaff = queryQmPeople.getMap();//获取审批人员信息
+                                userNameInput.searchbox("setValue", checkStaff.staffName);
+                                $("#userId").val(checkStaff.staffId);
+                            }
+                        });
                     });
                 }
             }
