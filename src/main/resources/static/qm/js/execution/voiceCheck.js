@@ -236,7 +236,7 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
                 $.each(data.rows, function (i, item) {
                     $("#voiceCheck_" + item.touchId).on("click", function () {
                         var url = CommonAjax.createURL(voiceCheckDetail, item);
-                        CommonAjax.openMenu(url, "语音质检详情");
+                        CommonAjax.openMenu(url, "语音质检详情", item.touchId);
                     });
                 });
                 //质检记录

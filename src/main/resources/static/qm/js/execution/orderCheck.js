@@ -257,7 +257,7 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
                             "checkStaffName": item.checkStaffName
                         };
                         var url = CommonAjax.createURL(orderCheckDetail, param);
-                        CommonAjax.openMenu(url, "工单质检详情");
+                        CommonAjax.openMenu(url, "工单质检详情", item.workFormId);
                     });
                 });
                 //质检记录

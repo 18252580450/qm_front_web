@@ -1,6 +1,6 @@
 require([
     "js/manage/appealProcessQryDepart",
-    "jquery", 'util', "transfer", "commonAjax", "easyui"], function (QueryDepart, $, Util, Transfer, CommonUtil) {
+    "jquery", 'util', "transfer", "commonAjax", "easyui"], function (QueryDepart, $, Util, Transfer, CommonAjax) {
 
     var staffInfo,                  //员工信息
         appealProcessData = [],     //新增流程（新增提交入参）
@@ -10,7 +10,7 @@ require([
     initialize();
 
     function initialize() {
-        staffInfo = CommonUtil.getUrlParams();
+        staffInfo = CommonAjax.getUrlParams();
         initPageInfo();
         initEvent();
     }
@@ -333,8 +333,10 @@ require([
 
         //新增取消
         $("#cancelBtn").on("click", function () {
-            closeThisMenu(1000);
+            // CommonAjax.closeThisMenu(1000);
+            CommonAjax.closeMenuByNameAndId("申诉流程新增","申诉流程新增");
         });
+
     }
 
     //添加流程
@@ -535,8 +537,8 @@ require([
             var rspCode = result.RSP.RSP_CODE;
             if (rspCode != null && rspCode === "1") {   //新增成功
                 $.messager.alert("提示", result.RSP.RSP_DESC, null, function () {
-                    closeThisMenu(1000);
-                    refreshMenuByName(appealProcessUrl, "申诉流程", "申诉流程");
+                    CommonAjax.closeThisMenu(1000);
+                    CommonAjax.refreshMenuByUrl(appealProcessUrl, "申诉流程", "申诉流程");
                 });
             } else {  //新增失败
                 $.messager.show({
@@ -619,34 +621,6 @@ require([
                 }
             }
         });
-    }
-
-    //关闭当前页面
-    function closeThisMenu(time) {
-        setTimeout(function () {
-            closeMenuByName("申诉流程新增");
-        }, time);
-    }
-
-    //关闭指定menuId标签页
-    function closeMenuByName(menuName) {
-        operMenu(null, menuName, null);
-    }
-
-    //刷新指定menuName标签页
-    function refreshMenuByName(url, menuName, menuId) {
-        closeMenuByName(menuName);
-        operMenu(url, menuName, menuId);
-    }
-
-    //操作标签页
-    function operMenu(url, menuName, menuId) {
-        var operParam = {
-            "url": url,
-            "menuName": menuName,
-            "menuId": menuId
-        };
-        top.postMessage(operParam, '*');
     }
 
     return {
