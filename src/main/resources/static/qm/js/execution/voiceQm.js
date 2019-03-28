@@ -525,6 +525,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
         //语音下载
         $("#downloadBut").on('click',function () {
             var selRows = $("#queryInfo").datagrid("getSelections");//选中多行
+
             // window.open(url,'_blank');
 
         });
