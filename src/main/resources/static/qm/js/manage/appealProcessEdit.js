@@ -12,7 +12,8 @@ require([
         nodeUpdateData = [],        //节点修改数据（已有子流程的已有节点修改数据）
         processListData = [],       //列表展示数据（包括子流程和子节点列表数据）
         checkTypeData = [],         //质检类型静态数据
-        orderData = [];             //流程顺序静态数据
+        orderData = [],             //流程顺序静态数据
+        appealProcessUrl = Util.constants.URL_CONTEXT + "/qm/html/manage/appealProcessManage.html";
 
     initialize();
 
@@ -535,10 +536,7 @@ require([
 
         //新增取消
         $("#cancelBtn").on("click", function () {
-            var jq = top.jQuery;
-            if (jq('#tabs').tabs('exists', "申诉流程-新增")) {
-                jq('#tabs').tabs('close', "申诉流程-新增");
-            }
+            closeThisMenu(1000);
         });
     }
 
@@ -626,7 +624,7 @@ require([
                             width: 1080,
                             height: 650,
                             cache: false,
-                            content:queryQmPeople.$el,
+                            content: queryQmPeople.$el,
                             modal: true,
                             onClose: function () {//弹框关闭前触发事件
                                 var checkStaff = queryQmPeople.getMap();//获取审批人员信息
@@ -869,7 +867,7 @@ require([
                             width: 1080,
                             height: 650,
                             cache: false,
-                            content:queryQmPeople.$el,
+                            content: queryQmPeople.$el,
                             modal: true,
                             onClose: function () {//弹框关闭前触发事件
                                 var checkStaff = queryQmPeople.getMap();//获取审批人员信息
@@ -1065,16 +1063,8 @@ require([
             var rspCode = result.RSP.RSP_CODE;
             if (rspCode != null && rspCode === "1") {   //修改成功
                 $.messager.alert("提示", result.RSP.RSP_DESC, null, function () {
-                    var jq = top.jQuery;
-                    //刷新申诉流程tab页
-                    jq('#tabs').tabs('close', "申诉流程-修改");
-                    var tab = jq('#tabs').tabs('getTab', "申诉流程"),
-                        iframe = jq(tab.panel('options').content),
-                        content = '<iframe scrolling="auto" frameborder="0"  src="' + iframe.attr('src') + '" style="width:100%;height:100%;"></iframe>';
-                    jq('#tabs').tabs('update', {
-                        tab: tab,
-                        options: {content: content, closable: true}
-                    });
+                    closeThisMenu(1000);
+                    refreshMenuByName(appealProcessUrl, "申诉流程", "申诉流程");
                 });
             } else {  //修改失败
                 $.messager.show({
@@ -1211,6 +1201,34 @@ require([
         } else {
             return '0' + order;
         }
+    }
+
+    //关闭当前页面
+    function closeThisMenu(time) {
+        setTimeout(function () {
+            closeMenuById(mainProcess.processId);
+        }, time);
+    }
+
+    //关闭指定menuId标签页
+    function closeMenuById(menuId) {
+        operMenu(null, null, menuId);
+    }
+
+    //刷新指定menuName标签页
+    function refreshMenuByName(url, menuName, menuId) {
+        operMenu(null, menuName, null);
+        operMenu(url, menuName, menuId);
+    }
+
+    //操作标签页
+    function operMenu(url, menuName, menuId) {
+        var operParam = {
+            "url": url,
+            "menuName": menuName,
+            "menuId": menuId
+        };
+        top.postMessage(operParam, '*');
     }
 
     return {

@@ -4,7 +4,8 @@ require([
 
     var staffInfo,                  //员工信息
         appealProcessData = [],     //新增流程（新增提交入参）
-        checkTypeData = [];         //质检类型静态数据
+        checkTypeData = [],         //质检类型静态数据
+        appealProcessUrl = Util.constants.URL_CONTEXT + "/qm/html/manage/appealProcessManage.html";
 
     initialize();
 
@@ -332,10 +333,7 @@ require([
 
         //新增取消
         $("#cancelBtn").on("click", function () {
-            var jq = top.jQuery;
-            if (jq('#tabs').tabs('exists', "申诉流程-新增")) {
-                jq('#tabs').tabs('close', "申诉流程-新增");
-            }
+            closeThisMenu(1000);
         });
     }
 
@@ -436,7 +434,7 @@ require([
                             width: 1080,
                             height: 650,
                             cache: false,
-                            content:queryQmPeople.$el,
+                            content: queryQmPeople.$el,
                             modal: true,
                             onClose: function () {//弹框关闭前触发事件
                                 var checkStaff = queryQmPeople.getMap();//获取审批人员信息
@@ -537,16 +535,8 @@ require([
             var rspCode = result.RSP.RSP_CODE;
             if (rspCode != null && rspCode === "1") {   //新增成功
                 $.messager.alert("提示", result.RSP.RSP_DESC, null, function () {
-                    var jq = top.jQuery;
-                    //刷新申诉流程tab页
-                    jq('#tabs').tabs('close', "申诉流程-新增");
-                    var tab = jq('#tabs').tabs('getTab', "申诉流程"),
-                        iframe = jq(tab.panel('options').content),
-                        content = '<iframe scrolling="auto" frameborder="0"  src="' + iframe.attr('src') + '" style="width:100%;height:100%;"></iframe>';
-                    jq('#tabs').tabs('update', {
-                        tab: tab,
-                        options: {content: content, closable: true}
-                    });
+                    closeThisMenu(1000);
+                    refreshMenuByName(appealProcessUrl, "申诉流程", "申诉流程");
                 });
             } else {  //新增失败
                 $.messager.show({
@@ -629,6 +619,34 @@ require([
                 }
             }
         });
+    }
+
+    //关闭当前页面
+    function closeThisMenu(time) {
+        setTimeout(function () {
+            closeMenuByName("申诉流程新增");
+        }, time);
+    }
+
+    //关闭指定menuId标签页
+    function closeMenuByName(menuName) {
+        operMenu(null, menuName, null);
+    }
+
+    //刷新指定menuName标签页
+    function refreshMenuByName(url, menuName, menuId) {
+        closeMenuByName(menuName);
+        operMenu(url, menuName, menuId);
+    }
+
+    //操作标签页
+    function operMenu(url, menuName, menuId) {
+        var operParam = {
+            "url": url,
+            "menuName": menuName,
+            "menuId": menuId
+        };
+        top.postMessage(operParam, '*');
     }
 
     return {

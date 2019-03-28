@@ -6,7 +6,8 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
         startTime,             //页面初始化时间
         checkItemListData,     //考评项列表数据
         currentNode,           //当前选中环节
-        checkLinkData = [];    //环节考评数据
+        checkLinkData = [],    //环节考评数据
+        qmCheckUrl = Util.constants.URL_CONTEXT + "/qm/html/execution/qmCheck.html";
     initialize();
 
     function initialize() {
@@ -223,9 +224,8 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
         });
         //取消
         $("#cancelBtn").on("click", function () {
-            var jq = top.jQuery;
             //关闭语音质检详情
-            jq('#tabs').tabs('close', "工单质检详情");
+            closeThisMenu(1000);
         });
         //案例收集
         $("#caseCollectBtn").on("click", function () {
@@ -400,16 +400,8 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
             var rspCode = result.RSP.RSP_CODE;
             if (rspCode != null && rspCode === "1") {
                 $.messager.alert("提示", result.RSP.RSP_DESC, null, function () {
-                    var jq = top.jQuery;
-                    //刷新语音质检待办区
-                    jq('#tabs').tabs('close', "工单质检详情");
-                    var tab = jq('#tabs').tabs('getTab', "质检待办区"),
-                        iframe = jq(tab.panel('options').content),
-                        content = '<iframe scrolling="auto" frameborder="0"  src="' + iframe.attr('src') + '" style="width:100%;height:100%;"></iframe>';
-                    jq('#tabs').tabs('update', {
-                        tab: tab,
-                        options: {content: content, closable: true}
-                    });
+                    closeThisMenu(1000);
+                    refreshMenuByName(qmCheckUrl, "质检待办区", "质检待办区");
                 });
             } else {
                 $.messager.alert("提示", errMsg + result.RSP.RSP_DESC);
@@ -476,6 +468,34 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
             }
             return requestObj;
         }
+    }
+
+    //关闭当前页面
+    function closeThisMenu(time) {
+        setTimeout(function () {
+            closeMenuByWrkfmId(orderPool.wrkfmId);
+        }, time);
+    }
+
+    //关闭指定menuId标签页
+    function closeMenuByWrkfmId(wrkfmId) {
+        operMenu(null, null, wrkfmId);
+    }
+
+    //刷新指定menuName标签页
+    function refreshMenuByName(url, menuName, menuId) {
+        operMenu(null, menuName, null);
+        operMenu(url, menuName, menuId);
+    }
+
+    //操作标签页
+    function operMenu(url, menuName, menuId) {
+        var operParam = {
+            "url": url,
+            "menuName": menuName,
+            "menuId": menuId
+        };
+        top.postMessage(operParam, '*');
     }
 
     return {

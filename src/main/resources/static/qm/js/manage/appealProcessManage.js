@@ -271,7 +271,8 @@ require([
                             return;
                         }
                         var url = createURL(processEditUrl, item);
-                        addTabs("申诉流程-修改", url);
+                        // addTabs("申诉流程-修改", url);
+                        operMenu(url, "申诉流程修改", item.processId);
                     });
                 });
             },
@@ -300,16 +301,8 @@ require([
         //新增
         $("#addBtn").on("click", function () {
             var url = createURL(processAddUrl, userInfo);
-            addTabs("申诉流程-新增", url);
-            // var appealProcessAdd = new AppealProcessAdd(userInfo);
-            // $('#process_add_window').show().window({
-            //     title: '新增流程',
-            //     width: 1200,
-            //     height: 600,
-            //     cache: false,
-            //     content: appealProcessAdd.$el,
-            //     modal: true
-            // });
+            // addTabs("申诉流程-新增", url);
+            operMenu(url, "申诉流程新增", "申诉流程新增");
         });
 
         //删除
@@ -474,6 +467,16 @@ require([
         });
         urlLink = url + "?" + urlLink.substr(1);
         return urlLink.replace(' ', '');
+    }
+
+    //操作标签页
+    function operMenu(url, menuName, menuId) {
+        var operParam = {
+            "url": url,
+            "menuName": menuName,
+            "menuId": menuId
+        };
+        top.postMessage(operParam, '*');
     }
 
     return {

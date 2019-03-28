@@ -257,7 +257,8 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
                             "checkStaffName": item.checkStaffName
                         };
                         var url = createURL(orderCheckDetail, param);
-                        addTabs("工单质检" + item.wrkfmShowSwftno, url);
+                        // addTabs("工单质检" + item.wrkfmShowSwftno, url);
+                        operMenu(url, "工单质检详情", item.workFormId);
                     });
                 });
                 //质检记录
@@ -338,6 +339,16 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
                 }
             });
         }
+    }
+
+    //操作标签页
+    function operMenu(url, menuName, menuId) {
+        var operParam = {
+            "url": url,
+            "menuName": menuName,
+            "menuId": menuId
+        };
+        top.postMessage(operParam, '*');
     }
 
     return {
