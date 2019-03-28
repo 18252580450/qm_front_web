@@ -23,7 +23,6 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
         initPageInfo();
         initEvent();
         getCheckComment();
-
         startTime = new Date();
     }
 
@@ -421,22 +420,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
 
     //事件初始化
     function initEvent() {
-        // //考评评语下拉框
-        // $("#checkCommentSearch").combobox({
-        //     method: "GET",
-        //     valueField: 'id',
-        //     textField: 'text',
-        //     panelHeight: 'auto',
-        //     editable: false,
-        //     data: json,
-        //     onSelect: function (record) {//下拉框选中时触发
-        //         // //获取下拉中的数据
-        //         // treeMap["id"] = record.id;
-        //         // treeMap["text"] = record.text;
-        //         // treeMap["type"] = record.type;
-        //         // treeMap["pId"] = record.pId;
-        //     }
-        // });
+
         //基本信息btn
         $("#baseInfoBtn").on("click", function () {
             changeInfoArea(0);
