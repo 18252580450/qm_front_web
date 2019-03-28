@@ -256,7 +256,7 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
                             "checkStaffId": item.checkStaffId,
                             "checkStaffName": item.checkStaffName
                         };
-                        var url = createURL(orderCheckDetail, param);
+                        var url = CommonAjax.createURL(orderCheckDetail, param);
                         CommonAjax.openMenu(url, "工单质检详情");
                     });
                 });
@@ -290,18 +290,6 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
             $("#searchForm").form('clear');
             $("#poolStatus").combobox('setValue', poolStatusData[0].paramsCode);
         });
-    }
-
-    //拼接对象到url
-    function createURL(url, param) {
-        var urlLink = url;
-        if (param != null) {
-            $.each(param, function (item, value) {
-                urlLink += '&' + item + "=" + encodeURI(value);
-            });
-            urlLink = url + "?" + urlLink.substr(1);
-        }
-        return urlLink.replace(' ', '');
     }
 
     //校验开始时间和终止时间

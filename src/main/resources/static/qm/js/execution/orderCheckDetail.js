@@ -1,4 +1,4 @@
-require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util) {
+require(["jquery", 'util', "commonAjax", "dateUtil", "transfer", "easyui"], function ($, Util, CommonAjax) {
 
     var dealProcessData = [{"nodeId": 1001}, {"nodeId": 1002}];
     var orderPool,
@@ -225,7 +225,7 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
         //取消
         $("#cancelBtn").on("click", function () {
             //关闭语音质检详情
-            closeThisMenu(1000);
+            CommonAjax.closeThisMenu(1000);
         });
         //案例收集
         $("#caseCollectBtn").on("click", function () {
@@ -400,8 +400,8 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
             var rspCode = result.RSP.RSP_CODE;
             if (rspCode != null && rspCode === "1") {
                 $.messager.alert("提示", result.RSP.RSP_DESC, null, function () {
-                    closeThisMenu(1000);
-                    refreshMenuByName(qmCheckUrl, "质检待办区", "质检待办区");
+                    CommonAjax.closeThisMenu(1000);
+                    CommonAjax.refreshMenuByUrl(qmCheckUrl, "质检待办区", "质检待办区");
                 });
             } else {
                 $.messager.alert("提示", errMsg + result.RSP.RSP_DESC);

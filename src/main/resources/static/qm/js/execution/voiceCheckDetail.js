@@ -1,4 +1,4 @@
-require(["jquery", "util", "commonAjax", "dateUtil", "transfer", "easyui"], function ($, Util, CommonUtil) {
+require(["jquery", "util", "commonAjax", "dateUtil", "transfer", "easyui"], function ($, Util, CommonAjax) {
 
     var voicePool,               //质检数据
         templateId,              //考评模版Id
@@ -18,7 +18,7 @@ require(["jquery", "util", "commonAjax", "dateUtil", "transfer", "easyui"], func
     //页面信息初始化
     function initPageInfo() {
         //获取y语音流水、质检流水等信息
-        voicePool = CommonUtil.getUrlParams();
+        voicePool = CommonAjax.getUrlParams();
 
         var touchBeginTime = "",
             callType = "",
@@ -309,7 +309,7 @@ require(["jquery", "util", "commonAjax", "dateUtil", "transfer", "easyui"], func
         //取消
         $("#cancelBtn").on("click", function () {
             //关闭语音质检详情
-            closeThisMenu(1000);
+            CommonAjax.closeThisMenu(1000);
         });
         //案例收集
         $("#caseCollectBtn").on("click", function () {
@@ -363,8 +363,8 @@ require(["jquery", "util", "commonAjax", "dateUtil", "transfer", "easyui"], func
             var rspCode = result.RSP.RSP_CODE;
             if (rspCode != null && rspCode === "1") {
                 $.messager.alert("提示", result.RSP.RSP_DESC, null, function () {
-                    closeThisMenu(1000);
-                    refreshMenuByName(qmCheckUrl, "质检待办区", "质检待办区");
+                    CommonAjax.closeThisMenu(1000);
+                    CommonAjax.refreshMenuByUrl(qmCheckUrl, "质检待办区", "质检待办区");
                 });
             } else {
                 $.messager.alert("提示", errMsg + result.RSP.RSP_DESC);

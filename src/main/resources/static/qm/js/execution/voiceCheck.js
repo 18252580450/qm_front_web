@@ -235,7 +235,7 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
                 //语音质检详情
                 $.each(data.rows, function (i, item) {
                     $("#voiceCheck_" + item.touchId).on("click", function () {
-                        var url = createURL(voiceCheckDetail, item);
+                        var url = CommonAjax.createURL(voiceCheckDetail, item);
                         CommonAjax.openMenu(url, "语音质检详情");
                     });
                 });
@@ -269,22 +269,6 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
             $("#searchForm").form('clear');
             $("#poolStatus").combobox('setValue', poolStatusData[0].paramsCode);
         });
-    }
-
-    //拼接对象到url
-    function createURL(url, param) {
-        var urlLink = url;
-        if (param != null) {
-            $.each(param, function (item, value) {
-                if (value !== null) {
-                    urlLink += '&' + item + "=" + encodeURI(value);
-                } else {
-                    urlLink += '&' + item + "=" + encodeURI("");
-                }
-            });
-            urlLink = url + "?" + urlLink.substr(1);
-        }
-        return urlLink.replace(' ', '');
     }
 
     //校验开始时间和终止时间
