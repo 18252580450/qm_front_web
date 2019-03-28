@@ -21,6 +21,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
     function initialize() {
         initPageInfo();
         initEvent();
+        getCheckComment();
 
         startTime = new Date();
     }
@@ -372,8 +373,69 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
         });
     }
 
+    function getCheckComment() {
+        var reqParams = {//入参
+            "parentCommentId": "",
+            "commentName":""
+        };
+        var params = {
+            "start": 0,
+            "pageNum": 0,
+            "params": JSON.stringify(reqParams)
+        }
+        //查询
+        Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.ORDINARY_COMMENT + "/selectByParams", params, function (result) {
+            var json = [];
+            var data = result.RSP.DATA;
+            var map = {};
+            map["commentId"]="0";
+            map["commentName"]="其他";
+            data.push(map);
+            data.forEach(function(value,index){
+                var map = {};
+                map["id"]=value.commentId;
+                map["text"]=value.commentName;
+                json.push(map);
+            });
+            //考评评语下拉框
+            $("#checkCommentSearch").combobox({
+                method: "GET",
+                valueField: 'id',
+                textField: 'text',
+                panelHeight: 'auto',
+                editable: false,
+                data: json,
+                onSelect: function (record) {//下拉框选中时触发
+                    if(record.text=="其他"){
+                        $("#checkComment").attr("style","display:block;");
+                        $("#checkComment").val("请填写考评模版!");
+                    }else{
+                        $("#checkComment").attr("style","display:none;");
+                        $("#checkComment").val(record.text);
+                    }
+                }
+            });
+        });
+    }
+
     //事件初始化
     function initEvent() {
+        // //考评评语下拉框
+        // $("#checkCommentSearch").combobox({
+        //     method: "GET",
+        //     valueField: 'id',
+        //     textField: 'text',
+        //     panelHeight: 'auto',
+        //     editable: false,
+        //     data: json,
+        //     onSelect: function (record) {//下拉框选中时触发
+        //         // //获取下拉中的数据
+        //         // treeMap["id"] = record.id;
+        //         // treeMap["text"] = record.text;
+        //         // treeMap["type"] = record.type;
+        //         // treeMap["pId"] = record.pId;
+        //     }
+        // });
         //基本信息btn
         $("#baseInfoBtn").on("click", function () {
             changeInfoArea(0);

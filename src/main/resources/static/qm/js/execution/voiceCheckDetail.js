@@ -6,13 +6,59 @@ require(["jquery", "util", "commonAjax", "dateUtil", "transfer", "easyui"], func
         startTime,               //页面初始化时间
         checkItemScoreList = [], //考评项评分列表
         qmCheckUrl = Util.constants.URL_CONTEXT + "/qm/html/execution/qmCheck.html";
+
     initialize();
 
     function initialize() {
         initPageInfo();
         initEvent();
-
+        getCheckComment();
         startTime = new Date();
+    }
+
+    function getCheckComment() {
+        var reqParams = {//入参
+            "parentCommentId": "",
+            "commentName":""
+        };
+        var params = {
+            "start": 0,
+            "pageNum": 0,
+            "params": JSON.stringify(reqParams)
+        }
+        //查询
+        Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.ORDINARY_COMMENT + "/selectByParams", params, function (result) {
+            var json = [];
+            var data = result.RSP.DATA;
+            var map = {};
+            map["commentId"]="0";
+            map["commentName"]="其他";
+            data.push(map);
+            data.forEach(function(value,index){
+                var map = {};
+                map["id"]=value.commentId;
+                map["text"]=value.commentName;
+                json.push(map);
+            });
+            //考评评语下拉框
+            $("#checkCommentSearch").combobox({
+                method: "GET",
+                valueField: 'id',
+                textField: 'text',
+                panelHeight: 'auto',
+                editable: false,
+                data: json,
+                onSelect: function (record) {//下拉框选中时触发
+                    if(record.text=="其他"){
+                        $("#checkComment").attr("style","display:block;");
+                        $("#checkComment").val("请填写考评模版!");
+                    }else{
+                        $("#checkComment").attr("style","display:none;");
+                        $("#checkComment").val(record.text);
+                    }
+                }
+            });
+        });
     }
 
     //页面信息初始化

@@ -85,7 +85,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
                 var parentCommentId = $("#mainCommentName").val();//父级评语名称。显示名称，但是传过来的是id，隐藏域
                 var commentName = $("#commentName").val();//评语名称
                 var reqParams = {//入参
-                    "parentCommentId": Util.constants.PARENT_CHECK_ITEM_ID,
+                    "parentCommentId": "",
                     "commentName":commentName
                 };
                 var params = $.extend({
