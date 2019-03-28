@@ -39,7 +39,48 @@ define(["jquery", 'util'], function ($, Util) {
                 }
                 return requestObj;
             }
+        },
+        //新增标签页
+        openMenu: function (url, menuName, menuId) {
+            // operMenu(url, menuName, menuId);
+            openTab(url, menuName);
+        },
+        //关闭当前标签页
+        closeThisMenu: function (time) {
+            var url = decodeURI(window.location.href);
+            setTimeout(function () {
+                operMenu(url, null, null);
+            }, time);
+        },
+        //关闭指定标签页
+        closeMenuByUrl: function (url) {
+            operMenu(url, null, null);
         }
     };
+
+    //操作标签页
+    function operMenu(url, menuName, menuId) {
+        var operParam = {
+            "url": url,
+            "menuName": menuName,
+            "menuId": menuId
+        };
+        top.postMessage(operParam, '*');
+    }
+
+    //开发环境标签页新增方法
+    function openTab(url, tabName) {
+        var jq = top.jQuery;
+        if (!jq('#tabs').tabs('exists', tabName)) {
+            jq('#tabs').tabs('add', {
+                title: tabName,
+                content: '<iframe src="' + url + '" frameBorder="0" border="0" scrolling="auto"  style="width: 100%; height: 100%;"/>',
+                closable: true
+            });
+        } else {
+            jq('#tabs').tabs('select', tabName);
+        }
+    }
+
     return new objClass();
 });

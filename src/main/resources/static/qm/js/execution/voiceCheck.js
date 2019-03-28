@@ -236,8 +236,7 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
                 $.each(data.rows, function (i, item) {
                     $("#voiceCheck_" + item.touchId).on("click", function () {
                         var url = createURL(voiceCheckDetail, item);
-                        // addTabs("语音质检" + item.touchId, url);
-                        operMenu(url, "语音质检详情", item.touchId);
+                        CommonAjax.openMenu(url, "语音质检详情");
                     });
                 });
                 //质检记录
@@ -288,21 +287,6 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
         return urlLink.replace(' ', '');
     }
 
-    //添加一个选项卡面板
-    function addTabs(title, url) {
-        var jq = top.jQuery;
-
-        if (!jq('#tabs').tabs('exists', title)) {
-            jq('#tabs').tabs('add', {
-                title: title,
-                content: '<iframe src="' + url + '" frameBorder="0" border="0" scrolling="auto"  style="width: 100%; height: 100%;"/>',
-                closable: true
-            });
-        } else {
-            jq('#tabs').tabs('select', title);
-        }
-    }
-
     //校验开始时间和终止时间
     function checkBeginEndTime(beginTime, endTime) {
         var d1 = new Date(beginTime.replace(/-/g, "\/"));
@@ -320,16 +304,6 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
                 }
             });
         }
-    }
-
-    //操作标签页
-    function operMenu(url, menuName, menuId) {
-        var operParam = {
-            "url": url,
-            "menuName": menuName,
-            "menuId": menuId
-        };
-        top.postMessage(operParam, '*');
     }
 
     return {
