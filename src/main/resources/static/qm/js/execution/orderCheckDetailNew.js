@@ -1,4 +1,4 @@
-require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], function ($, Util, Transfer, CommonUtil) {
+require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], function ($, Util, Transfer, CommonAjax) {
 
     var workForm,
         workFormDetail,             //工单基本信息
@@ -14,7 +14,8 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
         replyData = {},             //内外部回复数据
         recordData = [],            //接触记录数据
         historyData = [],           //工单历史数据
-        processData = [];           //轨迹数据
+        processData = [],           //轨迹数据
+        qmCheckUrl = Util.constants.URL_CONTEXT + "/qm/html/execution/qmCheck.html";
 
     initialize();
 
@@ -28,7 +29,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
     //页面信息初始化
     function initPageInfo() {
         //获取工单流水、质检流水等信息
-        workForm = CommonUtil.getUrlParams();
+        workForm = CommonAjax.getUrlParams();
 
         //获取工单基本信息
         initWrkfmDetail();
@@ -436,9 +437,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
         });
         //取消
         $("#cancelBtn").on("click", function () {
-            var jq = top.jQuery;
-            //关闭语音质检详情
-            jq('#tabs').tabs('close', "工单质检" + workForm.wrkfmShowSwftno);
+            CommonAjax.closeThisMenu(1000);
         });
         //案例收集
         $("#caseCollectBtn").on("click", function () {
@@ -891,16 +890,8 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
             var rspCode = result.RSP.RSP_CODE;
             if (rspCode != null && rspCode === "1") {
                 $.messager.alert("提示", result.RSP.RSP_DESC, null, function () {
-                    var jq = top.jQuery;
-                    //刷新语音质检待办区
-                    jq('#tabs').tabs('close', "工单质检" + workFormDetail.acceptInfo.wrkfmShowSwftno);
-                    var tab = jq('#tabs').tabs('getTab', "质检待办区"),
-                        iframe = jq(tab.panel('options').content),
-                        content = '<iframe scrolling="auto" frameborder="0"  src="' + iframe.attr('src') + '" style="width:100%;height:100%;"></iframe>';
-                    jq('#tabs').tabs('update', {
-                        tab: tab,
-                        options: {content: content, closable: true}
-                    });
+                    CommonAjax.closeThisMenu(1000);
+                    CommonAjax.refreshMenuByUrl(qmCheckUrl, "质检待办区", "质检待办区");
                 });
             } else {
                 $.messager.alert("提示", errMsg + result.RSP.RSP_DESC);

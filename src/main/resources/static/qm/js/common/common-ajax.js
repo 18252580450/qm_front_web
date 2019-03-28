@@ -67,6 +67,14 @@ define(["jquery", 'util'], function ($, Util) {
         closeMenuByUrl: function (url) {
             operMenu(url, null, null);
         },
+        //关闭指定标签页
+        closeMenuById: function (menuId) {
+            operMenu(null, null, menuId);
+        },
+        //关闭指定标签页
+        closeMenuByName: function (menuName) {
+            operMenu(null, menuName, null);
+        },
         //刷新指定标签页
         refreshMenuByUrl: function (url, menuName, menuId) {
             operMenu(url, null, null);

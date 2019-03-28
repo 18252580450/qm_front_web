@@ -259,7 +259,7 @@ require([
                 //详情
                 $.each(data.rows, function (i, item) {
                     $("#processDetail" + item.processId).on("click", function () {
-                        var url = createURL(processDetailUrl, item);
+                        var url = CommonAjax.createURL(processDetailUrl, item);
                         showDialog(url, "流程详情", 1100, 600, false);
                     });
                 });
@@ -270,15 +270,14 @@ require([
                             $.messager.alert("提示", "已启动的流程不允许修改!");
                             return;
                         }
-                        var url = createURL(processEditUrl, item);
-                        // addTabs("申诉流程-修改", url);
-                        operMenu(url, "申诉流程修改", item.processId);
+                        var url = CommonAjax.createURL(processEditUrl, item);
+                        CommonAjax.openMenu(url, "申诉流程修改", item.processId);
                     });
                 });
             },
             //双击显示详情
             onDblClickRow: function (index, data) {
-                var url = createURL(processDetailUrl, data);
+                var url = CommonAjax.createURL(processDetailUrl, data);
                 showDialog(url, "流程详情", 1100, 600, false);
             }
         });
@@ -300,9 +299,9 @@ require([
 
         //新增
         $("#addBtn").on("click", function () {
-            var url = createURL(processAddUrl, userInfo);
+            var url = CommonAjax.createURL(processAddUrl, userInfo);
             // addTabs("申诉流程-新增", url);
-            operMenu(url, "申诉流程新增", "申诉流程新增");
+            CommonAjax.openMenu(url, "申诉流程新增", "申诉流程新增");
         });
 
         //删除
@@ -425,21 +424,6 @@ require([
         }
     }
 
-    //添加一个选项卡面板
-    function addTabs(title, url) {
-        var jq = top.jQuery;
-
-        if (!jq('#tabs').tabs('exists', title)) {
-            jq('#tabs').tabs('add', {
-                title: title,
-                content: '<iframe src="' + url + '" frameBorder="0" border="0" scrolling="auto"  style="width: 100%; height: 100%;"/>',
-                closable: true
-            });
-        } else {
-            jq('#tabs').tabs('select', title);
-        }
-    }
-
     //dialog弹框
     //url：窗口调用地址，title：窗口标题，width：宽度，height：高度，shadow：是否显示背景阴影罩层
     function showDialog(url, title, width, height, shadow) {
@@ -457,26 +441,6 @@ require([
             }
         });
         win.dialog('open');
-    }
-
-    //拼接对象到url
-    function createURL(url, param) {
-        var urlLink = '';
-        $.each(param, function (item, value) {
-            urlLink += '&' + item + "=" + encodeURI(value);
-        });
-        urlLink = url + "?" + urlLink.substr(1);
-        return urlLink.replace(' ', '');
-    }
-
-    //操作标签页
-    function operMenu(url, menuName, menuId) {
-        var operParam = {
-            "url": url,
-            "menuName": menuName,
-            "menuId": menuId
-        };
-        top.postMessage(operParam, '*');
     }
 
     return {
