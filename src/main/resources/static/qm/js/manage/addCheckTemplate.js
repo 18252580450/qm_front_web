@@ -13,7 +13,7 @@ define(["text!html/manage/addCheckTemplate.tpl","jquery", 'util', "transfer", "e
         $el = $(addCheckTemplateTpl);
         Util.getLogInData(function (data) {
             userInfo = data;//用户角色
-            createStaffId = userInfo.staffId;
+            createStaffId = userInfo.staffId+"";
             showTree();
             initGrid();
             delEvent();
@@ -67,6 +67,16 @@ define(["text!html/manage/addCheckTemplate.tpl","jquery", 'util', "transfer", "e
                     map['pId'] = node.pId;
                     data.push(map);
                 }
+            },
+            onCheck:function(event,treeId, treeNode) { // 根据点击复选框和复选框当前状态判断
+                // if (treeNode.checked == true) {
+                //     checkedNum.push(treeNode);
+                // } else {
+                //     var indexCh = checkedNum.indexOf(treeNode);
+                //     if (indexCh != -1) {
+                //         checkedNum.splice(indexCh, 1);
+                //     }
+                // }
             }
         },
         onCollapse: function (e, id, node) {  //目录折叠，保存目录展开路径

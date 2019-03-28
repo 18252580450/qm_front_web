@@ -538,7 +538,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
         for(var i=0;i<dataNew.length;i++){
             var map = {};
             map["checkStaffName"]=userInfo.staffName;
-            map["checkStaffId"]=userInfo.staffId;
+            map["checkStaffId"]=userInfo.staffId+"";
             map["touchId"]=dataNew[i];
             params.push(map);
         }

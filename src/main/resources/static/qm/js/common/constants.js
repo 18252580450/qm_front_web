@@ -38,8 +38,8 @@ define(function () {
         QM_BIND_RLN_DNS: "/qm/configservice/qmBindRln",//考评计划绑定关系
         SRV_REQTYPE_REDIS_TREE:"http://203.57.227.53:8082/tcwf/servReqTypeManage/srvReqTypeRedisTree",//服务请求类型
         FIND_SERV_REQ_TYPE_BY_CACHE:"http://203.57.227.53:8082/tcwf/servReqTypeManage/findServReqTypeByCache",
-        IS_LOG_IN:"http://203.57.226.107:9500/isLognIn",//登入验证
-        PAGE_LOGIN:"http://203.57.226.107:9500",
+        IS_LOG_IN:"http://203.57.226.107:9500/cqkbmanage/isLognIn",//登入验证
+        PAGE_LOGIN:"http://203.57.226.107:9500/cqkbmanage/",//登入页面
         USER_PERMISSION:"/qm/configservice/userPermission",//用户权限
 
         //考评项目录类型

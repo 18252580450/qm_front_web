@@ -22,8 +22,8 @@ define(["text!html/manage/modifyCheckTemplate.tpl","jquery", 'util', "transfer",
         remark = map["remark"];
         Util.getLogInData(function (data) {
             userInfo = data;//用户角色
-            operateStaffId = userInfo.staffId;
-            crtStaffId = userInfo.staffId;
+            operateStaffId = userInfo.staffId+"";
+            crtStaffId = userInfo.staffId+"";
             showTree();
             initGrid();
             delEvent();
@@ -192,7 +192,8 @@ define(["text!html/manage/modifyCheckTemplate.tpl","jquery", 'util', "transfer",
                     pNodeId:vaule.pId,
                     errorType: vaule.type,
                     nodeScore: '0',
-                    maxScore: '0'
+                    maxScore: '0',
+                    flag: '0' //新增标示
                 }
             });
             i++;
@@ -201,7 +202,7 @@ define(["text!html/manage/modifyCheckTemplate.tpl","jquery", 'util', "transfer",
 
     //删除操作
     function delEvent() {
-        $("#page").on("click", "a.delBtn", function () {
+        $("#page",$el).on("click", "a.delBtn", function () {
 
             //先查询数据库中有没有该条数据，有的话就删除数据库中的，没有的话则删除页面上的
             var rowData = $(this).attr('id');
@@ -241,7 +242,7 @@ define(["text!html/manage/modifyCheckTemplate.tpl","jquery", 'util', "transfer",
             }
             //将表中数据保存到详情信息表中
             //获取datagrid中的所有数据，将其拼接成json格式字符串数组
-            var rowsData = $('#peopleManage').datagrid('getRows');
+            var rowsData = $('#peopleManage',$el).datagrid('getRows');
             var json = [];//更新数据
             var jsonInsert = [];//需要插入的数据
             var maxAll = [];//扣分范围
@@ -265,7 +266,7 @@ define(["text!html/manage/modifyCheckTemplate.tpl","jquery", 'util', "transfer",
                         "tenantId":Util.constants.TENANT_ID,
                         "templateId":templateId,
                         "nodeId":rowsData[i].nodeId,
-                        "nodeName": rowsData[i].checkItemName,
+                        "nodeName": rowsData[i].nodeName,
                         "maxScore": maxScore,
                         "nodeScore": nodeScore,
                         "errorType": rowsData[i].errorType,
@@ -317,8 +318,8 @@ define(["text!html/manage/modifyCheckTemplate.tpl","jquery", 'util', "transfer",
                 });
                 var rspCode = result.RSP.RSP_CODE;
                 if (rspCode == "1") {
-                    $('#add_content').window('close'); // 关闭窗口
-                    $("#peopleManage").datagrid('reload'); //插入成功后，刷新页面
+                    $("#checkTemplateManage").datagrid('reload'); //修改成功后，刷新页面
+                    $("#modif_window").window("close"); // 关闭窗口
                 }
             });
 
@@ -334,8 +335,8 @@ define(["text!html/manage/modifyCheckTemplate.tpl","jquery", 'util', "transfer",
                     });
                     var rspCode = result.RSP.RSP_CODE;
                     if (rspCode == "1") {
-                        $('#add_content').window('close'); // 关闭窗口
-                        $("#peopleManage").datagrid('reload'); //插入成功后，刷新页面
+                        $("#checkTemplateManage").datagrid('reload'); //修改成功后，刷新页面
+                        $("#modif_window").window("close"); // 关闭窗口
                     }
                 });
             }
@@ -469,18 +470,8 @@ define(["text!html/manage/modifyCheckTemplate.tpl","jquery", 'util', "transfer",
 
                 Util.ajax.getJson(Util.constants.CONTEXT +  Util.constants.ADD_CHECK_TEMPLATE + "/selectByParams", param, function (result) {
                     var data = Transfer.DataGrid.transfer(result);
-                    var dataNew=[];
-                    for(var i=0;i<data.rows.length;i++){
-                        var map=data.rows[i];
-                        if(map.checkItem!=null){
-                            map["checkItemName"]=map.checkItem.checkItemName;
-                            map["errorType"]=map.checkItem.checkItemVitalType;
-                            dataNew.push(map);
-                        }
-                    }
                     var rspCode = result.RSP.RSP_CODE;
                     if (rspCode != "1") {
-
                         $.messager.show({
                             msg: result.RSP.RSP_DESC,
                             timeout: 1000,
@@ -488,7 +479,7 @@ define(["text!html/manage/modifyCheckTemplate.tpl","jquery", 'util', "transfer",
                             showType: 'slide'
                         });
                     }
-                    success(dataNew);
+                    success(data);
                 });
             }
         });

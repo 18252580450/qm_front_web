@@ -470,7 +470,7 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui","dateUti
         for(var i=0;i<dataNew.length;i++){
             var map = {};
             map["checkStaffName"]=userInfo.staffName;
-            map["checkStaffId"]=userInfo.staffId;
+            map["checkStaffId"]=userInfo.staffId+"";
             map["wrkfmShowSwftno"]=dataNew[i];
             params.push(map);
         }
