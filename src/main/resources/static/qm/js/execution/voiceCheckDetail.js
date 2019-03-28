@@ -25,7 +25,7 @@ require(["jquery", "util", "commonAjax", "dateUtil", "transfer", "easyui"], func
             "start": 0,
             "pageNum": 0,
             "params": JSON.stringify(reqParams)
-        }
+        };
         //查询
         Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.ORDINARY_COMMENT + "/selectByParams", params, function (result) {
             var json = [];
@@ -49,12 +49,13 @@ require(["jquery", "util", "commonAjax", "dateUtil", "transfer", "easyui"], func
                 editable: false,
                 data: json,
                 onSelect: function (record) {//下拉框选中时触发
-                    if(record.text=="其他"){
-                        $("#checkComment").attr("style","display:block;");
-                        $("#checkComment").val("请填写考评模版!");
-                    }else{
-                        $("#checkComment").attr("style","display:none;");
-                        $("#checkComment").val(record.text);
+                    var checkComment = $("#checkComment");
+                    if (record.text === "其他") {
+                        checkComment.attr("style", "display:block;");
+                        checkComment.val("");
+                    } else {
+                        checkComment.attr("style", "display:none;");
+                        checkComment.val(record.text);
                     }
                 }
             });
@@ -355,7 +356,7 @@ require(["jquery", "util", "commonAjax", "dateUtil", "transfer", "easyui"], func
         //取消
         $("#cancelBtn").on("click", function () {
             //关闭语音质检详情
-            CommonAjax.closeThisMenu(1000);
+            CommonAjax.closeMenuByNameAndId("语音质检详情",voicePool.touchId);
         });
         //案例收集
         $("#caseCollectBtn").on("click", function () {
@@ -409,41 +410,13 @@ require(["jquery", "util", "commonAjax", "dateUtil", "transfer", "easyui"], func
             var rspCode = result.RSP.RSP_CODE;
             if (rspCode != null && rspCode === "1") {
                 $.messager.alert("提示", result.RSP.RSP_DESC, null, function () {
-                    CommonAjax.closeThisMenu(1000);
+                    CommonAjax.closeMenuByNameAndId("语音质检详情",voicePool.touchId);
                     CommonAjax.refreshMenuByUrl(qmCheckUrl, "质检待办区", "质检待办区");
                 });
             } else {
                 $.messager.alert("提示", errMsg + result.RSP.RSP_DESC);
             }
         });
-    }
-
-    //关闭当前页面
-    function closeThisMenu(time) {
-        setTimeout(function () {
-            closeMenuByTouchId(voicePool.touchId);
-        }, time);
-    }
-
-    //关闭指定menuId标签页
-    function closeMenuByTouchId(touchId) {
-        operMenu(null, null, touchId);
-    }
-
-    //刷新指定menuName标签页
-    function refreshMenuByName(url, menuName, menuId) {
-        operMenu(null, menuName, null);
-        operMenu(url, menuName, menuId);
-    }
-
-    //操作标签页
-    function operMenu(url, menuName, menuId) {
-        var operParam = {
-            "url": url,
-            "menuName": menuName,
-            "menuId": menuId
-        };
-        top.postMessage(operParam, '*');
     }
 
     return {

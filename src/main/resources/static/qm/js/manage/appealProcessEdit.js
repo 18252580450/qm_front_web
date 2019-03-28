@@ -536,7 +536,7 @@ require([
 
         //新增取消
         $("#cancelBtn").on("click", function () {
-            CommonAjax.closeThisMenu(1000);
+            CommonAjax.closeMenuByNameAndId("申诉流程修改", mainProcess.processId);
         });
     }
 
@@ -1063,7 +1063,7 @@ require([
             var rspCode = result.RSP.RSP_CODE;
             if (rspCode != null && rspCode === "1") {   //修改成功
                 $.messager.alert("提示", result.RSP.RSP_DESC, null, function () {
-                    CommonAjax.closeThisMenu(1000);
+                    CommonAjax.closeMenuByNameAndId("申诉流程修改", mainProcess.processId);
                     CommonAjax.refreshMenuByUrl(appealProcessUrl, "申诉流程", "申诉流程");
                 });
             } else {  //修改失败

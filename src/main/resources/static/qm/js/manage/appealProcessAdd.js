@@ -333,7 +333,6 @@ require([
 
         //新增取消
         $("#cancelBtn").on("click", function () {
-            // CommonAjax.closeThisMenu(1000);
             CommonAjax.closeMenuByNameAndId("申诉流程新增","申诉流程新增");
         });
 
@@ -537,7 +536,7 @@ require([
             var rspCode = result.RSP.RSP_CODE;
             if (rspCode != null && rspCode === "1") {   //新增成功
                 $.messager.alert("提示", result.RSP.RSP_DESC, null, function () {
-                    CommonAjax.closeThisMenu(1000);
+                    CommonAjax.closeMenuByNameAndId("申诉流程新增","申诉流程新增");
                     CommonAjax.refreshMenuByUrl(appealProcessUrl, "申诉流程", "申诉流程");
                 });
             } else {  //新增失败

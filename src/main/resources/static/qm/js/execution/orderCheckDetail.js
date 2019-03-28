@@ -1,44 +1,46 @@
-require(["jquery", 'util', "commonAjax", "dateUtil", "transfer", "easyui"], function ($, Util, CommonAjax) {
+require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], function ($, Util, Transfer, CommonAjax) {
 
-    var dealProcessData = [{"nodeId": 1001}, {"nodeId": 1002}];
-    var orderPool,
-        scoreType,             //分值类型（默认扣分）
-        startTime,             //页面初始化时间
-        checkItemListData,     //考评项列表数据
-        currentNode,           //当前选中环节
-        checkLinkData = [],    //环节考评数据
+    var workForm,
+        workFormDetail,             //工单基本信息
+        showingInfo = 0,            //当前显示的基本信息（0工单基本信息、1内外部回复、2接触记录、3工单历史）
+        scoreType,                  //分值类型（默认扣分）
+        templateId,                 //模版id
+        startTime,                  //页面初始化时间
+        checkItemListData = [],     //考评项列表数据（所有环节考评项）
+        currentCheckItemData = [],  //当前考评项列表数据
+        currentNode = {},           //当前选中环节
+        checkLinkData = [],         //环节考评数据（提交数据）
+        totalScore = 0,             //总得分
+        replyData = {},             //内外部回复数据
+        recordData = [],            //接触记录数据
+        historyData = [],           //工单历史数据
+        processData = [],           //轨迹数据
         qmCheckUrl = Util.constants.URL_CONTEXT + "/qm/html/execution/qmCheck.html";
+
     initialize();
 
     function initialize() {
         initPageInfo();
         initEvent();
-
+        getCheckComment();
         startTime = new Date();
     }
 
     //页面信息初始化
     function initPageInfo() {
         //获取工单流水、质检流水等信息
-        orderPool = getRequestObj();
+        workForm = CommonAjax.getUrlParams();
 
-        //工单受理内容
-        $("#orderDealContent").textbox(
-            {
-                multiline: true
-            }
-        );
-
-        //动态展示处理过程
-        showDealProcess(dealProcessData);
+        //获取工单基本信息
+        initWrkfmDetail();
 
         //考评项列表
         var IsCheckFlag = true; //标示是否是勾选复选框选中行的，true - 是 , false - 否
         $("#checkItemList").datagrid({
             columns: [[
-                {field: 'nodeName', title: '考评项名称', width: '15%'},
+                {field: 'checkItemName', title: '考评项名称', width: '20%'},
                 {
-                    field: 'errorType', title: '类别', width: '15%',
+                    field: 'checkItemVitalType', title: '类别', width: '10%',
                     formatter: function (value, row, index) {
                         var vitalType = null;
                         if (value != null && value === "0") {
@@ -50,34 +52,34 @@ require(["jquery", 'util', "commonAjax", "dateUtil", "transfer", "easyui"], func
                         return vitalType;
                     }
                 },
-                {field: 'remark', title: '描述', width: '20%'},
-                {field: 'nodeScore', title: '所占分值', width: '15%'},
+                {field: 'remark', title: '描述', width: '28%'},
+                {field: 'nodeScore', title: '所占分值', width: '10%'},
                 {
-                    field: 'scoreScope', title: '扣分区间', width: '20%',
+                    field: 'scoreScope', title: '扣分区间', width: '15%',
                     formatter: function (value, row, index) {
-                        var min = '<input id="minScore' + row.nodeId + '" type="text" style="width: 80px;" class="easyui-textbox" value="0" readonly>',
-                            max = '<input id="minScore' + row.nodeId + '" type="text" style="width: 80px;" class="easyui-textbox" value="0" readonly>';
+                        var min = "0",
+                            max = "0";
                         if (row.minScore != null) {
-                            min = '<input id="minScore' + row.nodeId + '" type="text" style="width: 80px;" class="easyui-textbox" value="' + row.minScore + '" readonly>';
+                            min = row.minScore;
                         }
                         if (row.maxScore != null) {
-                            max = '<input id="maxScore' + row.nodeId + '" type="text" style="width: 80px;" class="easyui-textbox" value="' + row.maxScore + '" readonly>';
+                            max = row.maxScore;
                         }
-                        return min + "&nbsp;&nbsp;" + "-" + "&nbsp;&nbsp;" + max;
+                        return min + "-" + max;
                     }
                 },
                 {
-                    field: 'score', title: '扣分分值', width: '15%',
+                    field: 'score', title: '扣分分值', width: '20%',
                     formatter: function (value, row, index) {
                         if (row.hasOwnProperty("score") && row.score != null) {
-                            return '<input id="score' + row.nodeId + '" type="text" class="easyui-textbox" value="' + row.score + '">';
+                            return '<input id="score' + row.nodeId + '" type="text" class="input-type" value="' + row.score + '">';
                         }
-                        return '<input id="score' + row.nodeId + '" type="text" class="easyui-textbox" value="0">';
+                        return '<input id="score' + row.nodeId + '" type="text" class="input-type" value="0">';
                     }
                 }
             ]],
             fitColumns: true,
-            width: '100%',
+            width: 845,
             height: 200,
             rownumbers: false,
             checkOnSelect: false,
@@ -96,73 +98,14 @@ require(["jquery", 'util', "commonAjax", "dateUtil", "transfer", "easyui"], func
                     $("#checkItemList").datagrid("selectRow", rowIndex);
                 }
             },
-            loader: function (param, success) {
-                //查询分值类型
-                var templateReqParams = {
-                    "tenantId": Util.constants.TENANT_ID,
-                    "templateId": orderPool.templateId
-                };
-                var templateParams = $.extend({
-                    "start": 0,
-                    "pageNum": 0,
-                    "params": JSON.stringify(templateReqParams)
-                }, Util.PageUtil.getParams($("#searchForm")));
-
-                Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.CHECK_TEMPLATE + "/selectByParams", templateParams, function (result) {
-                    var data = result.RSP.DATA;
-                    var rspCode = result.RSP.RSP_CODE;
-                    if (rspCode != null && rspCode !== "1") {
-                        $.messager.show({
-                            msg: result.RSP.RSP_DESC,
-                            timeout: 1000,
-                            style: {right: '', bottom: ''},     //居中显示
-                            showType: 'show'
-                        });
-                    }
-                    if (data.length !== 0) {
-                        if (data[0].scoreType != null) {
-                            scoreType = data[0].scoreType;
-                        } else {
-                            scoreType = Util.constants.SCORE_TYPE_DISCOUNT;
-                        }
-                    }
-                });
-
-                //考评模版详细信息
-                var reqParams = {
-                    "tenantId": Util.constants.TENANT_ID,
-                    "templateId": orderPool.templateId
-                };
-                var params = $.extend({
-                    "start": 0,
-                    "pageNum": 0,
-                    "params": JSON.stringify(reqParams)
-                }, Util.PageUtil.getParams($("#searchForm")));
-
-                Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.CHECK_TEMPLATE_DETAIL_DNS + "/queryCheckTemplateDetail", params, function (result) {
-                    checkItemListData = result.RSP.DATA;
-                    var data = {
-                        rows: result.RSP.DATA
-                    };
-                    var rspCode = result.RSP.RSP_CODE;
-                    if (rspCode != null && rspCode !== "1") {
-                        $.messager.show({
-                            msg: result.RSP.RSP_DESC,
-                            timeout: 1000,
-                            style: {right: '', bottom: ''},     //居中显示
-                            showType: 'show'
-                        });
-                    }
-                    success(data);
-                });
-            },
             onLoadSuccess: function (data) {
                 //扣分分值输入框
                 $.each(data.rows, function (i, item) {
                     var input = $("#score" + item.nodeId);
                     input.on("keyup", function () {
-                        var totalScore = 0,
-                            maxScore = $("#maxScore" + item.nodeId).val(),
+                        var total = 0, //当前环节考评项总分
+                            discount = 0, //扣分总值
+                            maxScore = item.maxScore,
                             scoreDiv = $("#score" + item.nodeId),
                             score = scoreDiv.val();
                         if (parseInt(score) > parseInt(maxScore)) {
@@ -171,12 +114,15 @@ require(["jquery", 'util', "commonAjax", "dateUtil", "transfer", "easyui"], func
                             return;
                         }
                         $.each(data.rows, function (i, item) {
+                            total += item.nodeScore;
                             var inputScore = $("#score" + item.nodeId);
                             if (inputScore.val() !== "") {
-                                totalScore = totalScore + parseInt(inputScore.val());
+                                discount = discount + parseInt(inputScore.val());
                             }
                         });
-                        $("#checkScore").val(String(100 - totalScore));
+                        $("#checkScore_" + currentNode.lgId).html(String(total - discount));
+                        checkLinkSave();
+                        $("#totalScore").val(totalScore);
                     });
                     input.on("blur", function () {
                         var scoreDiv = $("#score" + item.nodeId),
@@ -184,21 +130,335 @@ require(["jquery", 'util', "commonAjax", "dateUtil", "transfer", "easyui"], func
                         if (score === "") {
                             scoreDiv.val("0");
                         }
+                        checkLinkSave();
+                        $("#totalScore").val(totalScore);
+                        //刷新考评环节合格状态
+                        refreshCheckResult();
                     });
                 });
             }
         });
 
-        //考评评语
-        // $("#checkComment").textbox(
-        //     {
-        //         multiline: true
-        //     }
-        // );
+        //获取工单轨迹、初始化考评项列表、环节考评数据
+        initProcProceLocus();
+    }
+
+    //初始化工单基本信息
+    function initWrkfmDetail() {
+        var reqParams = {
+            "provCode": workForm.provinceId,
+            "wrkfmId": workForm.wrkfmId
+        };
+        var params = $.extend({
+            "params": JSON.stringify(reqParams)
+        }, {});
+
+        Util.loading.showLoading();
+        Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.WRKFM_DETAIL_DNS + "/queryWrkfmDetail", params, function (result) {
+
+            Util.loading.destroyLoading();
+            var data = result.RSP.DATA,
+                rspCode = result.RSP.RSP_CODE;
+            if (rspCode != null && rspCode !== "1") {
+                $.messager.show({
+                    msg: result.RSP.RSP_DESC,
+                    timeout: 1000,
+                    style: {right: '', bottom: ''},     //居中显示
+                    showType: 'show'
+                });
+            } else {
+                workFormDetail = data;
+                $("#workFormId").val(data.acceptInfo.wrkfmShowSwftno);
+                $("#custNum").val(data.userInfo.custNum);
+                $("#srvReqstTypeFullNm").val(data.acceptInfo.srvReqstTypeFullNm);
+                $("#custBelgCityNm").val(data.userInfo.custBelgCityNm);
+                $("#isVipNm").val(data.userInfo.isVipNm);
+                $("#acptChnlNm").val(data.acceptInfo.acptChnlNm);
+                $("#dplctCmplntsFlagNm").val(data.acceptInfo.dplctCmplntsFlagNm);
+                $("#isMajorCmplntsNm").val(data.acceptInfo.isMajorCmplntsNm);
+                $("#faultLvlNm").val(data.acceptInfo.faultLvlNm);
+                $("#urgntExtentNm").val(data.acceptInfo.urgntExtentNm);
+                $("#custMoodTypeNm").val(data.acceptInfo.custMoodTypeNm);
+                $("#bizCntt").val(data.acceptInfo.bizCntt);
+            }
+        });
+    }
+
+    //初始化工单轨迹、考评项列表、考评评语
+    function initProcProceLocus() {
+        var reqParams = {
+            "provCode": workForm.provinceId,
+            "wrkfmId": workForm.wrkfmId
+        };
+        var params = $.extend({
+            "params": JSON.stringify(reqParams)
+        }, {});
+
+        Util.loading.showLoading();
+        Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.WRKFM_DETAIL_DNS + "/getProcProceLocus", params, function (result) {
+
+            Util.loading.destroyLoading();
+            var data = result.RSP.DATAS,
+                rspCode = result.RSP.RSP_CODE;
+            if (rspCode != null && rspCode !== "1") {
+                $.messager.show({
+                    msg: result.RSP.RSP_DESC,
+                    timeout: 1000,
+                    style: {right: '', bottom: ''},     //居中显示
+                    showType: 'show'
+                });
+            } else {
+                processData = data;
+                showDealProcess(processData);  //初始化工单轨迹
+
+                //初始化考评项列表
+                var reqParams = {
+                    "tenantId": Util.constants.TENANT_ID,
+                    "planId": workForm.planId,
+                    "templateId": workForm.templateId
+                };
+                var params = $.extend({
+                    "start": 0,
+                    "pageNum": 0,
+                    "params": JSON.stringify(reqParams)
+                }, Util.PageUtil.getParams($("#searchForm")));
+
+                Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.CHECK_ITEM_DNS + "/queryCheckItemDetail", params, function (result) {
+                    checkItemListData = result.RSP.DATA;
+                    //模版id
+                    templateId = checkItemListData[0].templateId;
+                    //分值类型
+                    scoreType = checkItemListData[0].scoreType;
+                    var rspCode = result.RSP.RSP_CODE;
+                    if (rspCode != null && rspCode !== "1") {
+                        $.messager.show({
+                            msg: result.RSP.RSP_DESC,
+                            timeout: 1000,
+                            style: {right: '', bottom: ''},     //居中显示
+                            showType: 'show'
+                        });
+                    } else {
+                        //初始化考评项列表
+                        var checkLink = processData[0].opTypeCd;
+                        $.each(checkItemListData, function (i, item) {
+                            if (item.nodeTypeCode === checkLink) {
+                                currentCheckItemData.push(item)
+                            }
+                        });
+                        $("#checkItemList").datagrid("loadData", {rows: currentCheckItemData});
+
+                        //查询暂存数据
+                        var reqParams = {
+                            "tenantId": Util.constants.TENANT_ID,
+                            "touchId": workForm.wrkfmId
+                        };
+                        var params = $.extend({
+                            "start": 0,
+                            "pageNum": 0,
+                            "params": JSON.stringify(reqParams)
+                        }, Util.PageUtil.getParams($("#searchForm")));
+
+                        Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.ORDER_CHECK_DNS + "/querySavedResult", params, function (result) {
+                            if (result.RSP.RSP_CODE === "1") {
+                                var savedData = result.RSP.DATA;
+                                //初始化环节考评数据（暂存数据）
+                                $.each(processData, function (i, processItem) {
+                                    var checkItemScoreList = [],
+                                        checkLinkScore = 0,
+                                        flag = false;  //判断环节是否有考评项
+                                    $.each(savedData, function (index, data) {
+                                        if (processItem.lgId === data.checkLink) {
+                                            flag = true;
+                                            var checkItemData = {};
+                                            checkItemData.nodeType = data.nodeType;
+                                            checkItemData.nodeId = data.nodeId;
+                                            checkItemData.nodeName = data.nodeName;
+                                            checkItemData.scoreScope = data.scoreScope;
+                                            if (data.minScore != null) {
+                                                checkItemData.minScore = data.minScore;
+                                            } else {
+                                                checkItemData.minScore = 0;
+                                            }
+                                            checkItemData.maxScore = data.maxScore;
+                                            checkItemData.realScore = data.realScore;
+                                            checkItemScoreList.push(checkItemData);
+
+                                            checkLinkScore += data.realScore;
+                                        }
+                                    });
+                                    if (flag) {  //存在考评项的环节
+                                        var checkLink = {
+                                            "checkLink": processItem.lgId,
+                                            "checkedStaffId": processItem.opStaffId,
+                                            "checkedStaffNm": processItem.opStaffNm,
+                                            "checkedDepartId": processItem.opWorkGroupId,
+                                            "checkedDepartNm": processItem.opWorkGroupNm,
+                                            "checkLinkScore": checkLinkScore,
+                                            "checkItemScoreList": checkItemScoreList
+                                        };
+                                        checkLinkData.push(checkLink);
+                                        totalScore += checkLinkScore;
+                                        $("#checkScore_" + processItem.lgId).html(checkLinkScore);
+                                    }
+                                });
+                            } else {  //无暂存数据则默认满分
+                                $.each(processData, function (i, processItem) {
+                                    var checkItemScoreList = [],
+                                        checkLinkScore = 0,
+                                        flag = false;  //判断环节是否有考评项
+                                    $.each(checkItemListData, function (index, checkItem) {
+                                        if (processItem.opTypeCd === checkItem.nodeTypeCode) {
+                                            flag = true;
+                                            var checkItemData = {};
+                                            checkItemData.nodeType = checkItem.nodeType;
+                                            checkItemData.nodeId = checkItem.nodeId;
+                                            checkItemData.nodeName = checkItem.nodeName;
+                                            checkItemData.scoreScope = checkItem.nodeScore;
+                                            if (checkItem.minScore != null) {
+                                                checkItemData.minScore = checkItem.minScore;
+                                            } else {
+                                                checkItemData.minScore = 0;
+                                            }
+                                            checkItemData.maxScore = checkItem.maxScore;
+                                            checkItemData.realScore = checkItem.nodeScore;
+                                            checkItemScoreList.push(checkItemData);
+
+                                            checkLinkScore += checkItem.nodeScore;
+                                        }
+                                    });
+                                    if (flag) {  //存在考评项的环节
+                                        var checkLink = {
+                                            "checkLink": processItem.lgId,
+                                            "checkedStaffId": processItem.opStaffId,
+                                            "checkedStaffNm": processItem.opStaffNm,
+                                            "checkedDepartId": processItem.opWorkGroupId,
+                                            "checkedDepartNm": processItem.opWorkGroupNm,
+                                            "checkLinkScore": checkLinkScore,
+                                            "checkItemScoreList": checkItemScoreList
+                                        };
+                                        checkLinkData.push(checkLink);
+                                        totalScore += checkLinkScore;
+                                        $("#checkScore_" + processItem.lgId).html(checkLinkScore);
+                                    }
+                                });
+                            }
+                            //考评环节合格状态
+                            initCheckResult();
+                            //刷新考评项列表数据
+                            refreshCheckArea();
+                            //初始化总得分
+                            $("#totalScore").val(totalScore);
+                        });
+                    }
+                });
+            }
+        });
+
+        //初始化考评评语
+        var reqParam = {
+            "tenantId": Util.constants.TENANT_ID,
+            "touchId": workForm.wrkfmId,
+            "resultStatus": Util.constants.CHECK_RESULT_TEMP_SAVE
+        };
+        var param = $.extend({
+            "start": 0,
+            "pageNum": 0,
+            "params": JSON.stringify(reqParam)
+        }, Util.PageUtil.getParams($("#searchForm")));
+
+        Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.ORDER_CHECK_DNS + "/queryOrderCheckResult", param, function (result) {
+            if (result.RSP.RSP_CODE === "1") {
+                $("#checkComment").html(result.RSP.DATA[0].checkComment);
+            }
+        });
+    }
+
+    function getCheckComment() {
+        var reqParams = {//入参
+            "parentCommentId": "",
+            "commentName": ""
+        };
+        var params = {
+            "start": 0,
+            "pageNum": 0,
+            "params": JSON.stringify(reqParams)
+        };
+        //查询
+        Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.ORDINARY_COMMENT + "/selectByParams", params, function (result) {
+            var json = [];
+            var data = result.RSP.DATA;
+            var map = {};
+            map["commentId"] = "0";
+            map["commentName"] = "其他";
+            data.push(map);
+            data.forEach(function (value, index) {
+                var map = {};
+                map["id"] = value.commentId;
+                map["text"] = value.commentName;
+                json.push(map);
+            });
+            //考评评语下拉框
+            $("#checkCommentSearch").combobox({
+                method: "GET",
+                valueField: 'id',
+                textField: 'text',
+                panelHeight: 'auto',
+                editable: false,
+                data: json,
+                onSelect: function (record) {//下拉框选中时触发
+                    var checkComment = $("#checkComment");
+                    if (record.text === "其他") {
+                        checkComment.attr("style", "display:block;");
+                        checkComment.val("");
+                    } else {
+                        checkComment.attr("style", "display:none;");
+                        checkComment.val(record.text);
+                    }
+                }
+            });
+        });
     }
 
     //事件初始化
     function initEvent() {
+
+        //基本信息btn
+        $("#baseInfoBtn").on("click", function () {
+            changeInfoArea(0);
+        });
+        //内外部回复btn
+        $("#handlingLogBtn").on("click", function () {
+            changeInfoArea(1);
+            initHandlingLog();
+        });
+        //接触记录btn
+        $("#recordingBtn").on("click", function () {
+            changeInfoArea(2);
+            if (recordData.length === 0) {
+                initRecord();
+            }
+        });
+        //工单历史btn
+        $("#historyBtn").on("click", function () {
+            changeInfoArea(3);
+            if (historyData.length === 0) {
+                initHistory();
+            }
+        });
+        //外部回复tab
+        $("#externalReplyTab").on("click", function () {
+            changeReplyArea(true);
+            if (replyData.hasOwnProperty("externalReply")) {
+                showHandlingLog(replyData.externalReply, true);
+            }
+        });
+        //内部回复tab
+        $("#insideReplyTab").on("click", function () {
+            changeReplyArea(false);
+            if (replyData.hasOwnProperty("insideReply")) {
+                showHandlingLog(replyData.insideReply, false);
+            }
+        });
         //通知类型复选框点击事件
         $("#messageInform").on("click", function () {
             $("#emailInform").attr("checked", false);
@@ -206,26 +466,25 @@ require(["jquery", 'util', "commonAjax", "dateUtil", "transfer", "easyui"], func
         $("#emailInform").on("click", function () {
             $("#messageInform").attr("checked", false);
         });
-        //考评环节保存
-        $("#checkLinkSave").on("click", function () {
-            checkLinkSave();
-        });
         //保存
         $("#saveBtn").on("click", function () {
-            checkSubmit(Util.constants.CHECK_RESULT_TEMP_SAVE);
+            if (workForm.poolStatus === Util.constants.CHECK_STATUS_RECHECK) {
+                checkSubmit(Util.constants.CHECK_FLAG_RECHECK_SAVE);  //复检保存
+            } else {
+                checkSubmit(Util.constants.CHECK_FLAG_CHECK_SAVE);  //质检保存
+            }
         });
         //提交
         $("#submitBtn").on("click", function () {
-            if (orderPool.poolStatus === Util.constants.CHECK_STATUS_RECHECK) {
-                checkSubmit(Util.constants.CHECK_RESULT_RECHECK);  //复检
+            if (workForm.poolStatus === Util.constants.CHECK_STATUS_RECHECK) {
+                checkSubmit(Util.constants.CHECK_FLAG_RECHECK);  //复检
             } else {
-                checkSubmit(Util.constants.CHECK_RESULT_NEW_BUILD);
+                checkSubmit(Util.constants.CHECK_FLAG_NEW_BUILD);
             }
         });
         //取消
         $("#cancelBtn").on("click", function () {
-            //关闭语音质检详情
-            CommonAjax.closeThisMenu(1000);
+            CommonAjax.closeMenuByNameAndId("工单质检详情", workForm.wrkfmId);
         });
         //案例收集
         $("#caseCollectBtn").on("click", function () {
@@ -233,64 +492,272 @@ require(["jquery", 'util', "commonAjax", "dateUtil", "transfer", "easyui"], func
         });
     }
 
-    //动态展示处理过程
-    function showDealProcess(data) {
-        var leftDiv = $("#processLeftDiv"),
-            rightDiv = $("#processDiv"),
-            checkFlagDiv = $("#checkFlagDiv");
-        $.each(data, function (i, item) {
-            if (i > 0) {
-                leftDiv.append(getProcessLine());
-            }
-            leftDiv.append(getLeftDiv(item));
-            rightDiv.append(getRightDiv(item));
-            checkFlagDiv.append(getCheckFlagDiv(item));
+    //初始化内外部回复
+    function initHandlingLog() {
+        if (JSON.stringify(replyData) === "{}") {
+            var reqParams = {
+                "provCode": workForm.provinceId,
+                "wrkfmId": workForm.wrkfmId
+            };
+            var params = $.extend({
+                "params": JSON.stringify(reqParams)
+            }, {});
 
-            var checkBox = $("#checkBox_" + item.nodeId);
+            Util.loading.showLoading();
+            Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.WRKFM_DETAIL_DNS + "/getHandingLog", params, function (result) {
+
+                Util.loading.destroyLoading();
+                if (result.RSP.RSP_CODE === "1") {
+                    replyData = result.RSP.DATA;
+                    showHandlingLog(replyData.externalReply, true); //展示外回复信息
+                } else {
+                    $.messager.show({
+                        msg: result.RSP.RSP_DESC,
+                        timeout: 1000,
+                        style: {right: '', bottom: ''},     //居中显示
+                        showType: 'show'
+                    });
+                }
+            });
+        }
+    }
+
+    //初始化接触记录
+    function initRecord() {
+        var IsCheckFlag = true, //标示是否是勾选复选框选中行的，true - 是 , false - 否
+            recordList = $("#recordList");
+        recordList.datagrid({
+            columns: [[
+                {field: 'cntmngSwftno', title: '接触流水', width: '20%'},
+                {field: 'startTime', title: '接触时间', width: '20%'},
+                {
+                    field: 'cntmngDuration', title: '接触时长', width: '10%',
+                    formatter: function (value, row, index) {
+                        return DateUtil.formatDateTime2(value);
+                    }
+                },
+                {field: 'callingNumber', title: '主叫号码', width: '15%'},
+                {field: 'calledNumber', title: '被叫号码', width: '15%'},
+                {
+                    field: 'callTypeNm', title: '呼叫类型', width: '10%',
+                    formatter: function (value, row, index) {
+                        if (value === "0") {
+                            return "呼入";
+                        }
+                        if (value === "1") {
+                            return "呼出";
+                        }
+                    }
+                },
+                {
+                    field: 'operate', title: '操作', width: '10%',
+                    formatter: function (value, row, index) {
+                        var play = '<a href="javascript:void(0);" style="color: deepskyblue;" id = "recordPlay_' + row.cntmngSwftno + '">播放</a>',
+                            download = '<a href="javascript:void(0);" style="color: deepskyblue;" id = "recordDownload_' + row.cntmngSwftno + '">下载</a>';
+                        return play + "&nbsp;&nbsp;" + download;
+                    }
+                }
+            ]],
+            fitColumns: true,
+            width: '100%',
+            height: 251,
+            pagination: true,
+            pageSize: 10,
+            pageList: [5, 10, 20, 50],
+            rownumbers: false,
+            checkOnSelect: false,
+            onClickCell: function (rowIndex, field, value) {
+                IsCheckFlag = false;
+            },
+            onSelect: function (rowIndex, rowData) {
+                if (!IsCheckFlag) {
+                    IsCheckFlag = true;
+                    recordList.datagrid("unselectRow", rowIndex);
+                }
+            },
+            onUnselect: function (rowIndex, rowData) {
+                if (!IsCheckFlag) {
+                    IsCheckFlag = true;
+                    recordList.datagrid("selectRow", rowIndex);
+                }
+            },
+            loader: function (param, success) {
+                var start = (param.page - 1) * param.rows,
+                    pageNum = param.rows;
+                var reqParams = {
+                    "start": start,
+                    "limit": pageNum,
+                    "provCode": workForm.provinceId,
+                    "wrkfmId": workForm.wrkfmId
+                };
+                var params = $.extend({
+                    "params": JSON.stringify(reqParams)
+                }, {});
+
+                Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.WRKFM_DETAIL_DNS + "/getRecordList", params, function (result) {
+                    if (result.RSP.RSP_CODE === "1") {
+                        var data = {
+                            rows: result.RSP.DATAS,
+                            total: result.RSP.ATTACH.TOTAL
+                        };
+                        recordData = result.RSP.DATAS;
+                        success(data);
+                    } else {
+                        $.messager.show({
+                            msg: result.RSP.RSP_DESC,
+                            timeout: 1000,
+                            style: {right: '', bottom: ''},     //居中显示
+                            showType: 'show'
+                        });
+                        var emptyData = {
+                            rows: [],
+                            total: 0
+                        };
+                        success(emptyData);
+                    }
+                });
+            }
+        });
+    }
+
+    //初始化工单历史
+    function initHistory() {
+        var IsCheckFlag = true, //标示是否是勾选复选框选中行的，true - 是 , false - 否
+            historyList = $("#historyList");
+        historyList.datagrid({
+            columns: [[
+                {field: 'wrkfmShowSwftno', title: '工单编号', width: '20%'},
+                {field: 'crtTime', title: '受理时间', width: '20%'},
+                {field: 'dspsComplteStaffNm', title: '工单责任人', width: '15%'},
+                {field: 'srvReqstTypeFullNm', title: '服务请求类型', width: '25%'},
+                {field: 'wrkfmStsNm', title: '工单状态', width: '20%'}
+            ]],
+            fitColumns: true,
+            width: '100%',
+            height: 251,
+            pagination: true,
+            pageSize: 10,
+            pageList: [5, 10, 20, 50],
+            rownumbers: false,
+            checkOnSelect: false,
+            onClickCell: function (rowIndex, field, value) {
+                IsCheckFlag = false;
+            },
+            onSelect: function (rowIndex, rowData) {
+                if (!IsCheckFlag) {
+                    IsCheckFlag = true;
+                    historyList.datagrid("unselectRow", rowIndex);
+                }
+            },
+            onUnselect: function (rowIndex, rowData) {
+                if (!IsCheckFlag) {
+                    IsCheckFlag = true;
+                    historyList.datagrid("selectRow", rowIndex);
+                }
+            },
+            loader: function (param, success) {
+                var start = (param.page - 1) * param.rows,
+                    pageNum = param.rows;
+                var reqParams = {
+                    "start": start,
+                    "limit": pageNum,
+                    "provCode": workForm.provinceId,
+                    "phoneNum": workFormDetail.userInfo.custNum
+                };
+                var params = $.extend({
+                    "params": JSON.stringify(reqParams)
+                }, {});
+
+                Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.WRKFM_DETAIL_DNS + "/getHistoryProProce", params, function (result) {
+                    var data = {
+                            rows: result.RSP.DATAS,
+                            total: result.RSP.ATTACH.TOTAL
+                        },
+                        rspCode = result.RSP.RSP_CODE;
+                    if (rspCode != null && rspCode !== "1") {
+                        $.messager.show({
+                            msg: result.RSP.RSP_DESC,
+                            timeout: 1000,
+                            style: {right: '', bottom: ''},     //居中显示
+                            showType: 'show'
+                        });
+                    } else {
+                        historyData = result.RSP.DATAS;
+                        success(data);
+                    }
+                });
+            }
+        });
+    }
+
+    //显示内外部回复
+    function showHandlingLog(data, showExternalReply) {
+        if (showExternalReply) {
+            $("#externalReply").empty();
+            $.each(data, function (i, item) {
+                $("#externalReply").append(getReplyDiv(item));
+            });
+        } else {
+            $("#insideReply").empty();
+            $.each(data, function (i, item) {
+                $("#insideReply").append(getReplyDiv(item));
+            });
+        }
+    }
+
+    //初始化处理过程
+    function showDealProcess(data) {
+        var processDiv = $("#processDealDiv");
+        $.each(data, function (i, item) {
+            if (i < data.length - 1) {
+                processDiv.append(getProcessDiv(item, false));
+            } else {
+                processDiv.append(getProcessDiv(item, true));
+            }
+
+            var checkBox = $("#checkBox_" + item.lgId);
             //默认选中第一处理环节
             if (i < 1) {
-                currentNode = item.nodeId;
+                currentNode = item;
                 checkBox.attr("checked", true);
-                $("#checkLink").val("环节" + currentNode);
+                $("#leftSpan_" + item.lgId).attr("class", "left-span-1");
+                $("#spot_" + item.lgId).attr("class", "spot-1");
+                // $("#checkLinkTitle").html(item.opTypeNm);
             }
             //绑定checkBox点击事件
             checkBox.on("click", function () {
-                //当前选中环节
-                currentNode = item.nodeId;
-                $("#checkLink").val("环节" + currentNode);
-
+                //禁止取消勾选
+                if (item.lgId === currentNode.lgId) {
+                    checkBox.prop("checked", true);
+                    return;
+                }
                 //取消勾选其他checkBox
                 $.each(data, function (index, data) {
-                    if (data.nodeId !== item.nodeId) {
-                        $("#checkBox_" + data.nodeId).attr("checked", false);
+                    if (data.lgId !== item.lgId) {
+                        $("#checkBox_" + data.lgId).attr("checked", false);
+                        $("#leftSpan_" + data.lgId).attr("class", "left-span-2");
+                        $("#spot_" + data.lgId).attr("class", "spot-2");
+                    } else {
+                        $("#leftSpan_" + data.lgId).attr("class", "left-span-1");
+                        $("#spot_" + data.lgId).attr("class", "spot-1");
+                        // $("#checkLinkTitle").html(data.opTypeNm);
                     }
                 });
 
-                //工作质量评价区数据更新
-                var checkScore = $("#checkScore"),
-                    checkComment = $("#checkComment");
-                for (var i = 0; i < checkLinkData.length; i++) {
-                    if (checkLinkData[i].checkLink === currentNode) {
-                        checkScore.val(checkLinkData[i].finalScore);
-                        checkComment.val(checkLinkData[i].checkComment);
-                        //考评项列表
-                        $.each(checkItemListData, function (index, item) {
-                            $.each(checkLinkData[i].checkItemScoreList, function (scoreIndex, scoreItem) {
-                                if (item.nodeId === scoreItem.nodeId) {
-                                    var score = (scoreItem.scoreScope - scoreItem.realScore).toString();
-                                    $("#score" + item.nodeId).val(score);
-                                }
-                            });
-                        });
-                        return;
-                    }
-                }
-                //没有保存结果的情况
-                checkScore.val("100");
-                checkComment.val("");
+                //切换环节时更新考评信息
+                checkLinkSave();
+
+                //当前选中环节
+                currentNode = item;
+                //当前考评项列表
+                currentCheckItemData = [];
                 $.each(checkItemListData, function (i, item) {
-                    $("#score" + item.nodeId).val("0");
+                    if (item.nodeTypeCode === currentNode.opTypeCd) {
+                        currentCheckItemData.push(item);
+                    }
                 });
+                $("#checkItemList").datagrid("loadData", {rows: currentCheckItemData}); //刷新考评项列表
+                refreshCheckArea(); //刷新评价区数据
             });
         });
     }
@@ -298,37 +765,110 @@ require(["jquery", 'util', "commonAjax", "dateUtil", "transfer", "easyui"], func
     //考评环节保存
     function checkLinkSave() {
         var checkItemScoreList = [],
-            finalScore = parseInt($("#checkScore").val()),
-            checkComment = $("#checkComment").val();
-
-        $.each(checkLinkData, function (i, item) {
-            if (item.checkLink === currentNode) {
+            checkLinkScore = 0,
+            scoreStr = $("#checkScore_" + currentNode.lgId).html(),
+            flag = false; //判断环节是否有考评项
+        if (scoreStr !== "") {
+            checkLinkScore = parseInt(scoreStr);
+        }
+        for (var i = 0; i < checkLinkData.length; i++) {
+            if (checkLinkData[i].checkLink === currentNode.lgId) {
+                flag = true;
+                //更新总得分
+                totalScore -= checkLinkData[i].checkLinkScore;
                 checkLinkData.splice(i, 1);
+                break;
             }
-        });
+        }
 
-        $.each(checkItemListData, function (i, item) {
+        if (!flag) {  //不存在考评项则返回
+            return;
+        }
+
+        $.each(currentCheckItemData, function (i, item) {
             var checkItem = {};
             checkItem.nodeType = item.nodeType;
             checkItem.nodeId = item.nodeId;
             checkItem.nodeName = item.nodeName;
             checkItem.scoreScope = item.nodeScore;
-            checkItem.minScore = item.minScore;
+            if (item.minScore != null) {
+                checkItem.minScore = item.minScore;
+            } else {
+                checkItem.minScore = 0;
+            }
             checkItem.maxScore = item.maxScore;
             checkItem.realScore = item.nodeScore - parseInt($("#score" + item.nodeId).val());
             checkItemScoreList.push(checkItem);
         });
 
         var checkLink = {
-            "checkLink": currentNode,
-            "finalScore": finalScore,
-            "checkComment": checkComment,
+            "checkLink": currentNode.lgId,
+            "checkedStaffId": currentNode.opStaffId,
+            "checkedStaffNm": currentNode.opStaffNm,
+            "checkedDepartId": currentNode.opWorkGroupId,
+            "checkedDepartNm": currentNode.opWorkGroupNm,
+            "checkLinkScore": checkLinkScore,
             "checkItemScoreList": checkItemScoreList
         };
         checkLinkData.push(checkLink);
 
-        //显示已评价标识
-        $("#checkFlag_" + currentNode).html("已评价");
+        //更新总得分
+        totalScore += checkLinkScore;
+    }
+
+    //初始化考评环节合格状态
+    function initCheckResult() {
+        $.each(processData, function (i, processItem) {
+            var totalScore = 0, //当前考评环节所有考评项总分
+                gainScore = 0;  //当前考评环节所有考评项得分
+            $.each(checkItemListData, function (i, checkItem) {
+                if (checkItem.nodeTypeCode === processItem.opTypeCd) {
+                    totalScore += checkItem.nodeScore;
+                }
+            });
+            var checkResult = $("#checkResult_" + processItem.lgId);
+            if (totalScore === 0) { //无考评项的情况
+                checkResult.html("不考评");
+                checkResult.css("color", "#4A4A4A");
+                return;
+            }
+            $.each(checkLinkData, function (i, linkItem) {
+                if (linkItem.checkLink === processItem.lgId) {
+                    gainScore = linkItem.checkLinkScore;
+                }
+            });
+            if (totalScore !== 0 && gainScore / totalScore > 0.6) {
+                checkResult.html("合格");
+                checkResult.css("color", "#4A4A4A");
+            } else {
+                checkResult.html("不合格");
+                checkResult.css("color", "#F5A623");
+            }
+        });
+    }
+
+    //刷新当前考评环节合格状态
+    function refreshCheckResult() {
+        var totalScore = 0, //当前考评环节所有考评项总分
+            gainScore = 0;  //当前考评环节所有考评项得分
+        $.each(checkItemListData, function (i, item) {
+            if (item.nodeTypeCode === currentNode.opTypeCd) {
+                totalScore += item.nodeScore;
+            }
+        });
+        $.each(checkLinkData, function (i, item) {
+            if (item.checkLink === currentNode.lgId) {
+                gainScore = item.checkLinkScore;
+            }
+        });
+        var checkResult = $("#checkResult_" + currentNode.lgId);
+        if (totalScore !== 0 && gainScore / totalScore > 0.6) {
+            checkResult.html("合格");
+            checkResult.css("color", "#4A4A4A");
+        } else {
+            checkResult.html("不合格");
+            checkResult.css("color", "#F5A623");
+        }
     }
 
     //质检提交or保存
@@ -339,49 +879,46 @@ require(["jquery", 'util', "commonAjax", "dateUtil", "transfer", "easyui"], func
             return;
         }
 
-        //针对提交，提交时需要对所有（必检）环节进行考评，现在默认需要对所有环节进行考评
-        if (checkStatus === Util.constants.CHECK_RESULT_NEW_BUILD || checkStatus === Util.constants.CHECK_RESULT_RECHECK) {
-            var allCheck = false;
-            for (var i = 0; i < dealProcessData.length; i++) {
-                allCheck = false;
-                for (var j = 0; j < checkLinkData.length; j++) {
-                    if (checkLinkData[j].checkLink === dealProcessData[i].nodeId) {
-                        allCheck = true;
-                        break;
-                    }
-                }
-            }
-            if (!allCheck) {
-                $.messager.alert("提示", "有未考评环节!考评后才能提交");
-                return;
-            }
-        }
-
         var currentTime = new Date(),
             checkTime = currentTime - startTime,
-            checkStartTime = DateUtil.formatDateTime(parseInt(orderPool.operateTime));
+            checkStartTime = DateUtil.formatDateTime(parseInt(workForm.operateTime)),
+            finalScore = totalScore / checkLinkData.length,  //最终得分，暂时按各个环节的平局分统计
+            checkComment = $("#checkComment").val(),
+            unqualifiedNum = 0;  //不合格环节数
 
+        //统计不合格环节数
+        $.each(processData, function (i, item) {
+            if ($("#checkResult_" + item.lgId).html() === "不合格") {
+                unqualifiedNum++;
+            }
+        });
+
+        var planId = "",
+            checkModel = Util.constants.CHECK_TYPE_BEYOND_PLAN;  //计划外质检
+        if (workForm.planId != null && workForm.planId !== "") {
+            planId = workForm.planId;
+            checkModel = Util.constants.CHECK_TYPE_WITHIN_PLAN;  //计划内质检
+        }
         //工单质检基本信息
         var orderCheckInfo = {
             "tenantId": Util.constants.TENANT_ID,                          //租户id
-            "callingNumber": orderPool.acptStaffNum,                 //主叫号码
-            "acceptNumber": orderPool.custNum,                       //受理号码
-            "touchId": orderPool.wrkfmId,                            //工单流水
-            "planId": orderPool.planId,                              //考评计划
-            "templateId": orderPool.templateId,                      //考评模版ID
-            "checkModel": Util.constants.CHECK_TYPE_WITHIN_PLAN,     //质检模式、计划内质检
-            "checkedStaffId": orderPool.checkedStaffId,              //被质检员id
-            "checkedStaffName": orderPool.checkedStaffName,          //被质检员名
-            "checkedDepartId": Util.constants.CHECKED_DEPART_ID,     //被质检部门id 暂时
-            "checkedDepartName": "",                                 //被质检部门名称
-            "checkStaffId": orderPool.checkStaffId,                  //质检员id
-            "checkStaffName": orderPool.checkStaffName,              //质检员名
-            "checkDepartId": "",                                     //质检部门id
-            "checkDepartName": "",                                   //质检部门名称
-            "checkStartTime": checkStartTime,                        //质检开始时间（质检分配时间）
-            "checkTime": checkTime,                                  //质检时长
-            "scoreType": scoreType,                                  //分值类型
-            "resultStatus": checkStatus                              //质检结果状态（暂存、质检、复检）
+            "provinceId": workForm.provinceId,                             //省份id
+            "callingNumber": workForm.acptStaffNum,                        //主叫号码
+            "acceptNumber": workFormDetail.userInfo.custNum,               //受理号码
+            "touchId": workForm.wrkfmId,                                   //工单流水
+            "wrkfmShowSwftno": workFormDetail.acceptInfo.wrkfmShowSwftno,  //工单显示流水
+            "planId": planId,                                              //考评计划
+            "templateId": templateId,                                      //考评模版ID
+            "checkModel": checkModel,                                      //质检模式、计划内质检
+            "checkStaffId": workForm.checkStaffId,                         //质检员id
+            "checkStaffName": workForm.checkStaffName,                     //质检员名
+            "checkStartTime": checkStartTime,                              //质检开始时间（质检分配时间）
+            "checkTime": checkTime,                                        //质检时长
+            "scoreType": scoreType,                                        //分值类型
+            "finalScore": finalScore,                                      //总得分
+            "checkComment": checkComment,                                  //考评评语
+            "unqualifiedNum": unqualifiedNum,                              //不合格环节数
+            "resultStatus": checkStatus                                    //质检结果状态（暂存、质检、复检）
         };
 
         var params = {
@@ -394,13 +931,13 @@ require(["jquery", 'util', "commonAjax", "dateUtil", "transfer", "easyui"], func
 
             Util.loading.destroyLoading();
             var errMsg = "提交失败！<br>";
-            if (checkStatus === Util.constants.CHECK_RESULT_TEMP_SAVE) {
+            if (checkStatus === Util.constants.CHECK_FLAG_CHECK_SAVE || checkStatus === Util.constants.CHECK_FLAG_RECHECK_SAVE) {
                 errMsg = "保存失败！<br>";
             }
             var rspCode = result.RSP.RSP_CODE;
             if (rspCode != null && rspCode === "1") {
                 $.messager.alert("提示", result.RSP.RSP_DESC, null, function () {
-                    CommonAjax.closeThisMenu(1000);
+                    CommonAjax.closeMenuByNameAndId("工单质检详情", workForm.wrkfmId);
                     CommonAjax.refreshMenuByUrl(qmCheckUrl, "质检待办区", "质检待办区");
                 });
             } else {
@@ -409,93 +946,160 @@ require(["jquery", 'util', "commonAjax", "dateUtil", "transfer", "easyui"], func
         });
     }
 
-    //左侧操作区域
-    function getLeftDiv(data) {
-        return '<div class="panel-transparent"><form class="form form-horizontal"><div class="cl">' +
-            '<div class="formControls col-1"><div class="fl text-small"></div></div>' +
-            '<div class="formControls col-6"><div class="fl text-small">操作1</div></div>' +
-            '<div class="formControls col-3"><div class="circle"></div></div>' +
-            '<div class="formControls col-2"><input id="checkBox_' + data.nodeId + '" type="checkbox"></div>' +
-            '</div></form></div>';
-    }
-
-    //左侧流程线
-    function getProcessLine() {
-        return '<form class="form form-horizontal"><div class="cl">' +
-            '<div class="formControls col-7" style="margin-left: 8px"><div class="panel-right cl"></div></div>' +
-            '</div></form>';
-    }
-
-    //右侧流程处理过程列表
-    function getRightDiv(data) {
-        return '<div style="margin-bottom: 10px;">' +
-            '<div class="panel-top cl"><form class="form form-horizontal"><div class="cl" style="background: #f5f5f5">' +
-            '<div class="formControls col-3"><div class="fl text-small">部门：天津1班</div></div>' +
-            '<div class="formControls col-3"><div class="fl text-small">工号：AEY01358</div></div>' +
-            '<div class="formControls col-2"><div class="fl text-small">操作：操作一</div></div>' +
-            '<div class="formControls col-2"><div class="fl text-small">环节：环节一</div></div>' +
-            '<div class="formControls col-2"><div class="fl text-small">派发局向：投诉1班</div></div>' +
-            '</div></form></div>' +
-            '<div class="panel-top cl"><form class="form form-horizontal"><div class="cl">' +
-            '<div class="formControls col-3"><div class="fl text-small">建单时间：2017-10-15 18:37:58</div></div>' +
-            '<div class="formControls col-3"><div class="fl text-small">提交时间：2017-10-15 18:37:58</div></div>' +
-            '<div class="formControls col-2"><div class="fl text-small">上一环节评价：合格</div></div>' +
-            '</div></form></div>' +
-            '<div class="panel-normal cl"><form class="form form-horizontal"><div class="cl" style="background: #eee">' +
-            '<div class="formControls col-12"><div class="fl text-small">处理意见：客户反馈XX地点信号不好造成使用不方便，请处理</div></div>' +
-            '</div></form></div>' +
+    //内外部回复div
+    function getReplyDiv(data) {
+        return '<div class="reply-1">' +
+            '<div class="reply-2">' +
+            '<span style="margin-right:24px;">' + data.crtTime + '</span><span>' + data.opStaffNm + '</span><span>|' + data.opWorkGroupNm + '</span>' +
+            '</div>' +
+            '<div class="reply-3"><span>' + data.rmk + '</span></div>' +
             '</div>';
     }
 
-    //右侧已质检标识区域
-    function getCheckFlagDiv(data) {
-        return '<div style="margin-bottom: 94px;">' +
-            '<div class="panel-transparent-box cl"><form class="form form-horizontal"><div class="cl">' +
-            '<div class="fl text-small" style="margin-top: 12px;" id="checkFlag_' + data.nodeId + '">待评价</div>' +
-            '</div></form></div>' +
-            '</div>';
-    }
-
-    //获取url对象
-    function getRequestObj() {
-        var url = decodeURI(decodeURI(location.search)); //获取url中"?"符后的字串，使用了两次decodeRUI解码
-        var requestObj = {};
-        if (url.indexOf("?") > -1) {
-            var str = url.substr(1),
-                strArr = str.split("&");
-            for (var i = 0; i < strArr.length; i++) {
-                requestObj[strArr[i].split("=")[0]] = unescape(strArr[i].split("=")[1]);
-            }
-            return requestObj;
+    //处理过程div
+    function getProcessDiv(data, isFinal) {
+        var handIngTime = DateUtil.formatDateTime2(data.handIngTime),
+            divClass = "content4-2",
+            color = "#4A4A4A";
+        if (isFinal) {
+            divClass = "content4-3";
         }
+        if (data.handIngTime > 7200) {
+            color = "#F5A623";
+        }
+        return '<div class="' + divClass + '">' +
+            '<div class="process-right">' +
+            '<div class="processRight-1">' +
+            '<span>部门：</span><span class="processRight-11">' + data.opWorkGroupNm + '</span><span>工号</span><span class="processRight-12">' + data.opStaffId + '</span>' +
+            '<span>操作环节：</span><span class="processRight-13">' + data.opTypeNm +
+            '</div>' +
+            '<div class="processRight-2">' +
+            '<div class="leftTop-border"></div>' +
+            '<div class="processRight-21">' +
+            '<span>建单时间：</span><span class="processRight-211">' + data.crtTime + '</span>' +
+            '<span>处理时长：</span><span class="processRight-212" style="color:' + color + '">' + handIngTime + '</span>' +
+            '<span>考评结果：</span><span id="checkResult_' + data.lgId + '">合格</span>' +
+            '</div>' +
+            '<div class="processRight-22"><span>处理意见：</span><span>' + data.rmk + '</span></div>' +
+            '</div>' +
+            '</div>' +
+            '<div class="process-left">' +
+            '<span class="left-span-2" style="margin-right: 5px" id="leftSpan_' + data.lgId + '"></span>' +
+            '<input class="left-check-1" type="checkbox" id="checkBox_' + data.lgId + '"/>' +
+            '</div>' +
+            '<div class="process-spot">' +
+            '<div class="spot-2" id="spot_' + data.lgId + '"></div>' +
+            '</div>' +
+            '<div class="check-right">' +
+            '<span class="content4-1-1" style="display: block" id="checkScore_' + data.lgId + '"></span>' +
+            '</div>' +
+            '</div>';
     }
 
-    //关闭当前页面
-    function closeThisMenu(time) {
-        setTimeout(function () {
-            closeMenuByWrkfmId(orderPool.wrkfmId);
-        }, time);
+    //更新评价区数据
+    function refreshCheckArea() {
+        //工作质量评价区数据更新
+        $("#totalScore").val(totalScore);  //总得分
+        for (var i = 0; i < checkLinkData.length; i++) {
+            if (checkLinkData[i].checkLink === currentNode.lgId) {
+                //考评项列表
+                $.each(currentCheckItemData, function (index, item) {
+                    $.each(checkLinkData[i].checkItemScoreList, function (scoreIndex, scoreItem) {
+                        if (item.nodeId === scoreItem.nodeId) {
+                            var score = (scoreItem.scoreScope - scoreItem.realScore).toString();
+                            $("#score" + item.nodeId).val(score);
+                        }
+                    });
+                });
+                return;
+            }
+        }
+        //没有保存结果的情况
+        $.each(currentCheckItemData, function (i, item) {
+            $("#score" + item.nodeId).val("0");
+        });
     }
 
-    //关闭指定menuId标签页
-    function closeMenuByWrkfmId(wrkfmId) {
-        operMenu(null, null, wrkfmId);
+    //基本信息、内外部回复切换
+    function changeInfoArea(curShowingInfo) {
+        var baseInfoBtn = $("#baseInfoBtn"),
+            handlingLogBtn = $("#handlingLogBtn"),
+            recordingBtn = $("#recordingBtn"),
+            historyBtn = $("#historyBtn"),
+            baseInfo = $("#baseInfo"),
+            handlingLog = $("#handlingLog"),
+            recording = $("#recording"),
+            history = $("#history");
+        switch (showingInfo) {
+            case 0:
+                baseInfoBtn.removeClass();
+                baseInfoBtn.addClass("button-2");
+                baseInfo.hide();
+                break;
+            case 1:
+                handlingLogBtn.removeClass();
+                handlingLogBtn.addClass("button-2");
+                handlingLog.hide();
+                break;
+            case 2:
+                recordingBtn.removeClass();
+                recordingBtn.addClass("button-2");
+                recording.hide();
+                break;
+            case 3:
+                historyBtn.removeClass();
+                historyBtn.addClass("button-2");
+                history.hide();
+                break;
+        }
+        switch (curShowingInfo) {
+            case 0:
+                baseInfoBtn.removeClass();
+                baseInfoBtn.addClass("button-1");
+                baseInfo.show();
+                break;
+            case 1:
+                handlingLogBtn.removeClass();
+                handlingLogBtn.addClass("button-1");
+                handlingLog.show();
+                break;
+            case 2:
+                recordingBtn.removeClass();
+                recordingBtn.addClass("button-1");
+                recording.show();
+                break;
+            case 3:
+                historyBtn.removeClass();
+                historyBtn.addClass("button-1");
+                history.show();
+                break;
+        }
+        showingInfo = curShowingInfo;
     }
 
-    //刷新指定menuName标签页
-    function refreshMenuByName(url, menuName, menuId) {
-        operMenu(null, menuName, null);
-        operMenu(url, menuName, menuId);
-    }
-
-    //操作标签页
-    function operMenu(url, menuName, menuId) {
-        var operParam = {
-            "url": url,
-            "menuName": menuName,
-            "menuId": menuId
-        };
-        top.postMessage(operParam, '*');
+    //内部回复、外部回复切换
+    function changeReplyArea(showExternalReply) {
+        var externalReplyTab = $("#externalReplyTab"),
+            insideReplyTab = $("#insideReplyTab");
+        if (showExternalReply) {
+            externalReplyTab.removeClass();
+            insideReplyTab.removeClass();
+            externalReplyTab.addClass("tab-1");
+            insideReplyTab.addClass("tab-2");
+            $("#externalReplySpan").css("color", "#4A90E2");
+            $("#insideReplySpan").css("color", "#CDD6E0");
+            $("#externalReply").show();
+            $("#insideReply").hide();
+        } else {
+            externalReplyTab.removeClass();
+            insideReplyTab.removeClass();
+            externalReplyTab.addClass("tab-2");
+            insideReplyTab.addClass("tab-1");
+            $("#externalReplySpan").css("color", "#CDD6E0");
+            $("#insideReplySpan").css("color", "#4A90E2");
+            $("#externalReply").hide();
+            $("#insideReply").show();
+        }
     }
 
     return {

@@ -53,36 +53,19 @@ define(["jquery", 'util'], function ($, Util) {
         },
         //新增标签页
         openMenu: function (url, menuName, menuId) {
-            // operMenu(url, menuName, menuId);
-            openTab(url, menuName);
-        },
-        //关闭当前标签页
-        closeThisMenu: function (time) {
-            var url = decodeURI(window.location.href);
-            setTimeout(function () {
-                operMenu(url, null, null);
-            }, time);
+            operMenu(url, menuName, menuId);
+            // openTab(url, menuName);
         },
         //关闭指定标签页
-        closeMenuByUrl: function (url) {
-            operMenu(url, null, null);
-        },
-        //关闭指定标签页
-        closeMenuByNameAndId: function (menuName,menuId) {
+        closeMenuByNameAndId: function (menuName, menuId) {
             operMenu(null, menuName, menuId);
-        },
-        //关闭指定标签页
-        closeMenuById: function (menuId) {
-            operMenu(null, null, menuId);
-        },
-        //关闭指定标签页
-        closeMenuByName: function (menuName) {
-            operMenu(null, menuName, null);
+            // closeTab(menuName);
         },
         //刷新指定标签页
         refreshMenuByUrl: function (url, menuName, menuId) {
             operMenu(url, null, null);
-            operMenu(url, menuName, menuId)
+            operMenu(url, menuName, menuId);
+            // refreshTab(menuName);
         }
     };
 
@@ -96,7 +79,7 @@ define(["jquery", 'util'], function ($, Util) {
         top.postMessage(operParam, '*');
     }
 
-    //开发环境标签页新增方法
+    //新增标签页dev
     function openTab(url, tabName) {
         var jq = top.jQuery;
         if (!jq('#tabs').tabs('exists', tabName)) {
@@ -108,6 +91,24 @@ define(["jquery", 'util'], function ($, Util) {
         } else {
             jq('#tabs').tabs('select', tabName);
         }
+    }
+
+    //关闭标签页dev
+    function closeTab(tabName) {
+        var jq = top.jQuery;
+        //刷新语音质检待办区
+        jq('#tabs').tabs('close', tabName);
+    }
+
+    //刷新标签页dev
+    function refreshTab(tabName) {
+        var tab = jq('#tabs').tabs('getTab', tabName),
+            iframe = jq(tab.panel('options').content),
+            content = '<iframe scrolling="auto" frameborder="0"  src="' + iframe.attr('src') + '" style="width:100%;height:100%;"></iframe>';
+        jq('#tabs').tabs('update', {
+            tab: tab,
+            options: {content: content, closable: true}
+        });
     }
 
     return new objClass();
