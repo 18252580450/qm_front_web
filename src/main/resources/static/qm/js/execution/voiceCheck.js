@@ -236,7 +236,8 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
                 $.each(data.rows, function (i, item) {
                     $("#voiceCheck_" + item.touchId).on("click", function () {
                         var url = createURL(voiceCheckDetail, item);
-                        addTabs("语音质检" + item.touchId, url);
+                        // addTabs("语音质检" + item.touchId, url);
+                        openMenu(url, "语音质检详情", item.touchId);
                     });
                 });
                 //质检记录
@@ -319,6 +320,44 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
                 }
             });
         }
+    }
+
+    //操作标签页
+    function operMenu(url, menuName, menuId) {
+        var operParam = {
+            "url": url,
+            "menuName": menuName,
+            "menuId": menuId
+        };
+        top.postMessage(operParam, '*');
+    }
+
+    //打开标签页
+    function openMenu(url, menuName, menuId) {
+        operMenu(url, menuName, menuId);
+    }
+
+    //关闭指定url标签页
+    function closeMenuByUrl(url) {
+        operMenu(url, null, null);
+    }
+
+    //关闭指定name和id标签页
+    function closeMenuByNameAndId(menuName, menuId) {
+        operMenu(null, menuName, menuId);
+    }
+
+    //关闭指定工单号详情页
+    function closeMenuByWrkfmShowSwftno(wrkfmShowSwftno) {
+        closeMenuByNameAndId(wrkfmShowSwftno, wrkfmShowSwftno);
+    }
+
+    //关闭当前页面
+    function closeThisMenu(time) {
+        var url = decodeURI(window.location.href);
+        setTimeout(function () {
+            closeMenuByUrl(url);
+        }, time);
     }
 
     return {

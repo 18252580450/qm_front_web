@@ -19,21 +19,31 @@ require(["jquery", "util", "commonAjax", "dateUtil", "transfer", "easyui"], func
         //获取y语音流水、质检流水等信息
         voicePool = CommonUtil.getUrlParams();
 
-        var createTime = "";
+        var touchBeginTime = "",
+            callType = "",
+            callDuration = "";
 
-        if (voicePool.checkedTime !== "") {
-            createTime = DateUtil.formatDateTime(parseInt(voicePool.checkedTime));
+        if (voicePool.beginTime != null && voicePool.beginTime !== "") {
+            touchBeginTime = DateUtil.formatDateTime(parseInt(voicePool.beginTime));
+        }
+        if (voicePool.callType === "0") {
+            callType = "呼入";
+        } else if (voicePool.callType === "1") {
+            callType = "呼出";
+        }
+        if (voicePool.recordTime != null && voicePool.recordTime !== "") {
+            callDuration = DateUtil.formatDateTime2(parseInt(voicePool.recordTime));
         }
 
         //基本信息初始化
         $("#checkedStaffName").val(voicePool.checkedStaffName);
         $("#checkedDepartName").val(voicePool.departName);
         $("#touchId").val(voicePool.touchId);
-        $("#createTime").val(createTime);
+        $("#touchBeginTime").val(touchBeginTime);
         $("#callingNumber").val(voicePool.staffNumber);
         $("#calledNumber").val(voicePool.customerNumber);
-        $("#callType").val(voicePool.callType);
-        $("#hungupType").val(voicePool.hungupType);
+        $("#callType").val(callType);
+        $("#callDuration").val(callDuration);
 
         //考评项列表
         var IsCheckFlag = true; //标示是否是勾选复选框选中行的，true - 是 , false - 否
@@ -299,7 +309,8 @@ require(["jquery", "util", "commonAjax", "dateUtil", "transfer", "easyui"], func
         $("#cancelBtn").on("click", function () {
             var jq = top.jQuery;
             //关闭语音质检详情
-            jq('#tabs').tabs('close', "语音质检详情");
+            // jq('#tabs').tabs('close', "语音质检详情");
+            closeThisMenu(1000);
         });
         //案例收集
         $("#caseCollectBtn").on("click", function () {
@@ -353,21 +364,30 @@ require(["jquery", "util", "commonAjax", "dateUtil", "transfer", "easyui"], func
             var rspCode = result.RSP.RSP_CODE;
             if (rspCode != null && rspCode === "1") {
                 $.messager.alert("提示", result.RSP.RSP_DESC, null, function () {
-                    var jq = top.jQuery;
-                    //刷新语音质检待办区
-                    jq('#tabs').tabs('close', "语音质检" + voicePool.touchId);
-                    var tab = jq('#tabs').tabs('getTab', "质检待办区"),
-                        iframe = jq(tab.panel('options').content),
-                        content = '<iframe scrolling="auto" frameborder="0"  src="' + iframe.attr('src') + '" style="width:100%;height:100%;"></iframe>';
-                    jq('#tabs').tabs('update', {
-                        tab: tab,
-                        options: {content: content, closable: true}
-                    });
+                    // var jq = top.jQuery;
+                    // //刷新语音质检待办区
+                    // jq('#tabs').tabs('close', "语音质检" + voicePool.touchId);
+                    // var tab = jq('#tabs').tabs('getTab', "质检待办区"),
+                    //     iframe = jq(tab.panel('options').content),
+                    //     content = '<iframe scrolling="auto" frameborder="0"  src="' + iframe.attr('src') + '" style="width:100%;height:100%;"></iframe>';
+                    // jq('#tabs').tabs('update', {
+                    //     tab: tab,
+                    //     options: {content: content, closable: true}
+                    // });
+                    closeThisMenu(1000);
                 });
             } else {
                 $.messager.alert("提示", errMsg + result.RSP.RSP_DESC);
             }
         });
+    }
+
+    //关闭当前页面
+    function closeThisMenu(time) {
+        var url = decodeURI(window.location.href);
+        setTimeout(function () {
+            closeMenuByUrl(url);
+        }, time);
     }
 
     return {

@@ -155,9 +155,10 @@ require([
                     }
                 },
                 {field: 'processId', title: '流程编码', width: '15%'},
-                {field: 'processName', title: '流程名称', width: '15%'},
+                {field: 'processName', title: '流程名称', width: '20%'},
+                {field: 'departmentName', title: '部门', width: '20%'},
                 {
-                    field: 'createTime', title: '创建时间', width: '15%',
+                    field: 'createTime', title: '创建时间', width: '20%',
                     formatter: function (value, row, index) { //格式化时间格式
                         if (row.createTime != null) {
                             var createTime = DateUtil.formatDateTime(row.createTime);
@@ -165,16 +166,6 @@ require([
                         }
                     }
                 },
-                {field: 'createStaffId', title: '创建工号', width: '10%'},
-                {
-                    field: 'modifyTime', title: '修改时间', width: '15%',
-                    formatter: function (value, row, index) { //格式化时间格式
-                        if (row.modifyTime != null) {
-                            return DateUtil.formatDateTime(row.modifyTime);
-                        }
-                    }
-                },
-                {field: 'modifyStaffId', title: '修改工号', width: '10%'},
                 {
                     field: 'processStatus', title: '流程状态', width: '7%',
                     formatter: function (value, row, index) {
