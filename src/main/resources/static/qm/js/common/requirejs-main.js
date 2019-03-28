@@ -58,6 +58,8 @@ var requirePath = {
     /*zTree*/
     "ztree-core": "assets/lib/ztree/js/jquery.ztree.core",
     "ztree-exedit": "assets/lib/ztree/js/jquery.ztree.exedit",
+    "ztree-excheck": "assets/lib/ztree/js/jquery.ztree.excheck.min",
+    "ztree-exhide": "assets/lib/ztree/js/jquery.ztree.exhide.min",
     /*zTree*/
     /*easyui*/
     "tabs": "assets/lib/easyui/src/jquery.tabs",

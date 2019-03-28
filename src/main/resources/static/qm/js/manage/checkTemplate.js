@@ -1,19 +1,17 @@
-
-require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, Transfer,dateUtil) {
+define(["js/manage/addCheckTemplate","js/manage/modifyCheckTemplate","jquery", 'util', "transfer", "easyui","dateUtil"], function (AddCheckTemplate,ModifyCheckTemplate,$, Util, Transfer,dateUtil) {
     var userInfo;
     //调用初始化方法
     initialize();
-
-    var operStaffId = "1234";
-    var crtStaffId="9527";
+    var operStaffId = "";
+    var crtStaffId="";
 
     function initialize() {
         Util.getLogInData(function (data) {
             userInfo = data;//用户角色
+            operStaffId = userInfo.staffId;
+            crtStaffId = userInfo.staffId;
             initGrid();
             initGlobalEvent();
-            addWindowEvent();
-            modifyWindowEvent();
             initReviseEvent();
             copyEvent();
         });
@@ -78,7 +76,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
                         var action2="<a href='javascript:void(0);' class='actionBtn' id =" + JSON.stringify(beanRr) + " >发布</a>";
                         var action3="<a href='javascript:void(0);' class='actionBtn' id =" + JSON.stringify(beanSt) + " >暂停</a>";
                         return action2+"&nbsp;&nbsp;"+action3;
-                      }
+                    }
                 },
                 {field: 'templateName', title: '模板名称', width: '20%',
                     formatter: function (value) {//鼠标悬浮显示全部内容
@@ -99,7 +97,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
                 {field: 'createTime', title: '创建时间', width: '20%',
                     formatter:function(value,row,index){
                         return DateUtil.formatDateTime(value);
-                }}
+                    }}
             ]],
             fitColumns: true,
             width: '100%',
@@ -160,7 +158,6 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
                             showType: 'slide'
                         });
                     }
-
                     success(data);
                 });
             }
@@ -172,6 +169,37 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
         //查询
         $("#searchForm").on("click", "#selectBut", function () {
             $("#page").find("#checkTemplateManage").datagrid("load");
+        });
+
+        //新建
+        $("#addBut").on("click", function(){
+            var addCheckTemplate = new AddCheckTemplate();
+            $('#add_window').show().window({
+                title: '新建模版',
+                width: 1150,
+                height: 660,
+                cache: false,
+                content:addCheckTemplate.$el,
+                modal: true
+            });
+        });
+
+        //修改模版
+        $("#modfBut").on("click", function(){
+            var selRows = $("#checkTemplateManage").datagrid("getSelections");
+            if (selRows.length == 0||selRows.length>1) {
+                $.messager.alert("提示", "请只选择一行数据!");
+                return false;
+            }
+            var modifyCheckTemplate = new ModifyCheckTemplate(selRows);
+            $('#modif_window').show().window({
+                title: '修改模版',
+                width: 1150,
+                height: 660,
+                cache: false,
+                content:modifyCheckTemplate.$el,
+                modal: true
+            });
         });
 
         //绑定删除按钮事件。只有暂停或未发布的考评模板允许删除，已发布的考评模板不允许被删除
@@ -190,12 +218,9 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
                 }
             }
 
-
             var ids = [];
             for (var i = 0; i < selRows.length; i++) {
                 var map = {};
-                // var id = selRows[i].templateId;
-                // ids.push(id);
                 map["templateId"]=selRows[i].templateId;
                 map["operateId"]=operStaffId;
                 ids.push(map);
@@ -213,79 +238,14 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
                         });
 
                         if (rspCode == "1") {
-                            $("#checkTemplateManage").datagrid('reload'); //删除成功后，刷新页面
-                        }
-
-                        if(rspCode!="2"){
                             // 根据templateId删除t_qm_templatedetail对应的数据
                             Util.ajax.putJson(Util.constants.CONTEXT.concat(Util.constants.ADD_CHECK_TEMPLATE).concat("/deleteByIds"),JSON.stringify(ids), function (result) {
-
-                                $.messager.show({
-                                    msg: result.RSP.RSP_DESC,
-                                    timeout: 1000,
-                                    style: {right: '', bottom: ''},     //居中显示
-                                    showType: 'slide'
-                                });
-                            })
+                            });
+                            $("#checkTemplateManage").datagrid('reload'); //删除成功后，刷新页面
                         }
                     });
                 }
             });
-        });
-    }
-
-    //添加一个选项卡面板
-    function addTabs(title, url) {
-        var jq = top.jQuery;//顶层的window对象.取得整个父页面对象
-        //重写jndex.js中的方法
-        if (!jq('#tabs').tabs('exists', title)) {
-            jq('#tabs').tabs('add', {
-                title: title,
-                content: '<iframe src="' + url + '" frameBorder="0" border="0" scrolling="auto"  style="width: 100%; height: 100%;"/>',
-                closable: true
-            });
-        } else {
-            jq('#tabs').tabs('select', title);
-        }
-    }
-
-    function addWindowEvent() {
-        $("#page").on("click", "#addBut", function(){
-            addTabs('新增考评模板', "http://127.0.0.1:8080/qm/html/manage/addCheckTemplate.html");
-        });
-    }
-
-    function modifyWindowEvent() {
-        $("#page").on("click", "#modfBut", function(){
-            var selRows = $("#checkTemplateManage").datagrid("getSelections");//选中多行
-            if (selRows.length == 0||selRows.length>1) {
-                $.messager.alert("提示", "请只选择一行数据!");
-                return false;
-            }
-            //页面传值
-            var templateId = selRows[0].templateId;
-            var templateName = selRows[0].templateName;
-            var createTime = selRows[0].createTime;
-            var templateStatus = selRows[0].templateStatus;
-            var jq = top.jQuery;
-            //编码，解决中文乱码问题
-            var url = encodeURI("http://127.0.0.1:8080/qm/html/manage/modifyCheckTemplate.html?templateId="+templateId+"&templateName="+templateName+"&createTime="+createTime+"&templateStatus="+templateStatus);
-            if (!jq('#tabs').tabs('exists', '修改考评模板')) {
-                jq('#tabs').tabs('add', {
-                    title: '修改考评模板',
-                    content: '<iframe src="' + url + '" frameBorder="0" border="0" scrolling="auto"  style="width: 100%; height: 100%;"/>',
-                    closable: true
-                });
-            }else { //刷新tab页
-                jq('#tabs').tabs('select', '修改考评模板');
-                var tab = jq('#tabs').tabs('getSelected');
-                jq('#tabs').tabs('update', {
-                    tab : tab,
-                    options : {
-                        content: '<iframe src="' + url + '" frameBorder="0" border="0" scrolling="auto"  style="width: 100%; height: 100%;"/>',
-                    }
-                });
-            }
         });
     }
 
@@ -319,8 +279,8 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
                         }
                     })
                 }
+            });
         });
-      });
     }
 
     /**
@@ -328,31 +288,31 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
      */
     function copyEvent() {
         $("#page").on("click", "#copyBut", function () {
-                var selRows = $("#checkTemplateManage").datagrid("getSelections");//选中一行
-                if (selRows.length == 0||selRows.length>1) {
-                    $.messager.alert("提示", "请选择一行且只能选择一行数据!");
-                    return false;
-                }
-                if((selRows[0].templateName).indexOf("复制")!= -1){
-                    $.messager.alert("提示", "复制的考评模板不可再次复制!");
-                    return false;
-                }
-                selRows[0].createStaffId = crtStaffId;//创建工号
-                Util.ajax.postJson(Util.constants.CONTEXT+ Util.constants.CHECK_TEMPLATE + "/copyTemplate", JSON.stringify(selRows[0]), function (result) {
-                    $.messager.show({
-                        msg: result.RSP.RSP_DESC,
-                        timeout: 1000,
-                        style: {right: '', bottom: ''},     //居中显示
-                        showType: 'slide'
-                    });
-                    var rspCode = result.RSP.RSP_CODE;
-                    if (rspCode == "1") {
-                        $("#checkTemplateManage").datagrid('reload'); //插入成功后，刷新页面
-                    }
+            var selRows = $("#checkTemplateManage").datagrid("getSelections");//选中一行
+            if (selRows.length == 0||selRows.length>1) {
+                $.messager.alert("提示", "请选择一行且只能选择一行数据!");
+                return false;
+            }
+            if((selRows[0].templateName).indexOf("复制")!= -1){
+                $.messager.alert("提示", "复制的考评模板不可再次复制!");
+                return false;
+            }
+            selRows[0].createStaffId = crtStaffId;//创建工号
+            Util.ajax.postJson(Util.constants.CONTEXT+ Util.constants.CHECK_TEMPLATE + "/copyTemplate", JSON.stringify(selRows[0]), function (result) {
+                $.messager.show({
+                    msg: result.RSP.RSP_DESC,
+                    timeout: 1000,
+                    style: {right: '', bottom: ''},     //居中显示
+                    showType: 'slide'
                 });
-                //enable按钮
-                $("#global").linkbutton({disabled: false}); //按钮可用
+                var rspCode = result.RSP.RSP_CODE;
+                if (rspCode == "1") {
+                    $("#checkTemplateManage").datagrid('reload'); //插入成功后，刷新页面
+                }
             });
+            //enable按钮
+            $("#global").linkbutton({disabled: false}); //按钮可用
+        });
     }
 
     return {

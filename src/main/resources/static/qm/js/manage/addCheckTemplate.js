@@ -1,33 +1,36 @@
+define(["text!html/manage/addCheckTemplate.tpl","jquery", 'util', "transfer", "easyui","dateUtil","ztree-exedit","ztree-excheck","ztree-exhide"], function (addCheckTemplateTpl,$, Util, Transfer,dateUtil,easyui) {
+    var $el ,
+        userInfo,
+        data = [],
+        openCheckItem = [],    //记录展开的目录路径（保存节点id）
+        allChildrenNodes = [],
+        i = 0,
+        num = 0,//随机生成
+        flag = true,
+        createStaffId = "";//创建工号
 
-require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], function ($, Util, Transfer,dateUtil) {
-    var userInfo;
-    var roleCode;
-    var data = [];
-    var allChildrenNodes = [];
-    var i = 0;
-    var num = Math.random()*15000 + 800;//随机生成
-    num = parseInt(num, 10);
-    var flag = true;
-    var createStaffId = "9527";//创建工号
-    //调用初始化方法
-    initialize();
-
-    function initialize() {
+    var initialize = function() {
+        $el = $(addCheckTemplateTpl);
         Util.getLogInData(function (data) {
             userInfo = data;//用户角色
-            Util.getRoleCode(userInfo,function(dataNew){
-                roleCode = dataNew;//用户信息
-                showTree();
-                initGrid();
-                delEvent();
-                saveEvent();
-            });
+            createStaffId = userInfo.staffId;
+            showTree();
+            initGrid();
+            delEvent();
+            saveEvent();
         });
+        this.$el = $el;
     };
     //zTree的配置信息
     var setting = {
-        view : {
-            selectedMulti : false//是否支持同时选中多个节点
+        check: {
+            enable: true, //显示复选框
+            chkStyle: "checkbox",
+            chkboxType: { "Y": "s", "N": "ps" }
+        },
+        view: {
+            dblClickExpand: true,
+            selectedMulti : true,//可以多选
         },
         data : {
             key: {
@@ -43,7 +46,7 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
         },
         callback : {
             onClick: function (e, id, node) {//点击事件
-                if (node.isParent) {//父节点
+                if(node.isParent){
                     data = [];
                     allChildrenNodes = [];//清空原数组中的数据
                     allChildrenNodes = getAllChildrenNodes(node,allChildrenNodes);
@@ -55,11 +58,7 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
                         map['pId'] = allChildrenNodes[i].pId;
                         data.push(map);
                     }
-                    $("#page").off("click","#addTemplate");//解决点击多次ztree之后再点击按钮后，被多次调用
-                    $("#page").on("click", "#addTemplate", function () {//点击父节点,然后跳出弹出框，右侧新增
-                        addWindowEvent(node,true);
-                    });
-                } else {//点击子节点，右侧直接新增
+                }else{
                     data = [];
                     var map = {};
                     map['id'] = node.id;
@@ -67,13 +66,19 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
                     map['type'] = node.type;
                     map['pId'] = node.pId;
                     data.push(map);
-                    allChildrenNodes = [];//清空原数组中的数据
-                    $("#page").off("click","#addTemplate");
-                    $("#page").on("click", "#addTemplate", function () {//点击子节点,然后右侧新增
-                        addWindowEvent(node,false);
-                    });
                 }
             }
+        },
+        onCollapse: function (e, id, node) {  //目录折叠，保存目录展开路径
+            for (var i = 0; i < openCheckItem.length; i++) {
+                if (openCheckItem[i] === node.id) {
+                    openCheckItem.splice(i, 1);
+                    break;
+                }
+            }
+        },
+        onExpand: function (e, id, node) {    //目录展开，保存目录展开路径
+            openCheckItem.push(node.id);
         }
     };
 
@@ -109,243 +114,171 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
             var resultNew = result.RSP.DATA;
             for(var i=0;i<resultNew.length;i++){
                 var nodeMap =
-                    {id: resultNew[i].checkItemId, pId: resultNew[i].parentCheckItemId, name: resultNew[i].checkItemName,type:resultNew[i].checkItemVitalType}
+                    {id: resultNew[i].checkItemId, pId: resultNew[i].parentCheckItemId,
+                        name: resultNew[i].checkItemName,type:resultNew[i].checkItemVitalType,
+                        catalogFlag: resultNew[i].catalogFlag}
+                if (openCheckItem.length === 0) {  //初次加载默认展开一级目录
+                    if (resultNew[i].orderNo <= 1) {
+                        nodeMap.open = true;
+                        openCheckItem.push(nodeMap.id);
+                    }
+                } else {
+                    //展开刷新前的目录路径
+                    for (var j = 0; j < openCheckItem.length; j++) {
+                        if (nodeMap.id === openCheckItem[j]) {
+                            nodeMap.open = true;
+                            break;
+                        }
+                    }
+                }
                 zNodes.push(nodeMap);
             }
-            $.fn.zTree.init($("#tree"), setting, zNodes);
+            $.fn.zTree.init($("#tree",$el), setting, zNodes);
+            fixIcon();//将空文件夹显示为文件夹图标
         });
     }
 
-    // function showTree(){
-    //     $('#tree').tree({
-    //         checkbox: false,
-    //         url: '../../data/checkTempTree.json',
-    //         method: "GET",
-    //         onBeforeExpand:function(node,param){//节点展开前触发，返回 false 则取消展开动作。点开查询数据库中的节点名称
-    //             $('#tree').tree('options').url = "/category/getCategorys.java?Id=" + node.id;
-    //         },
-    //         onClick:function(node){//当用户点击一个节点时触发
-    //                 $("#page").on("click", "#addTemplate", function () {//点击树,然后新增
-    //                     addWindowEvent(node.text);
-    //             });
-    //         }
-    //     });
-    // }
-
-    function addWindowEvent(node,target) {
-
-        if (target) {
-            var treeMap = {};//要添加的树的数据
-            $("#add_content").find('form.form').form('clear');  //初始化清空
-
-            $("#add_content").show().window({   //弹框
-                width: 950,
-                height: 400,
-                modal: true,
-                title: "新增"
-            });
-
-            $("#parentName").val(node.name);
-
-            //考评项下拉框
-            $("#name").combobox({
-                method: "GET",
-                valueField: 'id',
-                textField: 'text',
-                panelHeight: 'auto',
-                editable: false,
-                data: data,
-                onSelect: function (record) {//下拉框选中时触发
-                    //获取下拉中的数据
-                    treeMap["id"] = record.id;
-                    treeMap["text"] = record.text;
-                    treeMap["type"] = record.type;
-                    treeMap["pId"] = record.pId;
-            }
+    function fixIcon() {
+        var treeObj = $.fn.zTree.getZTreeObj("tree");
+        //通过catalogFlag字段筛选出目录节点
+        var folderNode = treeObj.getNodesByFilter(function (node) {
+            return node.catalogFlag === Util.constants.CHECK_ITEM_PARENT;
         });
+        for (var i = 0; i < folderNode.length; i++) {  //遍历目录节点，设置isParent属性为true;
+            folderNode[i].isParent = true;
+        }
+        treeObj.refresh();
+    }
 
-        $("#add_content").unbind("click");
-        /*
-         * 清除表单信息
-         */
-        $("#add_content").on("click", "#cancel", function () {
-            $("#add_content").find('form.form').form('clear');
-            $("#add_content").window("close");
-        });
-
-        $("#add_content").on("click", "#global", function () {
-            //禁用按钮，防止多次提交
-            $('#global').linkbutton({disabled: true});
-
-            //动态插入数据行
-            $('#peopleManage').datagrid('insertRow', {
+    function addWindowEvent(data) {
+        if(data.length==0){
+            $.messager.alert("提示", "请点击节点再添加！");
+            return false;
+        }
+        var list = data;
+        //动态插入数据行
+        list.forEach(function (vaule,index,arr) {
+            $('#peopleManage',$el).datagrid('insertRow', {
                 index: i,  // 索引从0开始
                 row: {
-                    nodeName: treeMap.text,
-                    nodeId: treeMap.id,
-                    pNodeId:treeMap.pId,
-                    errorType: treeMap.type,
+                    nodeName: vaule.text,
+                    nodeId: vaule.id,
+                    pNodeId:vaule.pId,
+                    errorType: vaule.type,
                     nodeScore: '0',
                     maxScore: '0'
                 }
             });
             i++;
-            $('#add_content').window('close'); // 关闭窗口
-            $("#global").linkbutton({disabled: false}); //按钮可用
-        });
-      }else{
-            var checkItemVitalType = null;
-            for (var index in data ){//根据下拉框考评项名称定位到该考评项的类型
-                if (data[index].text == node.name) {
-                    checkItemVitalType = data[index].type;
-                }
-            }
-            //动态插入数据行
-            $('#peopleManage').datagrid('insertRow',{
-                index:i ,  // 索引从0开始
-                row: {
-                    nodeName: node.name,
-                    nodeId: node.id,
-                    pNodeId: node.pId,
-                    errorType: checkItemVitalType,
-                    nodeScore: '0',
-                    maxScore: '0'
-                }
-            });
-            i++;
-        }
+        })
     }
 
     //删除操作
     function delEvent() {
-        $("#page").on("click", "a.delBtn", function () {
+        $("#page",$el).on("click", "a.delBtn", function () {
             var rowData = $(this).attr('id');
             var sensjson = JSON.parse(rowData); //转成json格式
             var index = sensjson.index;
-            $('#peopleManage').datagrid('deleteRow', index);
-            var rows = $('#peopleManage').datagrid("getRows");    //重新获取数据生成行号
-            $('#peopleManage').datagrid("loadData", rows);
+            $('#peopleManage',$el).datagrid('deleteRow', index);
+            var rows = $('#peopleManage',$el).datagrid("getRows");    //重新获取数据生成行号
+            $('#peopleManage',$el).datagrid("loadData", rows);
         });
     }
 
     //保存操作。将表中的数据保存到数据库中（新增）。
     function insertTempDetail(){
-            //将表中数据保存到详情信息表中
-            //获取datagrid中的所有数据，将其拼接成json格式字符串数组
-            var rowsData = $('#peopleManage').datagrid('getRows');
-            var json = [];
-            var maxAll = [];// 扣分范围
-            var nAll = [];//所占分值
-            var loc;
-            $.each(rowsData, function (i)
-            {
-                var maxScore =  parseInt(rowsData[i].maxScore);
-                var nodeScore = parseInt(rowsData[i].nodeScore);
-                if(nodeScore<maxScore){
-                    return false;
-                }
-                nAll.push(nodeScore);
-                maxAll.push(maxScore);
-                loc = {
-                    "tenantId":Util.constants.TENANT_ID,
-                    "templateId":num.toString(),
-                    "nodeId":rowsData[i].nodeId,
-                    "nodeName": rowsData[i].nodeName,
-                    "maxScore": maxScore,
-                    "nodeScore": nodeScore,
-                    "errorType": rowsData[i].errorType,
-                    "nodeType": '3',
-                    "pNodeId":rowsData[i].pNodeId,
-                    "createStaffId":createStaffId//创建工号
-                };
-                json.push(loc);
-            });
-            if(maxAll.length!=rowsData.length||nAll.length!=rowsData.length){
-                flag = false;
-                $.messager.alert("提示", "扣分范围不能高于所占分值！");
-                disableSubmit = false;
+        //将表中数据保存到详情信息表中
+        //获取datagrid中的所有数据，将其拼接成json格式字符串数组
+        var rowsData = $('#peopleManage',$el).datagrid('getRows');
+        var json = [];
+        var maxAll = [];// 扣分范围
+        var nAll = [];//所占分值
+        var loc;
+        $.each(rowsData, function (i)
+        {
+            var maxScore =  parseInt(rowsData[i].maxScore);
+            var nodeScore = parseInt(rowsData[i].nodeScore);
+            if(nodeScore<maxScore){
                 return false;
             }
-            //判断分值总和是否为100
-            var maxAllScore = null;
-            maxAll.forEach(function(i,index){
-                maxAllScore = maxAllScore+i;
-            });
-            var nAllScore = null;
-            nAll.forEach(function(i,index){
-                nAllScore = nAllScore+i;
-            });
-            if(nAll.indexOf(0)!=-1){
-                flag = false;
-                $.messager.alert("提示", "点击行填写分数,然后请点击行保存操作并且每行所占分值不可为0!");
-                return false;
-            }
-            if(nAllScore!=100||maxAllScore>100){
-                flag = false;
-                $.messager.alert("提示", "所占分值总和必须为100以及扣分范围总和不得高于100!");
-                // disableSubmit = false;
-                return false;
-            }
-            var param =  {"params":json};
-            Util.ajax.postJson(Util.constants.CONTEXT.concat(Util.constants.ADD_CHECK_TEMPLATE).concat("/insertTempDetail"),JSON.stringify(param), function (result) {
-                flag = true;
-                $.messager.show({
-                    msg: result.RSP.RSP_DESC,
-                    timeout: 1000,
-                    style: {right: '', bottom: ''},     //居中显示
-                    showType: 'slide'
-                });
-                var rspCode = result.RSP.RSP_CODE;
-                if (rspCode == "1") {
-                    // $('#add_content').window('close'); // 关闭窗口
-                    // $("#peopleManage").datagrid('reload'); //插入成功后，刷新页面
-                }
-            });
+            nAll.push(nodeScore);
+            maxAll.push(maxScore);
+            loc = {
+                "tenantId":Util.constants.TENANT_ID,
+                "templateId":num.toString(),
+                "nodeId":rowsData[i].nodeId,
+                "nodeName": rowsData[i].nodeName,
+                "maxScore": maxScore,
+                "nodeScore": nodeScore,
+                "errorType": rowsData[i].errorType,
+                "nodeType": '3',
+                "pNodeId":rowsData[i].pNodeId,
+                "createStaffId":createStaffId//创建工号
+            };
+            json.push(loc);
+        });
+        if(maxAll.length!=rowsData.length||nAll.length!=rowsData.length){
+            flag = false;
+            $.messager.alert("提示", "扣分范围不能高于所占分值！");
+            return false;
+        }
+        //判断分值总和是否为100
+        var maxAllScore = null;
+        maxAll.forEach(function(i,index){
+            maxAllScore = maxAllScore+i;
+        });
+        var nAllScore = null;
+        nAll.forEach(function(i,index){
+            nAllScore = nAllScore+i;
+        });
+        if(nAll.indexOf(0)!=-1){
+            flag = false;
+            $.messager.alert("提示", "点击行填写分数,然后请点击行保存操作并且每行所占分值不可为0!");
+            return false;
+        }
+        if(nAllScore!=100||maxAllScore>100){
+            flag = false;
+            $.messager.alert("提示", "所占分值总和必须为100以及扣分范围总和不得高于100!");
+            return false;
+        }
+        var param =  {"params":json};
+        Util.ajax.postJson(Util.constants.CONTEXT.concat(Util.constants.ADD_CHECK_TEMPLATE).concat("/insertTempDetail"),JSON.stringify(param), function (result) {
+            flag = true;
+        });
     }
 
     function insertCheckTemplate(){
-            //将基本信息保存到基本信息表中
-            var templateName = $("#templateName").val();
-            var templatChannel = $("#templatChannel").combobox("getValue");//模板渠道
-            var templateType = $("#templateType").combobox("getValue");
-            var templateStatus = $("#templateStatus").combobox("getValue");
-            var templateDesc = $("#templateDesc").val();
-            var crtStaffId = createStaffId;
+        //将基本信息保存到基本信息表中
+        var templateName = $("#templateName",$el).val();
+        var templateType = $("#templateType",$el).combobox("getValue");
+        var templateStatus = $("#templateStatus",$el).combobox("getValue");
+        var templateDesc = $("#templateDesc",$el).val();
+        var crtStaffId = createStaffId;
 
-            var params = {'createStaffId':crtStaffId,'tenantId': Util.constants.TENANT_ID,'templateName': templateName,
-                'templateStatus': templateStatus, 'operateType': '0','remark':templateDesc,'templateType':templateType,"templateId":num.toString(),"scoreType":'2'};
-            Util.ajax.postJson(Util.constants.CONTEXT+ Util.constants.CHECK_TEMPLATE + "/insertCheckTemplate ", JSON.stringify(params), function (result) {
+        var params = {'createStaffId':crtStaffId,'tenantId': Util.constants.TENANT_ID,'templateName': templateName,
+            'templateStatus': templateStatus, 'operateType': '0','remark':templateDesc,'templateType':templateType,"templateId":num.toString(),"scoreType":'2'};
+        Util.ajax.postJson(Util.constants.CONTEXT+ Util.constants.CHECK_TEMPLATE + "/insertCheckTemplate ", JSON.stringify(params), function (result) {
 
-                $.messager.show({
-                    msg: result.RSP.RSP_DESC,
-                    timeout: 1000,
-                    style: {right: '', bottom: ''},     //居中显示
-                    showType: 'slide'
-                });
-                var rspCode = result.RSP.RSP_CODE;
-                if (rspCode == "1") {
-                    //插入成功后，刷新页面
-                    var url = "http://127.0.0.1:8080/qm/html/manage/checkTemplate.html";
-                    var jq = top.jQuery;
-                    jq('#tabs').tabs('select', '考评模板');
-                    var tab = jq('#tabs').tabs('getSelected');
-                    jq('#tabs').tabs('update', {
-                        tab : tab,
-                        options : {
-                            content: '<iframe src="' + url + '" frameBorder="0" border="0" scrolling="auto"  style="width: 100%; height: 100%;"/>',
-                        }
-                    });
-                    top.jQuery('#tabs').tabs('close', "新增考评模板");
-                }
+            $.messager.show({
+                msg: result.RSP.RSP_DESC,
+                timeout: 1000,
+                style: {right: '', bottom: ''},     //居中显示
+                showType: 'slide'
             });
+            var rspCode = result.RSP.RSP_CODE;
+            if (rspCode == "1") {
+                $("#checkTemplateManage").datagrid('reload'); //新增成功后，刷新页面
+                $("#add_window").window("close"); // 关闭窗口
+            }
+        });
     }
 
     function saveEvent() {
-        $("#page").on("click", "#saveBut", function () {
-            $("#saveBut").unbind("click");//解绑，避免多次提交
-            $('#templateName').validatebox({required: true});//非空校验
-            $('#templateDesc').validatebox({required: true});//非空校验
-            if ($("#templateName").val() == "" || $("#templateDesc").val() == "") {
+        $("#page",$el).on("click", "#saveBut", function () {
+            num = parseInt(Math.random()*15000 + 800, 10);
+            $("#saveBut",$el).unbind("click");//解绑，避免多次提交
+            $('#templateName',$el).validatebox({required: true});//非空校验
+            if ($("#templateName",$el).val() == "") {
                 flag = false;
                 $.messager.alert('警告', '必填项不可为空!');
                 return false;
@@ -360,25 +293,13 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
     //初始化列表
     function initGrid() {
 
-        //模板渠道下拉框
-        $("#templatChannel").combobox({
-            url: '../../data/checkTemp_type.json',
-            method: "GET",
-            valueField: 'codeValue',
-            textField: 'codeName',
-            panelHeight:'auto',
-            editable:false,
-            onLoadSuccess : function(){//当数据加载成功时，默认显示第一个数据
-                var templatChannel = $("#templatChannel");
-                var data = templatChannel.combobox('getData');
-                if (data.length > 0) {
-                    templatChannel.combobox('select', data[0].codeValue);
-                }
-            }
+        $("#page",$el).off("click","#addTemplate");//解决点击多次ztree之后再点击按钮后，被多次调用
+        $("#page",$el).on("click", "#addTemplate", function () {//点击父节点,然后跳出弹出框，右侧新增
+            addWindowEvent(data);
         });
 
         //模板类型下拉框
-        $("#templateType").combobox({
+        $("#templateType",$el).combobox({
             url: '../../data/tempDetail_type.json',
             method: "GET",
             valueField: 'codeValue',
@@ -386,7 +307,7 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
             panelHeight:'auto',
             editable:false,
             onLoadSuccess : function(){//当数据加载成功时，默认显示第一个数据
-                var templatChannel = $("#templateType");
+                var templatChannel = $("#templateType",$el);
                 var data = templatChannel.combobox('getData');
                 if (data.length > 0) {
                     templatChannel.combobox('select', data[0].codeValue);
@@ -395,7 +316,7 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
         });
 
         //模板状态下拉框
-        $("#templateStatus").combobox({
+        $("#templateStatus",$el).combobox({
             url: '../../data/checkStatus.json',
             method: "GET",
             valueField: 'codeValue',
@@ -403,7 +324,7 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
             panelHeight:'auto',
             editable:false,
             onLoadSuccess : function(){//当数据加载成功时，默认显示最后一个数据
-                var templateStatus = $("#templateStatus");
+                var templateStatus = $("#templateStatus",$el);
                 var data = templateStatus.combobox('getData');
                 if (data.length > 0) {
                     templateStatus.combobox('select', data[0].codeValue);
@@ -411,7 +332,7 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
             }
         });
 
-        $("#page").find("#peopleManage").datagrid({
+        $("#page",$el).find("#peopleManage",$el).datagrid({
             columns: [[
                 {
                     field: 'action', title: '操作', width: '20%',
@@ -435,7 +356,7 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
                 {field: 'nodeId', title: '考评项编码', width: '20%', hidden: true},
                 {field: 'errorType', title: '考评项类别', width: '20%',
                     formatter: function (value, row, index) {
-                         return {'0':'非致命性','1':'致命性'}[value];
+                        return {'0':'非致命性','1':'致命性'}[value];
                     }},
                 {field: 'nodeScore', title: '所占分值', width: '15%', editor:'numberbox',
                     formatter: function (value) {
@@ -456,53 +377,20 @@ require(["jquery", 'util', "transfer", "easyui","ztree-exedit","dateUtil"], func
             singleSelect: false,
             checkOnSelect: false,
             autoRowHeight: true,
-            selectOnCheck: true,
-            // loader: function (param, success) {
-            //     var start = (param.page - 1) * param.rows;
-            //     var pageNum = param.rows;
-            //     var reqParams = {
-            //         "tenantId":Util.constants.TENANT_ID
-            //     };
-            //     var param = {
-            //         "start": start,
-            //         "pageNum": pageNum,
-            //         "params":JSON.stringify(reqParams)
-            //     };
-            //
-            //     Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.ADD_CHECK_TEMPLATE + "/selectByParams", param, function (result) {
-            //         var data = Transfer.DataGrid.transfer(result);
-            //
-            //         var rspCode = result.RSP.RSP_CODE;
-            //         if (rspCode != "1") {
-            //
-            //             $.messager.show({
-            //                 msg: result.RSP.RSP_DESC,
-            //                 timeout: 1000,
-            //                 style: {right: '', bottom: ''},     //居中显示
-            //                 showType: 'slide'
-            //             });
-            //         }
-            //         success(data);
-            //     });
-            // }
+            selectOnCheck: true
         });
 
         var tempIndex = null;
-        $("#peopleManage").datagrid({//行点击事件
+        $("#peopleManage",$el).datagrid({//行点击事件
             onClickRow: function (index, row) {
                 tempIndex = index;
-                $("#peopleManage").datagrid('beginEdit', index);//编辑行
+                $("#peopleManage",$el).datagrid('beginEdit', index);//编辑行
             }
         });
 
-        $("#page").on("click", "a.saveBtn", function () {
-            $('#peopleManage').datagrid('endEdit', tempIndex);//保存行
+        $("#page",$el).on("click", "a.saveBtn", function () {
+            $('#peopleManage',$el).datagrid('endEdit', tempIndex);//保存行
         });
-
-
     }
-
-    return {
-        initialize: initialize
-    };
+    return initialize;
 });
