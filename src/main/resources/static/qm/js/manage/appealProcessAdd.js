@@ -333,8 +333,10 @@ require([
 
         //新增取消
         $("#cancelBtn").on("click", function () {
-            CommonAjax.closeThisMenu(1000);
+            // CommonAjax.closeThisMenu(1000);
+            CommonAjax.closeMenuByNameAndId("申诉流程新增","申诉流程新增");
         });
+
     }
 
     //添加流程

@@ -53,8 +53,8 @@ define(["jquery", 'util'], function ($, Util) {
         },
         //新增标签页
         openMenu: function (url, menuName, menuId) {
-            operMenu(url, menuName, menuId);
-            // openTab(url, menuName);
+            // operMenu(url, menuName, menuId);
+            openTab(url, menuName);
         },
         //关闭当前标签页
         closeThisMenu: function (time) {
@@ -66,6 +66,10 @@ define(["jquery", 'util'], function ($, Util) {
         //关闭指定标签页
         closeMenuByUrl: function (url) {
             operMenu(url, null, null);
+        },
+        //关闭指定标签页
+        closeMenuByNameAndId: function (menuName,menuId) {
+            operMenu(null, menuName, menuId);
         },
         //关闭指定标签页
         closeMenuById: function (menuId) {
