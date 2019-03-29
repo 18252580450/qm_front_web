@@ -7,7 +7,7 @@
     <link rel="stylesheet" type="text/css" href="../../assets/lib/easyui/themes/cmcui/iconfont/iconfont.min.css"/>
     <link rel="stylesheet" type="text/css" href="../../assets/lib/ztree/css/cmcStyle/tree.css"/>
     <link rel="stylesheet" type="text/css" href="../../assets/components/rating/themes/fontawesome-stars.css"/>
-
+    <script type="text/javascript" src="../../js/common/urlConstants.js"></script>
     <script type="text/javascript" src="../../assets/lib/easyui/jquery.min.js"></script>
     <script type="text/javascript" src="../../assets/lib/easyui/jquery.easyui.min.js"></script>
 
@@ -30,8 +30,8 @@
         <!--data-main="js/execution/pendingAssignment"></script>-->
 <script type="text/javascript">
     $(function(){
-        showTaps("工单质检待办区", "http://127.0.0.1:8080/qm/html/execution/orderCheck.html");
-        showTaps("语音质检待办区", "http://127.0.0.1:8080/qm/html/execution/voiceCheck.html");
+        showTaps("工单质检待办区", getUrl().ORDER_CHECK_BENDI);
+        showTaps("语音质检待办区", getUrl().VOICE_CHECK_BENDI);
         $('#pendingAssignmentArea').tabs({selected: 1});
     });
 

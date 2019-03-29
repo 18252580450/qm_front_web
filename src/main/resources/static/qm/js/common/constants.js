@@ -41,7 +41,6 @@ define(function () {
         IS_LOG_IN:"http://203.57.226.107:9990/cqkbmanage/isLognIn",//登入验证
         PAGE_LOGIN:"http://203.57.226.107:9990/cqkbmanage/",//登入页面
         USER_PERMISSION:"/qm/configservice/userPermission",//用户权限
-
         //考评项目录类型
         CHECK_ITEM_PARENT: "0",          //目录
         CHECK_ITEM_CHILDREN: "1",        //非目录
