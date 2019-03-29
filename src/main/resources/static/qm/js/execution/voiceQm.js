@@ -108,7 +108,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
                     $('#qry_people_window').show().window({
                         title: '查询质检人员信息',
                         width: 1150,
-                        height: 650,
+                        height: 630,
                         cache: false,
                         content:queryQmPeople.$el,
                         modal: true,
@@ -130,7 +130,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
                     $('#qry_people_window').show().window({
                         title: '查询质检人员信息',
                         width: 1150,
-                        height: 650,
+                        height: 630,
                         cache: false,
                         content:queryQmPeople.$el,
                         modal: true,

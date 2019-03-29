@@ -26,7 +26,7 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
                     $('#qry_people_window').show().window({
                         title: '查询质检人员信息',
                         width: 1150,
-                        height: 650,
+                        height: 630,
                         cache: false,
                         content: queryQmPeople.$el,
                         modal: true,

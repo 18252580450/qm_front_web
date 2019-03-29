@@ -30,7 +30,7 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
                     $('#qry_people_window').show().window({
                         title: '查询质检人员信息',
                         width: 1150,
-                        height: 650,
+                        height: 630,
                         cache: false,
                         content: queryQmPeople.$el,
                         modal: true,
@@ -52,7 +52,7 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
                     $('#qry_people_window').show().window({
                         title: '查询质检人员信息',
                         width: 1150,
-                        height: 650,
+                        height: 630,
                         cache: false,
                         content: queryQmPeople.$el,
                         modal: true,
