@@ -62,6 +62,13 @@ define(['constants', 'page-util', 'ajax', 'loading'], function (constants, PageU
                         callback(userPermission);
                     }
                 });
+            }else {
+                jQuery.messager.show({
+                    msg: "虚拟组人员信息查询失败！",
+                    timeout: 1000,
+                    style: {right: '', bottom: ''},     //居中显示
+                    showType: 'show'
+                });
             }
         });
     }
