@@ -212,14 +212,21 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
             },
             loader: function (param, success) {
                 var checkedStaffId = "";
+                var checkStaffId = "";
                 var start = (param.page - 1) * param.rows;
                 var pageNum = param.rows;
                 var touchId = $("#touchId").val();
-                var checkStaffId = $("#checkStaffId").val();
+                if(userPermission=="checker"){
+                    checkStaffId = userInfo.staffId;
+                }else{
+                    checkStaffId = $("#checkStaffId").val();
+                }
                 var startTime = $("#startTime").datetimebox("getValue");
                 var endTime = $("#endTime").datetimebox("getValue");
                 if(userPermission=="staffer"){
                     checkedStaffId = userInfo.staffId;
+                }else{
+                    checkedStaffId = $("#checkedStaffId").val();
                 }
                 var inspectionId = $("#inspectionId").val();
                 var resultStatus = $("#resultStatus").combobox("getValue");
@@ -377,6 +384,14 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
             $("#checkedStaffName").textbox('textbox').attr('readOnly',true);
             //清除搜索框图标
             var icon = $('#checkedStaffName').searchbox("getIcon", 0);
+            icon.css("visibility", "hidden");
+        }else if(userPermission=="checker"){
+            //质检员只能查询质检员是自己的数据
+            $("#checkStaffId").val(userInfo.staffId);
+            $('#checkStaffName').searchbox("setValue",userInfo.staffName);
+            $("#checkStaffName").textbox('textbox').attr('readOnly',true);
+            //清除搜索框图标
+            var icon = $('#checkStaffName').searchbox("getIcon", 0);
             icon.css("visibility", "hidden");
         }
 
