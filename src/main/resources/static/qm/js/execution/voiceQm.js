@@ -108,7 +108,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
                     $('#qry_people_window').show().window({
                         title: '查询质检人员信息',
                         width: 1150,
-                        height: 650,
+                        height: 630,
                         cache: false,
                         content:queryQmPeople.$el,
                         modal: true,
@@ -130,7 +130,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
                     $('#qry_people_window').show().window({
                         title: '查询质检人员信息',
                         width: 1150,
-                        height: 650,
+                        height: 630,
                         cache: false,
                         content:queryQmPeople.$el,
                         modal: true,
@@ -329,6 +329,8 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
             pageList: [5, 10, 20, 50],
             rownumbers: false,
             loader: function (param, success) {
+                var checkedStaffId = "";
+                var checkStaffId = "";
                 var start = (param.page - 1) * param.rows;
                 var pageNum = param.rows;
                 var touchId = $("#touchId").val();
@@ -343,8 +345,16 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
                 }
                 var startTime = $("#startTime").datetimebox("getValue");
                 var endTime = $("#endTime").datetimebox("getValue");
-                var checkStaffId = $("#checkStaffId").val();
-                var checkedStaffId = $("#checkedStaffId").val();
+                if(userPermission=="staffer"){
+                    checkedStaffId = userInfo.staffId;
+                }else{
+                    checkedStaffId = $("#checkedStaffId").val();
+                }
+                if(userPermission=="checker"){
+                    checkStaffId = userInfo.staffId;
+                }else{
+                    checkStaffId = $("#checkStaffId").val();
+                }
                 var hungupType = $("#hungupType").val();
                 var recordTimeMin = $("#recordTimeMin").val();
                 var recordTimeMax = $("#recordTimeMax").val();
@@ -418,10 +428,24 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
         if(userPermission=="checker"){//质检员
             $("#detailBut").attr("style","display:none;"); //不可以分配
             $("#releaseBut").attr("style","display:none;");
+            //质检员只能查询质检员是自己的数据
+            $("#checkStaffId").val(userInfo.staffId);
+            $('#checkStaffName').searchbox("setValue",userInfo.staffName);
+            $("#checkStaffName").textbox('textbox').attr('readOnly',true);
+            //清除搜索框图标
+            var icon = $('#checkStaffName').searchbox("getIcon", 0);
+            icon.css("visibility", "hidden");
         }else if(userPermission=="staffer"){//话务员（没有任何功能权限）
             $("#detailBut").attr("style","display:none;");
             $("#claimBut").attr("style","display:none;");
             $("#releaseBut").attr("style","display:none;");
+            //话务员只能查询被质检员是自己的数据
+            $("#checkedStaffId").val(userInfo.staffId);
+            $('#checkedStaffName').searchbox("setValue",userInfo.staffName);
+            $("#checkedStaffName").textbox('textbox').attr('readOnly',true);
+            //清除搜索框图标
+            var icon = $('#checkedStaffName').searchbox("getIcon", 0);
+            icon.css("visibility", "hidden");
         }
 
         //查询
@@ -526,7 +550,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
         $("#downloadBut").on('click',function () {
             var selRows = $("#queryInfo").datagrid("getSelections");//选中多行
 
-            // window.open(url,'_blank');
+            window.open("https://codeload.github.com/douban/douban-client/legacy.zip/master",'_blank');
 
         });
     }

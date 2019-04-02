@@ -7,7 +7,7 @@
     <link rel="stylesheet" type="text/css" href="../../assets/lib/easyui/themes/cmcui/iconfont/iconfont.min.css"/>
     <link rel="stylesheet" type="text/css" href="../../assets/lib/ztree/css/cmcStyle/tree.css"/>
     <link rel="stylesheet" type="text/css" href="../../assets/components/rating/themes/fontawesome-stars.css"/>
-
+    <script type="text/javascript" src="../../js/common/urlConstants.js"></script>
     <script type="text/javascript" src="../../assets/lib/easyui/jquery.min.js"></script>
     <script type="text/javascript" src="../../assets/lib/easyui/jquery.easyui.min.js"></script>
 
@@ -29,9 +29,10 @@
 <!--<script type="text/javascript" src="../../assets/lib/require/require.min.js"-->
 <!--data-main="js/execution/pendingAssignment"></script>-->
 <script type="text/javascript">
+
     $(function(){
-        showTaps("工单申诉处理", "http://127.0.0.1:8080/qm/html/execution/orderAppeal.html");
-        showTaps("语音申诉处理", "http://127.0.0.1:8080/qm/html/execution/voiceAppeal.html");
+        showTaps("工单申诉处理", getUrl().ORDER_APPEAL_BENDI);
+        showTaps("语音申诉处理", getUrl().VOICE_APPEAL_BENDI);
         $('#pendingAssignmentArea').tabs({selected: 1});
     });
 

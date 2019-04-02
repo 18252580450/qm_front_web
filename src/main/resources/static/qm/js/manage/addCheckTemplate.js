@@ -1,4 +1,4 @@
-define(["text!html/manage/addCheckTemplate.tpl","jquery", 'util', "transfer", "easyui","dateUtil","ztree-exedit","ztree-excheck","ztree-exhide"], function (addCheckTemplateTpl,$, Util, Transfer,dateUtil,easyui) {
+define(["text!html/manage/addCheckTemplate.tpl","jquery", 'util', "transfer", "easyui","dateUtil","ztree-exedit"], function (addCheckTemplateTpl,$, Util, Transfer,dateUtil,easyui) {
     var $el ,
         userInfo,
         data = [],
@@ -23,14 +23,8 @@ define(["text!html/manage/addCheckTemplate.tpl","jquery", 'util', "transfer", "e
     };
     //zTree的配置信息
     var setting = {
-        check: {
-            enable: true, //显示复选框
-            chkStyle: "checkbox",
-            chkboxType: { "Y": "s", "N": "ps" }
-        },
-        view: {
-            dblClickExpand: true,
-            selectedMulti : true,//可以多选
+        view : {
+            selectedMulti : false//是否支持同时选中多个节点
         },
         data : {
             key: {

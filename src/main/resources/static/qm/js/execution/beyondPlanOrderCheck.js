@@ -4,11 +4,25 @@ require([
         "jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"],
     function (QryCheckTemplate, OrderCheckDetail, $, Util, Transfer, CommonAjax) {
 
+        var userInfo,
+            roleCode,
+            orderCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/execution/beyondPlanOrderCheckDetail.html";
+
         initialize();
 
         function initialize() {
-            initPageInfo();
-            initEvent();
+            Util.getLogInData(function (data) {
+                userInfo = data;//用户角色
+                Util.getRoleCode(userInfo, function (dataNew) {
+                    roleCode = dataNew;//用户权限
+                    //管理员则显示分配
+                    if (roleCode === "manager") {
+                        $("#allocateBtn").show();
+                    }
+                    initPageInfo();
+                    initEvent();
+                });
+            });
         }
 
         //页面信息初始化
@@ -56,12 +70,12 @@ require([
                         }
                     },
                     {field: 'wrkfmShowSwftno', title: '工单流水', width: '15%'},
-                    {field: 'bizTitle', title: '工单标题', align: 'center', width: '10%'},
+                    {field: 'bizTitle', title: '工单标题', width: '10%'},
                     {field: 'srvReqstTypeFullNm', title: '服务请求类型', width: '15%'},
-                    {field: 'custEmail', title: '客户账号', align: 'center', width: '10%'},
-                    {field: 'custName', title: '客户名称', align: 'center', width: '10%'},
-                    {field: 'custNum', title: '客户号码', align: 'center', width: '10%'},
-                    {field: 'handleDuration', title: '处理时长', align: 'center', width: '10%'},
+                    {field: 'custEmail', title: '客户账号', width: '10%'},
+                    {field: 'custName', title: '客户名称', width: '10%'},
+                    {field: 'custNum', title: '客户号码', width: '10%'},
+                    {field: 'handleDuration', title: '处理时长', width: '10%'},
                     {
                         field: 'crtTime', title: '立单时间', width: '15%',
                         formatter: function (value, row, index) { //格式化时间格式
@@ -127,9 +141,8 @@ require([
                     }, Util.PageUtil.getParams($("#searchForm")));
 
                     Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.BEYOND_PLAN_ORDER_POOL_DNS + "/queryQmWorkform", params, function (result) {
-                        var data = Transfer.DataGrid.transfer(result);
-
-                        var rspCode = result.RSP.RSP_CODE;
+                        var data = Transfer.DataGrid.transfer(result),
+                            rspCode = result.RSP.RSP_CODE;
                         if (rspCode != null && rspCode !== "1") {
                             $.messager.show({
                                 msg: result.RSP.RSP_DESC,
@@ -157,19 +170,10 @@ require([
                                     modal: true
                                 });
                             } else {
-                                $("#beyondPlanCheckContent").append(getCheckDialog());
-                                var orderCheckDetail = new OrderCheckDetail(item);
-                                $('#check_window').show().window({
-                                    title: '质检详情',
-                                    width: 1200,
-                                    height: 600,
-                                    cache: false,
-                                    content: orderCheckDetail.$el,
-                                    modal: true,
-                                    onBeforeClose: function () {//弹框关闭前触发事件
-                                        $("#check_window").window("destroy");
-                                    }
-                                });
+                                item.checkStaffId = userInfo.staffId;
+                                item.checkStaffName = userInfo.staffName;
+                                var url = CommonAjax.createURL(orderCheckDetail, item);
+                                CommonAjax.openMenu(url, "工单质检详情", item.wrkfmId);
                             }
                         });
                     });
@@ -210,11 +214,6 @@ require([
                     }
                 });
             });
-        }
-
-        //动态添加质检详情弹框
-        function getCheckDialog() {
-            return "<div  id='check_window' style='display:none;'></div>";
         }
 
         return {

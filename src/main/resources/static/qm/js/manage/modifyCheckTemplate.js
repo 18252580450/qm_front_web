@@ -33,14 +33,8 @@ define(["text!html/manage/modifyCheckTemplate.tpl","jquery", 'util', "transfer",
     };
     //zTree的配置信息
     var setting = {
-        check: {
-            enable: true, //显示复选框
-            chkStyle: "checkbox",
-            chkboxType: { "Y": "s", "N": "ps" }
-        },
-        view: {
-            dblClickExpand: true,
-            selectedMulti : true,//可以多选
+        view : {
+            selectedMulti : false//是否支持同时选中多个节点
         },
         data : {
             key: {

@@ -373,52 +373,6 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
         });
     }
 
-    function getCheckComment() {
-        var reqParams = {//入参
-            "parentCommentId": "",
-            "commentName": ""
-        };
-        var params = {
-            "start": 0,
-            "pageNum": 0,
-            "params": JSON.stringify(reqParams)
-        };
-        //查询
-        Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.ORDINARY_COMMENT + "/selectByParams", params, function (result) {
-            var json = [];
-            var data = result.RSP.DATA;
-            var map = {};
-            map["commentId"] = "0";
-            map["commentName"] = "其他";
-            data.push(map);
-            data.forEach(function (value, index) {
-                var map = {};
-                map["id"] = value.commentId;
-                map["text"] = value.commentName;
-                json.push(map);
-            });
-            //考评评语下拉框
-            $("#checkCommentSearch").combobox({
-                method: "GET",
-                valueField: 'id',
-                textField: 'text',
-                panelHeight: 'auto',
-                editable: false,
-                data: json,
-                onSelect: function (record) {//下拉框选中时触发
-                    var checkComment = $("#checkComment");
-                    if (record.text === "其他") {
-                        checkComment.attr("style", "display:block;");
-                        checkComment.val("");
-                    } else {
-                        checkComment.attr("style", "display:none;");
-                        checkComment.val(record.text);
-                    }
-                }
-            });
-        });
-    }
-
     //事件初始化
     function initEvent() {
 
@@ -489,6 +443,52 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
         //案例收集
         $("#caseCollectBtn").on("click", function () {
             $.messager.alert("提示", "该功能暂未开放!");
+        });
+    }
+
+    function getCheckComment() {
+        var reqParams = {//入参
+            "parentCommentId": "",
+            "commentName": ""
+        };
+        var params = {
+            "start": 0,
+            "pageNum": 0,
+            "params": JSON.stringify(reqParams)
+        };
+        //查询
+        Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.ORDINARY_COMMENT + "/selectByParams", params, function (result) {
+            var json = [];
+            var data = result.RSP.DATA;
+            var map = {};
+            map["commentId"] = "0";
+            map["commentName"] = "其他";
+            data.push(map);
+            data.forEach(function (value, index) {
+                var map = {};
+                map["id"] = value.commentId;
+                map["text"] = value.commentName;
+                json.push(map);
+            });
+            //考评评语下拉框
+            $("#checkCommentSearch").combobox({
+                method: "GET",
+                valueField: 'id',
+                textField: 'text',
+                panelHeight: 'auto',
+                editable: false,
+                data: json,
+                onSelect: function (record) {//下拉框选中时触发
+                    var checkComment = $("#checkComment");
+                    if (record.text === "其他") {
+                        checkComment.attr("style", "display:block;");
+                        checkComment.val("");
+                    } else {
+                        checkComment.attr("style", "display:none;");
+                        checkComment.val(record.text);
+                    }
+                }
+            });
         });
     }
 

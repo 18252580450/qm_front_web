@@ -106,7 +106,7 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui","dateUti
                 $('#qry_people_window').show().window({
                     title: '查询质检人员信息',
                     width: 1150,
-                    height: 650,
+                    height: 630,
                     cache: false,
                     content:queryQmPeople.$el,
                     modal: true,
@@ -285,9 +285,14 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui","dateUti
             pageList: [5, 10, 20, 50],
             rownumbers: false,
             loader: function (param, success) {
+                var checkStaffId = "";
                 var start = (param.page - 1) * param.rows;
                 var pageNum = param.rows;
-                var checkStaffId = $("#checkStaffId").val();
+                if(userPermission=="checker"){
+                    checkStaffId = userInfo.staffId;
+                }else{
+                    checkStaffId = $("#checkStaffId").val();
+                }
                 var wrkfmShowSwftno = $("#workOrderId").val();
                 var planId = $("#planId").val();
                 var serviceTypeId = $("#serviceTypeId").val();
@@ -376,8 +381,15 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui","dateUti
     function initEvent() {
 
         if(userPermission=="checker"){//质检员
-           $("#disBut").attr("style","display:none;"); //不可以分配
+            $("#disBut").attr("style","display:none;"); //不可以分配
             $("#releaseBut").attr("style","display:none;");
+            //质检员只能查询质检员是自己的数据
+            $("#checkStaffId").val(userInfo.staffId);
+            $('#checkStaffName').searchbox("setValue",userInfo.staffName);
+            $("#checkStaffName").textbox('textbox').attr('readOnly',true);
+            //清除搜索框图标
+            var icon = $('#checkStaffName').searchbox("getIcon", 0);
+            icon.css("visibility", "hidden");
         }else if(userPermission=="staffer"){//话务员（没有任何功能权限）
             $("#disBut").attr("style","display:none;");
             $("#claimBut").attr("style","display:none;");

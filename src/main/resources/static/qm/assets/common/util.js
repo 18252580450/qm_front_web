@@ -56,11 +56,18 @@ define(['constants', 'page-util', 'ajax', 'loading'], function (constants, PageU
                 var params = {
                     "params": JSON.stringify(arr)
                 };
-                ajax.getJson(constants.CONTEXT + constants.USER_PERMISSION + "/qryUserPermission", params, function (result) {
-                    if( result.RSP_CODE=="1"){
-                        userPermission = result.DATA[0].permissionCode;
+                ajax.getJson(constants.CONTEXT + constants.USER_PERMISSION + "/qryUserPermission", params, function (resultNew) {
+                    if(resultNew.RSP_CODE=="1"){
+                        userPermission = resultNew.DATA[0].permissionCode;
                         callback(userPermission);
                     }
+                });
+            }else {
+                jQuery.messager.show({
+                    msg: "虚拟组人员信息查询失败！",
+                    timeout: 1000,
+                    style: {right: '', bottom: ''},     //居中显示
+                    showType: 'show'
                 });
             }
         });

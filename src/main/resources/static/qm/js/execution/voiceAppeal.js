@@ -15,6 +15,30 @@ require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util,
 
         //页面信息初始化
         function initPageInfo() {
+            //申诉人搜索框
+            var staffNameInput = $("#appealStaffName");
+            staffNameInput.searchbox({
+                    searcher: function () {
+                        require(["js/execution/queryQmPeople"], function (qryQmPeople) {
+                            var queryQmPeople = qryQmPeople;
+                            queryQmPeople.initialize();
+                            $('#qry_people_window').show().window({
+                                title: '审批人员信息',
+                                width: 1000,
+                                height: 620,
+                                cache: false,
+                                content: queryQmPeople.$el,
+                                modal: true,
+                                onClose: function () {//弹框关闭前触发事件
+                                    var appealStaff = queryQmPeople.getMap();//获取审批人员信息
+                                    staffNameInput.searchbox("setValue", appealStaff.staffName);
+                                    $("#appealStaffId").val(appealStaff.staffId);
+                                }
+                            });
+                        });
+                    }
+                }
+            );
             //申诉开始时间选择框
             // var beginDate = (DateUtil.formatDateTime(new Date() - 24 * 60 * 60 * 1000)).substr(0, 11) + "00:00:00";
             var beginDate = "2018-10-10 00:00:00";
