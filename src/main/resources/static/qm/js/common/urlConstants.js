@@ -10,6 +10,11 @@ function getUrl(){
         ORDER_CHECK_CESHI:"http://203.57.226.107:9990/qm/html/execution/orderCheck.html",//工单质检代办区（测试）
         VOICE_CHECK_CESHI:"http://203.57.226.107:9990/qm/html/execution/voiceCheck.html",//语音质检代办区（测试）
 
+        BEYOND_PLAN_ORDER_CHECK_BENDI:"http://127.0.0.1:8080/qm/html/execution/beyondPlanOrderCheck.html",//计划外工单质检（本地）
+        BEYOND_PLAN_VOICE_CHECK_BENDI:"http://127.0.0.1:8080/qm/html/execution/beyondPlanVoiceCheck.html",//计划外语音质检（本地）
+        BEYOND_PLAN_ORDER_CHECK_CESHI:"http://203.57.226.107:9990/qm/html/execution/beyondPlanOrderCheck.html",//计划外工单质检（测试）
+        BEYOND_PLAN_VOICE_CHECK_CESHI:"http://203.57.226.107:9990/qm/html/execution/beyondPlanVoiceCheck.html",//计划外语音质检（测试）
+
         WORK_RESULT_MANAGE_BENDI:"http://127.0.0.1:8080/qm/html/manage/workQmResultManage.html",//工单质检结果管理（本地）
         VOICE_RESULT_MANAGE_BENDI:"http://127.0.0.1:8080/qm/html/manage/voiceQmResultManage.html",//语音质结果管理（本地）
         WORK_RESULT_MANAGE_CESHI:"http://203.57.226.107:9990/qm/html/manage/workQmResultManage.html",//工单质检结果管理（测试）

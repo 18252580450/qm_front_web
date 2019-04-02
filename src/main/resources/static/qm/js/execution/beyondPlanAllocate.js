@@ -1,8 +1,8 @@
 define([
         "text!html/execution/beyondPlanAllocate.tpl",
         "js/execution/beyondPlanChooseTemplate",
-        "jquery", 'util', "commonAjax", "transfer", "easyui", "crossAPI", "dateUtil", "ztree-exedit"],
-    function (tpl, QryCheckTemplate, $, Util, CommonAjax, Transfer, easyui, crossAPI, dateUtil) {
+        "jquery", 'util', "commonAjax", "transfer", "easyui", "dateUtil", "ztree-exedit"],
+    function (tpl, QryCheckTemplate, $, Util, CommonAjax, Transfer, easyui, dateUtil) {
         var $el,
             checkType,          //质检类型（1工单、0语音）
             allocateData = [];  //待分配工单or语音列表
@@ -156,7 +156,7 @@ define([
             $('#templateName', $el).searchbox({
                 searcher: function (value) {
                     var qryCheckTemplate = QryCheckTemplate;
-                    qryCheckTemplate.initialize(Util.constants.CHECK_TYPE_ORDER, "1");
+                    qryCheckTemplate.initialize(checkType, "1");
                     $('#qry_window').show().window({
                         title: '选择考评模版',
                         width: 950,
@@ -188,7 +188,11 @@ define([
 
             //确定
             $("#confirm", $el).on("click", function () {
-                allocate();
+                if (checkType === Util.constants.CHECK_TYPE_ORDER) {
+                    workFormAllocate();
+                } else if (checkType === Util.constants.CHECK_TYPE_VOICE) {
+                    voiceAllocate();
+                }
             });
 
             //关闭窗口
@@ -200,7 +204,7 @@ define([
         }
 
         //分配工单
-        function allocate() {
+        function workFormAllocate() {
             var templateId = $("#templateId").val(),
                 checkStaffInfo = $("#staffList").datagrid("getSelected");
             if (templateId == null || templateId === "") {
@@ -226,6 +230,41 @@ define([
                 if (rspCode != null && rspCode === "1") {
                     $.messager.alert("提示", result.RSP.RSP_DESC, null, function () {
                         $("#workFormList").datagrid('load');  //刷新工单列表
+                        $("#qry_people_window").window("close");    // 成功后，关闭窗口
+                    });
+                } else {
+                    $.messager.alert("提示", result.RSP.RSP_DESC);
+                }
+            });
+        }
+
+        //分配语音
+        function voiceAllocate() {
+            var templateId = $("#templateId").val(),
+                checkStaffInfo = $("#staffList").datagrid("getSelected");
+            if (templateId == null || templateId === "") {
+                $.messager.alert("提示", "请选择考评模版!");
+                return;
+            }
+            if (checkStaffInfo == null || checkStaffInfo === "") {
+                $.messager.alert("提示", "请选择质检员!");
+                return;
+            }
+            var params = {
+                "templateId": templateId,                    //模版id
+                "checkStaffId": checkStaffInfo.STAFF_ID,     //质检人id
+                "checkStaffName": checkStaffInfo.STAFF_NAME, //质检人姓名
+                "voiceList": allocateData                 //待分配工单列表
+            };
+
+            Util.loading.showLoading();
+            Util.ajax.postJson(Util.constants.CONTEXT.concat(Util.constants.BEYOND_PLAN_VOICE_POOL_DNS).concat("/"), JSON.stringify(params), function (result) {
+
+                Util.loading.destroyLoading();
+                var rspCode = result.RSP.RSP_CODE;
+                if (rspCode != null && rspCode === "1") {
+                    $.messager.alert("提示", result.RSP.RSP_DESC, null, function () {
+                        $("#voiceCheckList").datagrid('load');  //刷新工单列表
                         $("#qry_people_window").window("close");    // 成功后，关闭窗口
                     });
                 } else {

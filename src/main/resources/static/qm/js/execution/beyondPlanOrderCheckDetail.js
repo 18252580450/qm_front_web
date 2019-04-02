@@ -1,51 +1,41 @@
-define([
-    "text!html/execution/beyondPlanOrderCheckDetail.tpl",
-    "jquery", 'util', "transfer", "dateUtil", "easyui"], function (tpl, $, Util, Transfer) {
+require(["jquery", 'util', "commonAjax", "transfer", "dateUtil", "easyui"], function ($, Util, CommonAjax, Transfer) {
 
-    var $el,
-        workForm,
+    var workForm,
         workFormDetail,             //工单基本信息
-        showingInfo,                //当前显示的基本信息（0工单基本信息、1内外部回复、2接触记录、3工单历史）
+        showingInfo = 0,            //当前显示的基本信息（0工单基本信息、1内外部回复、2接触记录、3工单历史）
         scoreType,                  //分值类型（默认扣分）
         startTime,                  //页面初始化时间
         checkItemListData = [],     //考评项列表数据（所有环节考评项）
-        currentCheckItemData,       //当前考评项列表数据
-        currentNode,                //当前选中环节
-        checkLinkData,              //环节考评数据（提交数据）
-        totalScore,                 //总得分
-        replyData,                  //内外部回复数据
-        recordData,                 //接触记录数据
-        historyData,                //工单历史数据
-        processData;                //轨迹数据
+        currentCheckItemData = [],  //当前考评项列表数据
+        currentNode = {},           //当前选中环节
+        checkLinkData = [],         //环节考评数据（提交数据）
+        totalScore = 0,             //总得分
+        replyData = {},             //内外部回复数据
+        recordData = [],            //接触记录数据
+        historyData = [],           //工单历史数据
+        processData = [],           //轨迹数据
+        qmCheckUrl = Util.constants.URL_CONTEXT + "/qm/html/execution/beyondPlanCheck.html";
 
-    function initialize(checkObj) {
-        $el = $(tpl);
-        workForm = checkObj;
-        showingInfo = 0;
-        currentCheckItemData = [];
-        currentNode = {};
-        checkLinkData = [];
-        totalScore = 0;
-        replyData = {};
-        recordData = [];
-        historyData = [];
-        processData = [];
+    initialize();
 
+    function initialize() {
         initPageInfo();
         initEvent();
-
+        getCheckComment();
         startTime = new Date();
-        this.$el = $el;
     }
 
     //页面信息初始化
     function initPageInfo() {
+        //获取工单流水、质检流水等信息
+        workForm = CommonAjax.getUrlParams();
+
         //获取工单基本信息
         initWrkfmDetail();
 
         //考评项列表
         var IsCheckFlag = true; //标示是否是勾选复选框选中行的，true - 是 , false - 否
-        $("#checkItemList", $el).datagrid({
+        $("#checkItemList").datagrid({
             columns: [[
                 {field: 'checkItemName', title: '考评项名称', width: '20%'},
                 {
@@ -98,13 +88,13 @@ define([
             onSelect: function (rowIndex, rowData) {
                 if (!IsCheckFlag) {
                     IsCheckFlag = true;
-                    $("#checkItemList", $el).datagrid("unselectRow", rowIndex);
+                    $("#checkItemList").datagrid("unselectRow", rowIndex);
                 }
             },
             onUnselect: function (rowIndex, rowData) {
                 if (!IsCheckFlag) {
                     IsCheckFlag = true;
-                    $("#checkItemList", $el).datagrid("selectRow", rowIndex);
+                    $("#checkItemList").datagrid("selectRow", rowIndex);
                 }
             },
             onLoadSuccess: function (data) {
@@ -131,7 +121,7 @@ define([
                         });
                         $("#checkScore_" + currentNode.lgId).html(String(total - discount));
                         checkLinkSave();
-                        $("#totalScore", $el).val(totalScore);
+                        $("#totalScore").val(totalScore);
                     });
                     input.on("blur", function () {
                         var scoreDiv = $("#score" + item.nodeId),
@@ -140,7 +130,7 @@ define([
                             scoreDiv.val("0");
                         }
                         checkLinkSave();
-                        $("#totalScore", $el).val(totalScore);
+                        $("#totalScore").val(totalScore);
                         //刷新考评环节合格状态
                         refreshCheckResult();
                     });
@@ -177,18 +167,18 @@ define([
                 });
             } else {
                 workFormDetail = data;
-                $("#workFormId", $el).val(data.acceptInfo.wrkfmShowSwftno);
-                $("#custNum", $el).val(data.userInfo.custNum);
-                $("#srvReqstTypeFullNm", $el).val(data.acceptInfo.srvReqstTypeFullNm);
-                $("#custBelgCityNm", $el).val(data.userInfo.custBelgCityNm);
-                $("#isVipNm", $el).val(data.userInfo.isVipNm);
-                $("#acptChnlNm", $el).val(data.acceptInfo.acptChnlNm);
-                $("#dplctCmplntsFlagNm", $el).val(data.acceptInfo.dplctCmplntsFlagNm);
-                $("#isMajorCmplntsNm", $el).val(data.acceptInfo.isMajorCmplntsNm);
-                $("#faultLvlNm", $el).val(data.acceptInfo.faultLvlNm);
-                $("#urgntExtentNm", $el).val(data.acceptInfo.urgntExtentNm);
-                $("#custMoodTypeNm", $el).val(data.acceptInfo.custMoodTypeNm);
-                $("#bizCntt", $el).val(data.acceptInfo.bizCntt);
+                $("#workFormId").val(data.acceptInfo.wrkfmShowSwftno);
+                $("#custNum").val(data.userInfo.custNum);
+                $("#srvReqstTypeFullNm").val(data.acceptInfo.srvReqstTypeFullNm);
+                $("#custBelgCityNm").val(data.userInfo.custBelgCityNm);
+                $("#isVipNm").val(data.userInfo.isVipNm);
+                $("#acptChnlNm").val(data.acceptInfo.acptChnlNm);
+                $("#dplctCmplntsFlagNm").val(data.acceptInfo.dplctCmplntsFlagNm);
+                $("#isMajorCmplntsNm").val(data.acceptInfo.isMajorCmplntsNm);
+                $("#faultLvlNm").val(data.acceptInfo.faultLvlNm);
+                $("#urgntExtentNm").val(data.acceptInfo.urgntExtentNm);
+                $("#custMoodTypeNm").val(data.acceptInfo.custMoodTypeNm);
+                $("#bizCntt").val(data.acceptInfo.bizCntt);
             }
         });
     }
@@ -229,7 +219,7 @@ define([
                     "start": 0,
                     "pageNum": 0,
                     "params": JSON.stringify(reqParams)
-                }, Util.PageUtil.getParams($("#searchForm", $el)));
+                }, Util.PageUtil.getParams($("#searchForm")));
 
                 Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.CHECK_ITEM_DNS + "/queryCheckItemDetail", params, function (result) {
                     checkItemListData = result.RSP.DATA;
@@ -251,7 +241,7 @@ define([
                                 currentCheckItemData.push(item)
                             }
                         });
-                        $("#checkItemList", $el).datagrid("loadData", {rows: currentCheckItemData});
+                        $("#checkItemList").datagrid("loadData", {rows: currentCheckItemData});
 
                         //查询暂存数据
                         var reqParams = {
@@ -262,7 +252,7 @@ define([
                             "start": 0,
                             "pageNum": 0,
                             "params": JSON.stringify(reqParams)
-                        }, Util.PageUtil.getParams($("#searchForm", $el)));
+                        }, Util.PageUtil.getParams($("#searchForm")));
 
                         Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.ORDER_CHECK_DNS + "/querySavedResult", params, function (result) {
                             if (result.RSP.RSP_CODE === "1") {
@@ -353,7 +343,7 @@ define([
                             //刷新考评项列表数据
                             refreshCheckArea();
                             //初始化总得分
-                            $("#totalScore", $el).val(totalScore);
+                            $("#totalScore").val(totalScore);
                         });
                     }
                 });
@@ -370,11 +360,11 @@ define([
             "start": 0,
             "pageNum": 0,
             "params": JSON.stringify(reqParam)
-        }, Util.PageUtil.getParams($("#searchForm", $el)));
+        }, Util.PageUtil.getParams($("#searchForm")));
 
         Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.ORDER_CHECK_DNS + "/queryOrderCheckResult", param, function (result) {
             if (result.RSP.RSP_CODE === "1") {
-                $("#checkComment", $el).html(result.RSP.DATA[0].checkComment);
+                $("#checkComment").html(result.RSP.DATA[0].checkComment);
             }
         });
     }
@@ -382,64 +372,111 @@ define([
     //事件初始化
     function initEvent() {
         //基本信息btn
-        $("#baseInfoBtn", $el).on("click", function () {
+        $("#baseInfoBtn").on("click", function () {
             changeInfoArea(0);
         });
         //内外部回复btn
-        $("#handlingLogBtn", $el).on("click", function () {
+        $("#handlingLogBtn").on("click", function () {
             changeInfoArea(1);
             initHandlingLog();
         });
         //接触记录btn
-        $("#recordingBtn", $el).on("click", function () {
+        $("#recordingBtn").on("click", function () {
             changeInfoArea(2);
             if (recordData.length === 0) {
                 initRecord();
             }
         });
         //工单历史btn
-        $("#historyBtn", $el).on("click", function () {
+        $("#historyBtn").on("click", function () {
             changeInfoArea(3);
             if (historyData.length === 0) {
                 initHistory();
             }
         });
         //外部回复tab
-        $("#externalReplyTab", $el).on("click", function () {
+        $("#externalReplyTab").on("click", function () {
             changeReplyArea(true);
             if (replyData.hasOwnProperty("externalReply")) {
                 showHandlingLog(replyData.externalReply, true);
             }
         });
         //内部回复tab
-        $("#insideReplyTab", $el).on("click", function () {
+        $("#insideReplyTab").on("click", function () {
             changeReplyArea(false);
             if (replyData.hasOwnProperty("insideReply")) {
                 showHandlingLog(replyData.insideReply, false);
             }
         });
         //通知类型复选框点击事件
-        $("#messageInform", $el).on("click", function () {
-            $("#emailInform", $el).attr("checked", false);
+        $("#messageInform").on("click", function () {
+            $("#emailInform").attr("checked", false);
         });
-        $("#emailInform", $el).on("click", function () {
-            $("#messageInform", $el).attr("checked", false);
+        $("#emailInform").on("click", function () {
+            $("#messageInform").attr("checked", false);
         });
         //保存
-        $("#saveBtn", $el).on("click", function () {
+        $("#saveBtn").on("click", function () {
             checkSubmit(Util.constants.CHECK_FLAG_CHECK_SAVE);  //质检保存
         });
         //提交
-        $("#submitBtn", $el).on("click", function () {
+        $("#submitBtn").on("click", function () {
             checkSubmit(Util.constants.CHECK_FLAG_NEW_BUILD);  //质检提交
         });
         //取消
-        $("#cancelBtn", $el).on("click", function () {
-            $("#check_window").window("destroy");
+        $("#cancelBtn").on("click", function () {
+            //关闭工单质检详情
+            CommonAjax.closeMenuByNameAndId("工单质检详情", workForm.wrkfmId);
         });
         //案例收集
-        $("#caseCollectBtn", $el).on("click", function () {
+        $("#caseCollectBtn").on("click", function () {
             $.messager.alert("提示", "该功能暂未开放!");
+        });
+    }
+
+    function getCheckComment() {
+        var reqParams = {//入参
+            "parentCommentId": "",
+            "commentName": ""
+        };
+        var params = {
+            "start": 0,
+            "pageNum": 0,
+            "params": JSON.stringify(reqParams)
+        };
+        //查询
+        Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.ORDINARY_COMMENT + "/selectByParams", params, function (result) {
+            var json = [];
+            var data = result.RSP.DATA;
+            var map = {};
+            map["commentId"] = "0";
+            map["commentName"] = "其他";
+            data.push(map);
+            data.forEach(function (value, index) {
+                var map = {};
+                map["id"] = value.commentId;
+                map["text"] = value.commentName;
+                json.push(map);
+            });
+            //考评评语下拉框
+            $("#checkCommentSearch").combobox({
+                method: "GET",
+                valueField: 'id',
+                textField: 'text',
+                panelHeight: 'auto',
+                editable: false,
+                data: json,
+                onSelect: function (record) {//下拉框选中时触发
+                    var checkComment = $("#checkComment");
+                    if (record.text === "其他") {
+                        checkComment.attr("style", "display:block;");
+                        checkComment.val("");
+                    } else {
+                        checkComment.attr("style", "display:none;");
+                        checkComment.val(record.text);
+                    }
+                }
+            });
         });
     }
 
@@ -476,7 +513,7 @@ define([
     //初始化接触记录
     function initRecord() {
         var IsCheckFlag = true, //标示是否是勾选复选框选中行的，true - 是 , false - 否
-            recordList = $("#recordList", $el);
+            recordList = $("#recordList");
         recordList.datagrid({
             columns: [[
                 {field: 'cntmngSwftno', title: '接触流水', width: '20%'},
@@ -574,7 +611,7 @@ define([
     //初始化工单历史
     function initHistory() {
         var IsCheckFlag = true, //标示是否是勾选复选框选中行的，true - 是 , false - 否
-            historyList = $("#historyList", $el);
+            historyList = $("#historyList");
         historyList.datagrid({
             columns: [[
                 {field: 'wrkfmShowSwftno', title: '工单编号', width: '20%'},
@@ -644,21 +681,21 @@ define([
     //显示内外部回复
     function showHandlingLog(data, showExternalReply) {
         if (showExternalReply) {
-            $("#externalReply", $el).empty();
+            $("#externalReply").empty();
             $.each(data, function (i, item) {
                 $("#externalReply").append(getReplyDiv(item));
             });
         } else {
-            $("#insideReply", $el).empty();
+            $("#insideReply").empty();
             $.each(data, function (i, item) {
-                $("#insideReply", $el).append(getReplyDiv(item));
+                $("#insideReply").append(getReplyDiv(item));
             });
         }
     }
 
     //初始化处理过程
     function showDealProcess(data) {
-        var processDiv = $("#processDealDiv", $el);
+        var processDiv = $("#processDealDiv");
         $.each(data, function (i, item) {
             if (i < data.length - 1) {
                 processDiv.append(getProcessDiv(item, false));
@@ -673,7 +710,7 @@ define([
                 checkBox.attr("checked", true);
                 $("#leftSpan_" + item.lgId).attr("class", "left-span-1");
                 $("#spot_" + item.lgId).attr("class", "spot-1");
-                // $("#checkLinkTitle",$el).html(item.opTypeNm);
+                // $("#checkLinkTitle).html(item.opTypeNm);
             }
             //绑定checkBox点击事件
             checkBox.on("click", function () {
@@ -691,7 +728,7 @@ define([
                     } else {
                         $("#leftSpan_" + data.lgId).attr("class", "left-span-1");
                         $("#spot_" + data.lgId).attr("class", "spot-1");
-                        // $("#checkLinkTitle",$el).html(data.opTypeNm);
+                        // $("#checkLinkTitle).html(data.opTypeNm);
                     }
                 });
 
@@ -707,7 +744,7 @@ define([
                         currentCheckItemData.push(item);
                     }
                 });
-                $("#checkItemList", $el).datagrid("loadData", {rows: currentCheckItemData}); //刷新考评项列表
+                $("#checkItemList").datagrid("loadData", {rows: currentCheckItemData}); //刷新考评项列表
                 refreshCheckArea(); //刷新评价区数据
             });
         });
@@ -834,7 +871,7 @@ define([
             checkTime = currentTime - startTime,
             checkStartTime = DateUtil.formatDateTime(currentTime),
             finalScore = totalScore / checkLinkData.length,  //最终得分，暂时按各个环节的平局分统计
-            checkComment = $("#checkComment", $el).val(),
+            checkComment = $("#checkComment").val(),
             unqualifiedNum = 0;  //不合格环节数
 
         //统计不合格环节数
@@ -854,9 +891,9 @@ define([
             "wrkfmShowSwftno": workFormDetail.acceptInfo.wrkfmShowSwftno,       //工单显示流水
             "planId": "",                                                       //考评计划（计划外质检不绑定计划）
             "templateId": workForm.templateId,                                  //考评模版ID
-            "checkModel": Util.constants.CHECK_TYPE_BEYOND_PLAN,                //质检模式、计划内质检
-            "checkStaffId": Util.constants.STAFF_ID,                            //质检员id
-            "checkStaffName": Util.constants.STAFF_NAME,                        //质检员名
+            "checkModel": Util.constants.CHECK_TYPE_BEYOND_PLAN,                //计划外质检
+            "checkStaffId": workForm.checkStaffId,                              //质检员id
+            "checkStaffName": workForm.checkStaffName,                          //质检员名
             "checkStartTime": checkStartTime,                                   //质检开始时间（质检分配时间）
             "checkTime": checkTime,                                             //质检时长
             "scoreType": scoreType,                                             //分值类型
@@ -903,8 +940,8 @@ define([
             var rspCode = result.RSP.RSP_CODE;
             if (rspCode != null && rspCode === "1") {
                 $.messager.alert("提示", result.RSP.RSP_DESC, null, function () {
-                    $("#workFormList").datagrid('load');  //刷新工单列表
-                    $("#check_window").window("destroy");
+                    CommonAjax.closeMenuByNameAndId("工单质检详情", workForm.wrkfmId);
+                    CommonAjax.refreshMenuByUrl(qmCheckUrl, "计划外质检池", "计划外质检池");
                 });
             } else {
                 $.messager.alert("提示", errMsg + result.RSP.RSP_DESC);
@@ -965,7 +1002,7 @@ define([
     //更新评价区数据
     function refreshCheckArea() {
         //工作质量评价区数据更新
-        $("#totalScore", $el).val(totalScore);  //总得分
+        $("#totalScore").val(totalScore);  //总得分
         for (var i = 0; i < checkLinkData.length; i++) {
             if (checkLinkData[i].checkLink === currentNode.lgId) {
                 //考评项列表
@@ -988,14 +1025,14 @@ define([
 
     //基本信息、内外部回复切换
     function changeInfoArea(curShowingInfo) {
-        var baseInfoBtn = $("#baseInfoBtn", $el),
-            handlingLogBtn = $("#handlingLogBtn", $el),
-            recordingBtn = $("#recordingBtn", $el),
-            historyBtn = $("#historyBtn", $el),
-            baseInfo = $("#baseInfo", $el),
-            handlingLog = $("#handlingLog", $el),
-            recording = $("#recording", $el),
-            history = $("#history", $el);
+        var baseInfoBtn = $("#baseInfoBtn"),
+            handlingLogBtn = $("#handlingLogBtn"),
+            recordingBtn = $("#recordingBtn"),
+            historyBtn = $("#historyBtn"),
+            baseInfo = $("#baseInfo"),
+            handlingLog = $("#handlingLog"),
+            recording = $("#recording"),
+            history = $("#history");
         switch (showingInfo) {
             case 0:
                 baseInfoBtn.removeClass();
@@ -1045,26 +1082,26 @@ define([
 
     //内部回复、外部回复切换
     function changeReplyArea(showExternalReply) {
-        var externalReplyTab = $("#externalReplyTab", $el),
-            insideReplyTab = $("#insideReplyTab", $el);
+        var externalReplyTab = $("#externalReplyTab"),
+            insideReplyTab = $("#insideReplyTab");
         if (showExternalReply) {
             externalReplyTab.removeClass();
             insideReplyTab.removeClass();
             externalReplyTab.addClass("tab-1");
             insideReplyTab.addClass("tab-2");
-            $("#externalReplySpan", $el).css("color", "#4A90E2");
-            $("#insideReplySpan", $el).css("color", "#CDD6E0");
-            $("#externalReply", $el).show();
-            $("#insideReply", $el).hide();
+            $("#externalReplySpan").css("color", "#4A90E2");
+            $("#insideReplySpan").css("color", "#CDD6E0");
+            $("#externalReply").show();
+            $("#insideReply").hide();
         } else {
             externalReplyTab.removeClass();
             insideReplyTab.removeClass();
             externalReplyTab.addClass("tab-2");
             insideReplyTab.addClass("tab-1");
-            $("#externalReplySpan", $el).css("color", "#CDD6E0");
-            $("#insideReplySpan", $el).css("color", "#4A90E2");
-            $("#externalReply", $el).hide();
-            $("#insideReply", $el).show();
+            $("#externalReplySpan").css("color", "#CDD6E0");
+            $("#insideReplySpan").css("color", "#4A90E2");
+            $("#externalReply").hide();
+            $("#insideReply").show();
         }
     }
 
