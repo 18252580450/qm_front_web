@@ -82,10 +82,8 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
             loader: function (param, success) {//加载器
                 var start = (param.page - 1) * param.rows;
                 var pageNum = param.rows;
-                var parentCommentId = $("#mainCommentName").val();//父级评语名称。显示名称，但是传过来的是id，隐藏域
                 var commentName = $("#commentName").val();//评语名称
                 var reqParams = {//入参
-                    "parentCommentId": "",
                     "commentName":commentName
                 };
                 var params = $.extend({
@@ -199,16 +197,15 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
                $('#name').validatebox({required:true});//非空校验
                //禁用按钮，防止多次提交
                $('#global').linkbutton({disabled: true});
-
-               var parentCommentName = $("#parentCommentName").val();
                var name = $("#name").val();
                var desc = $("#desc").val();
 
-               var params = {'tenantId': Util.constants.TENANT_ID,'parentCommentName': parentCommentName, 'commentName': name, 'remark': desc};
+               var params = {'tenantId': Util.constants.TENANT_ID,
+                   'commentName': name, 'remark': desc,
+                   "createStaffId":userInfo.staffId};
 
-               if (parentCommentName == null || parentCommentName == "" || name == null
-                   || name == "") {
-                   $.messager.alert('警告', '父评语名称和名称不能为空!');
+               if (name == null || name == "") {
+                   $.messager.alert('警告', '名称不能为空!');
 
                    $("#global").linkbutton({disabled: false});  //按钮可用
                    return false;
@@ -252,8 +249,8 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
            var rowData = $(this).attr('id'); //获取a标签中传递的值
            var sensjson = JSON.parse(rowData); //转成json格式
 
-           $('#modfName').form('load', sensjson);   //将数据填入弹框中
-
+           $('#modfName').val(sensjson.commentName);   //将数据填入弹框中
+           $('#remark').val(sensjson.remark);   //将数据填入弹框中
            $("#modf_content").unbind("click");              //解绑事件
 
            $("#modf_content").on("click", "#no", function () {
@@ -270,13 +267,12 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
                var crtTime = sensjson.crtTime;
 
                var params = {'tenantId': Util.constants.TENANT_ID,'commentId':commentId,
-                   'commentName':modfName, 'remark': remark,'createStaffId':createStaffId,'crtTime':crtTime};
+                   'commentName':modfName, 'remark': remark,'createStaffId':createStaffId,'crtTime':crtTime,
+                   "operateStaffId":userInfo.staffId};
 
                if (modfName == null || modfName == "" ) {
                    $.messager.alert('警告', '名称不能为空！');
-
                    $("#ok").linkbutton({disabled: false});  //按钮可用
-
                    return false;
                }
 

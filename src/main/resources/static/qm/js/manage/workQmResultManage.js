@@ -192,7 +192,7 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
                 var qmStartTime = $("#qmStartTime").datetimebox("getValue");
                 var qmEndTime = $("#qmEndTime").datetimebox("getValue");
                 if(userPermission=="checker"){
-                    checkStaffId = userInfo.staffId;
+                    checkStaffId = userInfo.staffId+"";
                 }else{
                     checkStaffId = $("#checkStaffId").val();
                 }
@@ -356,7 +356,7 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
                 "inspectionId": data.inspectionId,
                 "planId": data.planId,
                 "templateId": data.templateId,
-                "appealStaffId": userInfo.staffId,
+                "appealStaffId": userInfo.staffId+"",
                 "appealStaffName": userInfo.staffName,
                 "appealReason": appealReason
             };
@@ -414,22 +414,24 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
     function dao() {
         var fields = $('#queryInfo').datagrid('getColumnFields'); //获取datagrid的所有fields
         var titles = [];
+        var checkStaffId = "";
         fields.forEach(function (value, index, array) {
             var title = $('#queryInfo').datagrid('getColumnOption', value).title;//获取datagrid的title
             title = (title != null) ? title : "";
             titles.push(title);
         });
+        if(userPermission=="checker"){
+            checkStaffId = userInfo.staffId+"";
+        }else{
+            checkStaffId = $("#checkStaffId").val();
+        }
         if (reqParams == null) {
             reqParams = {
                 "touchId": "",
                 "acceptNumber": "",
-                "checkDepartName": "",
-                "checkStaffId": "",
                 "qmStartTime": "",
                 "qmEndTime": "",
-                "checkedStaffId": "",
-                "checkedDepartName": "",
-                "checkLink": "",
+                "checkStaffId": checkStaffId,
                 "minScore": "",
                 "maxScore": "",
                 "resultStatus": "",
@@ -456,7 +458,7 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
             $("#disBut").attr("style","display:none;"); //不可以分配
             $("#releaseBut").attr("style","display:none;");
             //质检员只能查询质检员是自己的数据
-            $("#checkStaffId").val(userInfo.staffId);
+            $("#checkStaffId").val(userInfo.staffId+"");
             $('#checkStaffName').searchbox("setValue",userInfo.staffName);
             $("#checkStaffName").textbox('textbox').attr('readOnly',true);
             //清除搜索框图标
@@ -532,7 +534,7 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
         var reqParams = {
             "groupId": "",
             "staffName": "",
-            "staffId": userInfo.staffId,
+            "staffId": userInfo.staffId+"",
             "start": 0,
             "limit": 0,
             "provCode": "",

@@ -251,8 +251,6 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui","dateUti
                         }
                     }},
                 {field: 'acptStaffId', title: '立单人', align: 'center', width: '10%'},
-                {field: 'dspsComplteStaffId', title: '领取人', align: 'center', width: '10%'},
-
                 {field: 'handleDuration', title: '处理时长', align: 'center', width: '10%'},
                 {field: 'planId', title: '计划编码', align: 'center', width: '10%',hidden: true},
                 {field: 'isOperate', title: '是否分配', align: 'center', width: '10%',
@@ -289,7 +287,7 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui","dateUti
                 var start = (param.page - 1) * param.rows;
                 var pageNum = param.rows;
                 if(userPermission=="checker"){
-                    checkStaffId = userInfo.staffId;
+                    checkStaffId = userInfo.staffId+"";
                 }else{
                     checkStaffId = $("#checkStaffId").val();
                 }
@@ -315,7 +313,8 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui","dateUti
                     "isOperate":isOperate,
                     "planStartTime": planStartTime,
                     "planEndTime": planEndTime,
-                    "checkStaffId":checkStaffId
+                    "checkStaffId":checkStaffId,
+                    "userPermission":userPermission
                 };
                 var params = $.extend({
                     "start": start,
@@ -383,8 +382,8 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui","dateUti
         if(userPermission=="checker"){//质检员
             $("#disBut").attr("style","display:none;"); //不可以分配
             $("#releaseBut").attr("style","display:none;");
-            //质检员只能查询质检员是自己的数据
-            $("#checkStaffId").val(userInfo.staffId);
+            //质检员只能查询质检员是自己的数据或者是没有质检员的数据
+            $("#checkStaffId").val(userInfo.staffId+"");
             $('#checkStaffName').searchbox("setValue",userInfo.staffName);
             $("#checkStaffName").textbox('textbox').attr('readOnly',true);
             //清除搜索框图标
@@ -548,11 +547,15 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui","dateUti
     function dao(){
         var fields = $('#queryInfo').datagrid('getColumnFields'); //获取datagrid的所有fields
         var titles=[];
+        var checkStaffId = "";
         fields.forEach(function(value,index,array){
             var title = $('#queryInfo').datagrid('getColumnOption',value).title;//获取datagrid的title
             title = (title!=null)?title:"";
             titles.push(title);
         });
+        if(userPermission=="checker"){
+            checkStaffId = userInfo.staffId+"";
+        }
         if(reqParams==null){
             reqParams = {
                 "wrkfmShowSwftno": "",
@@ -563,7 +566,8 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui","dateUti
                 "planStartTime": "",
                 "planEndTime": "",
                 "checkLink": "",
-                "checkStaffName":""
+                "checkStaffId":checkStaffId,
+                "userPermission":userPermission
             };
         }
         var params = {

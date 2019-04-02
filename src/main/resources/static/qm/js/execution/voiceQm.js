@@ -346,12 +346,12 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
                 var startTime = $("#startTime").datetimebox("getValue");
                 var endTime = $("#endTime").datetimebox("getValue");
                 if(userPermission=="staffer"){
-                    checkedStaffId = userInfo.staffId;
+                    checkedStaffId = userInfo.staffId+"";
                 }else{
                     checkedStaffId = $("#checkedStaffId").val();
                 }
                 if(userPermission=="checker"){
-                    checkStaffId = userInfo.staffId;
+                    checkStaffId = userInfo.staffId+"";
                 }else{
                     checkStaffId = $("#checkStaffId").val();
                 }
@@ -389,6 +389,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
                     "mediaType":mediaType,
                     "srvReqstTypeId":serviceTypeId,
                     "poolStatus": poolStatus,
+                    "userPermission":userPermission
                 };
                 var params = $.extend({
                     "start": start,
@@ -428,8 +429,8 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
         if(userPermission=="checker"){//质检员
             $("#detailBut").attr("style","display:none;"); //不可以分配
             $("#releaseBut").attr("style","display:none;");
-            //质检员只能查询质检员是自己的数据
-            $("#checkStaffId").val(userInfo.staffId);
+            //质检员只能查询质检员是自己的数据或者是没有质检员的数据
+            $("#checkStaffId").val(userInfo.staffId+"");
             $('#checkStaffName').searchbox("setValue",userInfo.staffName);
             $("#checkStaffName").textbox('textbox').attr('readOnly',true);
             //清除搜索框图标
@@ -646,48 +647,21 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
         }
     }
 
-    function updateCheck(dataNew) {
-        var selRows = $("#checkStaffInfo").datagrid("getSelections");//选中多行
-        if (selRows.length == 0||selRows.length>1) {
-            $.messager.alert("提示", "请只选择一行数据!");
-            return false;
-        }
-        var params=[];
-        for(var i=0;i<dataNew.length;i++){
-            var map = {};
-            var checkStaffId = selRows[0].checkStaffId;
-            var checkStaffCode = selRows[0].checkStaffCode;
-            map["checkStaffName"]=checkStaffCode;
-            map["checkStaffId"]=checkStaffId;
-            map["touchId"]=dataNew[i];
-            params.push(map);
-        }
-        Util.ajax.putJson(Util.constants.CONTEXT.concat(Util.constants.VOICE_POOL_DNS).concat("/updateCheck"), JSON.stringify(params), function (result) {
-            $.messager.show({
-                msg: result.RSP.RSP_DESC,
-                timeout: 1000,
-                style: {right: '', bottom: ''},     //居中显示
-                showType: 'slide'
-            });
-            var rspCode = result.RSP.RSP_CODE;
-            if (rspCode == "1") {
-                $('#add_window').window('close'); // 成功后，关闭窗口
-                $("#queryInfo").datagrid('reload'); //成功后，刷新页面
-            }
-        });
-    }
-
     /**
      * 后台导出
      */
     function dao(){
         var fields = $('#queryInfo').datagrid('getColumnFields'); //获取datagrid的所有fields
         var titles=[];
+        var checkStaffId = "";
         fields.forEach(function(value,index,array){
             var title = $('#queryInfo').datagrid('getColumnOption',value).title;//获取datagrid的title
             title = (title!=null)?title:"";
             titles.push(title);
         });
+        if(userPermission=="checker"){
+            checkStaffId = userInfo.staffId+"";
+        }
         if(reqParams == null){
              reqParams= {
                 "touchId": "",
@@ -695,7 +669,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
                 "isOperate": "",
                 "extractBeginTime": "",
                 "extractEndTime": "",
-                "checkStaffId": "",
+                "checkStaffId": checkStaffId,
                 "checkedStaffId":"",
                 "hungupType":"",
                 "callType":"",
@@ -707,6 +681,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
                 "mediaType":"",
                 "srvReqstTypeId":"",
                 "poolStatus": "",
+                 "userPermission":userPermission
             };
         }
         var params = {
