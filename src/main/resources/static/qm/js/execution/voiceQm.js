@@ -653,11 +653,15 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
     function dao(){
         var fields = $('#queryInfo').datagrid('getColumnFields'); //获取datagrid的所有fields
         var titles=[];
+        var checkStaffId = "";
         fields.forEach(function(value,index,array){
             var title = $('#queryInfo').datagrid('getColumnOption',value).title;//获取datagrid的title
             title = (title!=null)?title:"";
             titles.push(title);
         });
+        if(userPermission=="checker"){
+            checkStaffId = userInfo.staffId;
+        }
         if(reqParams == null){
              reqParams= {
                 "touchId": "",
@@ -665,7 +669,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
                 "isOperate": "",
                 "extractBeginTime": "",
                 "extractEndTime": "",
-                "checkStaffId": "",
+                "checkStaffId": checkStaffId,
                 "checkedStaffId":"",
                 "hungupType":"",
                 "callType":"",

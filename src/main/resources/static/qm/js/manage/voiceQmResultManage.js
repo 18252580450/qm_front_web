@@ -346,16 +346,28 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
     function dao() {
         var fields = $('#queryInfo').datagrid('getColumnFields'); //获取datagrid的所有fields
         var titles = [];
+        var checkStaffId = "";
+        var checkedStaffId = "";
         fields.forEach(function (value, index, array) {
             var title = $('#queryInfo').datagrid('getColumnOption', value).title;//获取datagrid的title
             title = (title != null) ? title : "";
             titles.push(title);
         });
+        if(userPermission=="checker"){
+            checkStaffId = userInfo.staffId;
+        }else{
+            checkStaffId = $("#checkStaffId").val();
+        }
+        if(userPermission=="staffer"){
+            checkedStaffId = userInfo.staffId;
+        }else{
+            checkedStaffId = $("#checkedStaffId").val();
+        }
         if (reqParams == null) {
             reqParams = {
                 "touchId": "",
-                "checkStaffId": "",
-                "checkedStaffId": "",
+                "checkStaffId": checkStaffId,
+                "checkedStaffId": checkedStaffId,
                 "startTime": "",
                 "endTime": "",
                 "inspectionId": "",
