@@ -346,12 +346,12 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
                 var startTime = $("#startTime").datetimebox("getValue");
                 var endTime = $("#endTime").datetimebox("getValue");
                 if(userPermission=="staffer"){
-                    checkedStaffId = userInfo.staffId;
+                    checkedStaffId = userInfo.staffId+"";
                 }else{
                     checkedStaffId = $("#checkedStaffId").val();
                 }
                 if(userPermission=="checker"){
-                    checkStaffId = userInfo.staffId;
+                    checkStaffId = userInfo.staffId+"";
                 }else{
                     checkStaffId = $("#checkStaffId").val();
                 }
@@ -430,7 +430,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
             $("#detailBut").attr("style","display:none;"); //不可以分配
             $("#releaseBut").attr("style","display:none;");
             //质检员只能查询质检员是自己的数据或者是没有质检员的数据
-            // $("#checkStaffId").val(userInfo.staffId);
+            $("#checkStaffId").val(userInfo.staffId+"");
             $('#checkStaffName').searchbox("setValue",userInfo.staffName);
             $("#checkStaffName").textbox('textbox').attr('readOnly',true);
             //清除搜索框图标
@@ -660,7 +660,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
             titles.push(title);
         });
         if(userPermission=="checker"){
-            checkStaffId = userInfo.staffId;
+            checkStaffId = userInfo.staffId+"";
         }
         if(reqParams == null){
              reqParams= {

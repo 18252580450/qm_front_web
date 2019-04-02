@@ -287,7 +287,7 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui","dateUti
                 var start = (param.page - 1) * param.rows;
                 var pageNum = param.rows;
                 if(userPermission=="checker"){
-                    checkStaffId = userInfo.staffId;
+                    checkStaffId = userInfo.staffId+"";
                 }else{
                     checkStaffId = $("#checkStaffId").val();
                 }
@@ -383,7 +383,7 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui","dateUti
             $("#disBut").attr("style","display:none;"); //不可以分配
             $("#releaseBut").attr("style","display:none;");
             //质检员只能查询质检员是自己的数据或者是没有质检员的数据
-            $("#checkStaffId").val(userInfo.staffId);
+            $("#checkStaffId").val(userInfo.staffId+"");
             $('#checkStaffName').searchbox("setValue",userInfo.staffName);
             $("#checkStaffName").textbox('textbox').attr('readOnly',true);
             //清除搜索框图标
@@ -554,7 +554,7 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui","dateUti
             titles.push(title);
         });
         if(userPermission=="checker"){
-            checkStaffId = userInfo.staffId;
+            checkStaffId = userInfo.staffId+"";
         }
         if(reqParams==null){
             reqParams = {

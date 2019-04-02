@@ -217,14 +217,14 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
                 var pageNum = param.rows;
                 var touchId = $("#touchId").val();
                 if(userPermission=="checker"){
-                    checkStaffId = userInfo.staffId;
+                    checkStaffId = userInfo.staffId+"";
                 }else{
                     checkStaffId = $("#checkStaffId").val();
                 }
                 var startTime = $("#startTime").datetimebox("getValue");
                 var endTime = $("#endTime").datetimebox("getValue");
                 if(userPermission=="staffer"){
-                    checkedStaffId = userInfo.staffId;
+                    checkedStaffId = userInfo.staffId+"";
                 }else{
                     checkedStaffId = $("#checkedStaffId").val();
                 }
@@ -354,12 +354,12 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
             titles.push(title);
         });
         if(userPermission=="checker"){
-            checkStaffId = userInfo.staffId;
+            checkStaffId = userInfo.staffId+"";
         }else{
             checkStaffId = $("#checkStaffId").val();
         }
         if(userPermission=="staffer"){
-            checkedStaffId = userInfo.staffId;
+            checkedStaffId = userInfo.staffId+"";
         }else{
             checkedStaffId = $("#checkedStaffId").val();
         }
@@ -391,7 +391,7 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
     function initEvent() {
         if(userPermission=="staffer"){//话务员（没有任何功能权限）
             //话务员只能查询被质检员是自己的数据
-            $("#checkedStaffId").val(userInfo.staffId);
+            $("#checkedStaffId").val(userInfo.staffId+"");
             $('#checkedStaffName').searchbox("setValue",userInfo.staffName);
             $("#checkedStaffName").textbox('textbox').attr('readOnly',true);
             //清除搜索框图标
@@ -399,7 +399,7 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
             icon.css("visibility", "hidden");
         }else if(userPermission=="checker"){
             //质检员只能查询质检员是自己的数据
-            $("#checkStaffId").val(userInfo.staffId);
+            $("#checkStaffId").val(userInfo.staffId+"");
             $('#checkStaffName').searchbox("setValue",userInfo.staffName);
             $("#checkStaffName").textbox('textbox').attr('readOnly',true);
             //清除搜索框图标
@@ -493,7 +493,7 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
                 "inspectionId": data.inspectionId,
                 "planId": data.planId,
                 "templateId": data.templateId,
-                "appealStaffId": userInfo.staffId,
+                "appealStaffId": userInfo.staffId+"",
                 "appealStaffName": userInfo.staffName,
                 "appealReason": appealReason
             };
@@ -571,7 +571,7 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
         var reqParams = {
             "groupId": "",
             "staffName": "",
-            "staffId": userInfo.staffId,
+            "staffId": userInfo.staffId+"",
             "start": 0,
             "limit": 0,
             "provCode": "",
