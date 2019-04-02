@@ -168,6 +168,7 @@ define([
         //重置
         $("#searchForm").on("click", "#btn-default", function () {
             $("#searchForm").form('clear');
+            $("input[name='isValidate']").attr("checked", "");
         });
 
         //新增
