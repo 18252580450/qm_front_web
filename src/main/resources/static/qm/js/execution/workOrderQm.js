@@ -251,8 +251,6 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui","dateUti
                         }
                     }},
                 {field: 'acptStaffId', title: '立单人', align: 'center', width: '10%'},
-                {field: 'dspsComplteStaffId', title: '领取人', align: 'center', width: '10%'},
-
                 {field: 'handleDuration', title: '处理时长', align: 'center', width: '10%'},
                 {field: 'planId', title: '计划编码', align: 'center', width: '10%',hidden: true},
                 {field: 'isOperate', title: '是否分配', align: 'center', width: '10%',
