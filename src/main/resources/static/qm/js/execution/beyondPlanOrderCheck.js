@@ -15,6 +15,10 @@ require([
                 userInfo = data;//用户角色
                 Util.getRoleCode(userInfo, function (dataNew) {
                     roleCode = dataNew;//用户权限
+                    //管理员则显示分配
+                    if (roleCode === "manager") {
+                        $("#allocateBtn").show();
+                    }
                     initPageInfo();
                     initEvent();
                 });
