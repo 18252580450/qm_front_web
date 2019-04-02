@@ -681,6 +681,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
                 "mediaType":"",
                 "srvReqstTypeId":"",
                 "poolStatus": "",
+                 "userPermission":userPermission
             };
         }
         var params = {
