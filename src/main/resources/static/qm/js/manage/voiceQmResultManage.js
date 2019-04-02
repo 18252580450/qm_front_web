@@ -3,6 +3,7 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
     initialize();
     var userInfo,
         roleCode,
+        userPermission,
         departmentId,  //虚拟组id
         reqParams = null,
         voiceCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/manage/voiceQmResultDetail.html";
@@ -11,7 +12,7 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
         Util.getLogInData(function (data) {
             userInfo = data;//用户角色
             Util.getRoleCode(userInfo, function (dataNew) {
-                roleCode = dataNew;//用户信息
+                userPermission = dataNew;//用户权限
                 initPageInfo();
                 initEvent();
             });
@@ -210,13 +211,16 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
                 }
             },
             loader: function (param, success) {
+                var checkedStaffId = "";
                 var start = (param.page - 1) * param.rows;
                 var pageNum = param.rows;
                 var touchId = $("#touchId").val();
                 var checkStaffId = $("#checkStaffId").val();
                 var startTime = $("#startTime").datetimebox("getValue");
                 var endTime = $("#endTime").datetimebox("getValue");
-                var checkedStaffId = $("#checkedStaffId").val();
+                if(userPermission=="staffer"){
+                    checkedStaffId = userInfo.staffId;
+                }
                 var inspectionId = $("#inspectionId").val();
                 var resultStatus = $("#resultStatus").combobox("getValue");
                 if (resultStatus == "10") {
@@ -366,6 +370,16 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
 
     //事件初始化
     function initEvent() {
+        if(userPermission=="staffer"){//话务员（没有任何功能权限）
+            //话务员只能查询被质检员是自己的数据
+            $("#checkedStaffId").val(userInfo.staffId);
+            $('#checkedStaffName').searchbox("setValue",userInfo.staffName);
+            $("#checkedStaffName").textbox('textbox').attr('readOnly',true);
+            //清除搜索框图标
+            var icon = $('#checkedStaffName').searchbox("getIcon", 0);
+            icon.css("visibility", "hidden");
+        }
+
         //查询
         $("#queryBtn").on("click", function () {
             $("#queryInfo").datagrid("load");

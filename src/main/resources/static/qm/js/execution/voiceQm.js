@@ -329,6 +329,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
             pageList: [5, 10, 20, 50],
             rownumbers: false,
             loader: function (param, success) {
+                var checkedStaffId = "";
                 var start = (param.page - 1) * param.rows;
                 var pageNum = param.rows;
                 var touchId = $("#touchId").val();
@@ -343,8 +344,10 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
                 }
                 var startTime = $("#startTime").datetimebox("getValue");
                 var endTime = $("#endTime").datetimebox("getValue");
+                if(userPermission=="staffer"){
+                    checkedStaffId = userInfo.staffId;
+                }
                 var checkStaffId = $("#checkStaffId").val();
-                var checkedStaffId = $("#checkedStaffId").val();
                 var hungupType = $("#hungupType").val();
                 var recordTimeMin = $("#recordTimeMin").val();
                 var recordTimeMax = $("#recordTimeMax").val();
@@ -422,6 +425,13 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
             $("#detailBut").attr("style","display:none;");
             $("#claimBut").attr("style","display:none;");
             $("#releaseBut").attr("style","display:none;");
+            //话务员只能查询被质检员是自己的数据
+            $("#checkedStaffId").val(userInfo.staffId);
+            $('#checkedStaffName').searchbox("setValue",userInfo.staffName);
+            $("#checkedStaffName").textbox('textbox').attr('readOnly',true);
+            //清除搜索框图标
+            var icon = $('#checkedStaffName').searchbox("getIcon", 0);
+            icon.css("visibility", "hidden");
         }
 
         //查询
@@ -526,7 +536,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
         $("#downloadBut").on('click',function () {
             var selRows = $("#queryInfo").datagrid("getSelections");//选中多行
 
-            // window.open(url,'_blank');
+            window.open("https://codeload.github.com/douban/douban-client/legacy.zip/master",'_blank');
 
         });
     }
