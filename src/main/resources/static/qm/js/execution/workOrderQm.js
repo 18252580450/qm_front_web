@@ -315,7 +315,8 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui","dateUti
                     "isOperate":isOperate,
                     "planStartTime": planStartTime,
                     "planEndTime": planEndTime,
-                    "checkStaffId":checkStaffId
+                    "checkStaffId":checkStaffId,
+                    "userPermission":userPermission
                 };
                 var params = $.extend({
                     "start": start,
@@ -383,7 +384,7 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui","dateUti
         if(userPermission=="checker"){//质检员
             $("#disBut").attr("style","display:none;"); //不可以分配
             $("#releaseBut").attr("style","display:none;");
-            //质检员只能查询质检员是自己的数据
+            //质检员只能查询质检员是自己的数据或者是没有质检员的数据
             $("#checkStaffId").val(userInfo.staffId);
             $('#checkStaffName').searchbox("setValue",userInfo.staffName);
             $("#checkStaffName").textbox('textbox').attr('readOnly',true);
