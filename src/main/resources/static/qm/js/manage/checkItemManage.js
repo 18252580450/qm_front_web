@@ -48,6 +48,11 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
         });
         //重载下拉框数据
         getSelectData("CHECK_ITEM_TYPE", true, function (data) {
+            var param = {
+                "paramsCode": "2",
+                "paramsName": "目录"
+            };
+            data.push(param);
             checkTypeData = data;
             $("#checkItemType").combobox('loadData', data);
         });
@@ -148,7 +153,6 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
                                 return checkTypeData[i].paramsName;
                             }
                         }
-                        return "目录";
                     }
                 },
                 {
@@ -362,6 +366,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
                 "tenantId": Util.constants.TENANT_ID,
                 "parentCheckItemId": parentCheckItemId,
                 "checkItemName": checkItemName,
+                "checkItemType": Util.constants.CHECK_TYPE_CATALOG,
                 "remark": checkItemDesc,
                 "catalogFlag": Util.constants.CHECK_ITEM_PARENT,
                 "orderNo": orderNo,

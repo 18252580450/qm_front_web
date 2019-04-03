@@ -60,8 +60,9 @@ define(function () {
         CHECK_TYPE_BEYOND_PLAN: '1',     //计划外质检
 
         //质检类别
-        CHECK_TYPE_VOICE: "0",            //语音质检
-        CHECK_TYPE_ORDER: "1",            //工单质检
+        CHECK_TYPE_VOICE: "0",           //语音质检
+        CHECK_TYPE_ORDER: "1",           //工单质检
+        CHECK_TYPE_CATALOG: "2",         //目录
 
         //工单质检分配状态
         VOICE_NO_DISTRIBUTE: "0",        //未分配
