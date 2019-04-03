@@ -4,7 +4,6 @@ define([
         var $el;
         var dataNew;
         var flagNew;//工单质检(0),语音质检(1)标志
-        var mapNew = {};
 
         function initialize(ids, flag) {
             $el = $(qryQmPeopleTpl);
