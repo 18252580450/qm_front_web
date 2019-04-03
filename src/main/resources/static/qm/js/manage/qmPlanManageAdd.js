@@ -285,6 +285,7 @@ define([
                 planBean.planEndtime = planEndtime;
                 planBean.remark = remark;
                 planBean.qmBindRlnList = qmBindRlnList;
+                planBean.extractCount = extractCount;
                 Util.ajax.putJson(Util.constants.CONTEXT.concat(Util.constants.QM_PLAN_DNS).concat("/updateQmPlan"), JSON.stringify(planBean), function (result) {
                     $.messager.show({
                         msg: result.RSP.RSP_DESC,
@@ -439,7 +440,7 @@ define([
         if(planBean){
             $('#planName',$el).textbox('setValue',planBean.planName);
             $("#templateId",$el).val(planBean.templateId);
-            //$("#template",$el).val(planBean.templateName);
+            $("#extractCount",$el).textbox('setValue',planBean.extractCount);
             $('#template').searchbox("setValue",planBean.templateName);
             $("#pId",$el).val(planBean.pId);
             $('#strategy').searchbox("setValue",planBean.pName);
