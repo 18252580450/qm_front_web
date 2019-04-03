@@ -18,13 +18,12 @@ require([
     initialize();
 
     function initialize() {
-        /获取主流程基本信息
+        //获取主流程基本信息
         CommonAjax.getUrlParams(function (data) {
             mainProcess = data;
             initPageInfo();
             initEvent();
         });
-
     }
 
     //页面信息初始化
