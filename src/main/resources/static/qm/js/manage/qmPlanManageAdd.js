@@ -13,12 +13,14 @@ define([
     var listTable;
     var isClicked = false;//是否点击
     var isChildren = false;//是否是子节点
-    var disableSubmit = false;  //禁用提交按钮标志
+    var disableSubmit;  //禁用提交按钮标志
     var checkStaffName="";
     var checkStaffId="";
     var planIdNew;
     var initialize = function(planId) {
         $el = $(tpl);
+        disableSubmit = false;
+        planBean = null;
         if(planId){
             Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.QM_PLAN_DNS + "/" + planId, {}, function (result) {
                 var rspCode = result.RSP.RSP_CODE;
@@ -187,7 +189,7 @@ define([
             $("#mainForm",$el).form('clear');
             $("#add_window").window("close");
         });
-
+        $("#addPlan",$el).unbind('click');
         //保存
         $("#addPlan",$el).on("click", function () {
             if(disableSubmit){
@@ -197,6 +199,7 @@ define([
             var planType = $("#planType",$el).combobox('getValue');
             if(planType==""){
                 $.messager.alert('警告', '请选择计划类型!');
+                disableSubmit = false;
                 return false;
             }
             var templateId = $("#templateId",$el).val();
@@ -266,7 +269,7 @@ define([
             if (planName == null || planName == "" || planType == null || planType == "" || templateId == null || templateId == ""
                 || pId == null || pId == "" || manOrAuto == null || manOrAuto == "" || planRuntype == null || planRuntype == ""|| planRuntime == null || planRuntime == ""|| extractCount == null || extractCount == "") {
                 $.messager.alert('警告', '必填项不能为空!');
-
+                disableSubmit = false;
                 $("#addPlan",$el).linkbutton({disabled: false});  //按钮可用
                 return false;
             }
@@ -282,7 +285,7 @@ define([
                 planBean.planEndtime = planEndtime;
                 planBean.remark = remark;
                 planBean.qmBindRlnList = qmBindRlnList;
-                Util.ajax.putJson(Util.constants.CONTEXT.concat(Util.constants.QM_PLAN_DNS).concat("/"), JSON.stringify(planBean), function (result) {
+                Util.ajax.putJson(Util.constants.CONTEXT.concat(Util.constants.QM_PLAN_DNS).concat("/updateQmPlan"), JSON.stringify(planBean), function (result) {
                     $.messager.show({
                         msg: result.RSP.RSP_DESC,
                         timeout: 1000,
@@ -295,7 +298,7 @@ define([
                     }
                 });
             }else{
-                Util.ajax.postJson(Util.constants.CONTEXT.concat(Util.constants.QM_PLAN_DNS).concat("/"), JSON.stringify(params), function (result) {
+                Util.ajax.postJson(Util.constants.CONTEXT.concat(Util.constants.QM_PLAN_DNS).concat("/addQmPlan"), JSON.stringify(params), function (result) {
                     $.messager.show({
                         msg: result.RSP.RSP_DESC,
                         timeout: 1000,
@@ -308,7 +311,7 @@ define([
                     }
                 });
             }
-            disableSubmit = true;   //防止多次提交
+            disableSubmit = true;
         });
     }
 

@@ -378,14 +378,16 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui","dateUti
 
     //事件初始化
     function initEvent() {
-
+        //查询框只读，不可编辑
+        $('#planName').textbox('textbox').attr('readOnly',true);
+        $('#serviceTypeName').textbox('textbox').attr('readOnly',true);
+        $("#checkStaffName").textbox('textbox').attr('readOnly',true);
         if(userPermission=="checker"){//质检员
             $("#disBut").attr("style","display:none;"); //不可以分配
             $("#releaseBut").attr("style","display:none;");
             //质检员只能查询质检员是自己的数据或者是没有质检员的数据
             $("#checkStaffId").val(userInfo.staffId+"");
             $('#checkStaffName').searchbox("setValue",userInfo.staffName);
-            $("#checkStaffName").textbox('textbox').attr('readOnly',true);
             //清除搜索框图标
             var icon = $('#checkStaffName').searchbox("getIcon", 0);
             icon.css("visibility", "hidden");

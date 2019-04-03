@@ -10,8 +10,8 @@ define([
             $el = $(qryQmPeopleTpl);
             dataNew = ids;
             flagNew = flag;
-            initGrid();//初始化列表
             initGlobalEvent();
+            initGrid();//初始化列表
             this.$el = $el;
         }
 
@@ -67,6 +67,7 @@ define([
                 pageList: [5, 10, 20, 50],
                 rownumbers: false,
                 loader: function (param, success) {
+                    $("#groupName",$el).textbox('textbox').attr('readOnly',true);//输入框不可编辑
                     var groupId = $("#groupId", $el).val();
                     var staffName = $("#staffName", $el).val();
                     var staffId = $("#staffId", $el).val();

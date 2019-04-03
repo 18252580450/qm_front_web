@@ -425,14 +425,17 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
 
     //事件初始化
     function initEvent() {
-
+        //查询框只读，不可编辑
+        $("#checkStaffName").textbox('textbox').attr('readOnly',true);
+        $("#checkedStaffName").textbox('textbox').attr('readOnly',true);
+        $('#planName').textbox('textbox').attr('readOnly',true);
+        $('#serviceTypeName').textbox('textbox').attr('readOnly',true);
         if(userPermission=="checker"){//质检员
             $("#detailBut").attr("style","display:none;"); //不可以分配
             $("#releaseBut").attr("style","display:none;");
             //质检员只能查询质检员是自己的数据或者是没有质检员的数据
             $("#checkStaffId").val(userInfo.staffId+"");
             $('#checkStaffName').searchbox("setValue",userInfo.staffName);
-            $("#checkStaffName").textbox('textbox').attr('readOnly',true);
             //清除搜索框图标
             var icon = $('#checkStaffName').searchbox("getIcon", 0);
             icon.css("visibility", "hidden");
@@ -443,7 +446,6 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
             //话务员只能查询被质检员是自己的数据
             $("#checkedStaffId").val(userInfo.staffId);
             $('#checkedStaffName').searchbox("setValue",userInfo.staffName);
-            $("#checkedStaffName").textbox('textbox').attr('readOnly',true);
             //清除搜索框图标
             var icon = $('#checkedStaffName').searchbox("getIcon", 0);
             icon.css("visibility", "hidden");
