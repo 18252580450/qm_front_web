@@ -1,6 +1,4 @@
-require([
-    "js/manage/appealProcessAddDialog",
-    "jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], function (AppealProcessAdd, $, Util, Transfer, CommonAjax) {
+require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], function ($, Util, Transfer, CommonAjax) {
 
     var userInfo,
         processStatusData = [],   //流程状态下拉框静态数据
