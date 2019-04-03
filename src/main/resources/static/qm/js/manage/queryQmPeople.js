@@ -49,7 +49,6 @@ define([
                     {field: 'STAFF_NAME', title: '员工姓名', align: 'center', width: '20%'},
                     {field: 'GROUP_ID', title: '工作组id', align: 'center', width: '20%'},
                     {field: 'GROUP_NAME', title: '工作组名称', align: 'center', width: '20%'},
-                    {field: 'ORGANIZE_NAME', title: '物理组织id', align: 'center', width: '20%'},
                     {field: 'EMAIL', title: '邮箱', align: 'center', width: '20%'},
                     {field: 'PHONE', title: '电话', align: 'center', width: '20%'},
                     {field: 'ROLE_CODE', title: '角色编码', align: 'center', width: '20%'},
