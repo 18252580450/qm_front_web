@@ -18,14 +18,17 @@ require([
     initialize();
 
     function initialize() {
-        initPageInfo();
-        initEvent();
+        /获取主流程基本信息
+        CommonAjax.getUrlParams(function (data) {
+            mainProcess = data;
+            initPageInfo();
+            initEvent();
+        });
+
     }
 
     //页面信息初始化
     function initPageInfo() {
-        //获取主流程基本信息
-        mainProcess = CommonAjax.getUrlParams();
         //主流程基本信息
         $("#processName").val(mainProcess.processName);
         $("#tenantType").val(mainProcess.tenantId);

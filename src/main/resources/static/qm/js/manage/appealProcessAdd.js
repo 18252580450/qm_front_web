@@ -10,9 +10,11 @@ require([
     initialize();
 
     function initialize() {
-        staffInfo = CommonAjax.getUrlParams();
-        initPageInfo();
-        initEvent();
+        CommonAjax.getUrlParams(function (data) {
+            staffInfo = data;
+            initPageInfo();
+            initEvent();
+        });
     }
 
     //页面信息初始化

@@ -70,7 +70,7 @@
                             </div>
                         </div>
                     </form>
-                    <form class='form form-horizontal' style="margin-bottom: 20px">
+                    <form class='form form-horizontal'>
                         <div class='row cl'>
                             <label class='form-label col-1'>分值类型</label>
                             <div class='formControls col-2'>
@@ -85,17 +85,9 @@
                         </div>
                     </form>
                 </div>
-            </div>
 
-            <div class='cl' style="display: none">
-                <div class='panel-tool-box cl'>
-                    <div class='fl text-bold'>接触记录</div>
-                </div>
-                <div class='panel-search' style="height: 80px">
-                    <div>
-                        <!--<audio src = "../../data/voice.mp3" controls = "controls"></audio>-->
-                        <audio src = "../../data/voice2.wav" controls = "controls"></audio>
-                    </div>
+                <div style="margin-left: 20px;height: 80px;display: none;">
+                    <audio controls="controls" id="voicePlayer"></audio>
                 </div>
             </div>
 
@@ -120,7 +112,8 @@
                     <form class='form form-horizontal'>
                         <div class='row cl'>
                             <label class='form-label col-1'>考评评语</label>
-                            <input id="checkCommentSearch" data-options="prompt: '请选择考评评语'" type='text' class='easyui-textbox col-2' style='height:30px'/>
+                            <input id="checkCommentSearch" data-options="prompt: '请选择考评评语'" type='text'
+                                   class='easyui-textbox col-2' style='height:30px'/>
                             <div class='comment'>
                                 <textarea id="checkComment" style="margin-top: 5px;display: none"></textarea>
                             </div>

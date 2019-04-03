@@ -10,62 +10,23 @@ require(["jquery", "util", "commonAjax", "dateUtil", "transfer", "easyui"], func
     initialize();
 
     function initialize() {
-        initPageInfo();
-        initEvent();
-        getCheckComment();
-        startTime = new Date();
-    }
-
-    function getCheckComment() {
-        var reqParams = {//入参
-            "parentCommentId": "",
-            "commentName":""
-        };
-        var params = {
-            "start": 0,
-            "pageNum": 0,
-            "params": JSON.stringify(reqParams)
-        };
-        //查询
-        Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.ORDINARY_COMMENT + "/selectByParams", params, function (result) {
-            var json = [];
-            var data = result.RSP.DATA;
-            var map = {};
-            map["commentId"]="0";
-            map["commentName"]="其他";
-            data.push(map);
-            data.forEach(function(value,index){
-                var map = {};
-                map["id"]=value.commentId;
-                map["text"]=value.commentName;
-                json.push(map);
-            });
-            //考评评语下拉框
-            $("#checkCommentSearch").combobox({
-                method: "GET",
-                valueField: 'id',
-                textField: 'text',
-                panelHeight: 'auto',
-                editable: false,
-                data: json,
-                onSelect: function (record) {//下拉框选中时触发
-                    var checkComment = $("#checkComment");
-                    if (record.text === "其他") {
-                        checkComment.attr("style", "display:block;");
-                        checkComment.val("");
-                    } else {
-                        checkComment.attr("style", "display:none;");
-                        checkComment.val(record.text);
-                    }
-                }
-            });
+        //获取语音流水、质检流水等信息
+        CommonAjax.getUrlParams(function (data) {
+            voicePool = data;
+            initPageInfo();
+            initEvent();
+            getCheckComment();
+            startTime = new Date();
         });
     }
 
     //页面信息初始化
     function initPageInfo() {
-        //获取语音流水、质检流水等信息
-        voicePool = CommonAjax.getUrlParams();
+        //加载录音
+        var voicePlayer = $("#voicePlayer");
+        voicePlayer.attr('src', "../../data/voice2.wav");
+        // voicePlayer.attr('src', voicePool.recordPath); //todo
+        voicePlayer.get('0').load();
 
         var touchBeginTime = "",
             callType = "",
@@ -202,6 +163,81 @@ require(["jquery", "util", "commonAjax", "dateUtil", "transfer", "easyui"], func
         );
     }
 
+    //事件初始化
+    function initEvent() {
+        //保存
+        $("#saveBtn").on("click", function () {
+            if (voicePool.poolStatus === Util.constants.CHECK_STATUS_RECHECK) {
+                checkSubmit(Util.constants.CHECK_FLAG_RECHECK_SAVE);  //复检保存
+            } else {
+                checkSubmit(Util.constants.CHECK_FLAG_CHECK_SAVE);  //质检保存
+            }
+        });
+        //提交
+        $("#submitBtn").on("click", function () {
+            if (voicePool.poolStatus === Util.constants.CHECK_STATUS_RECHECK) {
+                checkSubmit(Util.constants.CHECK_FLAG_RECHECK);  //复检
+            } else {
+                checkSubmit(Util.constants.CHECK_FLAG_NEW_BUILD); //质检
+            }
+        });
+        //取消
+        $("#cancelBtn").on("click", function () {
+            //关闭语音质检详情
+            CommonAjax.closeMenuByNameAndId("语音质检详情", voicePool.touchId);
+        });
+        //案例收集
+        $("#caseCollectBtn").on("click", function () {
+            $.messager.alert("提示", "该功能暂未开放!");
+        });
+    }
+
+    function getCheckComment() {
+        var reqParams = {//入参
+            "parentCommentId": "",
+            "commentName":""
+        };
+        var params = {
+            "start": 0,
+            "pageNum": 0,
+            "params": JSON.stringify(reqParams)
+        };
+        //查询
+        Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.ORDINARY_COMMENT + "/selectByParams", params, function (result) {
+            var json = [];
+            var data = result.RSP.DATA;
+            var map = {};
+            map["commentId"]="0";
+            map["commentName"]="其他";
+            data.push(map);
+            data.forEach(function(value,index){
+                var map = {};
+                map["id"]=value.commentId;
+                map["text"]=value.commentName;
+                json.push(map);
+            });
+            //考评评语下拉框
+            $("#checkCommentSearch").combobox({
+                method: "GET",
+                valueField: 'id',
+                textField: 'text',
+                panelHeight: 200,
+                editable: false,
+                data: json,
+                onSelect: function (record) {//下拉框选中时触发
+                    var checkComment = $("#checkComment");
+                    if (record.text === "其他") {
+                        checkComment.attr("style", "display:block;");
+                        checkComment.val("");
+                    } else {
+                        checkComment.attr("style", "display:none;");
+                        checkComment.val(record.text);
+                    }
+                }
+            });
+        });
+    }
+
     //初始化考评项列表
     function initCheckArea() {
         //考评项详细信息
@@ -332,35 +368,6 @@ require(["jquery", "util", "commonAjax", "dateUtil", "transfer", "easyui"], func
                     $("#score" + item.nodeId).val(score);
                 }
             });
-        });
-    }
-
-    //事件初始化
-    function initEvent() {
-        //保存
-        $("#saveBtn").on("click", function () {
-            if (voicePool.poolStatus === Util.constants.CHECK_STATUS_RECHECK) {
-                checkSubmit(Util.constants.CHECK_FLAG_RECHECK_SAVE);  //复检保存
-            } else {
-                checkSubmit(Util.constants.CHECK_FLAG_CHECK_SAVE);  //质检保存
-            }
-        });
-        //提交
-        $("#submitBtn").on("click", function () {
-            if (voicePool.poolStatus === Util.constants.CHECK_STATUS_RECHECK) {
-                checkSubmit(Util.constants.CHECK_FLAG_RECHECK);  //复检
-            } else {
-                checkSubmit(Util.constants.CHECK_FLAG_NEW_BUILD); //质检
-            }
-        });
-        //取消
-        $("#cancelBtn").on("click", function () {
-            //关闭语音质检详情
-            CommonAjax.closeMenuByNameAndId("语音质检详情", voicePool.touchId);
-        });
-        //案例收集
-        $("#caseCollectBtn").on("click", function () {
-            $.messager.alert("提示", "该功能暂未开放!");
         });
     }
 

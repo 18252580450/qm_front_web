@@ -1,6 +1,7 @@
 require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], function (QueryQmPlan, QueryQmHistory, $, Util, Transfer, CommonAjax) {
 
     var userInfo,
+        playingRecord,  //当前正在播放的录音id
         voiceCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/execution/voiceCheckDetail.html",
         poolStatusData = [];  //质检状态下拉框静态数据（待质检、待复检）
 
@@ -99,14 +100,17 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
         $("#voiceCheckList").datagrid({
             columns: [[
                 {
-                    field: 'operate', title: '操作', width: '8%',
+                    field: 'operate', title: '操作', width: '12%',
                     formatter: function (value, row, index) {
-                        var check = '<a href="javascript:void(0);" style="color: deepskyblue;" id = "voiceCheck_' + row.touchId + '">质检</a>',
+                        var play = '<a href="javascript:void(0);" style="color: deepskyblue;" id = "voicePlay_' + row.touchId + '">播放</a>',
+                            check = '<a href="javascript:void(0);" style="color: deepskyblue;" id = "voiceCheck_' + row.touchId + '">质检</a>',
                             checkHistory = '<a href="javascript:void(0);" style="color: deepskyblue;" id = "checkHistory_' + row.touchId + '">质检记录</a>';
                         if (row.poolStatus.toString() === Util.constants.CHECK_STATUS_CHECK) {
+                            // return play + "&nbsp;&nbsp;" + check; //todo
                             return check;
                         }
                         if (row.poolStatus.toString() === Util.constants.CHECK_STATUS_RECHECK) {
+                            // return play + "&nbsp;&nbsp;" + check + "&nbsp;&nbsp;" + checkHistory; //todo
                             return check + "&nbsp;&nbsp;" + checkHistory;
                         }
                     }
@@ -232,6 +236,35 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
                 });
             },
             onLoadSuccess: function (data) {
+                var audio = new Audio();
+                //语音播放
+                $.each(data.rows, function (i, item) {
+                    $("#voicePlay_" + item.touchId).on("click", function () {
+
+                        if (playingRecord !== null && playingRecord !== "") {  //有正在播放录音的情况
+                            audio.pause();
+                            if (playingRecord === item.touchId) {  //暂停播放
+                                $("#voicePlay_" + item.touchId).html("播放");
+                                playingRecord = "";
+                            } else { //播放其他录音
+                                $("#voicePlay_" + playingRecord).html("播放");
+                                $("#voicePlay_" + item.touchId).html("暂停");
+                                audio.src = "../../data/voice2.wav";
+                                // audio.src = item.recordPath;  //todo
+                                audio.load();
+                                audio.play();
+                                playingRecord = item.touchId;
+                            }
+                        } else {
+                            $("#voicePlay_" + item.touchId).html("暂停");
+                            audio.src = "../../data/voice2.wav";
+                            // audio.src = item.recordPath;  //todo
+                            audio.load();
+                            audio.play();
+                            playingRecord = item.touchId;
+                        }
+                    });
+                });
                 //语音质检详情
                 $.each(data.rows, function (i, item) {
                     $("#voiceCheck_" + item.touchId).on("click", function () {

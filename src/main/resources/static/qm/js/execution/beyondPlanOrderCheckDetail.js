@@ -14,24 +14,32 @@ require(["jquery", 'util', "commonAjax", "transfer", "dateUtil", "easyui"], func
         recordData = [],            //接触记录数据
         historyData = [],           //工单历史数据
         processData = [],           //轨迹数据
+        playingRecord,              //当前正在播放的录音id
         qmCheckUrl = Util.constants.URL_CONTEXT + "/qm/html/execution/beyondPlanCheck.html";
 
     initialize();
 
     function initialize() {
-        initPageInfo();
-        initEvent();
-        getCheckComment();
-        startTime = new Date();
+        //获取工单流水、质检流水等信息
+        CommonAjax.getUrlParams(function (data) {
+            workForm = data;
+            initPageInfo();
+            initEvent();
+            getCheckComment();
+            startTime = new Date();
+        });
     }
 
     //页面信息初始化
     function initPageInfo() {
         //获取工单流水、质检流水等信息
-        workForm = CommonAjax.getUrlParams();
-
-        //获取工单基本信息
-        initWrkfmDetail();
+        CommonAjax.getUrlParams(function (data) {
+            workForm = data;
+            //获取工单基本信息
+            initWrkfmDetail();
+            //获取工单轨迹、初始化考评项列表、环节考评数据
+            initProcProceLocus();
+        });
 
         //考评项列表
         var IsCheckFlag = true; //标示是否是勾选复选框选中行的，true - 是 , false - 否
@@ -137,9 +145,6 @@ require(["jquery", 'util', "commonAjax", "transfer", "dateUtil", "easyui"], func
                 });
             }
         });
-
-        //获取工单轨迹、初始化考评项列表、环节考评数据
-        initProcProceLocus();
     }
 
     //初始化工单基本信息
@@ -463,7 +468,7 @@ require(["jquery", 'util', "commonAjax", "transfer", "dateUtil", "easyui"], func
                 method: "GET",
                 valueField: 'id',
                 textField: 'text',
-                panelHeight: 'auto',
+                panelHeight: 200,
                 editable: false,
                 data: json,
                 onSelect: function (record) {//下拉框选中时触发
@@ -611,6 +616,41 @@ require(["jquery", 'util', "commonAjax", "transfer", "dateUtil", "easyui"], func
                         };
                         success(emptyData);
                     }
+                });
+            },
+            onLoadSuccess: function (data) {
+                var audio = new Audio();
+                //语音播放
+                $.each(data.rows, function (i, item) {
+                    $("#recordPlay_" + item.cntmngSwftno).on("click", function () {
+
+                        if (playingRecord !== null && playingRecord !== "") {  //有正在播放录音的情况
+                            audio.pause();
+                            if (playingRecord === item.cntmngSwftno) {  //暂停播放
+                                $("#recordPlay_" + item.cntmngSwftno).html("播放");
+                                playingRecord = "";
+                            } else { //播放其他录音
+                                $("#recordPlay_" + playingRecord).html("播放");
+                                $("#recordPlay_" + item.cntmngSwftno).html("暂停");
+                                audio.src = item.recordFilePath;  //todo
+                                audio.load();
+                                audio.play();
+                                playingRecord = item.cntmngSwftno;
+                            }
+                        } else {
+                            $("#recordPlay_" + item.cntmngSwftno).html("暂停");
+                            audio.src = item.recordFilePath;  //todo
+                            audio.load();
+                            audio.play();
+                            playingRecord = item.cntmngSwftno;
+                        }
+                    });
+                });
+                //录音下载
+                $.each(data.rows, function (i, item) {
+                    $("#recordDownload_" + item.cntmngSwftno).on("click", function () {
+
+                    });
                 });
             }
         });

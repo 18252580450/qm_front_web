@@ -39,7 +39,7 @@ define(["jquery", 'util'], function ($, Util) {
             return urlLink.replace(' ', '');
         },
         //获取url传递参数
-        getUrlParams: function () {
+        getUrlParams: function (callback) {
             var url = decodeURI(decodeURI(location.search)); //获取url中"?"符后的字串，使用了两次decodeRUI解码
             var requestObj = {};
             if (url.indexOf("?") > -1) {
@@ -48,7 +48,7 @@ define(["jquery", 'util'], function ($, Util) {
                 for (var i = 0; i < strArr.length; i++) {
                     requestObj[strArr[i].split("=")[0]] = unescape(strArr[i].split("=")[1]);
                 }
-                return requestObj;
+                callback(requestObj);
             }
         },
         //新增标签页
@@ -63,8 +63,8 @@ define(["jquery", 'util'], function ($, Util) {
         },
         //刷新指定标签页
         refreshMenuByUrl: function (url, menuName, menuId) {
-            operMenu(url, null, null);
-            operMenu(url, menuName, menuId);
+            // operMenu(url, null, null);
+            // operMenu(url, menuName, menuId);
             // refreshTab(menuName);
         }
     };
