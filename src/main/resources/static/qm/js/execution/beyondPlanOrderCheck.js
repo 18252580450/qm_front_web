@@ -53,8 +53,26 @@ require([
             });
 
             //立单人搜索框
-            $('#acptStaffName').searchbox({//输入框点击查询事件
+            var acptStaffInput = $('#acptStaffName');
+            acptStaffInput.searchbox({//输入框点击查询事件
                 searcher: function (value) {
+                    require(["js/execution/queryQmPeople"], function (qryQmPeople) {
+                        var queryQmPeople = qryQmPeople;
+                        queryQmPeople.initialize();
+                        $('#qry_people_window').show().window({
+                            title: '审批人员信息',
+                            width: 1000,
+                            height: 620,
+                            cache: false,
+                            content: queryQmPeople.$el,
+                            modal: true,
+                            onClose: function () {//弹框关闭前触发事件
+                                var acptStaff = queryQmPeople.getMap();//获取人员信息
+                                acptStaffInput.searchbox("setValue", acptStaff.staffName);
+                                $("#acptStaffId").val(acptStaff.staffId);
+                            }
+                        });
+                    });
                 }
             });
 
