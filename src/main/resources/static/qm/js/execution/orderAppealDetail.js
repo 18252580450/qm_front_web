@@ -372,19 +372,27 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
                         return DateUtil.formatDateTime2(value);
                     }
                 },
-                {field: 'callingNumber', title: '主叫号码', width: '15%'},
-                {field: 'calledNumber', title: '被叫号码', width: '15%'},
                 {
-                    field: 'callTypeNm', title: '呼叫类型', width: '10%',
+                    field: 'staffNumber', title: '坐席号码', width: '15%',
                     formatter: function (value, row, index) {
-                        if (value === "0") {
-                            return "呼入";
-                        }
-                        if (value === "1") {
-                            return "呼出";
+                        if(row.callTypeCd === "1"){
+                            return row.callingNumber;
+                        }else {
+                            return row.calledNumber;
                         }
                     }
                 },
+                {
+                    field: 'customNumber', title: '客户号码', width: '15%',
+                    formatter: function (value, row, index) {
+                        if(row.callTypeCd === "0"){
+                            return row.callingNumber;
+                        }else {
+                            return row.calledNumber;
+                        }
+                    }
+                },
+                {field: 'callTypeNm', title: '呼叫类型', width: '10%'},
                 {
                     field: 'operate', title: '操作', width: '10%',
                     formatter: function (value, row, index) {
