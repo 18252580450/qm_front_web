@@ -60,7 +60,6 @@ define([
                 pageList: [5, 10, 20, 50],
                 rownumbers: false,
                 loader: function (param, success) {
-                    $("#groupName",$el).textbox('textbox').attr('readOnly',true);//输入框不可编辑
                     var groupId = $("#groupId",$el).val();
                     var staffName = $("#staffName",$el).val();
                     var staffId = $("#staffId",$el).val();
@@ -105,6 +104,7 @@ define([
         //初始化事件
         function initGlobalEvent() {
             $('#groupName',$el).searchbox({ //工作组查询
+                editable:false,//禁止手动输入
                 searcher: function(value){
                     var div = $("#content",$el);
                     div.append(getWorkListDiv());

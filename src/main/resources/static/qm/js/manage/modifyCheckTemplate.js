@@ -453,7 +453,6 @@ define(["text!html/manage/modifyCheckTemplate.tpl","jquery", 'util', "transfer",
                 var start = (param.page - 1) * param.rows;
                 var pageNum = param.rows;
                 var reqParams = {
-                    "tenantId":Util.constants.TENANT_ID,
                     "templateId":templateId
                 };
                 var param = {

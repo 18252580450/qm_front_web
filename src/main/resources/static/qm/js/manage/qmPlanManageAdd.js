@@ -387,6 +387,7 @@ define([
         });
         $('#planRuntype',$el).combobox("setValue","0");
         $('#template',$el).searchbox({
+            editable:false,//禁止手动输入
             searcher: function(value){
                 var div = $("#content",$el);
                 div.append(getSearchDiv());
@@ -402,6 +403,7 @@ define([
             }
         });
         $('#strategy',$el).searchbox({
+            editable:false,//禁止手动输入
             searcher: function(value){
                 var div = $("#content",$el);
                 div.append(getSearchDiv());
@@ -528,6 +530,7 @@ define([
 
     //初始化被质检对象列表
     function initTable(checkedStaffs,checkedDeparts){
+
         if(checkedStaffs && checkedStaffs.length > 0){
             $("#checkedStaffList",$el).datagrid({
                 columns:[
@@ -701,6 +704,7 @@ define([
 
     //初始化质检员树和被质检员信息
     function initDatas(planBean){
+
         if(planBean){
             qmBindRlnList = planBean.qmBindRlnList;
             if(qmBindRlnList && qmBindRlnList.length > 0){
