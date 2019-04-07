@@ -99,6 +99,7 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui","dateUti
     //页面信息初始化
     function initPageInfo() {
         $('#checkStaffName').searchbox({ //质检人员查询
+            editable:false,//禁止手动输入
             searcher: function(value){
                 require(["js/execution/queryQmPeople"], function (qryQmPeople) {
                 var queryQmPeople = qryQmPeople;
@@ -121,6 +122,7 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui","dateUti
         });
 
         $('#planName').searchbox({//输入框点击查询事件
+            editable:false,//禁止手动输入
             searcher: function(value){
                 var queryQmPlan = new QueryQmPlan();
 
@@ -136,6 +138,7 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui","dateUti
         });
 
         $('#serviceTypeName').searchbox({//服务请求类型输入框点击查询事件
+            editable:false,//禁止手动输入
             searcher: function(value){
                 $('#qry_service_window').show().window({
                     title: '查询服务请求类型',
@@ -378,10 +381,6 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui","dateUti
 
     //事件初始化
     function initEvent() {
-        //查询框只读，不可编辑
-        $('#planName').textbox('textbox').attr('readOnly',true);
-        $('#serviceTypeName').textbox('textbox').attr('readOnly',true);
-        $("#checkStaffName").textbox('textbox').attr('readOnly',true);
         if(userPermission=="checker"){//质检员
             $("#disBut").attr("style","display:none;"); //不可以分配
             $("#releaseBut").attr("style","display:none;");

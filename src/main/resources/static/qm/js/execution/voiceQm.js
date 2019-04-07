@@ -101,6 +101,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
     function initPageInfo() {
 
         $('#checkStaffName').searchbox({ //质检人员查询
+            editable:false,//禁止手动输入
             searcher: function(value){
                 require(["js/execution/queryQmPeople"], function (qryQmPeople) {
                     var queryQmPeople = qryQmPeople;
@@ -123,6 +124,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
         });
 
         $('#checkedStaffName').searchbox({ //质检人员查询
+            editable:false,//禁止手动输入
             searcher: function(value){
                 require(["js/execution/queryQmPeople"], function (qryQmPeople) {
                     var queryQmPeople = qryQmPeople;
@@ -145,9 +147,9 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
         });
 
         $('#planName').searchbox({//输入框点击查询事件
+            editable:false,//禁止手动输入
             searcher: function(value){
                 var queryQmPlan = new QueryQmPlan();
-
                 $('#qry_window').show().window({
                     title: '查询考评计划',
                     width: 1150,
@@ -160,6 +162,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
         });
 
         $('#serviceTypeName').searchbox({ //服务请求类型输入框点击查询事件
+            editable:false,//禁止手动输入
             searcher: function(value){
                 $('#qry_service_window').show().window({
                     title: '查询服务请求类型',
@@ -425,11 +428,6 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
 
     //事件初始化
     function initEvent() {
-        //查询框只读，不可编辑
-        $("#checkStaffName").textbox('textbox').attr('readOnly',true);
-        $("#checkedStaffName").textbox('textbox').attr('readOnly',true);
-        $('#planName').textbox('textbox').attr('readOnly',true);
-        $('#serviceTypeName').textbox('textbox').attr('readOnly',true);
         if(userPermission=="checker"){//质检员
             $("#detailBut").attr("style","display:none;"); //不可以分配
             $("#releaseBut").attr("style","display:none;");

@@ -24,6 +24,7 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
     function initPageInfo() {
 
         $('#checkStaffName').searchbox({ //质检人员查询
+            editable:false,//禁止手动输入
             searcher: function (value) {
                 require(["js/execution/queryQmPeople"], function (qryQmPeople) {
                     var queryQmPeople = qryQmPeople;
@@ -46,6 +47,7 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
         });
 
         $('#checkedStaffName').searchbox({ //质检人员查询
+            editable:false,//禁止手动输入
             searcher: function (value) {
                 require(["js/execution/queryQmPeople"], function (qryQmPeople) {
                     var queryQmPeople = qryQmPeople;
@@ -68,6 +70,7 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
         });
 
         $('#planName').searchbox({//输入框点击查询事件
+            editable:false,//禁止手动输入
             searcher: function (value) {
                 var queryQmPlan = new QueryQmPlan();
 
@@ -389,9 +392,6 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
 
     //事件初始化
     function initEvent() {
-        $('#planName').textbox('textbox').attr('readOnly',true);
-        $("#checkedStaffName").textbox('textbox').attr('readOnly',true);
-        $("#checkStaffName").textbox('textbox').attr('readOnly',true);
         if(userPermission=="staffer"){//话务员（没有任何功能权限）
             //话务员只能查询被质检员是自己的数据
             $("#checkedStaffId").val(userInfo.staffId+"");
