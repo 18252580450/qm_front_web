@@ -62,8 +62,8 @@ require([
                         queryQmPeople.initialize();
                         $('#qry_people_window').show().window({
                             title: '审批人员信息',
-                            width: 1000,
-                            height: 620,
+                            width: Util.constants.DIALOG_WIDTH,
+                            height: Util.constants.DIALOG_HEIGHT,
                             cache: false,
                             content: queryQmPeople.$el,
                             modal: true,
@@ -182,8 +182,8 @@ require([
                                 qryCheckTemplate.initialize(Util.constants.CHECK_TYPE_ORDER, "0", item);
                                 $('#qry_window').show().window({
                                     title: '选择考评模版',
-                                    width: 950,
-                                    height: 550,
+                                    width: Util.constants.DIALOG_WIDTH,
+                                    height: Util.constants.DIALOG_HEIGHT,
                                     cache: false,
                                     content: qryCheckTemplate.$el,
                                     modal: true
@@ -224,8 +224,8 @@ require([
                 var workFormAllocate = new WorkFormAllocate(checkType, allocateData);
                 $('#qry_people_window').show().window({
                     title: '工单质检分配',
-                    width: 1000,
-                    height: 600,
+                    width: Util.constants.DIALOG_WIDTH,
+                    height: Util.constants.DIALOG_HEIGHT,
                     cache: false,
                     content: workFormAllocate.$el,
                     modal: true,

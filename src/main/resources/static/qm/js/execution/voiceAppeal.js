@@ -179,7 +179,7 @@ require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util,
                     $.each(data.rows, function (i, item) {
                         $("#checkFlow_" + item.appealId).on("click", function () {
                             var url = createURL(voiceCheckDetail, item);
-                            showDialog(url, "质检详情", 1000, 580);
+                            showDialog(url, "质检详情", Util.constants.DIALOG_WIDTH, Util.constants.DIALOG_HEIGHT);
                         });
                     });
                 }

@@ -165,8 +165,8 @@ require([
                                 qryCheckTemplate.initialize(Util.constants.CHECK_TYPE_VOICE, "0", item);
                                 $('#qry_window').show().window({
                                     title: '选择考评模版',
-                                    width: 950,
-                                    height: 550,
+                                    width: Util.constants.DIALOG_WIDTH,
+                                    height: Util.constants.DIALOG_HEIGHT,
                                     cache: false,
                                     content: qryCheckTemplate.$el,
                                     modal: true

@@ -108,7 +108,7 @@ define(["text!html/manage/voiceQmResultHistory.tpl", "jquery", 'util', "transfer
                 $.each(data.rows, function (i, item) {
                     $("#resultDetail_" + item.inspectionId, $el).on("click", function () {
                         var url = createURL(voiceCheckDetail, item);
-                        showDialog(url, "质检详情", 1000, 580);
+                        showDialog(url, "质检详情", Util.constants.DIALOG_WIDTH, Util.constants.DIALOG_HEIGHT);
                     });
                 });
             }

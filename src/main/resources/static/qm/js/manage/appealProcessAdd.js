@@ -49,8 +49,8 @@ require([
                     queryDepart.initialize();
                     $('#processQryDepartWindow').show().window({
                         title: '部门信息',
-                        width: 750,
-                        height: 500,
+                        width: Util.constants.DIALOG_WIDTH,
+                        height: Util.constants.DIALOG_HEIGHT,
                         cache: false,
                         content: queryDepart.$el,
                         modal: true,
@@ -418,8 +418,8 @@ require([
         //新增节点弹框
         $("#subNodeConfig").form('clear');  //清空表单
         $("#subNodeDialog").show().window({
-            width: 600,
-            height: 400,
+            width: Util.constants.DIALOG_WIDTH,
+            height: Util.constants.DIALOG_HEIGHT,
             modal: true,
             title: "添加节点"
         });
@@ -436,8 +436,8 @@ require([
                         queryQmPeople.initialize();
                         $('#qry_people_window').show().window({
                             title: '审批人员信息',
-                            width: 1080,
-                            height: 650,
+                            width: Util.constants.DIALOG_WIDTH,
+                            height: Util.constants.DIALOG_HEIGHT,
                             cache: false,
                             content: queryQmPeople.$el,
                             modal: true,

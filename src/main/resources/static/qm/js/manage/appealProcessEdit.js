@@ -43,8 +43,8 @@ require([
                     queryDepart.initialize();
                     $('#processQryDepartWindow').show().window({
                         title: '部门信息',
-                        width: 750,
-                        height: 500,
+                        width: Util.constants.DIALOG_WIDTH,
+                        height: Util.constants.DIALOG_HEIGHT,
                         cache: false,
                         content: queryDepart.$el,
                         modal: true,
@@ -625,8 +625,8 @@ require([
                         queryQmPeople.initialize();
                         $('#qry_people_window').show().window({
                             title: '审批人员信息',
-                            width: 1080,
-                            height: 650,
+                            width: Util.constants.DIALOG_WIDTH,
+                            height: Util.constants.DIALOG_HEIGHT,
                             cache: false,
                             content: queryQmPeople.$el,
                             modal: true,
@@ -762,8 +762,8 @@ require([
                     queryDepart.initialize();
                     $('#processQryDepartWindow').show().window({
                         title: '部门信息',
-                        width: 750,
-                        height: 500,
+                        width: Util.constants.DIALOG_WIDTH,
+                        height: Util.constants.DIALOG_HEIGHT,
                         cache: false,
                         content: queryDepart.$el,
                         modal: true,
@@ -870,8 +870,8 @@ require([
                         queryQmPeople.initialize();
                         $('#qry_people_window').show().window({
                             title: '审批人员信息',
-                            width: 1080,
-                            height: 650,
+                            width: Util.constants.DIALOG_WIDTH,
+                            height: Util.constants.DIALOG_HEIGHT,
                             cache: false,
                             content: queryQmPeople.$el,
                             modal: true,

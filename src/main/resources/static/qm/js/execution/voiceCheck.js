@@ -24,8 +24,8 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
                 var queryQmPlan = new QueryQmPlan();
                 $('#qry_window').show().window({
                     title: '查询考评计划',
-                    width: 1150,
-                    height: 600,
+                    width: Util.constants.DIALOG_WIDTH,
+                    height: Util.constants.DIALOG_HEIGHT,
                     cache: false,
                     content: queryQmPlan.$el,
                     modal: true
@@ -273,8 +273,8 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
                         queryQmHistory.initialize(item.touchId);
                         $('#qryQmHistoryWindow').show().window({
                             title: '质检历史',
-                            width: 900,
-                            height: 500,
+                            width: Util.constants.DIALOG_WIDTH,
+                            height: Util.constants.DIALOG_HEIGHT,
                             cache: false,
                             content: queryQmHistory.$el,
                             modal: true,

@@ -30,8 +30,8 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
                     queryQmPeople.initialize("", "2");
                     $('#qry_people_window').show().window({
                         title: '查询质检人员信息',
-                        width: 2/3*window.screen.width,
-                        height: 2/3*window.screen.height,
+                        width: Util.constants.DIALOG_WIDTH,
+                        height: Util.constants.DIALOG_HEIGHT,
                         cache: false,
                         content: queryQmPeople.$el,
                         modal: true,
@@ -52,8 +52,8 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
 
                 $('#qry_window').show().window({
                     title: '查询考评计划',
-                    width: 2/3*window.screen.width,
-                    height: 2/3*window.screen.height,
+                    width: Util.constants.DIALOG_WIDTH,
+                    height: Util.constants.DIALOG_HEIGHT,
                     cache: false,
                     content: queryQmPlan.$el,
                     modal: true
@@ -270,7 +270,7 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
                             "checkComment": item.checkComment
                         };
                         var url = createURL(orderCheckDetail, param);
-                        showDialog(url, "质检详情", 1000, 580);
+                        showDialog(url, "质检详情", Util.constants.DIALOG_WIDTH, Util.constants.DIALOG_HEIGHT);
                     });
                 });
                 //质检历史

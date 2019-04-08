@@ -30,8 +30,8 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
                     queryQmPeople.initialize("", "2");
                     $('#qry_people_window').show().window({
                         title: '查询质检人员信息',
-                        width: 2/3*window.screen.width,
-                        height: 2/3*window.screen.height,
+                        width: Util.constants.DIALOG_WIDTH,
+                        height: Util.constants.DIALOG_HEIGHT,
                         cache: false,
                         content: queryQmPeople.$el,
                         modal: true,
@@ -53,8 +53,8 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
                     queryQmPeople.initialize("", "2");
                     $('#qry_people_window').show().window({
                         title: '查询质检人员信息',
-                        width: 2/3*window.screen.width,
-                        height: 2/3*window.screen.height,
+                        width: Util.constants.DIALOG_WIDTH,
+                        height: Util.constants.DIALOG_HEIGHT,
                         cache: false,
                         content: queryQmPeople.$el,
                         modal: true,
@@ -75,8 +75,8 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
 
                 $('#qry_window').show().window({
                     title: '查询考评计划',
-                    width: 2/3*window.screen.width,
-                    height: 2/3*window.screen.height,
+                    width: Util.constants.DIALOG_WIDTH,
+                    height: Util.constants.DIALOG_HEIGHT,
                     cache: false,
                     content: queryQmPlan.$el,
                     modal: true
@@ -282,7 +282,7 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
                 $.each(data.rows, function (i, item) {
                     $("#resultDetail_" + item.inspectionId).on("click", function () {
                         var url = createURL(voiceCheckDetail, item);
-                        showDialog(url, "质检详情", 1000, 580);
+                        showDialog(url, "质检详情", Util.constants.DIALOG_WIDTH, Util.constants.DIALOG_HEIGHT);
                     });
                 });
                 //质检历史

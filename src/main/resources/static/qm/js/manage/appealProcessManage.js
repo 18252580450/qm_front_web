@@ -258,7 +258,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                 $.each(data.rows, function (i, item) {
                     $("#processDetail" + item.processId).on("click", function () {
                         var url = CommonAjax.createURL(processDetailUrl, item);
-                        showDialog(url, "流程详情", 1100, 600, false);
+                        showDialog(url, "流程详情", Util.constants.DIALOG_WIDTH, Util.constants.DIALOG_HEIGHT, false);
                     });
                 });
                 //修改
@@ -276,7 +276,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
             //双击显示详情
             onDblClickRow: function (index, data) {
                 var url = CommonAjax.createURL(processDetailUrl, data);
-                showDialog(url, "流程详情", 1100, 600, false);
+                showDialog(url, "流程详情", Util.constants.DIALOG_WIDTH, Util.constants.DIALOG_HEIGHT, false);
             }
         });
     }

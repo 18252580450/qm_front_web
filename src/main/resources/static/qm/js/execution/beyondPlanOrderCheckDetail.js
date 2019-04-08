@@ -532,9 +532,9 @@ require(["jquery", 'util', "commonAjax", "transfer", "dateUtil", "easyui"], func
                 {
                     field: 'staffNumber', title: '坐席号码', width: '15%',
                     formatter: function (value, row, index) {
-                        if(row.callTypeCd === "1"){
+                        if (row.callTypeCd === "1") {
                             return row.callingNumber;
-                        }else {
+                        } else {
                             return row.calledNumber;
                         }
                     }
@@ -542,9 +542,9 @@ require(["jquery", 'util', "commonAjax", "transfer", "dateUtil", "easyui"], func
                 {
                     field: 'customNumber', title: '客户号码', width: '15%',
                     formatter: function (value, row, index) {
-                        if(row.callTypeCd === "0"){
+                        if (row.callTypeCd === "0") {
                             return row.callingNumber;
-                        }else {
+                        } else {
                             return row.calledNumber;
                         }
                     }
@@ -649,7 +649,7 @@ require(["jquery", 'util', "commonAjax", "transfer", "dateUtil", "easyui"], func
                 //录音下载
                 $.each(data.rows, function (i, item) {
                     $("#recordDownload_" + item.cntmngSwftno).on("click", function () {
-
+                        // window.open(item.recordFilePath,'_blank');
                     });
                 });
             }

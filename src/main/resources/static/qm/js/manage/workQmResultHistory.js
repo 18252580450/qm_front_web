@@ -118,7 +118,7 @@ define(["text!html/manage/workQmResultHistory.tpl", "jquery", 'util', "transfer"
                             "checkComment": item.checkComment
                         };
                         var url = createURL(orderCheckDetail, param);
-                        showDialog(url, "质检详情", 1000, 580);
+                        showDialog(url, "质检详情", Util.constants.DIALOG_WIDTH, Util.constants.DIALOG_HEIGHT);
                     });
                 });
             }

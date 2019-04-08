@@ -158,8 +158,8 @@ define(["js/manage/addCheckTemplate","js/manage/modifyCheckTemplate","jquery", '
             var addCheckTemplate = new AddCheckTemplate();
             $('#add_window').show().window({
                 title: '新建模版',
-                width: 2/3*window.screen.width,
-                height: 2/3*window.screen.height,
+                width: Util.constants.DIALOG_WIDTH,
+                height: Util.constants.DIALOG_HEIGHT,
                 cache: false,
                 content:addCheckTemplate.$el,
                 modal: true
@@ -176,8 +176,8 @@ define(["js/manage/addCheckTemplate","js/manage/modifyCheckTemplate","jquery", '
             var modifyCheckTemplate = new ModifyCheckTemplate(selRows);
             $('#modif_window').show().window({
                 title: '修改模版',
-                width: 2/3*window.screen.width,
-                height: 2/3*window.screen.height,
+                width: Util.constants.DIALOG_WIDTH,
+                height: Util.constants.DIALOG_HEIGHT,
                 cache: false,
                 content:modifyCheckTemplate.$el,
                 modal: true

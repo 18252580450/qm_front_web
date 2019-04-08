@@ -9,8 +9,10 @@ define(function () {
         TENANT_ID: "10010000",
         STAFF_ID: "123",       //模拟登陆工号
         STAFF_NAME: "石莹",    //模拟员工姓名
-        CHECKED_DEPART_ID:"2231",  //模拟被质检员部门id
+        CHECKED_DEPART_ID: "2231",  //模拟被质检员部门id
         PROVCODE: "00030000",//省份编码
+        DIALOG_WIDTH: 2 / 3 * window.screen.width, //弹框宽
+        DIALOG_HEIGHT: 2 / 3 * window.screen.height, //弹框高
 
         //URI
         STATIC_PARAMS_DNS: "/qm/configservice/staticParams",//静态数据配置
@@ -36,11 +38,11 @@ define(function () {
         APPEAL_DEAL_DNS: "/qm/configservice/appealDeal",//申诉待办
         WRKFM_DETAIL_DNS: "/qm/configservice/wrkfmDetail",//工单详情
         QM_BIND_RLN_DNS: "/qm/configservice/qmBindRln",//考评计划绑定关系
-        SRV_REQTYPE_REDIS_TREE:"http://203.57.227.53:8082/tcwf/servReqTypeManage/srvReqTypeRedisTree",//服务请求类型
-        FIND_SERV_REQ_TYPE_BY_CACHE:"http://203.57.227.53:8082/tcwf/servReqTypeManage/findServReqTypeByCache",
-        IS_LOG_IN:"http://203.57.226.107:9990/cqkbmanage/isLognIn",//登入验证
-        PAGE_LOGIN:"http://203.57.226.107:9990/cqkbmanage/",//登入页面
-        USER_PERMISSION:"/qm/configservice/userPermission",//用户权限
+        SRV_REQTYPE_REDIS_TREE: "http://203.57.227.53:8082/tcwf/servReqTypeManage/srvReqTypeRedisTree",//服务请求类型
+        FIND_SERV_REQ_TYPE_BY_CACHE: "http://203.57.227.53:8082/tcwf/servReqTypeManage/findServReqTypeByCache",
+        IS_LOG_IN: "http://203.57.226.107:9990/cqkbmanage/isLognIn",//登入验证
+        PAGE_LOGIN: "http://203.57.226.107:9990/cqkbmanage/",//登入页面
+        USER_PERMISSION: "/qm/configservice/userPermission",//用户权限
         //考评项目录类型
         CHECK_ITEM_PARENT: "0",          //目录
         CHECK_ITEM_CHILDREN: "1",        //非目录

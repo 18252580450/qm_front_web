@@ -37,8 +37,8 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                             queryQmPeople.initialize();
                             $('#qry_people_window').show().window({
                                 title: '审批人员信息',
-                                width: 1000,
-                                height: 620,
+                                width: Util.constants.DIALOG_WIDTH,
+                                height: Util.constants.DIALOG_HEIGHT,
                                 cache: false,
                                 content: queryQmPeople.$el,
                                 modal: true,
