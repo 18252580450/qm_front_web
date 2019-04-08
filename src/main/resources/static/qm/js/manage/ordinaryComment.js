@@ -119,10 +119,10 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
             $("#page").find("#ordinaryComment").datagrid("load");
         });
 
-        // //重置
-        // $("#searchForm").on("click", "a.btn-default", function () {
-        //     $("#searchForm").form('clear');
-        // });
+        //重置
+        $("#searchForm").on("click", "#clearBut", function () {
+            $("#page input").val("");
+        });
 
         //绑定删除按钮事件
         $("#page").delegate("#delBut", "click", function () {

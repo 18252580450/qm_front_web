@@ -13,13 +13,13 @@
                             </div>
                             <label class='form-label col-3'>员工姓名</label>
                             <div class='formControls col-3'>
-                                <input id="staffName" type="easyui-textbox" style='width:100%;height:30px' >
+                                <input id="staffName" type="text" class='easyui-textbox' style='width:100%;height:30px' >
                             </div>
                         </div>
                         <div class='row cl'>
                             <label class='form-label col-3'>员工工号</label>
                             <div class='formControls col-3'>
-                                <input id="staffId" type="easyui-textbox" style='width:100%;height:30px' >
+                                <input id="staffId" type="text" class='easyui-textbox' style='width:100%;height:30px' >
                             </div>
                             <div class='formControls col-5' style="text-align: right">
                                 <a href='javascript:void(0)' class='btn btn-green radius mt-l-20' id="searchBtn"><i

@@ -2,7 +2,6 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
     //初始化方法
     initialize();
     var userInfo,
-        roleCode,
         userPermission,
         departmentId,  //虚拟组id
         reqParams = null,
