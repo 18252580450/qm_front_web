@@ -284,8 +284,8 @@ define([
 
             $('#add_window').show().window({
                 title: '新建计划',
-                width: 1250,
-                height: 700,
+                width: 3/4*window.screen.width,
+                height: 3/4*window.screen.height,
                 cache: false,
                 content:qmPlanManageAdda.$el,
                 modal: true
@@ -299,8 +299,8 @@ define([
 
             $('#add_window').show().window({
                 title: '修改计划',
-                width: 1250,
-                height: 700,
+                width: 3/4*window.screen.width,
+                height: 3/4*window.screen.height,
                 cache: false,
                 content:qmPlanManageAdda.$el,
                 modal: true

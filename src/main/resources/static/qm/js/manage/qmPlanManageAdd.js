@@ -56,8 +56,8 @@ define([
                 queryQmPeople.initialize();
                 $('#qry_people_window').show().window({
                     title: '查询质检人员信息',
-                    width: 1150,
-                    height: 650,
+                    width: 2/3*window.screen.width,
+                    height: 2/3*window.screen.height,
                     cache: false,
                     content:queryQmPeople.$el,
                     modal: true,
@@ -81,8 +81,8 @@ define([
                 queryQmPeople.initialize();
                 $('#qry_people_window').show().window({
                     title: '查询质检人员信息',
-                    width: 1150,
-                    height: 650,
+                    width: 2/3*window.screen.width,
+                    height: 2/3*window.screen.height,
                     cache: false,
                     content:queryQmPeople.$el,
                     modal: true,
@@ -394,8 +394,8 @@ define([
                 var qryCheckTemplate = new QryCheckTemplate();
                 $('#qry_window').show().window({
                     title: '查询模板',
-                    width: 1000,
-                    height: 550,
+                    width: 2/3*window.screen.width,
+                    height: 2/3*window.screen.height,
                     cache: false,
                     content:qryCheckTemplate.$el,
                     modal: true
@@ -410,8 +410,8 @@ define([
                 var qryStrategy = new QryStrategy();
                 $('#qry_window').show().window({
                     title: '查询考评策略',
-                    width: 1000,
-                    height: 550,
+                    width: 2/3*window.screen.width,
+                    height: 2/3*window.screen.height,
                     cache: false,
                     content:qryStrategy.$el,
                     modal: true
