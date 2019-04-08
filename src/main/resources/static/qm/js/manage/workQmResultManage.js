@@ -30,8 +30,8 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
                     queryQmPeople.initialize("", "2");
                     $('#qry_people_window').show().window({
                         title: '查询质检人员信息',
-                        width: 1150,
-                        height: 630,
+                        width: 2/3*window.screen.width,
+                        height: 2/3*window.screen.height,
                         cache: false,
                         content: queryQmPeople.$el,
                         modal: true,
@@ -52,8 +52,8 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
 
                 $('#qry_window').show().window({
                     title: '查询考评计划',
-                    width: 1150,
-                    height: 600,
+                    width: 2/3*window.screen.width,
+                    height: 2/3*window.screen.height,
                     cache: false,
                     content: queryQmPlan.$el,
                     modal: true

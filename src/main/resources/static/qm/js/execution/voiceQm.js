@@ -108,8 +108,8 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
                     queryQmPeople.initialize("","");
                     $('#qry_people_window').show().window({
                         title: '查询质检人员信息',
-                        width: 1150,
-                        height: 630,
+                        width: 2/3*window.screen.width,
+                        height: 2/3*window.screen.height,
                         cache: false,
                         content:queryQmPeople.$el,
                         modal: true,
@@ -131,8 +131,8 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
                     queryQmPeople.initialize("","2");
                     $('#qry_people_window').show().window({
                         title: '查询质检人员信息',
-                        width: 1150,
-                        height: 630,
+                        width: 2/3*window.screen.width,
+                        height: 2/3*window.screen.height,
                         cache: false,
                         content:queryQmPeople.$el,
                         modal: true,
@@ -152,8 +152,8 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
                 var queryQmPlan = new QueryQmPlan();
                 $('#qry_window').show().window({
                     title: '查询考评计划',
-                    width: 1150,
-                    height: 600,
+                    width: 2/3*window.screen.width,
+                    height: 2/3*window.screen.height,
                     cache: false,
                     content:queryQmPlan.$el,
                     modal: true
