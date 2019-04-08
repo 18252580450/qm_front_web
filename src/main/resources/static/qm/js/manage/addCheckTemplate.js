@@ -296,7 +296,6 @@ define(["text!html/manage/addCheckTemplate.tpl","jquery", 'util', "transfer", "e
 
     //初始化列表
     function initGrid() {
-
         $("#page",$el).off("click","#addTemplate");//解决点击多次ztree之后再点击按钮后，被多次调用
         $("#page",$el).on("click", "#addTemplate", function () {//点击父节点,然后跳出弹出框，右侧新增
             addWindowEvent(data);
