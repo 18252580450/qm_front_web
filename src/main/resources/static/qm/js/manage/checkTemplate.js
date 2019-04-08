@@ -19,22 +19,6 @@ define(["js/manage/addCheckTemplate","js/manage/modifyCheckTemplate","jquery", '
 
     //初始化列表
     function initGrid() {
-        //模板渠道下拉框
-        $("#templatChannel").combobox({
-            url: '../../data/checkTemp_type.json',
-            method: "GET",
-            valueField: 'codeValue',
-            textField: 'codeName',
-            panelHeight:'auto',
-            editable:false,
-            onLoadSuccess : function(){//当数据加载成功时，默认显示第一个数据
-                var templatChannel = $("#templatChannel");
-                var data = templatChannel.combobox('getData');
-                if (data.length > 0) {
-                    templatChannel.combobox('select', data[0].codeValue);
-                }
-            }
-        });
 
         //模板状态下拉框
         $("#templateStatus").combobox({
@@ -62,7 +46,6 @@ define(["js/manage/addCheckTemplate","js/manage/modifyCheckTemplate","jquery", '
                     field: 'action', title: '操作', width: '20%',
                     formatter: function (value, row, index) {
                         var bean = {
-                            'tenantId': row.tenantId,
                             'templateId': row.templateId,
                             'templateName': row.templateName,
                             'templateStatus': row.templateStatus,
@@ -80,10 +63,6 @@ define(["js/manage/addCheckTemplate","js/manage/modifyCheckTemplate","jquery", '
                 },
                 {field: 'templateName', title: '模板名称', width: '20%',
                     formatter: function (value) {//鼠标悬浮显示全部内容
-                        return "<span title='" + value + "'>" + value + "</span>";
-                    }},
-                {field: 'tenantId', title: '渠道名称', width: '20%', hidden: true,
-                    formatter: function (value) {
                         return "<span title='" + value + "'>" + value + "</span>";
                     }},
                 {field: 'templateStatus', title: '模板状态', width: '15%',
@@ -129,13 +108,11 @@ define(["js/manage/addCheckTemplate","js/manage/modifyCheckTemplate","jquery", '
                 var start = (param.page - 1) * param.rows;
                 var pageNum = param.rows;
                 var templateName = $("#templateName").val();
-                var tenantId = $("#templatChannel").combobox("getValue");
                 var templateStatus = $("#templateStatus").combobox("getValue");
                 if(templateStatus == '3'){
                     templateStatus = null;
                 }
                 var reqParams = {
-                    "tenantId":tenantId,
                     "templateName": templateName,
                     "templateStatus": templateStatus,
                 };
@@ -169,6 +146,11 @@ define(["js/manage/addCheckTemplate","js/manage/modifyCheckTemplate","jquery", '
         //查询
         $("#searchForm").on("click", "#selectBut", function () {
             $("#page").find("#checkTemplateManage").datagrid("load");
+        });
+
+        //重置
+        $("#searchForm").on("click", "#clearBut", function () {
+            $("#page input").val("");
         });
 
         //新建
