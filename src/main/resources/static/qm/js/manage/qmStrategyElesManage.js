@@ -201,8 +201,8 @@ define([
         $("#addBtn").on("click", function(){
             $('#add_window').show().window({
                 title: '新建元素',
-                width: 950,
-                height: 400,
+                width: Util.constants.DIALOG_WIDTH,
+                height: Util.constants.DIALOG_HEIGHT,
                 cache: false,
                 modal: true
             });
@@ -280,8 +280,8 @@ define([
         $("#page").on("click", "a.reviseBtn", function () {
             $('#add_window').show().window({
                 title: '修改元素',
-                width: 950,
-                height: 400,
+                width: Util.constants.DIALOG_WIDTH,
+                height: Util.constants.DIALOG_HEIGHT,
                 cache: false,
                 modal: true
             });

@@ -176,8 +176,8 @@ define([
             var qmStrategyManageAdda = new qmStrategyManageAdd(paramsType);
             $('#add_window').show().window({
                 title: '新建策略',
-                width: 1250,
-                height: 700,
+                width: Util.constants.DIALOG_WIDTH,
+                height: Util.constants.DIALOG_HEIGHT,
                 cache: false,
                 content:qmStrategyManageAdda.$el,
                 modal: true
@@ -190,8 +190,8 @@ define([
             var qmStrategyManageAdda = new qmStrategyManageAdd(paramsType,pId);
             $('#add_window').show().window({
                 title: '修改策略',
-                width: 1250,
-                height: 700,
+                width: Util.constants.DIALOG_WIDTH,
+                height: Util.constants.DIALOG_HEIGHT,
                 cache: false,
                 content:qmStrategyManageAdda.$el,
                 modal: true
