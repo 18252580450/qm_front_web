@@ -37,7 +37,7 @@
                     <!--左侧区域-->
                     <div style="float:left;overflow-y: auto; overflow-x: auto;width:20%;height: 430px;">
                         <div class='cl'>
-                            <div class='panel-tool-box cl' >
+                            <div class='panel-tool-box cl'>
                                 <div class='fl text-bold'>考评树</div>
                             </div>
                             <div id="treeDiv" title="考评项管理"  class="index-west">
@@ -50,7 +50,7 @@
                     <div style="float:right ; width:80%; height:100%;">
                         <form class='form form-horizontal'>
                             <div class='row cl'>
-                                <div class='formControls col-7' style="text-align: right">
+                                <div class='formControls col-10'>
                                     <a href='javascript:void(0)' class='btn btn-green radius mt-l-20' id = "addTemplate"><i class='iconfont iconfont-add'></i>新增</a>
                                     <span style="margin-left: 10px;color: #acacac ">[请先点击考评树节点,再点击新增操作]</span>
                                     <a href='javascript:void(0)' class='btn btn-secondary radius  mt-l-20' id="saveBut">保存</a>

@@ -50,7 +50,7 @@
                     <div style="float:right ; width:80%; height:100%;">
                         <form class='form form-horizontal'>
                             <div class='row cl'>
-                                <div class='formControls col-7' style="text-align: right">
+                                <div class='formControls col-10'>
                                     <a href='javascript:void(0)' class='btn btn-green radius mt-l-20' id = "addTemplate"><i class='iconfont iconfont-add'></i>新增</a>
                                     <span style="margin-left: 10px;color: #acacac ">[请先点击考评树节点,再点击新增操作]</span>
                                     <a href='javascript:void(0)' class='btn btn-secondary radius  mt-l-20' id="saveBut">保存</a>
