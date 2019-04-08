@@ -176,8 +176,8 @@ define(["js/manage/addCheckTemplate","js/manage/modifyCheckTemplate","jquery", '
             var addCheckTemplate = new AddCheckTemplate();
             $('#add_window').show().window({
                 title: '新建模版',
-                width: 1150,
-                height: 660,
+                width: 1000,
+                height: 600,
                 cache: false,
                 content:addCheckTemplate.$el,
                 modal: true
@@ -194,8 +194,8 @@ define(["js/manage/addCheckTemplate","js/manage/modifyCheckTemplate","jquery", '
             var modifyCheckTemplate = new ModifyCheckTemplate(selRows);
             $('#modif_window').show().window({
                 title: '修改模版',
-                width: 1150,
-                height: 660,
+                width: 1000,
+                height: 600,
                 cache: false,
                 content:modifyCheckTemplate.$el,
                 modal: true
