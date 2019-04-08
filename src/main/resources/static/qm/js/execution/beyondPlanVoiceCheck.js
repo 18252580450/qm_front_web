@@ -166,7 +166,7 @@ require([
                                 $('#qry_window').show().window({
                                     title: '选择考评模版',
                                     width: Util.constants.DIALOG_WIDTH,
-                                    height: Util.constants.DIALOG_HEIGHT,
+                                    height: Util.constants.DIALOG_HEIGHT_SMALL,
                                     cache: false,
                                     content: qryCheckTemplate.$el,
                                     modal: true

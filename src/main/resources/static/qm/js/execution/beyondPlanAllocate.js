@@ -106,6 +106,7 @@ define([
         function initEvent() {
             //工作组搜索框
             $('#groupName', $el).searchbox({
+                editable: false,
                 searcher: function (value) {
                     $("#content", $el).append(getWorkListDiv());
                     $('#qryWorkGroup', $el).show().window({
@@ -160,7 +161,7 @@ define([
                     $('#qry_window').show().window({
                         title: '选择考评模版',
                         width: Util.constants.DIALOG_WIDTH,
-                        height: Util.constants.DIALOG_HEIGHT,
+                        height: Util.constants.DIALOG_HEIGHT_SMALL,
                         cache: false,
                         content: qryCheckTemplate.$el,
                         modal: true,

@@ -107,7 +107,7 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui","dateUti
                 $('#qry_people_window').show().window({
                     title: '查询质检人员信息',
                     width: Util.constants.DIALOG_WIDTH,
-                    height: Util.constants.DIALOG_HEIGHT,
+                    height: Util.constants.DIALOG_HEIGHT_SMALL,
                     cache: false,
                     content:queryQmPeople.$el,
                     modal: true,
@@ -129,7 +129,7 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui","dateUti
                 $('#qry_window').show().window({
                     title: '查询考评计划',
                     width: Util.constants.DIALOG_WIDTH,
-                    height: Util.constants.DIALOG_HEIGHT,
+                    height: Util.constants.DIALOG_HEIGHT_SMALL,
                     cache: false,
                     content:queryQmPlan.$el,
                     modal: true

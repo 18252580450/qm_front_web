@@ -25,7 +25,7 @@ require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util,
                             $('#qry_people_window').show().window({
                                 title: '审批人员信息',
                                 width: Util.constants.DIALOG_WIDTH,
-                                height: Util.constants.DIALOG_HEIGHT,
+                                height: Util.constants.DIALOG_HEIGHT_SMALL,
                                 cache: false,
                                 content: queryQmPeople.$el,
                                 modal: true,

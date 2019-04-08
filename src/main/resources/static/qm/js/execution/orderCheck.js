@@ -51,7 +51,7 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
                 $('#qry_window').show().window({
                     title: '查询考评计划',
                     width: Util.constants.DIALOG_WIDTH,
-                    height: Util.constants.DIALOG_HEIGHT,
+                    height: Util.constants.DIALOG_HEIGHT_SMALL,
                     cache: false,
                     content: queryQmPlan.$el,
                     modal: true
@@ -262,7 +262,7 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
                         $('#qryQmHistoryWindow').show().window({
                             title: '质检历史',
                             width: Util.constants.DIALOG_WIDTH,
-                            height: Util.constants.DIALOG_HEIGHT,
+                            height: Util.constants.DIALOG_HEIGHT_SMALL,
                             cache: false,
                             content: queryQmHistory.$el,
                             modal: true,

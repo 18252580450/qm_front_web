@@ -61,9 +61,9 @@ require([
                         var queryQmPeople = qryQmPeople;
                         queryQmPeople.initialize();
                         $('#qry_people_window').show().window({
-                            title: '审批人员信息',
+                            title: '立单人搜索',
                             width: Util.constants.DIALOG_WIDTH,
-                            height: Util.constants.DIALOG_HEIGHT,
+                            height: Util.constants.DIALOG_HEIGHT_SMALL,
                             cache: false,
                             content: queryQmPeople.$el,
                             modal: true,
@@ -183,7 +183,7 @@ require([
                                 $('#qry_window').show().window({
                                     title: '选择考评模版',
                                     width: Util.constants.DIALOG_WIDTH,
-                                    height: Util.constants.DIALOG_HEIGHT,
+                                    height: Util.constants.DIALOG_HEIGHT_SMALL,
                                     cache: false,
                                     content: qryCheckTemplate.$el,
                                     modal: true
@@ -225,7 +225,7 @@ require([
                 $('#qry_people_window').show().window({
                     title: '工单质检分配',
                     width: Util.constants.DIALOG_WIDTH,
-                    height: Util.constants.DIALOG_HEIGHT,
+                    height: Util.constants.DIALOG_HEIGHT_SMALL,
                     cache: false,
                     content: workFormAllocate.$el,
                     modal: true,

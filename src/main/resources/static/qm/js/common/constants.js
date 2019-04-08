@@ -13,6 +13,7 @@ define(function () {
         PROVCODE: "00030000",//省份编码
         DIALOG_WIDTH: 2 / 3 * window.screen.width, //弹框宽
         DIALOG_HEIGHT: 2 / 3 * window.screen.height, //弹框高
+        DIALOG_HEIGHT_SMALL: 0.63 * window.screen.height, //弹框高
 
         //URI
         STATIC_PARAMS_DNS: "/qm/configservice/staticParams",//静态数据配置
