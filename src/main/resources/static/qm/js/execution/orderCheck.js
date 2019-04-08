@@ -42,15 +42,9 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
             }
         });
 
-        //考评环节搜索框
-        $("#checkLink").searchbox({
-                searcher: function () {
-                }
-            }
-        );
-
         //计划名称搜索框
         $('#planName').searchbox({//输入框点击查询事件
+            editable: false,//禁止手动输入
             searcher: function (value) {
                 var queryQmPlan = new QueryQmPlan();
 

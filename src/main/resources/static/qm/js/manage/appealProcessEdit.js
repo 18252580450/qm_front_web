@@ -37,6 +37,7 @@ require([
         //部门搜索框
         var department = $("#departmentName");
         department.searchbox({
+                editable: false,//禁止手动输入
                 searcher: function () {
                     var queryDepart = QueryDepart;
                     queryDepart.initialize();
@@ -617,6 +618,7 @@ require([
         //审批角色下拉框
         var userNameInput = $("#userName");
         userNameInput.searchbox({
+                editable: false,//禁止手动输入
                 searcher: function () {
                     require(["js/execution/queryQmPeople"], function (qryQmPeople) {
                         var queryQmPeople = qryQmPeople;
@@ -754,6 +756,7 @@ require([
         var editDepartName = $("#editDepartName");
         editDepartName.validatebox();
         editDepartName.searchbox({
+                editable: false,//禁止手动输入
                 searcher: function () {
                     var queryDepart = QueryDepart;
                     queryDepart.initialize();
@@ -860,6 +863,7 @@ require([
         //审批角色下拉框
         var userNameInput = $("#userName");
         userNameInput.searchbox({
+                editable: false,//禁止手动输入
                 searcher: function () {
                     require(["js/execution/queryQmPeople"], function (qryQmPeople) {
                         var queryQmPeople = qryQmPeople;

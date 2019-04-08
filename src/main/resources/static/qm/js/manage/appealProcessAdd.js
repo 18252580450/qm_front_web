@@ -43,6 +43,7 @@ require([
         //部门搜索框
         var department = $("#departmentName");
         department.searchbox({
+                editable: false,//禁止手动输入
                 searcher: function () {
                     var queryDepart = QueryDepart;
                     queryDepart.initialize();
@@ -335,7 +336,7 @@ require([
 
         //新增取消
         $("#cancelBtn").on("click", function () {
-            CommonAjax.closeMenuByNameAndId("申诉流程新增","申诉流程新增");
+            CommonAjax.closeMenuByNameAndId("申诉流程新增", "申诉流程新增");
         });
 
     }
@@ -428,6 +429,7 @@ require([
         //审批角色下拉框
         var userNameInput = $("#userName");
         userNameInput.searchbox({
+                editable: false,//禁止手动输入
                 searcher: function () {
                     require(["js/execution/queryQmPeople"], function (qryQmPeople) {
                         var queryQmPeople = qryQmPeople;
@@ -538,7 +540,7 @@ require([
             var rspCode = result.RSP.RSP_CODE;
             if (rspCode != null && rspCode === "1") {   //新增成功
                 $.messager.alert("提示", result.RSP.RSP_DESC, null, function () {
-                    CommonAjax.closeMenuByNameAndId("申诉流程新增","申诉流程新增");
+                    CommonAjax.closeMenuByNameAndId("申诉流程新增", "申诉流程新增");
                     CommonAjax.refreshMenuByUrl(appealProcessUrl, "申诉流程", "申诉流程");
                 });
             } else {  //新增失败

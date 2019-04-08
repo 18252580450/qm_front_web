@@ -55,6 +55,7 @@ require([
             //立单人搜索框
             var acptStaffInput = $('#acptStaffName');
             acptStaffInput.searchbox({//输入框点击查询事件
+                editable: false,//禁止手动输入
                 searcher: function (value) {
                     require(["js/execution/queryQmPeople"], function (qryQmPeople) {
                         var queryQmPeople = qryQmPeople;

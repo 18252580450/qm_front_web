@@ -18,6 +18,7 @@ require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util,
             //申诉人搜索框
             var staffNameInput = $("#appealStaffName");
             staffNameInput.searchbox({
+                    editable: false,//禁止手动输入
                     searcher: function () {
                         require(["js/execution/queryQmPeople"], function (qryQmPeople) {
                             var queryQmPeople = qryQmPeople;
@@ -430,7 +431,7 @@ require(["jquery", 'util', "transfer", "dateUtil", "easyui"], function ($, Util,
                 approveStatus = "驳回";
             }
             var approveTime = "";
-            if(item.approveTime !== ""){
+            if (item.approveTime !== "") {
                 approveTime = DateUtil.formatDateTime(item.approveTime)
             }
             return '<div style="margin-bottom:30px;">' +

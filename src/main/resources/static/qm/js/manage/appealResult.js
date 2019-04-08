@@ -30,6 +30,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
             //申诉人搜索框
             var staffNameInput = $("#appealStaffName");
             staffNameInput.searchbox({
+                    editable: false,//禁止手动输入
                     searcher: function () {
                         require(["js/execution/queryQmPeople"], function (qryQmPeople) {
                             var queryQmPeople = qryQmPeople;

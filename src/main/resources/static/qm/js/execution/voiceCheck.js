@@ -17,10 +17,11 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
 
     //页面信息初始化
     function initPageInfo() {
+        //计划名称搜索框
         $('#planName').searchbox({//输入框点击查询事件
+            editable: false,//禁止手动输入
             searcher: function (value) {
                 var queryQmPlan = new QueryQmPlan();
-
                 $('#qry_window').show().window({
                     title: '查询考评计划',
                     width: 1150,
@@ -31,13 +32,6 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
                 });
             }
         });
-
-        //计划名称搜索框
-        $("#qmPlanName").searchbox({
-                searcher: function () {
-                }
-            }
-        );
 
         //分配开始时间选择框
         // var distributeBeginDate = (DateUtil.formatDateTime(new Date() - 24 * 60 * 60 * 1000)).substr(0, 11) + "00:00:00";
