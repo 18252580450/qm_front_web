@@ -15,7 +15,7 @@ require(["jquery", 'util', "commonAjax", "transfer", "dateUtil", "easyui"], func
         historyData = [],           //工单历史数据
         processData = [],           //轨迹数据
         playingRecord,              //当前正在播放的录音id
-        qmCheckUrl = Util.constants.URL_CONTEXT + "/qm/html/execution/beyondPlanCheck.html";
+        qmCheckUrl = Util.constants.NGIX_URL_CONTEXT + "/qm/html/execution/beyondPlanCheck.html";
 
     initialize();
 

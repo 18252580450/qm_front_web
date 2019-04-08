@@ -6,6 +6,7 @@ define(function () {
     return {
         CONTEXT: "http://localhost:9002",
         URL_CONTEXT: "http://127.0.0.1:8080",
+        NGIX_URL_CONTEXT: "http://203.57.226.107:9990",
         TENANT_ID: "10010000",
         STAFF_ID: "123",       //模拟登陆工号
         STAFF_NAME: "石莹",    //模拟员工姓名

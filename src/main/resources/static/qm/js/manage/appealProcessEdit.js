@@ -13,7 +13,7 @@ require([
         processListData = [],       //列表展示数据（包括子流程和子节点列表数据）
         checkTypeData = [],         //质检类型静态数据
         orderData = [],             //流程顺序静态数据
-        appealProcessUrl = Util.constants.URL_CONTEXT + "/qm/html/manage/appealProcessManage.html";
+        appealProcessUrl = Util.constants.NGIX_URL_CONTEXT + "/qm/html/manage/appealProcessManage.html";
 
     initialize();
 

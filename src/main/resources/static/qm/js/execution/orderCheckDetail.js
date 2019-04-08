@@ -15,7 +15,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
         recordData = [],            //接触记录数据
         historyData = [],           //工单历史数据
         processData = [],           //轨迹数据
-        qmCheckUrl = Util.constants.URL_CONTEXT + "/qm/html/execution/qmCheck.html";
+        qmCheckUrl = Util.constants.NGIX_URL_CONTEXT + "/qm/html/execution/qmCheck.html";
 
     initialize();
 
