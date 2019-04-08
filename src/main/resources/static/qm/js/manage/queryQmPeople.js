@@ -54,7 +54,7 @@ define([
                     {field: 'ROLE_CODE', title: '角色编码', align: 'center', width: '20%'},
                 ]],
                 fitColumns: true,
-                height: 420,
+                height: 350,
                 pagination: true, //分页显示
                 pageSize: 10,
                 pageList: [5, 10, 20, 50],
