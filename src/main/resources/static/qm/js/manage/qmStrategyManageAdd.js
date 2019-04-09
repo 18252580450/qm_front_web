@@ -105,7 +105,7 @@ define([
                 ]],
                 fitColumns: true,
                 width: '100%',
-                height: 400,
+                height: 330,
                 singleSelect: false,
                 checkOnSelect: false,
                 autoRowHeight: true,
