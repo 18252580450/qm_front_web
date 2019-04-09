@@ -12,7 +12,7 @@
                             </div>
                             <label class='form-label col-2'>策略类型</label>
                             <div class='formControls col-3'>
-                                <input id="paramsTypeId" type="text" style='width:90%;height:30px'>
+                                <input id="paramsTypeId" type="text" class='easyui-textbox' style='width:90%;height:30px'>
                                 <span style='color:red;padding-left:2px'>*</span>
                             </div>
                         </div>

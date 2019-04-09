@@ -126,8 +126,10 @@ define([
                 var pageNum = param.rows;
                 var paramsTypeId = $("#paramsType").combobox('getValue');
                 var pName = $("#pName").val();
-                var isValidate = $("input[name='isValidate']:checked").val();
-
+                var isValidate = $("input[name='isValidateMain']:checked").val();
+                if(!isValidate){
+                    isValidate = "";
+                }
                 var reqParams = {
                     "tenantId":Util.constants.TENANT_ID,
                     "pName": pName,
@@ -168,7 +170,7 @@ define([
         //重置
         $("#searchForm").on("click", "#btn-default", function () {
             $("#searchForm").form('clear');
-            $("input[name='isValidate']").attr("checked", "");
+            $("input[name='isValidateMain']").attr("checked", "");
         });
 
         //新增

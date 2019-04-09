@@ -1,6 +1,6 @@
 <div id="page_content" data-options="region:'center'" style="height:100%;">
     <div id='layout_content' class='easyui-layout' data-options="region:'center'" style='overflow: auto; height:100%;'>
-        <div data-options="region:'center'" style='overflow: hidden;height: 100%'>
+        <div data-options="region:'center'" style='overflow: auto;height: 100%'>
             <div id = "page">
                 <div class='panel-search ' title="考评模板">
                     <div class='fl text-bold'>基本信息</div>

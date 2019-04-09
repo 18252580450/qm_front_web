@@ -427,6 +427,7 @@ define([
                         rspCode = result.RSP.RSP_CODE;
                         if (rspCode == "1") {
                             $("#retList").datagrid('reload'); //修改成功后，刷新页面
+                            $("#add_window").window("close");
                         }
                     });
                 }else{
@@ -437,11 +438,12 @@ define([
                             style: {right: '', bottom: ''},     //居中显示
                             showType: 'slide'
                         });
+                        rspCode = result.RSP.RSP_CODE;
+                        if (rspCode == "1") {
+                            $("#retList").datagrid('reload'); //新增成功后，刷新页面
+                            $("#add_window").window("close");
+                        }
                     });
-                    rspCode = result.RSP.RSP_CODE;
-                    if (rspCode == "1") {
-                        $("#retList").datagrid('reload'); //新增成功后，刷新页面
-                    }
                 }
 
                 //enable按钮
