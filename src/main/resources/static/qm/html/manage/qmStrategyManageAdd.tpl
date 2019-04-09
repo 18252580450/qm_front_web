@@ -1,6 +1,6 @@
 <div id="page_content" data-options="region:'center'" style="height:100%;">
     <div id='layout_content' class='easyui-layout' data-options="region:'center'" style='overflow: auto; height:100%;'>,
-        <div id="content" data-options="region:'center'" style='overflow: hidden;height: 100%'>
+        <div id="content" data-options="region:'center'" style='overflow: auto;height: 100%'>
             <div id = "page">
                 <div class='panel-search ' title="">
                     <form class='form form-horizontal' id="mainForm">
