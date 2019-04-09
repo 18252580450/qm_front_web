@@ -21,7 +21,7 @@
                             <div class='formControls col-3'>
                                 <input id="staffId" type="text" class='easyui-textbox' style='width:100%;height:30px' >
                             </div>
-                            <div class='formControls col-5' style="text-align: right">
+                            <div class='formControls col-6' style="text-align: right">
                                 <a href='javascript:void(0)' class='btn btn-green radius mt-l-20' id="searchBtn"><i
                                         class='iconfont iconfont-search2'></i>查询</a>
                                 <a href='javascript:void(0)' class='btn btn-secondary radius  mt-l-20' id="clearBtn"><i
