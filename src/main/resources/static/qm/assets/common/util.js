@@ -8,6 +8,7 @@ define(['constants', 'page-util', 'ajax', 'loading'], function (constants, PageU
             async:false,
             url:constants.IS_LOG_IN,
             type:"GET",
+            cache:false,//不设置ajax缓存
             dataType:"json",
             success: function(data) {
                 var result = JSON.stringify(data);
