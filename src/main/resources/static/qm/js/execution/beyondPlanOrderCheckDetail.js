@@ -620,10 +620,9 @@ require(["jquery", 'util', "commonAjax", "transfer", "dateUtil", "easyui"], func
             },
             onLoadSuccess: function (data) {
                 var audio = new Audio();
-                //语音播放
                 $.each(data.rows, function (i, item) {
+                    //语音播放
                     $("#recordPlay_" + item.cntmngSwftno).on("click", function () {
-
                         if (playingRecord !== null && playingRecord !== "") {  //有正在播放录音的情况
                             audio.pause();
                             if (playingRecord === item.cntmngSwftno) {  //暂停播放
@@ -645,13 +644,9 @@ require(["jquery", 'util', "commonAjax", "transfer", "dateUtil", "easyui"], func
                             playingRecord = item.cntmngSwftno;
                         }
                     });
-                });
-                //录音下载
-                $.each(data.rows, function (i, item) {
+                    //录音下载
                     $("#recordDownload_" + item.cntmngSwftno).on("click", function () {
-                        window.location.href = item.recordFilePath;
-                        // window.open(item.recordFilePath,'_blank');
-                        // window.open("http://203.57.228.52:9002/root/ctcqm/files/20190303/TEL-01057084456_1013_20190313154032.wav",'_blank');
+                        window.location.href = Util.constants.CONTEXT + Util.constants.WRKFM_DETAIL_DNS + "/recordDownload" + '?ftpPath=' + item.recordFilePath;
                     });
                 });
             }

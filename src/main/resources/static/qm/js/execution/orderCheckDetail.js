@@ -15,6 +15,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
         recordData = [],            //接触记录数据
         historyData = [],           //工单历史数据
         processData = [],           //轨迹数据
+        playingRecord,              //当前正在播放的录音id
         qmCheckUrl = Util.constants.NGIX_URL_CONTEXT + "/qm/html/execution/qmCheck.html";
 
     initialize();
@@ -541,9 +542,9 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                 {
                     field: 'staffNumber', title: '坐席号码', width: '15%',
                     formatter: function (value, row, index) {
-                        if(row.callTypeCd === "1"){
+                        if (row.callTypeCd === "1") {
                             return row.callingNumber;
-                        }else {
+                        } else {
                             return row.calledNumber;
                         }
                     }
@@ -551,9 +552,9 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                 {
                     field: 'customNumber', title: '客户号码', width: '15%',
                     formatter: function (value, row, index) {
-                        if(row.callTypeCd === "0"){
+                        if (row.callTypeCd === "0") {
                             return row.callingNumber;
-                        }else {
+                        } else {
                             return row.calledNumber;
                         }
                     }
@@ -629,10 +630,9 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
             },
             onLoadSuccess: function (data) {
                 var audio = new Audio();
-                //语音播放
                 $.each(data.rows, function (i, item) {
+                    //语音播放
                     $("#recordPlay_" + item.cntmngSwftno).on("click", function () {
-
                         if (playingRecord !== null && playingRecord !== "") {  //有正在播放录音的情况
                             audio.pause();
                             if (playingRecord === item.cntmngSwftno) {  //暂停播放
@@ -654,11 +654,9 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                             playingRecord = item.cntmngSwftno;
                         }
                     });
-                });
-                //录音下载
-                $.each(data.rows, function (i, item) {
+                    //录音下载
                     $("#recordDownload_" + item.cntmngSwftno).on("click", function () {
-
+                        window.location.href = Util.constants.CONTEXT + Util.constants.WRKFM_DETAIL_DNS + "/recordDownload" + '?ftpPath=' + item.recordFilePath;
                     });
                 });
             }

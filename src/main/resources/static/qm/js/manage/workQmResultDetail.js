@@ -1,6 +1,7 @@
 require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util) {
 
     var workForm,
+        playingRecord,              //当前正在播放的录音id
         showingInfo = 0,            //当前显示的基本信息（0工单基本信息、1内外部回复、2接触记录、3工单历史）
         scoreType,                  //分值类型（默认扣分）
         startTime,                  //页面初始化时间
@@ -456,6 +457,38 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
                         };
                         success(emptyData);
                     }
+                });
+            },
+            onLoadSuccess: function (data) {
+                var audio = new Audio();
+                $.each(data.rows, function (i, item) {
+                    //语音播放
+                    $("#recordPlay_" + item.cntmngSwftno).on("click", function () {
+                        if (playingRecord !== null && playingRecord !== "") {  //有正在播放录音的情况
+                            audio.pause();
+                            if (playingRecord === item.cntmngSwftno) {  //暂停播放
+                                $("#recordPlay_" + item.cntmngSwftno).html("播放");
+                                playingRecord = "";
+                            } else { //播放其他录音
+                                $("#recordPlay_" + playingRecord).html("播放");
+                                $("#recordPlay_" + item.cntmngSwftno).html("暂停");
+                                audio.src = item.recordFilePath;  //todo
+                                audio.load();
+                                audio.play();
+                                playingRecord = item.cntmngSwftno;
+                            }
+                        } else {
+                            $("#recordPlay_" + item.cntmngSwftno).html("暂停");
+                            audio.src = item.recordFilePath;  //todo
+                            audio.load();
+                            audio.play();
+                            playingRecord = item.cntmngSwftno;
+                        }
+                    });
+                    //录音下载
+                    $("#recordDownload_" + item.cntmngSwftno).on("click", function () {
+                        window.location.href = Util.constants.CONTEXT + Util.constants.WRKFM_DETAIL_DNS + "/recordDownload" + '?ftpPath=' + item.recordFilePath;
+                    });
                 });
             }
         });
