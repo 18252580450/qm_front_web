@@ -170,7 +170,7 @@ define([
         //重置
         $("#searchForm").on("click", "#btn-default", function () {
             $("#searchForm").form('clear');
-            $("input[name='isValidateMain']").attr("checked", "");
+            $("input[name='isValidateMain']").removeAttr("checked");
         });
 
         //新增
