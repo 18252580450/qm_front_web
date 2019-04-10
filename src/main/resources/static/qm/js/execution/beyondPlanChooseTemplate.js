@@ -58,7 +58,18 @@ define([
                         checkObj.templateId = rowData.templateId;
                         //工单质检
                         if (templateType === Util.constants.CHECK_TYPE_ORDER) {
-                            var orderCheckUrl = CommonAjax.createURL(orderCheckDetail, checkObj);
+                            var param = {
+                                "provCode": checkObj.provCode,
+                                "wrkfmId": checkObj.wrkfmId,
+                                "wrkfmShowSwftno": checkObj.wrkfmShowSwftno,
+                                "templateId": checkObj.templateId,
+                                "acptStaffNum": checkObj.acptStaffNum,
+                                "checkStaffId": checkObj.checkStaffId,
+                                "checkStaffName": checkObj.checkStaffName,
+                                "srvReqstTypeNm": checkObj.srvReqstTypeNm,
+                                "actualHandleDuration": checkObj.actualHandleDuration
+                            };
+                            var orderCheckUrl = CommonAjax.createURL(orderCheckDetail, param);
                             CommonAjax.openMenu(orderCheckUrl, "工单质检详情", checkObj.wrkfmId);
                         }
                         //语音质检

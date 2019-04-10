@@ -178,6 +178,8 @@ require([
                     $.each(data.rows, function (i, item) {
                         $("#orderCheck_" + item.wrkfmId).on("click", function () {
                             if (item.templateId == null) {
+                                item.checkStaffId = userInfo.staffId;
+                                item.checkStaffName = userInfo.staffName;
                                 var qryCheckTemplate = QryCheckTemplate;
                                 qryCheckTemplate.initialize(Util.constants.CHECK_TYPE_ORDER, "0", item);
                                 $('#qry_window').show().window({
@@ -189,9 +191,18 @@ require([
                                     modal: true
                                 });
                             } else {
-                                item.checkStaffId = userInfo.staffId;
-                                item.checkStaffName = userInfo.staffName;
-                                var url = CommonAjax.createURL(orderCheckDetail, item);
+                                var param = {
+                                    "provCode": item.provCode,
+                                    "wrkfmId": item.wrkfmId,
+                                    "wrkfmShowSwftno": item.wrkfmShowSwftno,
+                                    "templateId": item.templateId,
+                                    "acptStaffNum": item.acptStaffNum,
+                                    "checkStaffId": userInfo.staffId,
+                                    "checkStaffName": userInfo.staffName,
+                                    "srvReqstTypeNm": item.srvReqstTypeNm,
+                                    "actualHandleDuration": item.actualHandleDuration
+                                };
+                                var url = CommonAjax.createURL(orderCheckDetail, param);
                                 CommonAjax.openMenu(url, "工单质检详情", item.wrkfmId);
                             }
                         });

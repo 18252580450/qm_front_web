@@ -279,6 +279,11 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
                 $.each(data.rows, function (i, item) {
                     //申诉
                     $("#resultAppeal_" + item.inspectionId).on("click", function () {
+                        //临时保存的结果禁止申诉
+                        if ( item.resultStatus === Util.constants.CHECK_RESULT_TEMP_SAVE) {
+                            $.messager.alert("提示", "暂存结果不能申诉!");
+                            return;
+                        }
                         //判断是否已有申诉流程
                         // if (item.appealId != null && item.resultStatus === Util.constants.CHECK_RESULT_APPEALING) {
                         //     $.messager.alert("提示", "申诉中！申诉单号：" + item.appealId + "!");

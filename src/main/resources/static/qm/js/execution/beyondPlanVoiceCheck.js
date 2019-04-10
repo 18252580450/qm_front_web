@@ -162,6 +162,8 @@ require([
                         $("#voiceCheck_" + item.touchId).on("click", function () {
                             if (item.templateId == null) {
                                 var qryCheckTemplate = QryCheckTemplate;
+                                item.checkStaffId = userInfo.staffId;
+                                item.checkStaffName = userInfo.staffName;
                                 qryCheckTemplate.initialize(Util.constants.CHECK_TYPE_VOICE, "0", item);
                                 $('#qry_window').show().window({
                                     title: '选择考评模版',
