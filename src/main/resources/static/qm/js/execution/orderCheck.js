@@ -230,8 +230,8 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
                 });
             },
             onLoadSuccess: function (data) {
-                //工单质检详情
                 $.each(data.rows, function (i, item) {
+                    //工单质检详情
                     $("#orderCheck_" + item.workFormId).on("click", function () {
                         var templateId = "",
                             planId = "";
@@ -253,9 +253,7 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
                         var url = CommonAjax.createURL(orderCheckDetail, param);
                         CommonAjax.openMenu(url, "工单质检详情", item.workFormId);
                     });
-                });
-                //质检记录
-                $.each(data.rows, function (i, item) {
+                    //质检记录
                     $("#checkHistory_" + item.workFormId).on("click", function () {
                         var queryQmHistory = QueryQmHistory;
                         queryQmHistory.initialize(item.workFormId);

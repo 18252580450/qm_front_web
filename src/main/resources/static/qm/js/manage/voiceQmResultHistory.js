@@ -1,4 +1,4 @@
-define(["text!html/manage/voiceQmResultHistory.tpl", "jquery", 'util', "transfer", "easyui", "dateUtil"], function (qryQmHistoryTpl, $, Util, Transfer, easyui, dateUtil) {
+define(["text!html/manage/voiceQmResultHistory.tpl", "jquery", 'util', "transfer", "commonAjax", "easyui", "dateUtil"], function (qryQmHistoryTpl, $, Util, Transfer, CommonAjax) {
     var $el,
         touchId,    //语音流水
         voiceCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/manage/voiceQmResultDetail.html";
@@ -20,7 +20,7 @@ define(["text!html/manage/voiceQmResultHistory.tpl", "jquery", 'util', "transfer
                 {
                     field: 'inspectionId', title: '质检流水号', width: '20%',
                     formatter: function (value, row, index) {
-                        return '<a href="javascript:void(0);" style="color: deepskyblue;" id = "resultDetail_' + row.inspectionId + '">' + value + '</a>';
+                        return '<a href="javascript:void(0);" id = "resultDetail_' + row.inspectionId + '">' + value + '</a>';
                     }
                 },
                 {field: 'planName', title: '计划名称', width: '15%'},
@@ -107,43 +107,12 @@ define(["text!html/manage/voiceQmResultHistory.tpl", "jquery", 'util', "transfer
                 //详情
                 $.each(data.rows, function (i, item) {
                     $("#resultDetail_" + item.inspectionId, $el).on("click", function () {
-                        var url = createURL(voiceCheckDetail, item);
-                        showDialog(url, "质检详情", Util.constants.DIALOG_WIDTH, Util.constants.DIALOG_HEIGHT);
+                        var url = CommonAjax.createURL(voiceCheckDetail, item);
+                        CommonAjax.showDialog(url, "质检详情", Util.constants.DIALOG_WIDTH, Util.constants.DIALOG_HEIGHT_SMALL);
                     });
                 });
             }
         });
-    }
-
-    //拼接对象到url
-    function createURL(url, param) {
-        var urlLink = url;
-        if (param != null) {
-            $.each(param, function (item, value) {
-                urlLink += '&' + item + "=" + encodeURI(value);
-            });
-            urlLink = url + "?" + urlLink.substr(1);
-        }
-        return urlLink.replace(' ', '');
-    }
-
-    //dialog弹框
-    //url：窗口调用地址，title：窗口标题，width：宽度，height：高度，shadow：是否显示背景阴影罩层
-    function showDialog(url, title, width, height) {
-        var content = '<iframe src="' + url + '" width="100%" height="100%" frameborder="0" scrolling="auto"></iframe>',
-            dialogDiv = '<div id="resultDialog" title="' + title + '"></div>'; //style="overflow:hidden;"可以去掉滚动条
-        $(document.body).append(dialogDiv);
-        var win = $('#resultDialog').dialog({
-            content: content,
-            width: width,
-            height: height,
-            modal: true,
-            title: title,
-            onClose: function () {
-                $(this).dialog('destroy');//后面可以关闭后的事件
-            }
-        });
-        win.dialog('open');
     }
 
     return {

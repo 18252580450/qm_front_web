@@ -1,9 +1,10 @@
-require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'util', "transfer", "easyui", "dateUtil"], function (QueryQmPlan, QueryQmHistory, $, Util, Transfer, easyui, dateUtil) {
+require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'util', "transfer", "easyui", "dateUtil", "commonAjax"], function (QueryQmPlan, QueryQmHistory, $, Util, Transfer, easyui, dateUtil, CommonAjax) {
     //初始化方法
     initialize();
     var userInfo,
         userPermission,
         departmentId,  //虚拟组id
+        caseTypeData,  //典型案例类型下拉框静态数据
         reqParams = null,
         voiceCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/manage/voiceQmResultDetail.html";
 
@@ -23,7 +24,7 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
     function initPageInfo() {
 
         $('#checkStaffName').searchbox({ //质检人员查询
-            editable:false,//禁止手动输入
+            editable: false,//禁止手动输入
             searcher: function (value) {
                 require(["js/execution/queryQmPeople"], function (qryQmPeople) {
                     var queryQmPeople = qryQmPeople;
@@ -46,7 +47,7 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
         });
 
         $('#checkedStaffName').searchbox({ //质检人员查询
-            editable:false,//禁止手动输入
+            editable: false,//禁止手动输入
             searcher: function (value) {
                 require(["js/execution/queryQmPeople"], function (qryQmPeople) {
                     var queryQmPeople = qryQmPeople;
@@ -69,7 +70,7 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
         });
 
         $('#planName').searchbox({//输入框点击查询事件
-            editable:false,//禁止手动输入
+            editable: false,//禁止手动输入
             searcher: function (value) {
                 var queryQmPlan = new QueryQmPlan();
 
@@ -144,22 +145,19 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
             columns: [[
                 {field: 'ck', checkbox: true, align: 'center'},
                 {
-                    field: 'action', title: '操作', width: '8%',
+                    field: 'action', title: '操作', align: 'center', width: '15%',
                     formatter: function (value, row, index) {
-                        var bean = {//根据参数进行定位修改
-                            'commentName': row.commentName
-                        };
-                        var beanStr = JSON.stringify(bean);   //转成字符串
-                        var checkHistory = "<a href='javascript:void(0);' style='color: deepskyblue;' id='resultHistory_" + row.inspectionId + "'>质检记录</a>",
-                            appeal = "<a href='javascript:void(0);' style='color: deepskyblue;' id='resultAppeal_" + row.inspectionId + "'>申诉</a>";
-                        return appeal + "&nbsp;&nbsp;" + checkHistory;
+                        var checkHistory = "<a href='javascript:void(0);' id='resultHistory_" + row.inspectionId + "'>质检记录</a>",
+                            appeal = "<a href='javascript:void(0);' id='resultAppeal_" + row.inspectionId + "'>申诉</a>",
+                            typicalCase = "<a href='javascript:void(0);' id ='typicalCase_" + row.inspectionId + "'>案例收集</a>";
+                        return appeal + "&nbsp;&nbsp;" + checkHistory + "&nbsp;&nbsp;" + typicalCase;
                     }
                 },
                 {field: 'touchId', title: '语音流水', align: 'center', width: '15%'},
                 {
                     field: 'inspectionId', title: '质检流水', align: 'center', width: '15%',
                     formatter: function (value, row, index) {
-                        return '<a href="javascript:void(0);" style="color: deepskyblue;" id = "resultDetail_' + row.inspectionId + '">' + value + '</a>';
+                        return '<a href="javascript:void(0);" id = "resultDetail_' + row.inspectionId + '">' + value + '</a>';
                     }
                 },
                 {field: 'callingNumber', title: '主叫号码', align: 'center', width: '10%'},
@@ -218,16 +216,16 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
                 var start = (param.page - 1) * param.rows;
                 var pageNum = param.rows;
                 var touchId = $("#touchId").val();
-                if(userPermission=="checker"){
-                    checkStaffId = userInfo.staffId+"";
-                }else{
+                if (userPermission == "checker") {
+                    checkStaffId = userInfo.staffId + "";
+                } else {
                     checkStaffId = $("#checkStaffId").val();
                 }
                 var startTime = $("#startTime").datetimebox("getValue");
                 var endTime = $("#endTime").datetimebox("getValue");
-                if(userPermission=="staffer"){
-                    checkedStaffId = userInfo.staffId+"";
-                }else{
+                if (userPermission == "staffer") {
+                    checkedStaffId = userInfo.staffId + "";
+                } else {
                     checkedStaffId = $("#checkedStaffId").val();
                 }
                 var inspectionId = $("#inspectionId").val();
@@ -278,32 +276,8 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
                 });
             },
             onLoadSuccess: function (data) {
-                //详情
                 $.each(data.rows, function (i, item) {
-                    $("#resultDetail_" + item.inspectionId).on("click", function () {
-                        var url = createURL(voiceCheckDetail, item);
-                        showDialog(url, "质检详情", Util.constants.DIALOG_WIDTH, Util.constants.DIALOG_HEIGHT_SMALL);
-                    });
-                });
-                //质检历史
-                $.each(data.rows, function (i, item) {
-                    $("#resultHistory_" + item.inspectionId).on("click", function () {
-                        var queryQmHistory = QueryQmHistory;
-                        queryQmHistory.initialize(item.touchId);
-                        $('#qryQmHistoryWindow').show().window({
-                            title: '质检历史',
-                            width: 900,
-                            height: 500,
-                            cache: false,
-                            content: queryQmHistory.$el,
-                            modal: true,
-                            onClose: function () {//弹框关闭前触发事件
-                            }
-                        });
-                    });
-                });
-                //申诉
-                $.each(data.rows, function (i, item) {
+                    //申诉
                     $("#resultAppeal_" + item.inspectionId).on("click", function () {
                         //判断是否已有申诉流程
                         // if (item.appealId != null && item.resultStatus === Util.constants.CHECK_RESULT_APPEALING) {
@@ -311,6 +285,30 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
                         //     return;
                         // }
                         showAppealDialog(item);
+                    });
+                    //质检历史
+                    $("#resultHistory_" + item.inspectionId).on("click", function () {
+                        var queryQmHistory = QueryQmHistory;
+                        queryQmHistory.initialize(item.touchId);
+                        $('#qryQmHistoryWindow').show().window({
+                            title: '质检历史',
+                            width: Util.constants.DIALOG_WIDTH,
+                            height: Util.constants.DIALOG_HEIGHT_SMALL,
+                            cache: false,
+                            content: queryQmHistory.$el,
+                            modal: true,
+                            onClose: function () {//弹框关闭前触发事件
+                            }
+                        });
+                    });
+                    //典型案例收集
+                    $("#typicalCase_" + item.inspectionId).on("click", function () {
+                        typicalCaseAddDialog(item);
+                    });
+                    //详情
+                    $("#resultDetail_" + item.inspectionId).on("click", function () {
+                        var url = CommonAjax.createURL(voiceCheckDetail, item);
+                        CommonAjax.showDialog(url, "质检详情", Util.constants.DIALOG_WIDTH, Util.constants.DIALOG_HEIGHT_SMALL);
                     });
                 });
             }
@@ -332,18 +330,6 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
         }
     }
 
-    //拼接对象到url
-    function createURL(url, param) {
-        var urlLink = url;
-        if (param != null) {
-            $.each(param, function (item, value) {
-                urlLink += '&' + item + "=" + encodeURI(value);
-            });
-            urlLink = url + "?" + urlLink.substr(1);
-        }
-        return urlLink.replace(' ', '');
-    }
-
     //后端导出
     function dao() {
         var fields = $('#queryInfo').datagrid('getColumnFields'); //获取datagrid的所有fields
@@ -355,14 +341,14 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
             title = (title != null) ? title : "";
             titles.push(title);
         });
-        if(userPermission=="checker"){
-            checkStaffId = userInfo.staffId+"";
-        }else{
+        if (userPermission == "checker") {
+            checkStaffId = userInfo.staffId + "";
+        } else {
             checkStaffId = $("#checkStaffId").val();
         }
-        if(userPermission=="staffer"){
-            checkedStaffId = userInfo.staffId+"";
-        }else{
+        if (userPermission == "staffer") {
+            checkedStaffId = userInfo.staffId + "";
+        } else {
             checkedStaffId = $("#checkedStaffId").val();
         }
         if (reqParams == null) {
@@ -391,17 +377,17 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
 
     //事件初始化
     function initEvent() {
-        if(userPermission=="staffer"){//话务员（没有任何功能权限）
+        if (userPermission == "staffer") {//话务员（没有任何功能权限）
             //话务员只能查询被质检员是自己的数据
-            $("#checkedStaffId").val(userInfo.staffId+"");
-            $('#checkedStaffName').searchbox("setValue",userInfo.staffName);
+            $("#checkedStaffId").val(userInfo.staffId + "");
+            $('#checkedStaffName').searchbox("setValue", userInfo.staffName);
             //清除搜索框图标
             var icon = $('#checkedStaffName').searchbox("getIcon", 0);
             icon.css("visibility", "hidden");
-        }else if(userPermission=="checker"){
+        } else if (userPermission == "checker") {
             //质检员只能查询质检员是自己的数据
-            $("#checkStaffId").val(userInfo.staffId+"");
-            $('#checkStaffName').searchbox("setValue",userInfo.staffName);
+            $("#checkStaffId").val(userInfo.staffId + "");
+            $('#checkStaffName').searchbox("setValue", userInfo.staffName);
             //清除搜索框图标
             var icon = $('#checkStaffName').searchbox("getIcon", 0);
             icon.css("visibility", "hidden");
@@ -493,7 +479,7 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
                 "inspectionId": data.inspectionId,
                 "planId": data.planId,
                 "templateId": data.templateId,
-                "appealStaffId": userInfo.staffId+"",
+                "appealStaffId": userInfo.staffId + "",
                 "appealStaffName": userInfo.staffName,
                 "appealReason": appealReason
             };
@@ -512,6 +498,120 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
                     $("#queryInfo").datagrid("reload"); //刷新列表
                 } else {
                     var errMsg = "申诉失败！<br>" + result.RSP.RSP_DESC;
+                    $.messager.alert("提示", errMsg);
+                }
+                disableSubmit = false;
+                submitBtn.linkbutton({disabled: false});  //取消提交禁用
+            });
+        });
+    }
+
+    //典型案例收集
+    function typicalCaseAddDialog(data) {
+        $("#typicalCaseConfig").form('clear');  //清空表单
+        var disableSubmit = false;  //禁用提交按钮标志
+        $("#typicalCaseAddDialog").show().window({
+            width: 600,
+            height: 400,
+            modal: true,
+            title: "质检结果申诉"
+        });
+
+        //典型案例下拉框
+        $("#caseType").combobox({
+            data: caseTypeData,
+            method: "GET",
+            valueField: 'paramsCode',
+            textField: 'paramsName',
+            panelHeight: 'auto',
+            editable: false,
+            onLoadSuccess: function () {
+                var caseType = $("#caseType");
+                var data = caseType.combobox('getData');
+                if (data.length > 0) {
+                    caseType.combobox('select', data[0].paramsCode);
+                }
+            }
+        });
+        //初始下拉框数据
+        if (caseTypeData == null) {
+            CommonAjax.getStaticParams("TYPICAL_CASE_TYPE", function (datas) {
+                if (datas) {
+                    caseTypeData = datas;
+                    $("#caseType").combobox('loadData', datas);
+                }
+            });
+        }
+
+        //申诉原因
+        $("#addReason").textbox(
+            {
+                multiline: true
+            }
+        );
+
+        //取消
+        var cancelBtn = $("#typicalCaseCancelBtn");
+        cancelBtn.unbind("click");
+        cancelBtn.on("click", function () {
+            $("#typicalCaseConfig").form('clear');  //清空表单
+            $("#typicalCaseAddDialog").window("close");
+        });
+        //提交
+        var submitBtn = $("#typicalCaseSubmitBtn");
+        submitBtn.unbind("click");
+        submitBtn.on("click", function () {
+            if (disableSubmit) {
+                return false;
+            }
+            disableSubmit = true;   //防止多次提交
+            submitBtn.linkbutton({disabled: true});  //禁用提交按钮（样式）
+
+            var caseTitle = $("#caseTitle").val(),
+                caseType = $("#caseType").combobox("getValue"),
+                addReason = $("#addReason").val();
+
+            if (caseTitle == null || caseTitle === "") {
+                $.messager.alert("提示", "案例标题不能为空!");
+                disableSubmit = false;
+                submitBtn.linkbutton({disabled: false});  //取消提交禁用
+                return false;
+            }
+            if (caseType == null || caseType === "") {
+                $.messager.alert("提示", "案例类型不能为空!");
+                disableSubmit = false;
+                submitBtn.linkbutton({disabled: false});  //取消提交禁用
+                return false;
+            }
+            if (addReason == null || addReason === "") {
+                $.messager.alert("提示", "添加案例原因不能为空!");
+                disableSubmit = false;
+                submitBtn.linkbutton({disabled: false});  //取消提交禁用
+                return false;
+            }
+            var params = {
+                "caseTitle": caseTitle,
+                "caseType": caseType,
+                "checkType": Util.constants.CHECK_TYPE_VOICE,
+                "inspectionId": data.inspectionId,
+                "createStaffId": userInfo.staffId + "",
+                "createStaffName": userInfo.staffName,
+                "createReason": addReason
+            };
+            Util.loading.showLoading();
+            Util.ajax.postJson(Util.constants.CONTEXT.concat(Util.constants.TYPICAL_CASE_DNS).concat("/"), JSON.stringify(params), function (result) {
+                Util.loading.destroyLoading();
+                var rspCode = result.RSP.RSP_CODE;
+                if (rspCode != null && rspCode === "1") {
+                    $.messager.show({
+                        msg: result.RSP.RSP_DESC,
+                        timeout: 1000,
+                        style: {right: '', bottom: ''},     //居中显示
+                        showType: 'show'
+                    });
+                    $("#typicalCaseAddDialog").window("close");  //关闭对话框
+                } else {
+                    var errMsg = "添加失败！<br>" + result.RSP.RSP_DESC;
                     $.messager.alert("提示", errMsg);
                 }
                 disableSubmit = false;
@@ -541,25 +641,6 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
         }
     }
 
-    //dialog弹框
-    //url：窗口调用地址，title：窗口标题，width：宽度，height：高度，shadow：是否显示背景阴影罩层
-    function showDialog(url, title, width, height) {
-        var content = '<iframe src="' + url + '" width="100%" height="100%" frameborder="0" scrolling="auto"></iframe>',
-            dialogDiv = '<div id="resultDialog" title="' + title + '"></div>'; //style="overflow:hidden;"可以去掉滚动条
-        $(document.body).append(dialogDiv);
-        var win = $('#resultDialog').dialog({
-            content: content,
-            width: width,
-            height: height,
-            modal: true,
-            title: title,
-            onClose: function () {
-                $(this).dialog('destroy');//后面可以关闭后的事件
-            }
-        });
-        win.dialog('open');
-    }
-
     //点击后添加页面
     $("#page").on("click", "a.processIdBtn", function () {
 
@@ -571,7 +652,7 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
         var reqParams = {
             "groupId": "",
             "staffName": "",
-            "staffId": userInfo.staffId+"",
+            "staffId": userInfo.staffId + "",
             "start": 0,
             "limit": 0,
             "provCode": "",

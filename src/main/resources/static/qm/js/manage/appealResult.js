@@ -2,8 +2,8 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
 
         var userInfo,
             roleCode,
-            voiceCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/execution/voiceAppealDetail.html",
-            orderCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/execution/orderAppealDetail.html",
+            voiceCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/manage/voiceQmResultDetail.html",
+            orderCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/manage/workQmResultDetail.html",
             checkTypeData = [],      //质检类型静态数据
             appealStatusData = [];   //申诉状态静态数据
 
@@ -280,28 +280,18 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                     });
                 },
                 onLoadSuccess: function (data) {
-                    //审批记录
                     $.each(data.rows, function (i, item) {
+                        //审批记录
                         $("#appealRecord_" + item.appealId).on("click", function () {
                             showAppealRecordDialog(item);
                         });
-                    });
-                    //质检详情
-                    $.each(data.rows, function (i, item) {
+                        //质检详情
                         $("#checkFlow_" + item.appealId).on("click", function () {
                             if (item.checkType === Util.constants.CHECK_TYPE_VOICE) {
-                                var voiceUrl = createURL(voiceCheckDetail, item);
-                                showDialog(voiceUrl, "质检详情", 1000, 580);
+                                showCheckDetail(item, voiceCheckDetail);
                             }
                             if (item.checkType === Util.constants.CHECK_TYPE_ORDER) {
-                                var param = {
-                                    "provinceId": item.provinceId,
-                                    "wrkfmId": item.touchId,
-                                    "inspectionId": item.inspectionId,
-                                    "templateId": item.templateId
-                                };
-                                var orderUrl = createURL(orderCheckDetail, param);
-                                showDialog(orderUrl, "质检详情", 1000, 580);
+                                showCheckDetail(item, orderCheckDetail);
                             }
                         });
                     });
@@ -401,16 +391,16 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
             });
         }
 
-        //拼接对象到url
-        function createURL(url, param) {
-            var urlLink = url;
-            if (param != null) {
-                $.each(param, function (item, value) {
-                    urlLink += '&' + item + "=" + encodeURI(value);
-                });
-                urlLink = url + "?" + urlLink.substr(1);
-            }
-            return urlLink.replace(' ', '');
+        //质检详情弹框
+        function showCheckDetail(item, url) {
+            var param = {
+                "provinceId": item.provinceId,
+                "touchId": item.touchId,
+                "inspectionId": item.inspectionId,
+                "templateId": item.templateId
+            };
+            var checkUrl = CommonAjax.createURL(url, param);
+            CommonAjax.showDialog(checkUrl, "质检详情", Util.constants.DIALOG_WIDTH, Util.constants.DIALOG_HEIGHT);
         }
 
         //校验开始时间和终止时间
@@ -489,25 +479,6 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                 '<div class="formControls col-12"><div class="fl text-small">审批时间：' + approveTime + '</div></div>' +
                 '</div></form> </div>' +
                 '</div>';
-        }
-
-        //dialog弹框
-        //url：窗口调用地址，title：窗口标题，width：宽度，height：高度，shadow：是否显示背景阴影罩层
-        function showDialog(url, title, width, height) {
-            var content = '<iframe src="' + url + '" width="100%" height="100%" frameborder="0" scrolling="auto"></iframe>',
-                dialogDiv = '<div id="checkDetailDialog" title="' + title + '"></div>'; //style="overflow:hidden;"可以去掉滚动条
-            $(document.body).append(dialogDiv);
-            var win = $('#checkDetailDialog').dialog({
-                content: content,
-                width: width,
-                height: height,
-                modal: true,
-                title: title,
-                onClose: function () {
-                    $(this).dialog('destroy');//后面可以关闭后的事件
-                }
-            });
-            win.dialog('open');
         }
 
         return {

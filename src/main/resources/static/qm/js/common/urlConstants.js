@@ -24,5 +24,10 @@ function getUrl(){
         VOICE_APPEAL_BENDI:"http://127.0.0.1:8080/qm/html/execution/voiceAppeal.html",//语音申诉处理（本地）
         ORDER_APPEAL_CESHI:"http://203.57.226.107:9990/qm/html/execution/orderAppeal.html",//工单申诉处理（测试）
         VOICE_APPEAL_CESHI:"http://203.57.226.107:9990/qm/html/execution/voiceAppeal.html",//语音申诉处理（测试）
+
+        ORDER_TYPICAL_CASE_BENDI:"http://127.0.0.1:8080/qm/html/manage/workTypicalCase.html",//工单典型案例（本地）
+        VOICE_TYPICAL_CASE_BENDI:"http://127.0.0.1:8080/qm/html/manage/voiceTypicalCase.html",//语音典型案例（本地）
+        ORDER_TYPICAL_CASE_CESHI:"http://203.57.226.107:9990/qm/html/manage/workTypicalCase.html",//工单典型案例（测试）
+        VOICE_TYPICAL_CASE_CESHI:"http://203.57.226.107:9990/qm/html/manage/voiceTypicalCase.html"//语音典型案例（测试）
     };
 }

@@ -1,0 +1,64 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>典型案例</title>
+    <link rel="stylesheet" type="text/css" href="../../assets/lib/easyui/themes/cmcui/cmcui.css"/>
+    <link rel="stylesheet" type="text/css" href="../../assets/lib/easyui/themes/cmcui/iconfont/iconfont.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../assets/lib/ztree/css/cmcStyle/tree.css"/>
+    <link rel="stylesheet" type="text/css" href="../../assets/components/rating/themes/fontawesome-stars.css"/>
+    <script src="../../assets/components/ckeditor/ckeditor.js"></script>
+
+    <link href="../../css/style.min.css" rel="stylesheet">
+
+</head>
+<body>
+<div id="page_content" data-options="region:'center'" style="height:100%;">
+    <div id='layout_content' class='easyui-layout' data-options="region:'center'" style='overflow: auto; height:100%;'>
+        <div data-options="region:'center'" style='overflow: hidden;height: 100%'>
+            <div id="page">
+                <div class='panel-search ' title="">
+                    <form class='form form-horizontal' id="searchForm">
+                        <div class='row cl'>
+                            <label class='form-label col-1'>案例类型</label>
+                            <div class='formControls col-2'>
+                                <input id="caseType" type='text' class='easyui-textbox'
+                                       style='width:100%;height:30px'>
+                            </div>
+                            <div class="formControls col-1">
+                            </div>
+                            <div class='formControls col-1'>
+                                <a href='javascript:void(0)' class='btn btn-green radius mt-l-20' id="queryBtn"><i
+                                        class='iconfont iconfont-search2'></i>查询</a>
+                            </div>
+                            <div class='formControls col-1'>
+                                <a href='javascript:void(0)' class='btn btn-secondary radius  mt-l-20' id="resetBtn"><i
+                                        class='iconfont iconfont-zhongzuo'></i>重置</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div class='cl'>
+                    <div class='panel-tool-box cl'>
+                        <div class='fl text-bold'>案例列表</div>
+                        <div class="formControls col-2" style="text-align: right;width: 90%">
+                            <a href='javascript:void(0)' class='btn btn-secondary radius mt-l-20' id="delBtn"><i
+                                    class='iconfont iconfont-del2'></i>删除</a>
+                        </div>
+                    </div>
+                    <table id='typicalCaseList' class='easyui-datagrid' style=' width:100%;'>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+<script type="text/javascript" src="../../js/common/requirejs-main.js"></script>
+<script type="text/javascript" src="../../assets/lib/require/require.min.js"
+        data-main="js/manage/workTypicalCase"></script>
+
+</html>

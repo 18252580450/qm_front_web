@@ -231,10 +231,9 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
             },
             onLoadSuccess: function (data) {
                 var audio = new Audio();
-                //语音播放
                 $.each(data.rows, function (i, item) {
+                    //语音播放
                     $("#voicePlay_" + item.touchId).on("click", function () {
-
                         if (playingRecord !== null && playingRecord !== "") {  //有正在播放录音的情况
                             audio.pause();
                             if (playingRecord === item.touchId) {  //暂停播放
@@ -258,16 +257,12 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
                             playingRecord = item.touchId;
                         }
                     });
-                });
-                //语音质检详情
-                $.each(data.rows, function (i, item) {
+                    //语音质检详情
                     $("#voiceCheck_" + item.touchId).on("click", function () {
                         var url = CommonAjax.createURL(voiceCheckDetail, item);
                         CommonAjax.openMenu(url, "语音质检详情", item.touchId);
                     });
-                });
-                //质检记录
-                $.each(data.rows, function (i, item) {
+                    //质检记录
                     $("#checkHistory_" + item.touchId).on("click", function () {
                         var queryQmHistory = QueryQmHistory;
                         queryQmHistory.initialize(item.touchId);

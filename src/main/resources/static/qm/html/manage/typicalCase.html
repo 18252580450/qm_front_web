@@ -1,0 +1,48 @@
+<!doctype html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>任务待办区</title>
+    <link rel="stylesheet" type="text/css" href="../../assets/lib/easyui/themes/cmcui/cmcui.css"/>
+    <link rel="stylesheet" type="text/css" href="../../assets/lib/easyui/themes/cmcui/iconfont/iconfont.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../assets/lib/ztree/css/cmcStyle/tree.css"/>
+    <link rel="stylesheet" type="text/css" href="../../assets/components/rating/themes/fontawesome-stars.css"/>
+    <script type="text/javascript" src="../../js/common/urlConstants.js"></script>
+    <script type="text/javascript" src="../../assets/lib/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../../assets/lib/easyui/jquery.easyui.min.js"></script>
+
+</head>
+<body class="easyui-layout">
+<div id="page_content" data-options="region:'center'" style="height:100%;">
+    <div id='layout_content' class='easyui-layout' data-options="region:'center'" style='overflow: auto; height:100%;'>
+        <div data-options="region:'center'" style='overflow: hidden;height: 100%'>
+            <div id="page" style="height:100%;">
+                <div id="typicalCaseArea" class="easyui-tabs" style="height:100%;">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+<script type="text/javascript">
+    $(function(){
+        showTaps("工单典型案例", getUrl().ORDER_TYPICAL_CASE_CESHI);
+        showTaps("语音典型案例", getUrl().VOICE_TYPICAL_CASE_CESHI);
+        $('#typicalCaseArea').tabs({selected: 1});
+    });
+
+    function showTaps(title, url) {
+        var tabContainer = $("#typicalCaseArea");
+        if (!tabContainer.tabs('exists', title)) {
+            tabContainer.tabs('add', {
+                title: title,
+                content: '<iframe src="' + url + '" frameBorder="0" border="0" scrolling="auto"  style="width: 100%; height: 100%;"/>',
+                closable: false
+            });
+        } else {
+            tabContainer.tabs('select', title);
+        }
+    }
+</script>
+</html>

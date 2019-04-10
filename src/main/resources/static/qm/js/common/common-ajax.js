@@ -63,9 +63,27 @@ define(["jquery", 'util'], function ($, Util) {
         },
         //刷新指定标签页
         refreshMenuByUrl: function (url, menuName, menuId) {
-            // operMenu(url, null, null);
-            // operMenu(url, menuName, menuId);
+            operMenu(url, null, null);
+            operMenu(url, menuName, menuId);
             // refreshTab(menuName);
+        },
+        //dialog弹框
+        //url：窗口调用地址，title：窗口标题，width：宽度，height：高度，shadow：是否显示背景阴影罩层
+        showDialog: function (url, title, width, height) {
+            var content = '<iframe src="' + url + '" width="100%" height="100%" frameborder="0" scrolling="auto"></iframe>',
+                dialogDiv = '<div id="dialogDiv" title="' + title + '"></div>'; //style="overflow:hidden;"可以去掉滚动条
+            $(document.body).append(dialogDiv);
+            var win = $('#dialogDiv').dialog({
+                content: content,
+                width: width,
+                height: height,
+                modal: true,
+                title: title,
+                onClose: function () {
+                    $(this).dialog('destroy');//后面可以关闭后的事件
+                }
+            });
+            win.dialog('open');
         }
     };
 

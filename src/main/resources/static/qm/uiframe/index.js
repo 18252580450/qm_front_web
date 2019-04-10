@@ -49,7 +49,8 @@ var zNodes = [
     {id: 33, pId: 3, name: "计划外质检池", file: "http://127.0.0.1:8080/qm/html/execution/beyondPlanCheck.html"},
     {id: 51, pId: 5, name: "申诉待办区", file: "http://127.0.0.1:8080/qm/html/execution/qmAppeal.html"},
     {id: 52, pId: 5, name: "申诉结果", file: "http://127.0.0.1:8080/qm/html/manage/appealResult.html"},
-    {id: 41, pId: 4, name: "质检结果管理", file: "http://127.0.0.1:8080/qm/html/manage/qmResultManage.html"}
+    {id: 41, pId: 4, name: "质检结果管理", file: "http://127.0.0.1:8080/qm/html/manage/qmResultManage.html"},
+    {id: 42, pId: 4, name: "典型案例", file: "http://127.0.0.1:8080/qm/html/manage/typicalCase.html"}
 ];
 
 

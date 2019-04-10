@@ -1,4 +1,4 @@
-define(["text!html/manage/workQmResultHistory.tpl", "jquery", 'util', "transfer", "easyui", "dateUtil"], function (qryQmHistoryTpl, $, Util, Transfer, easyui, dateUtil) {
+define(["text!html/manage/workQmResultHistory.tpl", "jquery", 'util', "transfer", "commonAjax", "easyui", "dateUtil"], function (qryQmHistoryTpl, $, Util, Transfer, CommonAjax) {
     var $el,
         touchId,    //工单流水
         orderCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/manage/workQmResultDetail.html";
@@ -21,12 +21,11 @@ define(["text!html/manage/workQmResultHistory.tpl", "jquery", 'util', "transfer"
                 {
                     field: 'inspectionId', title: '质检流水号', width: '20%',
                     formatter: function (value, row, index) {
-                        return '<a href="javascript:void(0);" style="color: deepskyblue;" id = "resultDetail_' + row.inspectionId + '">' + value + '</a>';
+                        return '<a href="javascript:void(0);" id = "resultDetail_' + row.inspectionId + '">' + value + '</a>';
                     }
                 },
                 {field: 'planName', title: '计划名称', width: '15%'},
-                {field: 'checkedStaffId', title: '被质检人工号', width: '15%'},
-                {field: 'checkedDepartId', title: '被质检人班组', width: '15%'},
+                {field: 'checkStaffName', title: '质检人', width: '15%'},
                 {
                     field: 'checkEndTime', title: '质检时间', width: '20%',
                     formatter: function (value, row, index) { //格式化时间格式
@@ -41,7 +40,6 @@ define(["text!html/manage/workQmResultHistory.tpl", "jquery", 'util', "transfer"
                 },
                 {field: 'finalScore', title: '质检得分', width: '10%'},
                 {field: 'unqualifiedNum', title: '不合格环节数', width: '10%'},
-                {field: 'checkStaffId', title: '质检人工号', width: '15%'},
                 {
                     field: 'resultStatus', title: '质检状态', width: '10%',
                     formatter: function (value, row, index) {
@@ -112,48 +110,16 @@ define(["text!html/manage/workQmResultHistory.tpl", "jquery", 'util', "transfer"
                     $("#resultDetail_" + item.inspectionId, $el).on("click", function () {
                         var param = {
                             "provinceId": item.provinceId,
-                            "wrkfmId": item.touchId,
+                            "touchId": item.touchId,
                             "inspectionId": item.inspectionId,
-                            "templateId": item.templateId,
-                            "checkComment": item.checkComment
+                            "templateId": item.templateId
                         };
-                        var url = createURL(orderCheckDetail, param);
-                        showDialog(url, "质检详情", Util.constants.DIALOG_WIDTH, Util.constants.DIALOG_HEIGHT);
+                        var url = CommonAjax.createURL(orderCheckDetail, param);
+                        CommonAjax.showDialog(url, "质检详情", Util.constants.DIALOG_WIDTH, Util.constants.DIALOG_HEIGHT_SMALL);
                     });
                 });
             }
         });
-    }
-
-    //拼接对象到url
-    function createURL(url, param) {
-        var urlLink = url;
-        if (param != null) {
-            $.each(param, function (item, value) {
-                urlLink += '&' + item + "=" + encodeURI(value);
-            });
-            urlLink = url + "?" + urlLink.substr(1);
-        }
-        return urlLink.replace(' ', '');
-    }
-
-    //dialog弹框
-    //url：窗口调用地址，title：窗口标题，width：宽度，height：高度，shadow：是否显示背景阴影罩层
-    function showDialog(url, title, width, height) {
-        var content = '<iframe src="' + url + '" width="100%" height="100%" frameborder="0" scrolling="auto"></iframe>',
-            dialogDiv = '<div id="orderCheckDetailDialog" title="' + title + '"></div>'; //style="overflow:hidden;"可以去掉滚动条
-        $(document.body).append(dialogDiv);
-        var win = $('#orderCheckDetailDialog').dialog({
-            content: content,
-            width: width,
-            height: height,
-            modal: true,
-            title: title,
-            onClose: function () {
-                $(this).dialog('destroy');//后面可以关闭后的事件
-            }
-        });
-        win.dialog('open');
     }
 
     return {

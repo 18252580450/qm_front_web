@@ -1,4 +1,5 @@
 require(["jquery", "util", "dateUtil", "transfer", "easyui"], function ($, Util) {
+
     var voicePool,               //质检数据
         scoreType,               //分值类型（默认扣分）
         startTime,               //页面初始化时间
@@ -14,7 +15,7 @@ require(["jquery", "util", "dateUtil", "transfer", "easyui"], function ($, Util)
 
     //页面信息初始化
     function initPageInfo() {
-        //获取语音流水、质检流水等信息
+        //获取y语音流水、质检流水等信息
         voicePool = getRequestObj();
 
         //基本信息初始化
@@ -173,7 +174,7 @@ require(["jquery", "util", "dateUtil", "transfer", "easyui"], function ($, Util)
         //考评项详细信息
         var reqParams = {
             "tenantId": Util.constants.TENANT_ID,
-            "planId": voicePool.planId
+            "templateId": voicePool.templateId
         };
         var params = $.extend({
             "start": 0,
@@ -217,7 +218,6 @@ require(["jquery", "util", "dateUtil", "transfer", "easyui"], function ($, Util)
                 }, Util.PageUtil.getParams($("#searchForm")));
 
                 Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.VOICE_CHECK_DNS + "/queryVoiceCheckResultDetail", params, function (result) {
-                    debugger;
                     var savedData = result.RSP.DATA,
                         rspCode = result.RSP.RSP_CODE,
                         totalScore = 0;    //考评项总得分
@@ -245,7 +245,22 @@ require(["jquery", "util", "dateUtil", "transfer", "easyui"], function ($, Util)
         });
 
         //初始化考评评语
-        $("#checkComment").html(voicePool.checkComment);
+        var reqParam = {
+            "inspectionId": voicePool.inspectionId
+        };
+        var param = $.extend({
+            "start": 0,
+            "pageNum": 0,
+            "params": JSON.stringify(reqParam)
+        }, Util.PageUtil.getParams($("#searchForm")));
+
+        Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.VOICE_CHECK_DNS + "/queryVoiceCheckResult", param, function (result) {
+            var data = result.RSP.DATA,
+                rspCode = result.RSP.RSP_CODE;
+            if (rspCode != null && rspCode === "1") {
+                $("#checkComment").val(data[0].checkComment);
+            }
+        });
     }
 
     //更新评价区数据

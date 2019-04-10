@@ -1,4 +1,5 @@
 require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util) {
+
     var workForm,
         showingInfo = 0,            //当前显示的基本信息（0工单基本信息、1内外部回复、2接触记录、3工单历史）
         scoreType,                  //分值类型（默认扣分）
@@ -99,15 +100,13 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
 
         //获取工单轨迹、初始化考评项列表、环节考评数据
         initProcProceLocus();
-        //初始化考评评语
-        $("#checkComment").html(workForm.checkComment);
     }
 
     //初始化工单基本信息
     function initWrkfmDetail() {
         var reqParams = {
             "provCode": workForm.provinceId,
-            "wrkfmId": workForm.wrkfmId
+            "wrkfmId": workForm.touchId
         };
         var params = $.extend({
             "params": JSON.stringify(reqParams)
@@ -148,7 +147,7 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
     function initProcProceLocus() {
         var reqParams = {
             "provCode": workForm.provinceId,
-            "wrkfmId": workForm.wrkfmId
+            "wrkfmId": workForm.touchId
         };
         var params = $.extend({
             "params": JSON.stringify(reqParams)
@@ -263,6 +262,24 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
                 });
             }
         });
+
+        //初始化考评评语
+        var reqParam = {
+            "inspectionId": workForm.inspectionId
+        };
+        var param = $.extend({
+            "start": 0,
+            "pageNum": 0,
+            "params": JSON.stringify(reqParam)
+        }, Util.PageUtil.getParams($("#searchForm")));
+
+        Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.ORDER_CHECK_DNS + "/queryOrderCheckResult", param, function (result) {
+            var data = result.RSP.DATA,
+                rspCode = result.RSP.RSP_CODE;
+            if (rspCode != null && rspCode === "1") {
+                $("#checkComment").html(data[0].checkComment);
+            }
+        });
     }
 
     //事件初始化
@@ -311,7 +328,7 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
         if (JSON.stringify(replyData) === "{}") {
             var reqParams = {
                 "provCode": workForm.provinceId,
-                "wrkfmId": workForm.wrkfmId
+                "wrkfmId": workForm.touchId
             };
             var params = $.extend({
                 "params": JSON.stringify(reqParams)
@@ -412,7 +429,7 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
                     "start": start,
                     "limit": pageNum,
                     "provCode": workForm.provinceId,
-                    "wrkfmId": workForm.wrkfmId
+                    "wrkfmId": workForm.touchId
                 };
                 var params = $.extend({
                     "params": JSON.stringify(reqParams)

@@ -649,7 +649,9 @@ require(["jquery", 'util', "commonAjax", "transfer", "dateUtil", "easyui"], func
                 //录音下载
                 $.each(data.rows, function (i, item) {
                     $("#recordDownload_" + item.cntmngSwftno).on("click", function () {
+                        window.location.href = item.recordFilePath;
                         // window.open(item.recordFilePath,'_blank');
+                        // window.open("http://203.57.228.52:9002/root/ctcqm/files/20190303/TEL-01057084456_1013_20190313154032.wav",'_blank');
                     });
                 });
             }
