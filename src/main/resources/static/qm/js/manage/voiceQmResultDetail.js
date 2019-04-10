@@ -58,7 +58,7 @@ require(["jquery", "util", "dateUtil", "transfer", "easyui"], function ($, Util)
                 {
                     field: 'score', title: '扣分分值', width: '15%',
                     formatter: function (value, row, index) {
-                        return '<input id="score' + row.nodeId + '" type="text" class="easyui-textbox" value="0">';
+                        return '<input id="score' + row.nodeId + '" type="text" class="easyui-textbox" value="0" readonly>';
                     }
                 }
             ]],

@@ -43,8 +43,8 @@ require([
                     queryDepart.initialize();
                     $('#processQryDepartWindow').show().window({
                         title: '部门信息',
-                        width: Util.constants.DIALOG_WIDTH,
-                        height: Util.constants.DIALOG_HEIGHT,
+                        width: 750,
+                        height: 500,
                         cache: false,
                         content: queryDepart.$el,
                         modal: true,
@@ -148,7 +148,7 @@ require([
         $("#processList").datagrid({
             columns: [[
                 {
-                    field: 'orderNo', title: '流程顺序', width: '15%',
+                    field: 'orderNo', title: '流程顺序', width: '20%',
                     formatter: function (value, row, index) {
                         var order = "";
                         if (orderData.length !== 0) {
@@ -162,8 +162,6 @@ require([
                     }
                 },
                 {field: 'processName', title: '流程名称', width: '20%'},
-                {field: 'tenantName', title: '模板渠道', hidden: true},
-                {field: 'tenantId', title: '模板渠道', width: '15%'},
                 {field: 'departmentName', title: '部门', width: '20%'},
                 {field: 'departmentId', title: '部门Id', hidden: true},
                 {
@@ -181,7 +179,7 @@ require([
                     }
                 },
                 {
-                    field: 'operation', title: '操作', width: '10%',
+                    field: 'operation', title: '操作', width: '20%',
                     formatter: function (value, row, index) {
                         var edit = '<a href="javascript:void(0);" id = "processEdit' + row.orderNo + '" style="color: black;">修改</a>';
                         //只允许删除最后一个子流程
@@ -762,8 +760,8 @@ require([
                     queryDepart.initialize();
                     $('#processQryDepartWindow').show().window({
                         title: '部门信息',
-                        width: Util.constants.DIALOG_WIDTH,
-                        height: Util.constants.DIALOG_HEIGHT,
+                        width: 750,
+                        height: 500,
                         cache: false,
                         content: queryDepart.$el,
                         modal: true,

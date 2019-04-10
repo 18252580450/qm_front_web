@@ -487,14 +487,16 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
         $("#checkItemConfig").form('clear');  //清空表单
         var disableSubmit = false;  //禁用提交按钮标志
         $("#checkItemDialog").show().window({
-            width: 600,
-            height: 400,
+            width: 700,
+            height: 450,
             modal: true,
             title: "考评项新增"
         });
         $('#checkItemNameConfig').validatebox({
             required: true
         });
+        //父目录名称
+        $("#parentCatalogNameConfig").val($("#parentCheckItemName").val());
         //考评项类型下拉框
         $("#checkItemTypeConfig").combobox({
             data: checkItemData,
@@ -636,8 +638,8 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
         $("#checkItemConfig").form('clear');  //清空表单
         var disableSubmit = false;  //禁用提交按钮标志
         $("#checkItemDialog").show().window({
-            width: 600,
-            height: 400,
+            width: 700,
+            height: 450,
             modal: true,
             title: "考评项修改"
         });
@@ -645,6 +647,8 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
         checkItemNameInput.validatebox({
             required: true
         });
+        //父目录名称
+        $("#parentCatalogNameConfig").val($("#parentCheckItemName").val());
         if (item.checkItemType === Util.constants.CHECK_TYPE_ORDER) {
             showCheckLink(item);
         } else {

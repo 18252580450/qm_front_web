@@ -32,9 +32,9 @@ define([
             },
             callback: {
                 onClick: function (e, id, node) {//点击事件
-                    if (node.isParent) {
-                        return;
-                    }
+                    // if (node.isParent) {
+                    //     return;
+                    // }
                     $("#checkDepartId", $el).val(node.GROUP_ID);
                     $("#checkDepartName", $el).val(node.GROUP_NAME);
                 }

@@ -49,8 +49,8 @@ require([
                     queryDepart.initialize();
                     $('#processQryDepartWindow').show().window({
                         title: '部门信息',
-                        width: Util.constants.DIALOG_WIDTH,
-                        height: Util.constants.DIALOG_HEIGHT,
+                        width: 750,
+                        height: 500,
                         cache: false,
                         content: queryDepart.$el,
                         modal: true,
@@ -134,11 +134,9 @@ require([
         var IsCheckFlag = true; //标示是否是勾选复选框选中行的，true - 是 , false - 否
         $("#processList").datagrid({
             columns: [[
-                {field: 'orderName', title: '流程顺序', width: '15%'},
+                {field: 'orderName', title: '流程顺序', width: '20%'},
                 {field: 'orderNo', title: '流程序号', hidden: true},
                 {field: 'processName', title: '流程名称', width: '20%'},
-                {field: 'tenantName', title: '模板渠道', width: '15%'},
-                {field: 'tenantId', title: '模板渠道Id', hidden: true},
                 {field: 'departmentName', title: '部门', width: '20%'},
                 {field: 'departmentId', title: '部门Id', hidden: true},
                 {
@@ -157,7 +155,7 @@ require([
                     }
                 },
                 {
-                    field: 'operation', title: '操作', width: '10%',
+                    field: 'operation', title: '操作', width: '20%',
                     formatter: function (value, row, index) {
                         //只允许删除主流程和最后一个子流程
                         if (parseInt(row.orderNo) === 0 || parseInt(row.orderNo) === appealProcessData.length - 1) {
@@ -370,8 +368,6 @@ require([
         }
 
         var processName = $("#processName").val(),
-            tenantType = $("#tenantType"),
-            tenantName = tenantType.combobox("getText"),
             departmentId = $("#departmentId").val(),
             departmentName = $("#departmentName").val(),
             checkType = $("#checkType").combobox("getValue"),
@@ -395,7 +391,6 @@ require([
             "processName": processName,
             "tenantId": Util.constants.TENANT_ID,
             "createStaffId": staffInfo.staffId,
-            "tenantName": tenantName,
             "departmentId": departmentId,
             "departmentName": departmentName,
             "checkType": checkType,
@@ -418,8 +413,8 @@ require([
         //新增节点弹框
         $("#subNodeConfig").form('clear');  //清空表单
         $("#subNodeDialog").show().window({
-            width: Util.constants.DIALOG_WIDTH,
-            height: Util.constants.DIALOG_HEIGHT,
+            width: 600,
+            height: 400,
             modal: true,
             title: "添加节点"
         });
