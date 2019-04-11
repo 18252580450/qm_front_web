@@ -68,32 +68,40 @@ define([
                         return Action;
                     }
                 },
-                {field: 'pId', title: '策略编码', width: '15%'},
-                {field: 'pName', title: '策略名称', width: '15%'},
-                {field: 'paramsTypeName', title: '策略类型', width: '15%'},
+                {field: 'pId', title: '策略编码', width: '15%',
+                    formatter: function (value) {
+                        return "<span title='" + value + "'>" + value + "</span>";
+                    }},
+                {field: 'pName', title: '策略名称', width: '15%',
+                    formatter: function (value) {
+                        return "<span title='" + value + "'>" + value + "</span>";
+                    }},
+                {field: 'paramsTypeName', title: '策略类型', width: '15%',
+                    formatter: function (value) {
+                        return "<span title='" + value + "'>" + value + "</span>";
+                    }},
                 {field: 'isValidate', title: '有效标识', width: '10%',
                     formatter: function (value, row, index) {
                         if (0 == value) {
-                            return "有效";
+                            return "<span title='有效'>有效</span>";
                         } else if (1 == value) {
-                            return "无效";
+                            return "<span title='无效'>无效</span>";
                         }
                     }
                 },
                 {field: 'createDate', title: '创建时间', width: '15%',
                     formatter: function (value, row, index) {
                         if(value){
-                            return DateUtil.formatDateTime(value);
+                            return "<span title='" + DateUtil.formatDateTime(value) + "'>" + DateUtil.formatDateTime(value) + "</span>";
                         }
                     }
                 },
                 {field: 'updateDate', title: '更新时间', width: '15%',
                     formatter: function (value, row, index) {
                         if(value){
-                            return DateUtil.formatDateTime(value);
+                            return "<span title='" + DateUtil.formatDateTime(value) + "'>" + DateUtil.formatDateTime(value) + "</span>";
                         }
-                    }
-                }
+                }}
             ]],
             fitColumns: true,
             width: '100%',

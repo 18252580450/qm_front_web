@@ -98,18 +98,43 @@ require([
                             }
                         }
                     },
-                    {field: 'wrkfmShowSwftno', title: '工单流水', width: '15%'},
-                    {field: 'bizTitle', title: '工单标题', width: '10%'},
-                    {field: 'srvReqstTypeFullNm', title: '服务请求类型', width: '15%'},
-                    {field: 'custEmail', title: '客户账号', width: '10%'},
-                    {field: 'custName', title: '客户名称', width: '10%'},
+                    {field: 'wrkfmShowSwftno', title: '工单流水', width: '15%',
+                        formatter: function (value, row, index) {
+                            if(value){
+                                return "<span title='" + value + "'>" + value + "</span>";
+                            }
+                        }},
+                    {field: 'bizTitle', title: '工单标题', width: '10%',
+                        formatter: function (value, row, index) {
+                            if(value){
+                                return "<span title='" + value + "'>" + value + "</span>";
+                            }
+                        }},
+                    {field: 'srvReqstTypeFullNm', title: '服务请求类型', width: '15%',
+                        formatter: function (value, row, index) {
+                            if(value){
+                                return "<span title='" + value + "'>" + value + "</span>";
+                            }
+                        }},
+                    {field: 'custEmail', title: '客户账号', width: '10%',
+                        formatter: function (value, row, index) {
+                            if(value){
+                                return "<span title='" + value + "'>" + value + "</span>";
+                            }
+                        }},
+                    {field: 'custName', title: '客户名称', width: '10%',
+                        formatter: function (value, row, index) {
+                            if(value){
+                                return "<span title='" + value + "'>" + value + "</span>";
+                            }
+                        }},
                     {field: 'custNum', title: '客户号码', width: '10%'},
                     {field: 'handleDuration', title: '处理时长', width: '10%'},
                     {
                         field: 'crtTime', title: '立单时间', width: '15%',
                         formatter: function (value, row, index) { //格式化时间格式
                             if (value != null) {
-                                return DateUtil.formatDateTime(value);
+                                return "<span title='" + DateUtil.formatDateTime(value) + "'>" + DateUtil.formatDateTime(value) + "</span>";
                             }
                         }
                     },
@@ -117,7 +142,7 @@ require([
                         field: 'arcTime', title: '归档时间', width: '15%',
                         formatter: function (value, row, index) { //格式化时间格式
                             if (value != null) {
-                                return DateUtil.formatDateTime(value);
+                                return "<span title='" + DateUtil.formatDateTime(value) + "'>" + DateUtil.formatDateTime(value) + "</span>";
                             }
                         }
                     }

@@ -77,21 +77,36 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                             return detail + "&nbsp;&nbsp;" + deal;
                         }
                     },
-                    {field: 'wrkfmShowSwftno', title: '工单流水', width: '14%'},
+                    {field: 'wrkfmShowSwftno', title: '工单流水', width: '14%',
+                        formatter: function (value, row, index) {
+                            if(value){
+                                return "<span title='" + value + "'>" + value + "</span>";
+                            }
+                        }},
                     {
                         field: 'inspectionId', title: '质检流水', width: '14%',
                         formatter: function (value, row, index) {
                             return '<a href="javascript:void(0);" style="color: deepskyblue;" id = "checkFlow_' + row.appealId + '">' + value + '</a>';
                         }
                     },
-                    {field: 'appealId', title: '申诉单号', width: '14%'},
+                    {field: 'appealId', title: '申诉单号', width: '14%',
+                        formatter: function (value, row, index) {
+                            if(value){
+                                return "<span title='" + value + "'>" + value + "</span>";
+                            }
+                        }},
                     {field: 'appealStaffName', title: '申诉人', width: '8%'},
-                    {field: 'appealReason', title: '申诉原因', width: '14%'},
+                    {field: 'appealReason', title: '申诉原因', width: '14%',
+                        formatter: function (value, row, index) {
+                            if(value){
+                                return "<span title='" + value + "'>" + value + "</span>";
+                            }
+                        }},
                     {
                         field: 'appealTime', title: '申诉时间', width: '14%',
                         formatter: function (value, row, index) { //格式化时间格式
                             if (value) {
-                                return DateUtil.formatDateTime(value);
+                                return "<span title='" + DateUtil.formatDateTime(value) + "'>" + DateUtil.formatDateTime(value) + "</span>";
                             }
                         }
                     },

@@ -153,14 +153,24 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
                         return appeal + "&nbsp;&nbsp;" + checkHistory + "&nbsp;&nbsp;" + typicalCase;
                     }
                 },
-                {field: 'touchId', title: '语音流水', align: 'center', width: '15%'},
+                {field: 'touchId', title: '语音流水', align: 'center', width: '15%',
+                    formatter: function (value, row, index) {
+                        if(value){
+                            return "<span title='" + value + "'>" + value + "</span>";
+                        }
+                    }},
                 {
                     field: 'inspectionId', title: '质检流水', align: 'center', width: '15%',
                     formatter: function (value, row, index) {
                         return '<a href="javascript:void(0);" id = "resultDetail_' + row.inspectionId + '">' + value + '</a>';
                     }
                 },
-                {field: 'callingNumber', title: '主叫号码', align: 'center', width: '10%'},
+                {field: 'callingNumber', title: '主叫号码', align: 'center', width: '10%',
+                    formatter: function (value, row, index) {
+                        if(value){
+                            return "<span title='" + value + "'>" + value + "</span>";
+                        }
+                    }},
                 {field: 'planName', title: '计划名称', align: 'center', width: '10%'},
                 {field: 'acceptNumber', title: '服务号码', align: 'center', width: '10%', hidden: true},
                 {field: 'checkStaffName', title: '质检人', align: 'center', width: '10%'},
@@ -184,7 +194,9 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
                 {
                     field: 'checkEndTime', title: '质检时间', align: 'center', width: '15%',
                     formatter: function (value, row, index) { //格式化时间格式
-                        return DateUtil.formatDateTime(value);
+                        if(value){
+                            return "<span title='" + DateUtil.formatDateTime(value) + "'>" +  DateUtil.formatDateTime(value) + "</span>";
+                        }
                     }
                 }
             ]],

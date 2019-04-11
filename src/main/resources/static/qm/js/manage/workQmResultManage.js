@@ -130,7 +130,12 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
                         return appeal + "&nbsp;&nbsp;" + checkHistory + "&nbsp;&nbsp;" + typicalCase;
                     }
                 },
-                {field: 'wrkfmShowSwftno', title: '工单流水号', align: 'center', width: '15%'},
+                {field: 'wrkfmShowSwftno', title: '工单流水号', align: 'center', width: '15%',
+                    formatter: function (value, row, index) {
+                        if(value){
+                            return "<span title='" + value + "'>" + value + "</span>";
+                        }
+                    }},
                 {
                     field: 'inspectionId', title: '质检流水号', align: 'center', width: '15%',
                     formatter: function (value, row, index) {
@@ -147,7 +152,12 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
                 },
                 {field: 'finalScore', title: '质检得分', align: 'center', width: '10%'},
                 {field: 'unqualifiedNum', title: '不合格环节数', align: 'center', width: '10%'},
-                {field: 'checkStaffId', title: '质检人工号', align: 'center', width: '10%'},
+                {field: 'checkStaffId', title: '质检人工号', align: 'center', width: '10%',
+                    formatter: function (value, row, index) {
+                        if(value){
+                            return "<span title='" + value + "'>" + value + "</span>";
+                        }
+                    }},
                 {field: 'checkStaffName', title: '质检人', align: 'center', width: '10%'},
                 {
                     field: 'resultStatus', title: '质检状态', align: 'center', width: '10%',
@@ -161,8 +171,9 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
                 {
                     field: 'checkEndTime', title: '质检时间', align: 'center', width: '15%',
                     formatter: function (value, row, index) { //格式化时间格式
-                        return DateUtil.formatDateTime(value);
-                    }
+                        if(value){
+                            return "<span title='" + DateUtil.formatDateTime(value) + "'>" +  DateUtil.formatDateTime(value) + "</span>";
+                        }                    }
                 }
             ]],
             fitColumns: true,

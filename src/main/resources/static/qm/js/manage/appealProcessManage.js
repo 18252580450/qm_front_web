@@ -147,14 +147,23 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                     formatter: function (value, row, index) {
                         for (var i = 0; i < checkTypeData.length; i++) {
                             if (checkTypeData[i].paramsCode === value) {
-                                return checkTypeData[i].paramsName;
+                                return '<span title=' + checkTypeData[i].paramsName + '>' + checkTypeData[i].paramsName + '</span>';
                             }
                         }
                     }
                 },
-                {field: 'processId', title: '流程编码', width: '15%'},
-                {field: 'processName', title: '流程名称', width: '20%'},
-                {field: 'departmentName', title: '部门', width: '20%'},
+                {field: 'processId', title: '流程编码', width: '15%',
+                    formatter: function (value) {
+                        return "<span title='" + value + "'>" + value + "</span>";
+                    }},
+                {field: 'processName', title: '流程名称', width: '20%',
+                    formatter: function (value) {
+                        return "<span title='" + value + "'>" + value + "</span>";
+                    }},
+                {field: 'departmentName', title: '部门', width: '20%',
+                    formatter: function (value) {
+                        return "<span title='" + value + "'>" + value + "</span>";
+                    }},
                 {
                     field: 'createTime', title: '创建时间', width: '20%',
                     formatter: function (value, row, index) { //格式化时间格式
@@ -176,7 +185,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                                 }
                             }
                         }
-                        return processStatus;
+                        return '<span title=' + processStatus + '>' + processStatus + '</span>';
                     }
                 }
             ]],

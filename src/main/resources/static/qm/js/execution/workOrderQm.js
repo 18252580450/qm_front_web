@@ -230,27 +230,53 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui","dateUti
         $("#queryInfo").datagrid({
             columns: [[
                 {field: 'ck', checkbox: true, align: 'center'},
-                {field: 'wrkfmShowSwftno', title: '工单流水', align: 'center', width: '15%'},
-                {field: 'bizTitle', title: '工单标题', align: 'center', width: '10%'},
+                {field: 'wrkfmShowSwftno', title: '工单流水', align: 'center', width: '15%',
+                    formatter: function (value, row, index) {
+                        if(value){
+                            return "<span title='" + value + "'>" + value + "</span>";
+                        }
+                }},
+                {field: 'bizTitle', title: '工单标题', align: 'center', width: '10%',
+                    formatter: function (value, row, index) {
+                        if(value){
+                            return "<span title='" + value + "'>" + value + "</span>";
+                        }
+                }},
                 {field: 'planName', title: '计划名称', align: 'center', width: '10%'},
-                {field: 'srvReqstTypeFullNm', title: '问题分类', align: 'center', width: '10%'},
-                {field: 'custEmail', title: '客户账号', align: 'center', width: '10%'},
-                {field: 'custName', title: '客户名称', align: 'center', width: '10%'},
-                {field: 'custNum', title: '客户号码', align: 'center', width: '10%'},
+                {field: 'srvReqstTypeFullNm', title: '问题分类', align: 'center', width: '10%',
+                    formatter: function (value, row, index) {
+                        if(value){
+                            return "<span title='" + value + "'>" + value + "</span>";
+                        }
+                }},
+                {field: 'custEmail', title: '客户账号', align: 'center', width: '10%',
+                    formatter: function (value, row, index) {
+                        if(value){
+                            return "<span title='" + value + "'>" + value + "</span>";
+                        }
+                }},
+                {field: 'custName', title: '客户名称', align: 'center', width: '10%',
+                    formatter: function (value, row, index) {
+                        if(value){
+                            return "<span title='" + value + "'>" + value + "</span>";
+                        }
+                }},
+                {field: 'custNum', title: '客户号码', align: 'center', width: '10%',
+                    formatter: function (value, row, index) {
+                        if(value){
+                            return "<span title='" + value + "'>" + value + "</span>";
+                        }
+                }},
                 {field: 'crtTime', title: '提交时间', align: 'center', width: '10%',
                     formatter: function (value, row, index) { //格式化时间格式
-                        if(value!=null){
-                            return DateUtil.formatDateTime(value);
-                        }else{
-                            return null;
+                        if(value){
+                            return "<span title='" + DateUtil.formatDateTime(value) + "'>" + DateUtil.formatDateTime(value) + "</span>";
                         }
                     }},
                 {field: 'arcTime', title: '完成时间', align: 'center', width: '10%',
                     formatter: function (value, row, index) { //格式化时间格式
                         if(value!=null){
-                            return DateUtil.formatDateTime(value);
-                        }else{
-                            return null;
+                            return "<span title='" + DateUtil.formatDateTime(value) + "'>" + DateUtil.formatDateTime(value) + "</span>";
                         }
                     }},
                 {field: 'acptStaffId', title: '立单人', align: 'center', width: '10%'},
@@ -271,9 +297,7 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui","dateUti
                     field: 'operateTime', title: '分配时间', align: 'center', width: '15%',
                     formatter: function (value, row, index) { //格式化时间格式
                         if(value!=null){
-                            return DateUtil.formatDateTime(value);
-                        }else{
-                            return null;
+                            return "<span title='" + DateUtil.formatDateTime(value) + "'>" + DateUtil.formatDateTime(value) + "</span>";
                         }
                     }
                 }

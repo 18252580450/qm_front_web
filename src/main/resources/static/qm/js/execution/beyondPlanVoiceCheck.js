@@ -78,11 +78,26 @@ require([
                             }
                         }
                     },
-                    {field: 'touchId', title: '语音流水', width: '15%'},
+                    {field: 'touchId', title: '语音流水', width: '15%',
+                        formatter: function (value, row, index) {
+                            if(value){
+                                return "<span title='" + value + "'>" + value + "</span>";
+                            }
+                        }},
                     {field: 'staffName', title: '坐席', width: '10%'},
                     {field: 'departName', title: '部门', width: '15%'},
-                    {field: 'staffNumber', title: '坐席号码', width: '15%'},
-                    {field: 'customerNumber', title: '客户号码', width: '15%'},
+                    {field: 'staffNumber', title: '坐席号码', width: '15%',
+                        formatter: function (value, row, index) {
+                            if(value){
+                                return "<span title='" + value + "'>" + value + "</span>";
+                            }
+                        }},
+                    {field: 'customerNumber', title: '客户号码', width: '15%',
+                        formatter: function (value, row, index) {
+                            if(value){
+                                return "<span title='" + value + "'>" + value + "</span>";
+                            }
+                        }},
                     {
                         field: 'callType', title: '呼叫类型', width: '10%',
                         formatter: function (value, row, index) {
@@ -93,7 +108,7 @@ require([
                         field: 'talkDuration', title: '接触时长', width: '10%',
                         formatter: function (value, row, index) { //格式化时间格式
                             if (value != null) {
-                                return DateUtil.formatDateTime2(value);
+                                return "<span title='" + DateUtil.formatDateTime2(value) + "'>" + DateUtil.formatDateTime2(value) + "</span>";
                             }
                         }
                     },
@@ -101,7 +116,7 @@ require([
                         field: 'beginTime', title: '接触时间', width: '15%',
                         formatter: function (value, row, index) { //格式化时间格式
                             if (value != null) {
-                                return DateUtil.formatDateTime(value);
+                                return "<span title='" + DateUtil.formatDateTime(value) + "'>" + DateUtil.formatDateTime(value) + "</span>";
                             }
                         }
                     }

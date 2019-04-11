@@ -33,9 +33,18 @@ define([
                     {field: 'elementId', title: '元素ID', hidden: true},
                     {field: 'pId', title: '策略ID', hidden: true},
                     {field: 'ck', checkbox: true, align: 'center'},
-                    {field: 'elementCode', title: '元素编码', width: '13%'},
-                    {field: 'elementName', title: '元素名称', width: '12%'},
-                    {field: 'paramsTypeName', title: '元素来源', width: '12%'},
+                    {field: 'elementCode', title: '元素编码', width: '13%',
+                        formatter: function (value) {
+                            return "<span title='" + value + "'>" + value + "</span>";
+                        }},
+                    {field: 'elementName', title: '元素名称', width: '12%',
+                        formatter: function (value) {
+                            return "<span title='" + value + "'>" + value + "</span>";
+                        }},
+                    {field: 'paramsTypeName', title: '元素来源', width: '12%',
+                        formatter: function (value) {
+                            return "<span title='" + value + "'>" + value + "</span>";
+                        }},
                     {field: 'elementType', title: '字段类型', width: '12%',
                         formatter: function (value, row, index) {
                             var str = "";
@@ -47,7 +56,7 @@ define([
                                     }
                                 });
                             }
-                            return str;
+                            return "<span title='" + str + "'>" + str + "</span>";
                         }
                     },
                     {field: 'isRegion', title: '是否区间值', width: '8%',hidden:true,
@@ -212,11 +221,23 @@ define([
             // $("#elesList").datagrid("uncheckAll");
             $("#elesList").datagrid({
                 columns: [[
-                    {field: 'elementId', title: '元素ID', hidden: true},
+                    {field: 'elementId', title: '元素ID', hidden: true,
+                        formatter: function (value) {
+                            return "<span title='" + value + "'>" + value + "</span>";
+                        }},
                     {field: 'ck', checkbox: true, align: 'center'},
-                    {field: 'elementCode', title: '元素编码', width: '20%'},
-                    {field: 'elementName', title: '元素名称', width: '15%'},
-                    {field: 'paramsTypeName', title: '元素类型', width: '13%'},
+                    {field: 'elementCode', title: '元素编码', width: '20%',
+                        formatter: function (value) {
+                            return "<span title='" + value + "'>" + value + "</span>";
+                        }},
+                    {field: 'elementName', title: '元素名称', width: '15%',
+                        formatter: function (value) {
+                            return "<span title='" + value + "'>" + value + "</span>";
+                        }},
+                    {field: 'paramsTypeName', title: '元素类型', width: '13%',
+                        formatter: function (value) {
+                            return "<span title='" + value + "'>" + value + "</span>";
+                        }},
                     {field: 'elementType', title: '字段类型', width: '8%',
                         formatter: function (value, row, index) {
                             var str = "";
@@ -228,26 +249,29 @@ define([
                                     }
                                 });
                             }
-                            return str;
+                            return "<span title='" + str + "'>" + str + "</span>";
                         }},
                     {field: 'isRegion', title: '区间值', width: '8%',
                         formatter: function (value, row, index) {
                             if (0 == value) {
-                                return "否";
+                                return "<span title='否'>否</span>";
                             } else if (1 == value) {
-                                return "是";
+                                return "<span title='是'>是</span>";
                             }
                         }
                     },
                     {field: 'isNeed', title: '必须字段', width: '8%',
                         formatter: function (value, row, index) {
                             if(0 == value){
-                                return "否";
+                                return "<span title='否'>否</span>";
                             }else if(1 == value){
-                                return "是";
+                                return "<span title='是'>是</span>";
                             }
                         }},
-                    {field: 'remark', title: '备注', width: '8%'}
+                    {field: 'remark', title: '备注', width: '8%',
+                        formatter: function (value) {
+                            return "<span title='" + value + "'>" + value + "</span>";
+                        }}
                 ]],
                 fitColumns: true,
                 width: '100%',

@@ -113,7 +113,10 @@ define([
         $("#page").find("#planList").datagrid({
             columns: [[
                 {field: 'ck', checkbox: true, align: 'center'},
-                {field: 'planId', title: '计划编码', width: '8%'},
+                {field: 'planId', title: '计划编码', width: '8%',
+                    formatter: function (value) {
+                        return "<span title='" + value + "'>" + value + "</span>";
+                    }},
                 {
                     field: 'action', title: '操作', width: '8%',
                     formatter: function (value, row, index) {
@@ -123,7 +126,10 @@ define([
                         return Action;
                     }
                 },
-                {field: 'planName', title: '计划名称', width: '8%'},
+                {field: 'planName', title: '计划名称', width: '8%',
+                    formatter: function (value) {
+                        return "<span title='" + value + "'>" + value + "</span>";
+                    }},
                 {field: 'planType', title: '计划类型', width: '8%',
                     formatter: function (value, row, index) {
                         var str = "";
@@ -135,43 +141,52 @@ define([
                                 }
                             });
                         }
-                        return str;
+                        return "<span title='" + str + "'>" + str + "</span>";
                     }
                 },
-                {field: 'templateName', title: '考评模板', width: '8%'},
-                {field: 'pName', title: '抽取策略', width: '8%'},
-                {field: 'extractCount', title: '抽取数量', width: '8%'},
+                {field: 'templateName', title: '考评模板', width: '8%',
+                    formatter: function (value) {
+                        return "<span title='" + value + "'>" + value + "</span>";
+                    }},
+                {field: 'pName', title: '抽取策略', width: '8%',
+                    formatter: function (value) {
+                        return "<span title='" + value + "'>" + value + "</span>";
+                    }},
+                {field: 'extractCount', title: '抽取数量', width: '8%',
+                    formatter: function (value) {
+                        return "<span title='" + value + "'>" + value + "</span>";
+                    }},
                 {field: 'manOrAuto', title: '任务分派方式', width: '8%',
                     formatter: function (value, row, index) {
                         if (0 == value) {
-                            return "自动分派";
+                            return "<span title='自动分派'>自动分派</span>";
                         } else if (1 == value) {
-                            return "人工分派";
+                            return "<span title='人工分派'>人工分派</span>";
                         }
                     }
                 },
                 {field: 'planRuntype', title: '执行方式', width: '8%',
                     formatter: function (value, row, index) {
                         if(0 == value){
-                            return "每天自动执行";
+                            return "<span title='每天自动执行'>每天自动执行</span>";
                         }else if(1 == value){
-                            return "执行一次";
+                            return "<span title='执行一次'>执行一次</span>";
                         }else if(2 == value){
-                            return  "手动执行";
+                            return "<span title='手动执行'>手动执行</span>";
                         }
                     }},
                 {field: 'planRuntime', title: '执行时间', width: '8%',
                     formatter: function (value, row, index) {
                         if(value){
-                            return DateUtil.formatDateTime(value,"hh:mm:ss");
+                            return "<span title='" + DateUtil.formatDateTime(value,"hh:mm:ss") + "'>" + DateUtil.formatDateTime(value,"hh:mm:ss") + "</span>";
                         }
                     }},
                 {field: 'haltFlag', title: '发布状态', width: '5%',
                     formatter: function (value, row, index) {
                         if(0 == value){
-                            return "暂停";
+                            return "<span title='暂停'>暂停</span>";
                         }else if(1 == value){
-                            return "发布";
+                            return "<span title='发布'>发布</span>";
                         }
                     }
                 },
@@ -179,17 +194,20 @@ define([
                 {field: 'planStarttime', title: '计划开始时间', width: '12%',
                     formatter: function (value, row, index) {
                         if(value){
-                            return DateUtil.formatDateTime(value);
+                            return "<span title='" + DateUtil.formatDateTime(value,"hh:mm:ss") + "'>" + DateUtil.formatDateTime(value,"hh:mm:ss") + "</span>";
                         }
                     }
                 },
                 {field: 'planEndtime', title: '计划结束时间', width: '12%',
                     formatter: function (value, row, index) {
                         if(value){
-                            return DateUtil.formatDateTime(value);
+                            return "<span title='" + DateUtil.formatDateTime(value,"hh:mm:ss") + "'>" + DateUtil.formatDateTime(value,"hh:mm:ss") + "</span>";
                         }
                     }},
-                {field: 'remark', title: '描述', width: '10%'}
+                {field: 'remark', title: '描述', width: '10%',
+                    formatter: function (value) {
+                        return "<span title='" + value + "'>" + value + "</span>";
+                    }}
             ]],
             fitColumns: true,
             width: '100%',

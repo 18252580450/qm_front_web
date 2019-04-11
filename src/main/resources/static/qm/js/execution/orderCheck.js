@@ -102,8 +102,18 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
                         }
                     }
                 },
-                {field: 'wrkfmShowSwftno', title: '工单流水', width: '15%'},
-                {field: 'srvReqstTypeFullNm', title: '服务请求类型', width: '15%'},
+                {field: 'wrkfmShowSwftno', title: '工单流水', width: '15%',
+                    formatter: function (value, row, index) {
+                        if(value){
+                            return "<span title='" + value + "'>" + value + "</span>";
+                        }
+                    }},
+                {field: 'srvReqstTypeFullNm', title: '服务请求类型', width: '15%',
+                    formatter: function (value, row, index) {
+                        if(value){
+                            return "<span title='" + value + "'>" + value + "</span>";
+                        }
+                    }},
                 {
                     field: 'planName', title: '计划名称', width: '15%',
                     formatter: function (value, row, index) {
@@ -112,30 +122,45 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
                         }
                     }
                 },
-                {field: 'custEmail', title: '客户账号', align: 'center', width: '10%'},
-                {field: 'custName', title: '客户名称', align: 'center', width: '10%'},
-                {field: 'custNum', title: '客户号码', align: 'center', width: '10%'},
+                {field: 'custEmail', title: '客户账号', align: 'center', width: '10%',
+                    formatter: function (value, row, index) {
+                        if(value){
+                            return "<span title='" + value + "'>" + value + "</span>";
+                        }
+                    }},
+                {field: 'custName', title: '客户名称', align: 'center', width: '10%',
+                    formatter: function (value, row, index) {
+                        if(value){
+                            return "<span title='" + value + "'>" + value + "</span>";
+                        }
+                    }},
+                {field: 'custNum', title: '客户号码', align: 'center', width: '10%',
+                    formatter: function (value, row, index) {
+                        if(value){
+                            return "<span title='" + value + "'>" + value + "</span>";
+                        }
+                    }},
                 {
                     field: 'crtTime', title: '立单时间', width: '15%',
                     formatter: function (value, row, index) { //格式化时间格式
-                        if (value != null) {
-                            return DateUtil.formatDateTime(value);
+                        if (value) {
+                            return "<span title='" + DateUtil.formatDateTime(value) + "'>" + DateUtil.formatDateTime(value) + "</span>";
                         }
                     }
                 },
                 {
                     field: 'arcTime', title: '归档时间', width: '15%',
                     formatter: function (value, row, index) { //格式化时间格式
-                        if (value != null) {
-                            return DateUtil.formatDateTime(value);
+                        if (value) {
+                            return "<span title='" + DateUtil.formatDateTime(value) + "'>" + DateUtil.formatDateTime(value) + "</span>";
                         }
                     }
                 },
                 {
                     field: 'operateTime', title: '分配时间', width: '15%',
                     formatter: function (value, row, index) { //格式化时间格式
-                        if (row.operateTime != null) {
-                            return DateUtil.formatDateTime(row.operateTime);
+                        if (row.operateTime) {
+                            return "<span title='" + DateUtil.formatDateTime(row.operateTime) + "'>" + DateUtil.formatDateTime(row.operateTime) + "</span>";
                         }
                     }
                 },

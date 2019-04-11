@@ -36,22 +36,42 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
                         return Action;
                     }
                 },
-                {field: 'commentName', title: '评语名称', width: '20%'},
+                {field: 'commentName', title: '评语名称', width: '20%',
+                        formatter: function (value) {
+                            if(value){
+                                return "<span title='" + value + "'>" + value + "</span>";
+                            }
+                }},
                 {field: 'crtTime', title: '创建时间', width: '20%',
                  formatter:function(value,row,index){//格式化时间格式
-                    return DateUtil.formatDateTime(value);
-                 }},
-                {field: 'createStaffId', title: '创建工号', width: '20%'},
+                     if(value){
+                         return "<span title='" + DateUtil.formatDateTime(value) + "'>" + DateUtil.formatDateTime(value) + "</span>";
+                     }
+                }},
+                {field: 'createStaffId', title: '创建工号', width: '20%',
+                    formatter: function (value) {
+                        if(value){
+                            return "<span title='" + value + "'>" + value + "</span>";
+                        }
+                }},
                 {field: 'modfTime', title: '修改时间', width: '20%',
                     formatter: function (value, row, index) { //格式化时间格式
-                        if(value!=null){
-                            return DateUtil.formatDateTime(value);
-                        }else{
-                            return null;
+                        if(value){
+                            return "<span title='" + DateUtil.formatDateTime(value) + "'>" + DateUtil.formatDateTime(value) + "</span>";
                         }
                     }},
-                {field: 'operateStaffId', title: '修改工号', width: '20%'},
-                {field: 'remark', title: '描述', width: '20%'}
+                {field: 'operateStaffId', title: '修改工号', width: '20%',
+                    formatter: function (value) {
+                        if(value){
+                            return "<span title='" + value + "'>" + value + "</span>";
+                        }
+                }},
+                {field: 'remark', title: '描述', width: '20%',
+                    formatter: function (value) {
+                        if(value){
+                            return "<span title='" + value + "'>" + value + "</span>";
+                        }
+                }}
             ]],
             fitColumns: true,
             width: '100%',

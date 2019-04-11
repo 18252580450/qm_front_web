@@ -249,7 +249,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
         var startTime = $('#startTime');
         startTime.datetimebox({
             onShowPanel:function(){
-                $(this).datetimebox("spinner").timespinner("setValue","00:00:00");
+                $(this).datetimebox("spinner").timespinner("setV    alue","00:00:00");
             },
             onChange: function () {
                 check();
@@ -283,9 +283,24 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
                         return action;
                     }
                 },
-                {field: 'touchId', title: '语音流水', align: 'center', width: '10%'},
-                {field: 'staffNumber', title: '坐席号码', align: 'center', width: '10%'},
-                {field: 'customerNumber', title: '客户号码', align: 'center', width: '10%'},
+                {field: 'touchId', title: '语音流水', align: 'center', width: '10%',
+                    formatter: function (value, row, index) {
+                        if(value){
+                            return "<span title='" + value + "'>" + value + "</span>";
+                        }
+                    }},
+                {field: 'staffNumber', title: '坐席号码', align: 'center', width: '10%',
+                    formatter: function (value, row, index) {
+                        if(value){
+                            return "<span title='" + value + "'>" + value + "</span>";
+                        }
+                    }},
+                {field: 'customerNumber', title: '客户号码', align: 'center', width: '10%',
+                    formatter: function (value, row, index) {
+                        if(value){
+                            return "<span title='" + value + "'>" + value + "</span>";
+                        }
+                    }},
                 {field: 'planName', title: '计划名称', align: 'center', width: '10%'},
                 {field: 'callType', title: '呼叫类型', align: 'center', width: '10%',
                     formatter: function (value, row, index) {
@@ -294,20 +309,16 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
                 {
                     field: 'checkedTime', title: '抽取时间', align: 'center', width: '15%',
                     formatter: function (value, row, index) { //格式化时间格式
-                        if(value!=null){
-                            return DateUtil.formatDateTime(value);
-                        }else{
-                            return null;
+                        if(value){
+                            return "<span title='" + DateUtil.formatDateTime(value) + "'>" +  DateUtil.formatDateTime(value) + "</span>";
                         }
                     }
                 },
                 {field: 'checkStaffName', title: '质检人员', align: 'center', width: '10%'},
                 {field: 'operateTime', title: '指派时间', align: 'center', width: '10%',
                     formatter: function (value, row, index) { //格式化时间格式
-                    if(value!=null){
-                        return DateUtil.formatDateTime(value);
-                    }else{
-                        return null;
+                    if(value){
+                        return "<span title='" + DateUtil.formatDateTime(value) + "'>" +  DateUtil.formatDateTime(value) + "</span>";
                     }
                   }
                 },

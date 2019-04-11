@@ -109,15 +109,30 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
                         }
                     }
                 },
-                {field: 'touchId', title: '语音流水', width: '15%'},
+                {field: 'touchId', title: '语音流水', width: '15%',
+                    formatter: function (value, row, index) {
+                        if(value){
+                            return "<span title='" + value + "'>" + value + "</span>";
+                        }
+                    }},
                 {field: 'planName', title: '计划名称', width: '15%'},
-                {field: 'staffNumber', title: '坐席号码', width: '15%'},
-                {field: 'customerNumber', title: '客户号码', width: '15%'},
+                {field: 'staffNumber', title: '坐席号码', width: '15%',
+                    formatter: function (value, row, index) {
+                        if(value){
+                            return "<span title='" + value + "'>" + value + "</span>";
+                        }
+                    }},
+                {field: 'customerNumber', title: '客户号码', width: '15%',
+                    formatter: function (value, row, index) {
+                        if(value){
+                            return "<span title='" + value + "'>" + value + "</span>";
+                        }
+                    }},
                 {
                     field: 'checkedTime', title: '抽取时间', width: '15%',
                     formatter: function (value, row, index) { //格式化时间格式
                         if (row.checkedTime != null) {
-                            return DateUtil.formatDateTime(row.checkedTime);
+                            return "<span title='" + DateUtil.formatDateTime(row.checkedTime) + "'>" + DateUtil.formatDateTime(row.checkedTime) + "</span>";
                         }
                     }
                 },
@@ -125,7 +140,7 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
                     field: 'operateTime', title: '分派时间', width: '15%',
                     formatter: function (value, row, index) { //格式化时间格式
                         if (row.operateTime != null) {
-                            return DateUtil.formatDateTime(row.operateTime);
+                            return "<span title='" + DateUtil.formatDateTime(row.operateTime) + "'>" + DateUtil.formatDateTime(row.operateTime) + "</span>";
                         }
                     }
                 },

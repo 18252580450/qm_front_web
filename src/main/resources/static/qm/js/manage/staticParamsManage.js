@@ -22,10 +22,22 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                 {field: 'paramsPurposeId', title: '参数用途ID', hidden: true},
                 {field: 'paramsTypeId', title: '参数类型ID', hidden: true},
                 {field: 'ck', checkbox: true, align: 'center'},
-                {field: 'tenantId', title: '渠道', width: '15%'},
-                {field: 'paramsTypeName', title: '参数用途名称', width: '20%'},
-                {field: 'paramsCode', title: '参数编码', width: '20%'},
-                {field: 'paramsName', title: '参数名称', width: '20%'},
+                {field: 'tenantId', title: '渠道', width: '15%',
+                    formatter: function (value) {
+                        return "<span title='" + value + "'>" + value + "</span>";
+                    }},
+                {field: 'paramsTypeName', title: '参数用途名称', width: '20%',
+                    formatter: function (value) {
+                        return "<span title='" + value + "'>" + value + "</span>";
+                    }},
+                {field: 'paramsCode', title: '参数编码', width: '20%',
+                    formatter: function (value) {
+                        return "<span title='" + value + "'>" + value + "</span>";
+                    }},
+                {field: 'paramsName', title: '参数名称', width: '20%',
+                    formatter: function (value) {
+                        return "<span title='" + value + "'>" + value + "</span>";
+                    }},
                 {
                     field: 'action', title: '操作', width: '20%',
                     formatter: function (value, row, index) {

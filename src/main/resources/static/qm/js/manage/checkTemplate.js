@@ -63,20 +63,26 @@ define(["js/manage/addCheckTemplate","js/manage/modifyCheckTemplate","jquery", '
                 },
                 {field: 'templateName', title: '模板名称', width: '20%',
                     formatter: function (value) {//鼠标悬浮显示全部内容
-                        return "<span title='" + value + "'>" + value + "</span>";
-                    }},
+                        if(value){
+                            return "<span title='" + value + "'>" + value + "</span>";
+                        }
+                }},
                 {field: 'templateStatus', title: '模板状态', width: '15%',
                     formatter:function(value,row,index){
                         return {'0':'未发布','1':'发布','2':'暂停','3':'删除'}[value];
                     }},
                 {field: 'remark', title: '备注', width: '20%',
                     formatter: function (value) {
-                        return "<span title='" + value + "'>" + value + "</span>";
-                    }},
+                        if(value){
+                            return "<span title='" + value + "'>" + value + "</span>";
+                        }
+                }},
                 {field: 'createTime', title: '创建时间', width: '20%',
                     formatter:function(value,row,index){
-                        return DateUtil.formatDateTime(value);
-                    }}
+                        if(value){
+                            return "<span title='" + DateUtil.formatDateTime(value) + "'>" + DateUtil.formatDateTime(value) + "</span>";
+                        }
+                }}
             ]],
             fitColumns: true,
             width: '100%',

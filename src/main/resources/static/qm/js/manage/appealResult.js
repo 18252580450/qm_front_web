@@ -155,7 +155,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                         formatter: function (value, row, index) {
                             for (var i = 0; i < checkTypeData.length; i++) {
                                 if (checkTypeData[i].paramsCode === value) {
-                                    return checkTypeData[i].paramsName;
+                                    return "<span title='" + checkTypeData[i].paramsName + "'>" + checkTypeData[i].paramsName + "</span>";
                                 }
                             }
                         }
@@ -164,9 +164,9 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                         field: 'touchId', title: '接触流水', width: '14%',
                         formatter: function (value, row, index) {
                             if (row.checkType === Util.constants.CHECK_TYPE_ORDER) {
-                                return row.wrkfmShowSwftno;    //展示工单显示流水号
+                                return "<span title='" + row.wrkfmShowSwftno + "'>" + row.wrkfmShowSwftno + "</span>";//展示工单显示流水号
                             }
-                            return value;
+                            return "<span title='" + value + "'>" + value + "</span>";
                         }
                     },
                     {
@@ -175,24 +175,36 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                             return '<a href="javascript:void(0);" style="color: deepskyblue;" id = "checkFlow_' + row.appealId + '">' + value + '</a>';
                         }
                     },
-                    {field: 'appealId', title: '申诉单号', width: '14%'},
-                    {field: 'appealStaffName', title: '申诉人', width: '10%'},
-                    {field: 'appealReason', title: '申诉原因', width: '14%'},
+                    {field: 'appealId', title: '申诉单号', width: '14%',
+                        formatter: function (value) {
+                            return "<span title='" + value + "'>" + value + "</span>";
+                        }},
+                    {field: 'appealStaffName', title: '申诉人', width: '10%',
+                        formatter: function (value) {
+                            return "<span title='" + value + "'>" + value + "</span>";
+                        }},
+                    {field: 'appealReason', title: '申诉原因', width: '14%',
+                        formatter: function (value) {
+                            return "<span title='" + value + "'>" + value + "</span>";
+                        }},
                     {
                         field: 'appealTime', title: '申诉时间', width: '14%',
                         formatter: function (value, row, index) { //格式化时间格式
                             if (value) {
-                                return DateUtil.formatDateTime(value);
+                                return "<span title='" + DateUtil.formatDateTime(value) + "'>" + DateUtil.formatDateTime(value) + "</span>";
                             }
                         }
                     },
-                    {field: 'currentNodeName', title: '当前节点', width: '14%'},
+                    {field: 'currentNodeName', title: '当前节点', width: '14%',
+                        formatter: function (value) {
+                            return "<span title='" + value + "'>" + value + "</span>";
+                        }},
                     {
                         field: 'appealStatus', title: '申诉状态', width: '10%',
                         formatter: function (value, row, index) {
                             for (var i = 0; i < appealStatusData.length; i++) {
                                 if (appealStatusData[i].paramsCode === value) {
-                                    return appealStatusData[i].paramsName;
+                                    return "<span title='" + appealStatusData[i].paramsName + "'>" + appealStatusData[i].paramsName + "</span>";
                                 }
                             }
                         }
