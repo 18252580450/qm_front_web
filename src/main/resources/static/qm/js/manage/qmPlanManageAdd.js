@@ -53,7 +53,7 @@ define([
             div.append(getQmPeopleDiv());
             require(["js/manage/queryQmPeople"], function (qryQmPeople) {
                 var queryQmPeople = qryQmPeople;
-                queryQmPeople.initialize();
+                queryQmPeople.initialize("checker");
                 $('#qry_people_window').show().window({
                     title: '查询质检人员信息',
                     width: Util.constants.DIALOG_WIDTH,
@@ -78,7 +78,7 @@ define([
             div.append(getQmPeopleDiv());
             require(["js/manage/queryQmPeople"], function (qryQmPeople) {
                 var queryQmPeople = qryQmPeople;
-                queryQmPeople.initialize();
+                queryQmPeople.initialize("staffer");
                 $('#qry_people_window').show().window({
                     title: '查询质检人员信息',
                     width: Util.constants.DIALOG_WIDTH,
@@ -318,7 +318,7 @@ define([
 
     //初始化搜索表单
     function initSearchForm(planBean) {
-
+        $("#showDiv",$el).attr("style","display:block;");
         //查询弹窗，默认隐藏
         function getSearchDiv() {
             return '<div  id="qry_window" style="display:none;">'+
@@ -427,7 +427,14 @@ define([
                     data: planTypes,
                     valueField: 'paramsCode',
                     textField: 'paramsName',
-                    editable: false
+                    editable: false,
+                    onSelect: function (value) {
+                        if(value.paramsCode=="1"){
+                            $("#showDiv",$el).attr("style","display:none;");
+                        }else {
+                            $("#showDiv",$el).attr("style","display:block;");
+                        }
+                  }
                 });
                 if(planBean){
                     $("#planType",$el).combobox('setValue',planBean.planType);

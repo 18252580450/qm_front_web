@@ -63,9 +63,9 @@
                             </div>
                         </div>
                     </form>
-                    <div style="width: 95%; height: 365px; overflow-y: auto; overflow-x: hidden;margin-top: 10px">
+                    <div id="showDiv" style="width: 95%; height: 365px; overflow-y: auto; overflow-x: hidden;margin-top: 10px">
                         <!--左侧区域-->
-                        <div style="float: left; width: 18%; height: 365px; overflow-y: auto; overflow-x: hidden;">
+                        <div id="left" style="float: left; width: 18%; height: 365px; overflow-y: auto; overflow-x: hidden;">
                             <div class='panel-tool-box cl'>
                                 <div class='fl text-bold'>质检人</div>
                             </div>
@@ -76,7 +76,7 @@
                         </div>
 
                         <!--右侧区域-->
-                        <div style="float:right ; width:82%; height:100%;">
+                        <div id="right" style="float:right ; width:82%; height:100%;">
                             <div class='cl'>
                                 <div class='panel-tool-box cl'>
                                     <div class='fl text-bold'>被质检人</div>
@@ -91,13 +91,13 @@
                                 </div>
                                 <table id='checkedStaffList' class='easyui-datagrid' style='width:100%;height:100%;'>
                                 </table>
-                                <label class='form-label col-5'></label>
-                                <a href='javascript:void(0)' id='addPlan' class='btn btn-green radius  mt-l-20'>确定</a>
-                                <a href='javascript:void(0)' id='close' class='btn btn-secondary radius  mt-l-20'>关闭</a>
                             </div>
                         </div>
                     </div>
-
+                    <div class='row cl' style="margin-top:10px;text-align:center">
+                        <a href='javascript:void(0)' id='addPlan' class='btn btn-green radius  mt-l-20'>确定</a>
+                        <a href='javascript:void(0)' id='close' class='btn btn-secondary radius  mt-l-20'>关闭</a>
+                    </div>
                 </div>
             </div>
         </div>
