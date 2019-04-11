@@ -2,7 +2,7 @@
     <div id='layout_content' class='easyui-layout' data-options="region:'center'" style='overflow: auto; height:100%;'>
         <div data-options="region:'center'" style='overflow: auto;height: 100%'>
             <div id = "qryCheckTemplate_page">
-                <div class='panel-search ' title="考评模板">
+                <div class='panel-search'>
                     <form class='form form-horizontal' id = "qryCheckTemplate_searchForm">
                         <div class='row cl'>
                             <label class='form-label col-2'>模板名称</label>

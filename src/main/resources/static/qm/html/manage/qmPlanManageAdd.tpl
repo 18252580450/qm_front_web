@@ -2,8 +2,7 @@
     <div id='layout_content' class='easyui-layout' data-options="region:'center'" style='overflow: auto; height:100%;'>,
         <div id="content" data-options="region:'center'" style='overflow: auto;height: 100%'>
             <div id = "page">
-                <div class='panel-search' title="基本信息">
-                    <div class='title'>基本信息</div>
+                <div class='panel-search'>
                     <form class='form form-horizontal' id="qryCheckTemplate_mainForm">
                         <div class='row cl'>
                             <label class='form-label col-3'>计划名称</label>

@@ -2,8 +2,7 @@
     <div id='layout_content' class='easyui-layout' data-options="region:'center'" style='overflow: auto; height:100%;'>
         <div data-options="region:'center'" style='overflow: auto;height: 100%'>
             <div id = "page">
-                <div class='panel-search ' title="考评模板">
-                    <div class='fl text-bold'>基本信息</div>
+                <div class='panel-search'>
                     <form class='form form-horizontal'>
                         <div class='row cl'>
                             <label class='form-label col-2'>模板名称</label>
