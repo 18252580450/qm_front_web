@@ -16,6 +16,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
         historyData = [],           //工单历史数据
         processData = [],           //轨迹数据
         playingRecord,              //当前正在播放的录音id
+        caseTypeData,               //典型类型静态数据
         qmCheckUrl = Util.constants.NGIX_URL_CONTEXT + "/qm/html/execution/qmCheck.html";
 
     initialize();
@@ -445,11 +446,31 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
         });
         //案例收集
         $("#caseCollectBtn").on("click", function () {
-            $.messager.alert("提示", "该功能暂未开放!");
+            typicalCaseAddDialog();
         });
     }
 
     function getCheckComment() {
+        //考评评语下拉框
+        $("#checkCommentSearch").combobox({
+            url: '../../data/select_init_data.json',
+            method: "GET",
+            valueField: 'commentId',
+            textField: 'commentName',
+            panelHeight: 300,
+            editable: false,
+            onSelect: function (record) {//下拉框选中时触发
+                var checkComment = $("#checkComment");
+                if (record.commentId === "-1") {
+                    checkComment.show();
+                    checkComment.val("");
+                } else {
+                    checkComment.hide();
+                    checkComment.val(record.commentName);
+                }
+            }
+        });
+
         var reqParams = {//入参
             "parentCommentId": "",
             "commentName": ""
@@ -461,37 +482,16 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
         };
         //查询
         Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.ORDINARY_COMMENT + "/selectByParams", params, function (result) {
-            var json = [];
-            var data = result.RSP.DATA;
-            var map = {};
-            map["commentId"] = "0";
-            map["commentName"] = "其他";
-            data.push(map);
-            data.forEach(function (value, index) {
-                var map = {};
-                map["id"] = value.commentId;
-                map["text"] = value.commentName;
-                json.push(map);
-            });
-            //考评评语下拉框
-            $("#checkCommentSearch").combobox({
-                method: "GET",
-                valueField: 'id',
-                textField: 'text',
-                panelHeight: 200,
-                editable: false,
-                data: json,
-                onSelect: function (record) {//下拉框选中时触发
-                    var checkComment = $("#checkComment");
-                    if (record.text === "其他") {
-                        checkComment.attr("style", "display:block;");
-                        checkComment.val("");
-                    } else {
-                        checkComment.attr("style", "display:none;");
-                        checkComment.val(record.text);
-                    }
-                }
-            });
+            var rspCode = result.RSP.RSP_CODE,
+                data = result.RSP.DATA;
+            if (rspCode != null && rspCode === "1") {
+                var map = {
+                    "commentId": "-1",
+                    "commentName": "其他"
+                };
+                data.unshift(map);
+                $("#checkCommentSearch").combobox('loadData', data);
+            }
         });
     }
 
@@ -937,7 +937,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
         });
 
         var planId = "",
-            checkModel = Util.constants.CHECK_TYPE_BEYOND_PLAN;  //计划外质检
+            checkModel = Util.constants.CHECK_TYPE_WITHIN_PLAN;  //计划内质检 //todo
         if (workForm.planId != null && workForm.planId !== "") {
             planId = workForm.planId;
             checkModel = Util.constants.CHECK_TYPE_WITHIN_PLAN;  //计划内质检
@@ -986,6 +986,120 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
             } else {
                 $.messager.alert("提示", errMsg + result.RSP.RSP_DESC);
             }
+        });
+    }
+
+    //典型案例收集
+    function typicalCaseAddDialog() {
+        $("#typicalCaseConfig").form('clear');  //清空表单
+        var disableSubmit = false;  //禁用提交按钮标志
+        $("#typicalCaseAddDialog").show().window({
+            width: 600,
+            height: 400,
+            modal: true,
+            title: "典型案例收集"
+        });
+
+        //典型案例下拉框
+        $("#caseType").combobox({
+            data: caseTypeData,
+            method: "GET",
+            valueField: 'paramsCode',
+            textField: 'paramsName',
+            panelHeight: 'auto',
+            editable: false,
+            onLoadSuccess: function () {
+                var caseType = $("#caseType");
+                var data = caseType.combobox('getData');
+                if (data.length > 0) {
+                    caseType.combobox('select', data[0].paramsCode);
+                }
+            }
+        });
+        //初始下拉框数据
+        if (caseTypeData == null) {
+            CommonAjax.getStaticParams("TYPICAL_CASE_TYPE", function (datas) {
+                if (datas) {
+                    caseTypeData = datas;
+                    $("#caseType").combobox('loadData', datas);
+                }
+            });
+        }
+
+        //添加原因
+        $("#addReason").textbox(
+            {
+                multiline: true
+            }
+        );
+
+        //取消
+        var cancelBtn = $("#typicalCaseCancelBtn");
+        cancelBtn.unbind("click");
+        cancelBtn.on("click", function () {
+            $("#typicalCaseConfig").form('clear');  //清空表单
+            $("#typicalCaseAddDialog").window("close");
+        });
+        //提交
+        var submitBtn = $("#typicalCaseSubmitBtn");
+        submitBtn.unbind("click");
+        submitBtn.on("click", function () {
+            if (disableSubmit) {
+                return false;
+            }
+            disableSubmit = true;   //防止多次提交
+            submitBtn.linkbutton({disabled: true});  //禁用提交按钮（样式）
+
+            var caseTitle = $("#caseTitle").val(),
+                caseType = $("#caseType").combobox("getValue"),
+                addReason = $("#addReason").val();
+
+            if (caseTitle == null || caseTitle === "") {
+                $.messager.alert("提示", "案例标题不能为空!");
+                disableSubmit = false;
+                submitBtn.linkbutton({disabled: false});  //取消提交禁用
+                return false;
+            }
+            if (caseType == null || caseType === "") {
+                $.messager.alert("提示", "案例类型不能为空!");
+                disableSubmit = false;
+                submitBtn.linkbutton({disabled: false});  //取消提交禁用
+                return false;
+            }
+            if (addReason == null || addReason === "") {
+                $.messager.alert("提示", "添加案例原因不能为空!");
+                disableSubmit = false;
+                submitBtn.linkbutton({disabled: false});  //取消提交禁用
+                return false;
+            }
+            var params = {
+                "caseTitle": caseTitle,
+                "caseType": caseType,
+                "checkType": Util.constants.CHECK_TYPE_ORDER,
+                "touchId": workForm.wrkfmId,
+                "createStaffId": workForm.checkStaffId,
+                "createStaffName": workForm.checkStaffName,
+                "createReason": addReason
+            };
+            Util.loading.showLoading();
+            Util.ajax.postJson(Util.constants.CONTEXT.concat(Util.constants.TYPICAL_CASE_DNS).concat("/"), JSON.stringify(params), function (result) {
+                Util.loading.destroyLoading();
+                var rspCode = result.RSP.RSP_CODE;
+                if (rspCode != null && rspCode === "1") {
+                    $.messager.show({
+                        msg: result.RSP.RSP_DESC,
+                        timeout: 1000,
+                        style: {right: '', bottom: ''},     //居中显示
+                        showType: 'show'
+                    });
+                    $("#typicalCaseAddDialog").window("close");  //关闭对话框
+                } else {
+                    var errMsg = "添加失败！<br>" + result.RSP.RSP_DESC;
+                    $.messager.alert("提示", errMsg);
+                }
+                disableSubmit = false;
+                submitBtn.linkbutton({disabled: false});  //取消提交禁用
+            });
         });
     }
 

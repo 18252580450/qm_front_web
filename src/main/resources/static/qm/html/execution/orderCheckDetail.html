@@ -4,7 +4,7 @@
     <meta charset="utf-8"/>
     <title>工单质检详情</title>
     <link rel="stylesheet" type="text/css" href="../../assets/lib/easyui/themes/cmcui/cmcui.css"/>
-    <link rel="stylesheet" type="text/css" href="../../static/css/common.css"/>
+    <!--<link rel="stylesheet" type="text/css" href="../../static/css/common.css"/>-->
     <link rel="stylesheet" type="text/css" href="../../static/css/worksheetTest.css"/>
 </head>
 <body>
@@ -81,20 +81,38 @@
             </table>
         </div>
         <div class="content4-6">
-            <div class="score">
-                <span style="font-size: 13px">
-                   <div style="float: right">总得分</div>
-                </span>
-                <input id="totalScore" type="text" readonly/>
-            </div>
+            <!--<div class="score">-->
+            <!--<span style="font-size: 13px">-->
+            <!--<div style="float: right">总得分</div>-->
+            <!--</span>-->
+            <!--<input id="totalScore" type="text" readonly/>-->
+            <!--</div>-->
 
-            <div class="clearfix comment">
-                <span style="font-size: 13px">
-                    <div style="float: right">考评评语</div>
-                </span>
-                <input id="checkCommentSearch" data-options="prompt: '请选择考评评语'" type='text' class='easyui-textbox col-2'
-                       style='height:30px'/>
-                <textarea id="checkComment" style="display: none"></textarea>
+            <!--<div class="clearfix comment">-->
+            <!--<span style="font-size: 13px">-->
+            <!--<div style="float: right">考评评语</div>-->
+            <!--</span>-->
+            <!--<input id="checkCommentSearch" data-options="prompt: '请选择考评评语'" type='text' class='easyui-textbox col-2'-->
+            <!--style='height:30px'/>-->
+            <!--<textarea id="checkComment" style="display: none"></textarea>-->
+            <!--</div>-->
+            <div class='row cl' style="margin-top: 10px">
+                <label class='form-label col-1'>总得分：</label>
+                <div class='formControls col-3'>
+                    <input id="totalScore" type='text' class='easyui-textbox'
+                           style='width:100%;height:30px'>
+                </div>
+            </div>
+            <div class='row cl' style="margin-top: 10px">
+                <label class='form-label col-1'>考评评语：</label>
+                <div class='formControls col-3'>
+                    <input id="checkCommentSearch" type='text' class='easyui-textbox'
+                           style='width:100%;height:30px'>
+                </div>
+            </div>
+            <div class='row cl' style="margin-top: 10px">
+                <label class='form-label col-1'></label>
+                <textarea id="checkComment" style="display: none;width: 480px;height: 120px;resize:none;"></textarea>
             </div>
         </div>
         <div class="content4-7" style="display: none">
@@ -112,6 +130,55 @@
             <button class="btn2" id="saveBtn">保存</button>
             <button class="btn3" id="cancelBtn">取消</button>
             <button class="btn4" id="caseCollectBtn">案例收集</button>
+        </div>
+    </div>
+</div>
+
+<!-- 典型案例收集弹窗，默认隐藏  -->
+<div id='typicalCaseAddDialog' style='display:none;'>
+    <div class='panel-search'>
+        <form id='typicalCaseConfig' method='POST' class='form form-horizontal'>
+            <div class='row cl' style="margin-top: 10px">
+                <div class='formControls col-1'>
+                </div>
+                <label class='form-label col-2'>案例标题：</label>
+                <div class='formControls col-8'>
+                    <input id="caseTitle" type='text' class='easyui-textbox'
+                           style='width:100%;height:30px'>
+                </div>
+            </div>
+            <div class='row cl' style="margin-top: 10px">
+                <div class='formControls col-1'>
+                </div>
+                <label class='form-label col-2'>案例类型：</label>
+                <div class='formControls col-8'>
+                    <input id="caseType" type='text' class='easyui-textbox'
+                           style='width:100%;height:30px'>
+                </div>
+            </div>
+            <div class='row cl' style="margin-top: 10px">
+                <div class='formControls col-1'>
+                </div>
+                <label class='form-label col-2'>添加案例原因：</label>
+                <div class='formControls col-8'>
+                    <input id='addReason' type='text' class='easyui-textarea'
+                           data-options="multiline:true"
+                           style='width:100%;height:120px'/>
+                </div>
+            </div>
+        </form>
+
+        <div class='mt-10 test-c' style="margin-top: 40px">
+            <div class='formControls col-4'>
+            </div>
+            <div class='formControls col-2'>
+                <a href='javascript:void(0)' class='btn btn-green radius mt-l-20'
+                   id="typicalCaseSubmitBtn">保存</a>
+            </div>
+            <div class='formControls col-2'>
+                <a href='javascript:void(0)' class='btn btn-secondary radius mt-l-20'
+                   id="typicalCaseCancelBtn">取消</a>
+            </div>
         </div>
     </div>
 </div>

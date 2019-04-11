@@ -1,8 +1,8 @@
 require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], function ($, Util, Transfer, CommonAjax) {
 
     var caseInfo,  //案例信息
-        voiceCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/manage/voiceQmResultDetail.html",
-        orderCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/manage/workQmResultDetail.html";
+        voiceCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/manage/voiceCaseDetail.html",
+        orderCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/manage/workCaseDetail.html";
 
     initialize();
 
@@ -24,9 +24,12 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
             columns: [[
                 {field: 'ck', checkbox: true, align: 'center'},
                 {
-                    field: 'inspectionId', title: '质检流水', width: '25%',
+                    field: 'touchId', title: '接触流水', width: '25%',
                     formatter: function (value, row, index) {
-                        return '<a href="javascript:void(0);" style="color: deepskyblue;" id = "checkDetail_' + row.inspectionId + '">' + value + '</a>';
+                        if (caseInfo.checkType === Util.constants.CHECK_TYPE_ORDER) {
+                            return '<a href="javascript:void(0);" style="color: deepskyblue;" id = "checkDetail_' + row.touchId + '">' + value + '</a>';
+                        }
+                        return row.touchId;
                     }
                 },
                 {field: 'caseTitle', title: '案例标题', width: '25%'},
@@ -87,10 +90,10 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
             onLoadSuccess: function (data) {
                 //质检详情
                 $.each(data.rows, function (i, item) {
-                    $("#checkDetail_" + item.inspectionId).on("click", function () {
-                        if (caseInfo.checkType === Util.constants.CHECK_TYPE_VOICE) {
-                            showCheckDetail(item, voiceCheckDetail);
-                        }
+                    $("#checkDetail_" + item.touchId).on("click", function () {
+                        // if (caseInfo.checkType === Util.constants.CHECK_TYPE_VOICE) {
+                        //     showCheckDetail(item, voiceCheckDetail);
+                        // } //todo
                         if (caseInfo.checkType === Util.constants.CHECK_TYPE_ORDER) {
                             showCheckDetail(item, orderCheckDetail);
                         }
@@ -149,7 +152,6 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
         var param = {
             "provinceId": item.provinceId,
             "touchId": item.touchId,
-            "inspectionId": item.inspectionId,
             "templateId": item.templateId
         };
         var checkUrl = CommonAjax.createURL(url, param);

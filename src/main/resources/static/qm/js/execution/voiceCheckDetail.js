@@ -5,6 +5,7 @@ require(["jquery", "util", "commonAjax", "dateUtil", "transfer", "easyui"], func
         scoreType,               //分值类型（默认扣分）
         startTime,               //页面初始化时间
         checkItemScoreList = [], //考评项评分列表
+        caseTypeData,            //典型类型静态数据
         qmCheckUrl = Util.constants.NGIX_URL_CONTEXT + "/qm/html/execution/qmCheck.html";
 
     initialize();
@@ -188,7 +189,7 @@ require(["jquery", "util", "commonAjax", "dateUtil", "transfer", "easyui"], func
         });
         //案例收集
         $("#caseCollectBtn").on("click", function () {
-            $.messager.alert("提示", "该功能暂未开放!");
+            typicalCaseAddDialog();
         });
     }
 
@@ -243,7 +244,8 @@ require(["jquery", "util", "commonAjax", "dateUtil", "transfer", "easyui"], func
         //考评项详细信息
         var reqParams = {
             "tenantId": Util.constants.TENANT_ID,
-            "planId": voicePool.planId
+            "planId": voicePool.planId,
+            "templateId": voicePool.templateId
         };
         var params = $.extend({
             "start": 0,
@@ -423,6 +425,120 @@ require(["jquery", "util", "commonAjax", "dateUtil", "transfer", "easyui"], func
             } else {
                 $.messager.alert("提示", errMsg + result.RSP.RSP_DESC);
             }
+        });
+    }
+
+    //典型案例收集
+    function typicalCaseAddDialog() {
+        $("#typicalCaseConfig").form('clear');  //清空表单
+        var disableSubmit = false;  //禁用提交按钮标志
+        $("#typicalCaseAddDialog").show().window({
+            width: 600,
+            height: 400,
+            modal: true,
+            title: "典型案例收集"
+        });
+
+        //典型案例下拉框
+        $("#caseType").combobox({
+            data: caseTypeData,
+            method: "GET",
+            valueField: 'paramsCode',
+            textField: 'paramsName',
+            panelHeight: 'auto',
+            editable: false,
+            onLoadSuccess: function () {
+                var caseType = $("#caseType");
+                var data = caseType.combobox('getData');
+                if (data.length > 0) {
+                    caseType.combobox('select', data[0].paramsCode);
+                }
+            }
+        });
+        //初始下拉框数据
+        if (caseTypeData == null) {
+            CommonAjax.getStaticParams("TYPICAL_CASE_TYPE", function (datas) {
+                if (datas) {
+                    caseTypeData = datas;
+                    $("#caseType").combobox('loadData', datas);
+                }
+            });
+        }
+
+        //添加原因
+        $("#addReason").textbox(
+            {
+                multiline: true
+            }
+        );
+
+        //取消
+        var cancelBtn = $("#typicalCaseCancelBtn");
+        cancelBtn.unbind("click");
+        cancelBtn.on("click", function () {
+            $("#typicalCaseConfig").form('clear');  //清空表单
+            $("#typicalCaseAddDialog").window("close");
+        });
+        //提交
+        var submitBtn = $("#typicalCaseSubmitBtn");
+        submitBtn.unbind("click");
+        submitBtn.on("click", function () {
+            if (disableSubmit) {
+                return false;
+            }
+            disableSubmit = true;   //防止多次提交
+            submitBtn.linkbutton({disabled: true});  //禁用提交按钮（样式）
+
+            var caseTitle = $("#caseTitle").val(),
+                caseType = $("#caseType").combobox("getValue"),
+                addReason = $("#addReason").val();
+
+            if (caseTitle == null || caseTitle === "") {
+                $.messager.alert("提示", "案例标题不能为空!");
+                disableSubmit = false;
+                submitBtn.linkbutton({disabled: false});  //取消提交禁用
+                return false;
+            }
+            if (caseType == null || caseType === "") {
+                $.messager.alert("提示", "案例类型不能为空!");
+                disableSubmit = false;
+                submitBtn.linkbutton({disabled: false});  //取消提交禁用
+                return false;
+            }
+            if (addReason == null || addReason === "") {
+                $.messager.alert("提示", "添加案例原因不能为空!");
+                disableSubmit = false;
+                submitBtn.linkbutton({disabled: false});  //取消提交禁用
+                return false;
+            }
+            var params = {
+                "caseTitle": caseTitle,
+                "caseType": caseType,
+                "checkType": Util.constants.CHECK_TYPE_VOICE,
+                "touchId": voicePool.touchId,
+                "createStaffId": voicePool.checkStaffId,
+                "createStaffName": voicePool.checkStaffName,
+                "createReason": addReason
+            };
+            Util.loading.showLoading();
+            Util.ajax.postJson(Util.constants.CONTEXT.concat(Util.constants.TYPICAL_CASE_DNS).concat("/"), JSON.stringify(params), function (result) {
+                Util.loading.destroyLoading();
+                var rspCode = result.RSP.RSP_CODE;
+                if (rspCode != null && rspCode === "1") {
+                    $.messager.show({
+                        msg: result.RSP.RSP_DESC,
+                        timeout: 1000,
+                        style: {right: '', bottom: ''},     //居中显示
+                        showType: 'show'
+                    });
+                    $("#typicalCaseAddDialog").window("close");  //关闭对话框
+                } else {
+                    var errMsg = "添加失败！<br>" + result.RSP.RSP_DESC;
+                    $.messager.alert("提示", errMsg);
+                }
+                disableSubmit = false;
+                submitBtn.linkbutton({disabled: false});  //取消提交禁用
+            });
         });
     }
 

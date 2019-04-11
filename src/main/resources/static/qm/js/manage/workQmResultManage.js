@@ -127,7 +127,7 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
                         var checkHistory = "<a href='javascript:void(0);' id ='resultHistory_" + row.inspectionId + "'>质检记录</a>",
                             appeal = "<a href='javascript:void(0);' id ='resultAppeal_" + row.inspectionId + "'>申诉</a>",
                             typicalCase = "<a href='javascript:void(0);' id ='typicalCase_" + row.inspectionId + "'>案例收集</a>";
-                        return appeal + "&nbsp;&nbsp;" + checkHistory + "&nbsp;&nbsp;" + typicalCase;
+                        return appeal + "&nbsp;&nbsp;" + checkHistory;
                     }
                 },
                 {field: 'wrkfmShowSwftno', title: '工单流水号', align: 'center', width: '15%',
@@ -439,7 +439,7 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
             });
         }
 
-        //申诉原因
+        //添加原因
         $("#addReason").textbox(
             {
                 multiline: true
