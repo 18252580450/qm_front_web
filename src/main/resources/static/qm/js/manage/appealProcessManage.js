@@ -370,31 +370,34 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
         }
         $.messager.confirm('提示', '确定要' + status + '流程？', function (confirm) {
             if (confirm) {
-                //剔除状态不需要更改的流程
+                var processList = [];
+                //筛选出状态需要改变的流程
                 for (var i = 0; i < updateRows.length; i++) {
-                    if (updateRows[i].processStatus != null && updateRows[i].processStatus === processStatus) {
-                        updateRows.splice(i, 1);
-                        i--;
-                    } else {
-                        updateRows[i].processStatus = processStatus;
+                    if (updateRows[i].processStatus != null && updateRows[i].processStatus !== processStatus) {
+                        processList.push(updateRows[i]);
                     }
                 }
-
-                if (updateRows.length === 0) {
+                if (processList.length === 0) {
                     $.messager.alert("提示", "流程已" + status + "!");
                     return;
                 }
+                var params = {
+                    "processStatus": processStatus,
+                    "processList": processList
+                };
 
-                Util.ajax.putJson(Util.constants.CONTEXT + Util.constants.APPEAL_PROCESS_CONFIG_DNS + "/changeProcessStatus", JSON.stringify(updateRows), function (result) {
-                    $.messager.show({
-                        msg: result.RSP.RSP_DESC,
-                        timeout: 1000,
-                        style: {right: '', bottom: ''},     //居中显示
-                        showType: 'show'
-                    });
+                Util.ajax.putJson(Util.constants.CONTEXT + Util.constants.APPEAL_PROCESS_CONFIG_DNS + "/changeProcessStatus", JSON.stringify(params), function (result) {
                     var rspCode = result.RSP.RSP_CODE;
                     if (rspCode != null && rspCode === "1") {
+                        $.messager.show({
+                            msg: result.RSP.RSP_DESC,
+                            timeout: 1000,
+                            style: {right: '', bottom: ''},     //居中显示
+                            showType: 'show'
+                        });
                         $("#appealProcessList").datagrid('load'); //流程状态更新成功后，刷新页面
+                    } else {
+                        $.messager.alert("提示", result.RSP.RSP_DESC);
                     }
                 });
             }
