@@ -572,9 +572,9 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
             fitColumns: true,
             width: '100%',
             height: 251,
-            pagination: true,
-            pageSize: 10,
-            pageList: [5, 10, 20, 50],
+            pagination: false,
+            // pageSize: 10,
+            // pageList: [5, 10, 20, 50],
             rownumbers: false,
             checkOnSelect: false,
             onClickCell: function (rowIndex, field, value) {
@@ -593,11 +593,11 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                 }
             },
             loader: function (param, success) {
-                var start = (param.page - 1) * param.rows,
-                    pageNum = param.rows;
+                // var start = (param.page - 1) * param.rows,
+                //     pageNum = param.rows;
                 var reqParams = {
-                    "start": start,
-                    "limit": pageNum,
+                    "start": 0,
+                    "limit": 0,
                     "provCode": workForm.provinceId,
                     "wrkfmId": workForm.wrkfmId
                 };

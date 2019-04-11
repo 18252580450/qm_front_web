@@ -102,9 +102,10 @@
 
 .content-3 {
     margin-top: 18px;
+    margin-left: 5px;
     margin-bottom: 11px;
     font-size: 14px;
-    color: #000000;
+    color: #6a6a6a;
 }
 
 .content-4 {
@@ -356,7 +357,7 @@ td, th {
 }
 
 .content4-8 {
-    margin-left: 333px;
+    margin-left: 300px;
 }
 
 .content4-8 .btn1 {

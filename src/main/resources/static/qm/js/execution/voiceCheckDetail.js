@@ -64,7 +64,7 @@ require(["jquery", "util", "commonAjax", "dateUtil", "transfer", "easyui"], func
         var IsCheckFlag = true; //标示是否是勾选复选框选中行的，true - 是 , false - 否
         $("#checkItemList").datagrid({
             columns: [[
-                {field: 'checkItemName', title: '考评项名称', width: '15%'},
+                {field: 'checkItemName', title: '考评项名称', width: '18%'},
                 {
                     field: 'checkItemVitalType', title: '类别', width: '15%',
                     formatter: function (value, row, index) {
@@ -78,26 +78,26 @@ require(["jquery", "util", "commonAjax", "dateUtil", "transfer", "easyui"], func
                         return vitalType;
                     }
                 },
-                {field: 'remark', title: '描述', width: '20%'},
+                {field: 'remark', title: '描述', width: '23%'},
                 {field: 'nodeScore', title: '所占分值', width: '15%'},
                 {
-                    field: 'scoreScope', title: '扣分区间', width: '20%',
+                    field: 'scoreScope', title: '扣分区间', width: '10%',
                     formatter: function (value, row, index) {
-                        var min = '<input id="minScore' + row.nodeId + '" type="text" style="width: 80px;" class="easyui-textbox" value="0" readonly>',
-                            max = '<input id="minScore' + row.nodeId + '" type="text" style="width: 80px;" class="easyui-textbox" value="0" readonly>';
+                        var min = "0",
+                            max = "0";
                         if (row.minScore != null) {
-                            min = '<input id="minScore' + row.nodeId + '" type="text" style="width: 80px;" class="easyui-textbox" value="' + row.minScore + '" readonly>';
+                            min = row.minScore;
                         }
                         if (row.maxScore != null) {
-                            max = '<input id="maxScore' + row.nodeId + '" type="text" style="width: 80px;" class="easyui-textbox" value="' + row.maxScore + '" readonly>';
+                            max = row.maxScore;
                         }
-                        return min + "&nbsp;&nbsp;" + "-" + "&nbsp;&nbsp;" + max;
+                        return min + "-" + max;
                     }
                 },
                 {
-                    field: 'score', title: '扣分分值', width: '15%',
+                    field: 'score', title: '扣分分值', width: '20%',
                     formatter: function (value, row, index) {
-                        return '<input id="score' + row.nodeId + '" type="text" class="easyui-textbox" value="0">';
+                        return '<input id="score' + row.nodeId + '" type="text" class="input-type" value="0" readonly>';
                     }
                 }
             ]],
@@ -160,13 +160,6 @@ require(["jquery", "util", "commonAjax", "dateUtil", "transfer", "easyui"], func
         });
 
         initCheckArea();
-
-        //考评评语
-        $("#checkItemRemark").textbox(
-            {
-                multiline: true
-            }
-        );
     }
 
     //事件初始化
@@ -199,6 +192,26 @@ require(["jquery", "util", "commonAjax", "dateUtil", "transfer", "easyui"], func
     }
 
     function getCheckComment() {
+        //考评评语下拉框
+        $("#checkCommentSearch").combobox({
+            url: '../../data/select_init_data.json',
+            method: "GET",
+            valueField: 'commentId',
+            textField: 'commentName',
+            panelHeight: 300,
+            editable: false,
+            onSelect: function (record) {//下拉框选中时触发
+                var checkComment = $("#checkComment");
+                if (record.commentId === "-1") {
+                    checkComment.show();
+                    checkComment.val("");
+                } else {
+                    checkComment.hide();
+                    checkComment.val(record.commentName);
+                }
+            }
+        });
+
         var reqParams = {//入参
             "parentCommentId": "",
             "commentName": ""
@@ -210,37 +223,16 @@ require(["jquery", "util", "commonAjax", "dateUtil", "transfer", "easyui"], func
         };
         //查询
         Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.ORDINARY_COMMENT + "/selectByParams", params, function (result) {
-            var json = [];
-            var data = result.RSP.DATA;
-            var map = {};
-            map["commentId"] = "0";
-            map["commentName"] = "其他";
-            data.push(map);
-            data.forEach(function (value, index) {
-                var map = {};
-                map["id"] = value.commentId;
-                map["text"] = value.commentName;
-                json.push(map);
-            });
-            //考评评语下拉框
-            $("#checkCommentSearch").combobox({
-                method: "GET",
-                valueField: 'id',
-                textField: 'text',
-                panelHeight: 200,
-                editable: false,
-                data: json,
-                onSelect: function (record) {//下拉框选中时触发
-                    var checkComment = $("#checkComment");
-                    if (record.text === "其他") {
-                        checkComment.attr("style", "display:block;");
-                        checkComment.val("");
-                    } else {
-                        checkComment.attr("style", "display:none;");
-                        checkComment.val(record.text);
-                    }
-                }
-            });
+            var rspCode = result.RSP.RSP_CODE,
+                data = result.RSP.DATA;
+            if (rspCode != null && rspCode === "1") {
+                var map = {
+                    "commentId": "-1",
+                    "commentName": "其他"
+                };
+                data.unshift(map);
+                $("#checkCommentSearch").combobox('loadData', data);
+            }
         });
     }
 

@@ -437,6 +437,26 @@ require(["jquery", 'util', "commonAjax", "transfer", "dateUtil", "easyui"], func
     }
 
     function getCheckComment() {
+        //考评评语下拉框
+        $("#checkCommentSearch").combobox({
+            url: '../../data/select_init_data.json',
+            method: "GET",
+            valueField: 'commentId',
+            textField: 'commentName',
+            panelHeight: 300,
+            editable: false,
+            onSelect: function (record) {//下拉框选中时触发
+                var checkComment = $("#checkComment");
+                if (record.commentId === "-1") {
+                    checkComment.show();
+                    checkComment.val("");
+                } else {
+                    checkComment.hide();
+                    checkComment.val(record.commentName);
+                }
+            }
+        });
+
         var reqParams = {//入参
             "parentCommentId": "",
             "commentName": ""
@@ -448,37 +468,16 @@ require(["jquery", 'util', "commonAjax", "transfer", "dateUtil", "easyui"], func
         };
         //查询
         Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.ORDINARY_COMMENT + "/selectByParams", params, function (result) {
-            var json = [];
-            var data = result.RSP.DATA;
-            var map = {};
-            map["commentId"] = "0";
-            map["commentName"] = "其他";
-            data.push(map);
-            data.forEach(function (value, index) {
-                var map = {};
-                map["id"] = value.commentId;
-                map["text"] = value.commentName;
-                json.push(map);
-            });
-            //考评评语下拉框
-            $("#checkCommentSearch").combobox({
-                method: "GET",
-                valueField: 'id',
-                textField: 'text',
-                panelHeight: 200,
-                editable: false,
-                data: json,
-                onSelect: function (record) {//下拉框选中时触发
-                    var checkComment = $("#checkComment");
-                    if (record.text === "其他") {
-                        checkComment.attr("style", "display:block;");
-                        checkComment.val("");
-                    } else {
-                        checkComment.attr("style", "display:none;");
-                        checkComment.val(record.text);
-                    }
-                }
-            });
+            var rspCode = result.RSP.RSP_CODE,
+                data = result.RSP.DATA;
+            if (rspCode != null && rspCode === "1") {
+                var map = {
+                    "commentId": "-1",
+                    "commentName": "其他"
+                };
+                data.unshift(map);
+                $("#checkCommentSearch").combobox('loadData', data);
+            }
         });
     }
 
@@ -559,9 +558,9 @@ require(["jquery", 'util', "commonAjax", "transfer", "dateUtil", "easyui"], func
             fitColumns: true,
             width: '100%',
             height: 251,
-            pagination: true,
-            pageSize: 10,
-            pageList: [5, 10, 20, 50],
+            pagination: false,
+            // pageSize: 10,
+            // pageList: [5, 10, 20, 50],
             rownumbers: false,
             checkOnSelect: false,
             onClickCell: function (rowIndex, field, value) {
@@ -580,11 +579,11 @@ require(["jquery", 'util', "commonAjax", "transfer", "dateUtil", "easyui"], func
                 }
             },
             loader: function (param, success) {
-                var start = (param.page - 1) * param.rows,
-                    pageNum = param.rows;
+                // var start = (param.page - 1) * param.rows,
+                //     pageNum = param.rows;
                 var reqParams = {
-                    "start": start,
-                    "limit": pageNum,
+                    "start": 0,
+                    "limit": 0,
                     "provCode": workForm.provCode,
                     "wrkfmId": workForm.wrkfmId
                 };

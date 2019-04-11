@@ -25,7 +25,7 @@ require(["jquery", "util", "dateUtil", "transfer", "easyui"], function ($, Util)
         var IsCheckFlag = true; //标示是否是勾选复选框选中行的，true - 是 , false - 否
         $("#checkItemList").datagrid({
             columns: [[
-                {field: 'checkItemName', title: '考评项名称', width: '15%'},
+                {field: 'checkItemName', title: '考评项名称', width: '18%'},
                 {
                     field: 'checkItemVitalType', title: '类别', width: '15%',
                     formatter: function (value, row, index) {
@@ -39,26 +39,26 @@ require(["jquery", "util", "dateUtil", "transfer", "easyui"], function ($, Util)
                         return vitalType;
                     }
                 },
-                {field: 'remark', title: '描述', width: '20%'},
+                {field: 'remark', title: '描述', width: '25%'},
                 {field: 'nodeScore', title: '所占分值', width: '15%'},
                 {
-                    field: 'scoreScope', title: '扣分区间', width: '20%',
+                    field: 'scoreScope', title: '扣分区间', width: '10%',
                     formatter: function (value, row, index) {
-                        var min = '<input id="minScore' + row.nodeId + '" type="text" style="width: 80px;" class="easyui-textbox" value="0" readonly>',
-                            max = '<input id="minScore' + row.nodeId + '" type="text" style="width: 80px;" class="easyui-textbox" value="0" readonly>';
+                        var min = "0",
+                            max = "0";
                         if (row.minScore != null) {
-                            min = '<input id="minScore' + row.nodeId + '" type="text" style="width: 80px;" class="easyui-textbox" value="' + row.minScore + '" readonly>';
+                            min = row.minScore;
                         }
                         if (row.maxScore != null) {
-                            max = '<input id="maxScore' + row.nodeId + '" type="text" style="width: 80px;" class="easyui-textbox" value="' + row.maxScore + '" readonly>';
+                            max = row.maxScore;
                         }
-                        return min + "&nbsp;&nbsp;" + "-" + "&nbsp;&nbsp;" + max;
+                        return min + "-" + max;
                     }
                 },
                 {
-                    field: 'score', title: '扣分分值', width: '15%',
+                    field: 'score', title: '扣分分值', width: '20%',
                     formatter: function (value, row, index) {
-                        return '<input id="score' + row.nodeId + '" type="text" class="easyui-textbox" value="0" readonly>';
+                        return '<input id="score' + row.nodeId + '" type="text" class="input-type" value="0" readonly>';
                     }
                 }
             ]],
@@ -165,7 +165,7 @@ require(["jquery", "util", "dateUtil", "transfer", "easyui"], function ($, Util)
                     callType = "呼出";
                 }
                 if (data[0].talkDuration != null && data[0].talkDuration !== "") {
-                    callDuration = DateUtil.formatDateTime2(parseInt(voicePool.talkDuration));
+                    callDuration = DateUtil.formatDateTime2(data[0].talkDuration);
                 }
                 $("#checkedStaffName").val(data[0].checkedStaffName);
                 $("#checkedDepartName").val(data[0].departName);
@@ -173,7 +173,7 @@ require(["jquery", "util", "dateUtil", "transfer", "easyui"], function ($, Util)
                 $("#createTime").val(createTime);
                 if (data[0].callType === "0") {
                     $("#staffNumber").val(data[0].customerNumber);
-                    $("#customerNumer").val(data[0].staffNumber);
+                    $("#customerNumber").val(data[0].staffNumber);
                 } else if (data[0].callType === "1") {
                     $("#staffNumber").val(data[0].staffNumber);
                     $("#customerNumber").val(data[0].customerNumber);
@@ -273,7 +273,7 @@ require(["jquery", "util", "dateUtil", "transfer", "easyui"], function ($, Util)
             var data = result.RSP.DATA,
                 rspCode = result.RSP.RSP_CODE;
             if (rspCode != null && rspCode === "1") {
-                $("#checkComment").val(data[0].checkComment);
+                $("#checkComment").html(data[0].checkComment);
             }
         });
     }
