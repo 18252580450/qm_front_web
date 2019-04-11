@@ -68,6 +68,16 @@ require([
                             return '<a href="javascript:void(0);" style="color: deepskyblue;" id = "voiceCheck_' + row.touchId + '">质检</a>';
                         }
                     },
+                    {
+                        field: 'templateId', title: '考评模版', width: '10%',
+                        formatter: function (value, row, index) { //格式化时间格式
+                            if (value == null) {
+                                return "未绑定";
+                            } else {
+                                return row.templateId;
+                            }
+                        }
+                    },
                     {field: 'touchId', title: '语音流水', width: '15%'},
                     {field: 'staffName', title: '坐席', width: '10%'},
                     {field: 'departName', title: '部门', width: '15%'},
@@ -177,7 +187,7 @@ require([
                                 item.checkStaffId = userInfo.staffId;
                                 item.checkStaffName = userInfo.staffName;
                                 var url = CommonAjax.createURL(voiceCheckDetail, item);
-                                CommonAjax.openMenu(url, "语音质检详情", item.touchId);
+                                CommonAjax.openMenu2(url, "语音质检详情", item.touchId);  //todo
                             }
                         });
                     });
@@ -198,6 +208,12 @@ require([
                 if (allocateData.length === 0) {
                     $.messager.alert("提示", "请至少选择一行数据!");
                     return;
+                }
+                for (var i = 0; i < allocateData.length; i++) {
+                    if (allocateData[i].templateId != null) {
+                        $.messager.alert("提示", "已绑定模版的工单不能分配!");
+                        return;
+                    }
                 }
                 showAllocateDialog(Util.constants.CHECK_TYPE_VOICE, allocateData);
             });

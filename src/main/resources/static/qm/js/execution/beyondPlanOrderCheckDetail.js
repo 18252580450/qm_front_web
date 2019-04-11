@@ -32,14 +32,11 @@ require(["jquery", 'util', "commonAjax", "transfer", "dateUtil", "easyui"], func
 
     //页面信息初始化
     function initPageInfo() {
-        //获取工单流水、质检流水等信息
-        CommonAjax.getUrlParams(function (data) {
-            workForm = data;
-            //获取工单基本信息
-            initWrkfmDetail();
-            //获取工单轨迹、初始化考评项列表、环节考评数据
-            initProcProceLocus();
-        });
+
+        //获取工单基本信息
+        initWrkfmDetail();
+        //获取工单轨迹、初始化考评项列表、环节考评数据
+        initProcProceLocus();
 
         //考评项列表
         var IsCheckFlag = true; //标示是否是勾选复选框选中行的，true - 是 , false - 否

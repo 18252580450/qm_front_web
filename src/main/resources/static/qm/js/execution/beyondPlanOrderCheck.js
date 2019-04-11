@@ -88,6 +88,16 @@ require([
                             return '<a href="javascript:void(0);" style="color: deepskyblue;" id = "orderCheck_' + row.wrkfmId + '">质检</a>';
                         }
                     },
+                    {
+                        field: 'templateId', title: '考评模版', width: '10%',
+                        formatter: function (value, row, index) { //格式化时间格式
+                            if (value == null) {
+                                return "未绑定";
+                            } else {
+                                return row.templateId;
+                            }
+                        }
+                    },
                     {field: 'wrkfmShowSwftno', title: '工单流水', width: '15%'},
                     {field: 'bizTitle', title: '工单标题', width: '10%'},
                     {field: 'srvReqstTypeFullNm', title: '服务请求类型', width: '15%'},
@@ -203,7 +213,7 @@ require([
                                     "actualHandleDuration": item.actualHandleDuration
                                 };
                                 var url = CommonAjax.createURL(orderCheckDetail, param);
-                                CommonAjax.openMenu(url, "工单质检详情", item.wrkfmId);
+                                CommonAjax.openMenu2(url, "工单质检详情", item.wrkfmId); //todo
                             }
                         });
                     });
@@ -224,6 +234,12 @@ require([
                 if (allocateData.length === 0) {
                     $.messager.alert("提示", "请至少选择一行数据!");
                     return;
+                }
+                for (var i = 0; i < allocateData.length; i++) {
+                    if (allocateData[i].templateId != null) {
+                        $.messager.alert("提示", "已绑定模版的工单不能分配!");
+                        return;
+                    }
                 }
                 showAllocateDialog(Util.constants.CHECK_TYPE_ORDER, allocateData);
             });
