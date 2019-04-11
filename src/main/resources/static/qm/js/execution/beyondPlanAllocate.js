@@ -255,7 +255,7 @@ define([
                 "templateId": templateId,                    //模版id
                 "checkStaffId": checkStaffInfo.STAFF_ID,     //质检人id
                 "checkStaffName": checkStaffInfo.STAFF_NAME, //质检人姓名
-                "voiceList": allocateData                 //待分配工单列表
+                "voiceList": allocateData                 //待分配语音列表
             };
 
             Util.loading.showLoading();

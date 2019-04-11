@@ -33,7 +33,7 @@ require(["jquery", "util", "commonAjax", "dateUtil", "transfer", "easyui"], func
             callType = "",
             callDuration = "";
 
-        if (voicePool.beginTime != null && voicePool.beginTime !== "") {
+        if (voicePool.beginTime !== "null" && voicePool.beginTime !== "") {
             touchBeginTime = DateUtil.formatDateTime(parseInt(voicePool.beginTime));
         }
         if (voicePool.callType === "0") {
@@ -41,8 +41,8 @@ require(["jquery", "util", "commonAjax", "dateUtil", "transfer", "easyui"], func
         } else if (voicePool.callType === "1") {
             callType = "呼出";
         }
-        if (voicePool.recordTime != null && voicePool.recordTime !== "") {
-            callDuration = DateUtil.formatDateTime2(parseInt(voicePool.recordTime));
+        if (voicePool.talkDuration !== "null" && voicePool.talkDuration !== "") {
+            callDuration = DateUtil.formatDateTime2(parseInt(voicePool.talkDuration));
         }
 
         //基本信息初始化
@@ -50,8 +50,13 @@ require(["jquery", "util", "commonAjax", "dateUtil", "transfer", "easyui"], func
         $("#checkedDepartName").val(voicePool.departName);
         $("#touchId").val(voicePool.touchId);
         $("#touchBeginTime").val(touchBeginTime);
-        $("#callingNumber").val(voicePool.staffNumber);
-        $("#calledNumber").val(voicePool.customerNumber);
+        if (voicePool.callType === "0") {
+            $("#staffNumber").val(voicePool.customerNumber);
+            $("#customerNumer").val(voicePool.staffNumber);
+        } else if (voicePool.callType === "1") {
+            $("#staffNumber").val(voicePool.staffNumber);
+            $("#customerNumber").val(voicePool.customerNumber);
+        }
         $("#callType").val(callType);
         $("#callDuration").val(callDuration);
 
@@ -383,7 +388,7 @@ require(["jquery", "util", "commonAjax", "dateUtil", "transfer", "easyui"], func
             "tenantId": Util.constants.TENANT_ID,                          //租户id
             "provinceId": voicePool.provinceId,                      //省份id
             "callingNumber": voicePool.staffNumber,                  //主叫号码
-            "acceptNumber": voicePool.customerNumber,                //受理号码
+            "acceptNumber": voicePool.customerNumber,                //被叫号码
             "touchId": voicePool.touchId,                            //语音流水
             "planId": voicePool.planId,                              //考评计划
             "templateId": templateId,                                //考评模版ID

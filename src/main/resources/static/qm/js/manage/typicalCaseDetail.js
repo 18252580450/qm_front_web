@@ -151,8 +151,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
     function showCheckDetail(item, url) {
         var param = {
             "provinceId": item.provinceId,
-            "touchId": item.touchId,
-            "templateId": item.templateId
+            "touchId": item.touchId
         };
         var checkUrl = CommonAjax.createURL(url, param);
         CommonAjax.showDialog(checkUrl, "质检详情", Util.constants.DIALOG_WIDTH, Util.constants.DIALOG_HEIGHT);

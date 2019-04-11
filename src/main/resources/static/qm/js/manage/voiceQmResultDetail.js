@@ -153,18 +153,33 @@ require(["jquery", "util", "dateUtil", "transfer", "easyui"], function ($, Util)
                     showType: 'slide'
                 });
             } else {
-                var createTime = "";
-                if (data[0].checkedTime !== null) {
+                var createTime = "",
+                    callType = "",
+                    callDuration = "";
+                if (data[0].checkedTime != null) {
                     createTime = DateUtil.formatDateTime(data[0].checkedTime);
+                }
+                if (data[0].callType === "0") {
+                    callType = "呼入";
+                } else if (data[0].callType === "1") {
+                    callType = "呼出";
+                }
+                if (data[0].talkDuration != null && data[0].talkDuration !== "") {
+                    callDuration = DateUtil.formatDateTime2(parseInt(voicePool.talkDuration));
                 }
                 $("#checkedStaffName").val(data[0].checkedStaffName);
                 $("#checkedDepartName").val(data[0].departName);
                 $("#touchId").val(data[0].touchId);
                 $("#createTime").val(createTime);
-                $("#callingNumber").val(data[0].staffNumber);
-                $("#calledNumber").val(data[0].customerNumber);
-                $("#callType").val(data[0].callType);
-                $("#hungupType").val(data[0].hungupType);
+                if (data[0].callType === "0") {
+                    $("#staffNumber").val(data[0].customerNumber);
+                    $("#customerNumer").val(data[0].staffNumber);
+                } else if (data[0].callType === "1") {
+                    $("#staffNumber").val(data[0].staffNumber);
+                    $("#customerNumber").val(data[0].customerNumber);
+                }
+                $("#callType").val(callType);
+                $("#callDuration").val(callDuration);
             }
         });
     }
