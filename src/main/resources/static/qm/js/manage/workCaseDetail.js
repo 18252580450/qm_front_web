@@ -278,16 +278,16 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
                     formatter: function (value, row, index) {
                         var play = '<a href="javascript:void(0);" style="color: deepskyblue;" id = "recordPlay_' + row.cntmngSwftno + '">播放</a>',
                             download = '<a href="javascript:void(0);" style="color: deepskyblue;" id = "recordDownload_' + row.cntmngSwftno + '">下载</a>';
-                        return play + "&nbsp;&nbsp;" + download;
+                        return download; //todo
                     }
                 }
             ]],
             fitColumns: true,
             width: '100%',
             height: 298,
-            pagination: true,
-            pageSize: 10,
-            pageList: [5, 10, 20, 50],
+            pagination: false,
+            // pageSize: 10,
+            // pageList: [5, 10, 20, 50],
             rownumbers: false,
             checkOnSelect: false,
             onClickCell: function (rowIndex, field, value) {
@@ -306,11 +306,11 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
                 }
             },
             loader: function (param, success) {
-                var start = (param.page - 1) * param.rows,
-                    pageNum = param.rows;
+                // var start = (param.page - 1) * param.rows,
+                //     pageNum = param.rows;
                 var reqParams = {
-                    "start": start,
-                    "limit": pageNum,
+                    "start": 0,
+                    "limit": 0,
                     "provCode": workForm.provinceId,
                     "wrkfmId": workForm.touchId
                 };

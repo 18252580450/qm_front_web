@@ -551,7 +551,7 @@ require(["jquery", 'util', "commonAjax", "transfer", "dateUtil", "easyui"], func
                     formatter: function (value, row, index) {
                         var play = '<a href="javascript:void(0);" style="color: deepskyblue;" id = "recordPlay_' + row.cntmngSwftno + '">播放</a>',
                             download = '<a href="javascript:void(0);" style="color: deepskyblue;" id = "recordDownload_' + row.cntmngSwftno + '">下载</a>';
-                        return play + "&nbsp;&nbsp;" + download;
+                        return download; //todo
                     }
                 }
             ]],
