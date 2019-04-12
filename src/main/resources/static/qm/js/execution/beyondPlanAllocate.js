@@ -77,7 +77,7 @@ define([
                             "start": param.page,
                             "limit": param.rows,
                             "provCode": "",
-                            "roleCode": ""
+                            "roleCode": "checker"
                         },
                         params = {
                             "params": JSON.stringify(reqParams)
