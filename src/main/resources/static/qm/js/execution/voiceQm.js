@@ -271,7 +271,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
             columns: [[
                 {field: 'ck', checkbox: true, align: 'center'},
                 {
-                    field: 'action', title: '操作', width: '5%',
+                    field: 'action', title: '操作', width: '10%',
                     formatter: function (value, row, index) {
                         var bean = {//根据参数进行定位修改
                             'index':index,
@@ -279,8 +279,9 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
                             'recordPath':row.recordPath
                         };
                         var beanStr = JSON.stringify(bean);   //转成字符串
-                        var action = "<a href='javascript:void(0);' class='playBtn' id =" + beanStr + " >语音播放</a>";
-                        return action;
+                        var action = "<a href='javascript:void(0);' style='color: dimgrey' class='playBtn' id =" + beanStr + " >语音播放</a>",
+                            download = "<a href='javascript:void(0);' style='color: dimgrey' class='downloadBtn' id =" + beanStr + " >下载</a>";
+                        return action + "&nbsp;&nbsp;" + download;
                     }
                 },
                 {field: 'touchId', title: '语音流水', align: 'center', width: '10%',
@@ -557,7 +558,18 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
                 voice.pause();//暂停
             }
         });
-        
+        //语音下载
+        $("#page").on('click', 'a.downloadBtn', function () {
+            var rowData = $(this).attr('id'); //获取a标签中传递的值
+            var sensjson = JSON.parse(rowData); //转成json格式
+            var recordPath = sensjson.recordPath;
+            if (recordPath == null || recordPath === "") {
+                $.messager.alert("提示", "未找到录音地址!");
+            } else {
+                window.location.href = Util.constants.CONTEXT + Util.constants.WRKFM_DETAIL_DNS + "/recordDownload" + '?ftpPath=' + recordPath;
+            }
+        });
+
         //语音下载
         $("#downloadBut").on('click',function () {
             var selRows = $("#queryInfo").datagrid("getSelections");//选中多行
