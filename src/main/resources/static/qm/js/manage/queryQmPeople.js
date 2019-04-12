@@ -3,7 +3,9 @@ define([
     function (qryQmPeopleTpl,$, Util, CommonAjax,Transfer,easyui,crossAPI,dateUtil) {
 
         var $el;
-        function initialize() {
+        var roleCode;
+        function initialize(userPermission) {
+            roleCode = userPermission;
             $el = $(qryQmPeopleTpl);
             initGlobalEvent();
             initGrid();//初始化列表
@@ -70,7 +72,7 @@ define([
                         "start": param.page,
                         "limit": param.rows,
                         "provCode": "",
-                        "roleCode": ""
+                        "roleCode": roleCode
                     };
                     var params = {
                         "params": JSON.stringify(reqParams)

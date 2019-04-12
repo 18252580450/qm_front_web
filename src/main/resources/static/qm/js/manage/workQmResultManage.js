@@ -28,7 +28,7 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
             searcher: function (value) {
                 require(["js/execution/queryQmPeople"], function (qryQmPeople) {
                     var queryQmPeople = qryQmPeople;
-                    queryQmPeople.initialize("", "2");
+                    queryQmPeople.initialize("", "2","checker");
                     $('#qry_people_window').show().window({
                         title: '查询质检人员信息',
                         width: Util.constants.DIALOG_WIDTH,

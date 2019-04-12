@@ -105,7 +105,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
             searcher: function(value){
                 require(["js/execution/queryQmPeople"], function (qryQmPeople) {
                     var queryQmPeople = qryQmPeople;
-                    queryQmPeople.initialize("","");
+                    queryQmPeople.initialize("","","checker");
                     $('#qry_people_window').show().window({
                         title: '查询质检人员信息',
                         width: Util.constants.DIALOG_WIDTH,
@@ -123,14 +123,14 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
             }
         });
 
-        $('#checkedStaffName').searchbox({ //质检人员查询
+        $('#checkedStaffName').searchbox({ //被质检人员查询
             editable:false,//禁止手动输入
             searcher: function(value){
                 require(["js/execution/queryQmPeople"], function (qryQmPeople) {
                     var queryQmPeople = qryQmPeople;
-                    queryQmPeople.initialize("","2");
+                    queryQmPeople.initialize("","2","staffer");
                     $('#qry_people_window').show().window({
-                        title: '查询质检人员信息',
+                        title: '查询被质检人员信息',
                         width: Util.constants.DIALOG_WIDTH,
                         height: Util.constants.DIALOG_HEIGHT_SMALL,
                         cache: false,

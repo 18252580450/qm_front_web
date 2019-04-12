@@ -4,8 +4,9 @@ define([
         var $el;
         var dataNew;
         var flagNew;//工单质检(0),语音质检(1)标志
-
-        function initialize(ids, flag) {
+        var roleCode;
+        function initialize(ids, flag,userPermission) {
+            roleCode=userPermission;
             $el = $(qryQmPeopleTpl);
             dataNew = ids;
             flagNew = flag;
@@ -75,7 +76,7 @@ define([
                         "start": param.page,
                         "limit": param.rows,
                         "provCode": "",
-                        "roleCode": ""
+                        "roleCode": roleCode
                     };
                     var params = {
                         "params": JSON.stringify(reqParams)
