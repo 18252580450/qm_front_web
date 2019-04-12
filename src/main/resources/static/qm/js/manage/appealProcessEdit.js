@@ -618,9 +618,9 @@ require([
         userNameInput.searchbox({
                 editable: false,//禁止手动输入
                 searcher: function () {
-                    require(["js/execution/queryQmPeople"], function (qryQmPeople) {
+                    require(["js/manage/queryQmPeople"], function (qryQmPeople) {
                         var queryQmPeople = qryQmPeople;
-                        queryQmPeople.initialize();
+                        queryQmPeople.initialize("");
                         $('#qry_people_window').show().window({
                             title: '审批人员信息',
                             width: Util.constants.DIALOG_WIDTH,
@@ -863,9 +863,9 @@ require([
         userNameInput.searchbox({
                 editable: false,//禁止手动输入
                 searcher: function () {
-                    require(["js/execution/queryQmPeople"], function (qryQmPeople) {
+                    require(["js/manage/queryQmPeople"], function (qryQmPeople) {
                         var queryQmPeople = qryQmPeople;
-                        queryQmPeople.initialize();
+                        queryQmPeople.initialize("");
                         $('#qry_people_window').show().window({
                             title: '审批人员信息',
                             width: Util.constants.DIALOG_WIDTH,

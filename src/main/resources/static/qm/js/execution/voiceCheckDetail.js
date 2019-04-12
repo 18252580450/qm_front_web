@@ -97,7 +97,7 @@ require(["jquery", "util", "commonAjax", "dateUtil", "transfer", "easyui"], func
                 {
                     field: 'score', title: '扣分分值', width: '20%',
                     formatter: function (value, row, index) {
-                        return '<input id="score' + row.nodeId + '" type="text" class="input-type" value="0" readonly>';
+                        return '<input id="score' + row.nodeId + '" type="text" class="input-type" value="0">';
                     }
                 }
             ]],
