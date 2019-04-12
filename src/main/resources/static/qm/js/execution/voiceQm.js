@@ -501,11 +501,11 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
             }
             require(["js/execution/queryQmPeople"], function (qryQmPeople) {
                 var queryQmPeople = qryQmPeople;
-                queryQmPeople.initialize(ids,flag);
+                queryQmPeople.initialize(ids,flag,"manager");
                 $('#qry_people_window').show().window({
                     title: '查询质检人员信息',
-                    width: 1150,
-                    height: 650,
+                    width: Util.constants.DIALOG_WIDTH,
+                    height: Util.constants.DIALOG_HEIGHT_SMALL,
                     cache: false,
                     content:queryQmPeople.$el,
                     modal: true
