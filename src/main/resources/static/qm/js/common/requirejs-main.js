@@ -70,7 +70,7 @@ var requirePath = {
     /* highcharts */
     "highcharts": "assets/lib/highcharts/highcharts",
     "exporting": "assets/lib/highcharts/modules/exporting",
-    "underscore": "assets/lib/underscore/underscore",
+    "underscore": "js/manage/underscore",
     /* highcharts */
     "ZeroClipboard": "assets/components/uedit/third-party/zeroclipboard/ZeroClipboard.min",
     /*"js/homePage/components/crossAPI"*/
