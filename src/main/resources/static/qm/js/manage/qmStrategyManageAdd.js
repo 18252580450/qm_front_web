@@ -5,7 +5,9 @@ define([
         //调用初始化方法
         var $el,
             bean,
-            elementTypes;
+            elementTypes,
+            tempRType,      //集合类型暂存数据
+            tempOperator;   //运算符暂存数据
 
         var initialize = function(paramsType,pId) {
             $el = $(tpl);
@@ -78,7 +80,12 @@ define([
                                 textField: "paramsName",
                                 editable: false,
                                 panelHeight: "auto",
-                                required: true
+                                required: true,
+                                onLoadSuccess:function () {
+                                    if (tempRType != null) {
+                                        $(this).combobox('setValue', tempRType);
+                                    }
+                                }
                             }
                         }
                     },
@@ -92,7 +99,12 @@ define([
                                 textField: "paramsName",
                                 editable: false,
                                 panelHeight: "auto",
-                                required: true
+                                required: true,
+                                onLoadSuccess: function () {
+                                    if (tempOperator != null) {
+                                        $(this).combobox('setValue', tempOperator);
+                                    }
+                                }
                             }
                         }
                     },
@@ -134,6 +146,10 @@ define([
                         IsCheckFlag = true;
                         $("#newElesList").datagrid("selectRow", rowIndex);
                     }
+                },
+                onBeforeEdit: function (index, row) {
+                    tempRType = row.rtype;
+                    tempOperator = row.operator;
                 }
             });
         }
