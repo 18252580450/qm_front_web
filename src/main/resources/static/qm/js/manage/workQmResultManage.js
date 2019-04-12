@@ -28,7 +28,7 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
             searcher: function (value) {
                 require(["js/execution/queryQmPeople"], function (qryQmPeople) {
                     var queryQmPeople = qryQmPeople;
-                    queryQmPeople.initialize("", "2","checker");
+                    queryQmPeople.initialize("", "2", "checker");
                     $('#qry_people_window').show().window({
                         title: '查询质检人员信息',
                         width: Util.constants.DIALOG_WIDTH,
@@ -362,7 +362,11 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
             disableSubmit = true;   //防止多次提交
             submitBtn.linkbutton({disabled: true});  //禁用提交按钮（样式）
 
-            var appealReason = $("#appealReason").val();
+            var appealReason = $("#appealReason").val(),
+                planId = "";
+            if (data.planId != null && data.planId !== "") {
+                planId = data.planId;
+            }
 
             if (appealReason == null || appealReason === "") {
                 $.messager.alert("提示", "申诉原因不能为空!");
@@ -378,7 +382,7 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
                 "touchId": data.touchId,
                 "wrkfmShowSwftno": data.wrkfmShowSwftno,
                 "inspectionId": data.inspectionId,
-                "planId": data.planId,
+                "planId": planId,
                 "templateId": data.templateId,
                 "appealStaffId": userInfo.staffId + "",
                 "appealStaffName": userInfo.staffName,
