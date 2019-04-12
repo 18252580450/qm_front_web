@@ -3,11 +3,6 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
     var workForm,
         playingRecord,              //当前正在播放的录音id
         showingInfo = 0,            //当前显示的基本信息（0工单基本信息、1内外部回复、2接触记录、3工单历史）
-        startTime,                  //页面初始化时间
-        checkItemListData = [],     //考评项列表数据（所有环节考评项）
-        currentCheckItemData = [],  //当前考评项列表数据
-        currentNode = {},           //当前选中环节
-        checkLinkData = [],         //环节考评数据（提交数据）
         replyData = {},             //内外部回复数据
         processData = [],           //轨迹数据
         recordData = [],            //接触记录数据
@@ -19,8 +14,6 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
     function initialize() {
         initPageInfo();
         initEvent();
-
-        startTime = new Date();
     }
 
     //页面信息初始化
@@ -476,79 +469,6 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
                 processDiv.append(getProcessDiv(item, false));
             } else {
                 processDiv.append(getProcessDiv(item, true));
-            }
-
-            var checkBox = $("#checkBox_" + item.lgId);
-            //默认选中第一处理环节
-            if (i < 1) {
-                currentNode = item;
-                checkBox.attr("checked", true);
-                $("#leftSpan_" + item.lgId).attr("class", "left-span-1");
-                $("#spot_" + item.lgId).attr("class", "spot-1");
-                // $("#checkLinkTitle").html(item.opTypeNm);
-            }
-            //绑定checkBox点击事件
-            checkBox.on("click", function () {
-                //禁止取消勾选
-                if (item.lgId === currentNode.lgId) {
-                    checkBox.prop("checked", true);
-                    return;
-                }
-                //取消勾选其他checkBox
-                $.each(data, function (index, data) {
-                    if (data.lgId !== item.lgId) {
-                        $("#checkBox_" + data.lgId).attr("checked", false);
-                        $("#leftSpan_" + data.lgId).attr("class", "left-span-2");
-                        $("#spot_" + data.lgId).attr("class", "spot-2");
-                    } else {
-                        $("#leftSpan_" + data.lgId).attr("class", "left-span-1");
-                        $("#spot_" + data.lgId).attr("class", "spot-1");
-                        // $("#checkLinkTitle").html(data.opTypeNm);
-                    }
-                });
-
-                //当前选中环节
-                currentNode = item;
-                //当前考评项列表
-                currentCheckItemData = [];
-                $.each(checkItemListData, function (i, item) {
-                    if (item.nodeTypeCode === currentNode.opTypeCd) {
-                        currentCheckItemData.push(item);
-                    }
-                });
-                $("#checkItemList").datagrid("loadData", {rows: currentCheckItemData}); //刷新考评项列表
-                refreshCheckArea(); //刷新评价区数据
-            });
-        });
-    }
-
-    //初始化考评环节合格状态
-    function initCheckResult() {
-        $.each(processData, function (i, processItem) {
-            var totalScore = 0, //当前考评环节所有考评项总分
-                gainScore = 0;  //当前考评环节所有考评项得分
-            $.each(checkItemListData, function (i, checkItem) {
-                if (checkItem.nodeTypeCode === processItem.opTypeCd) {
-                    totalScore += checkItem.nodeScore;
-                }
-            });
-            $.each(checkLinkData, function (i, linkItem) {
-                if (linkItem.checkLink === processItem.lgId) {
-                    gainScore = linkItem.checkLinkScore;
-                }
-            });
-            var checkResult = $("#checkResult_" + processItem.lgId);
-            if (totalScore === 0) { //无考评项的情况
-                checkResult.html("不考评");
-                checkResult.css("color", "#4A4A4A");
-                return;
-            }
-            if (totalScore !== 0 && gainScore / totalScore > 0.6) {
-                checkResult.html("合格");
-                checkResult.css("color", "#4A4A4A");
-            } else {
-                checkResult.html("不合格");
-                checkResult.css("color", "#F5A623");
             }
         });
     }

@@ -153,24 +153,28 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
                         return appeal + "&nbsp;&nbsp;" + checkHistory;
                     }
                 },
-                {field: 'touchId', title: '语音流水', align: 'center', width: '15%',
+                {
+                    field: 'touchId', title: '语音流水', align: 'center', width: '15%',
                     formatter: function (value, row, index) {
-                        if(value){
+                        if (value) {
                             return "<span title='" + value + "'>" + value + "</span>";
                         }
-                    }},
+                    }
+                },
                 {
                     field: 'inspectionId', title: '质检流水', align: 'center', width: '15%',
                     formatter: function (value, row, index) {
                         return '<a href="javascript:void(0);" id = "resultDetail_' + row.inspectionId + '">' + value + '</a>';
                     }
                 },
-                {field: 'callingNumber', title: '主叫号码', align: 'center', width: '10%',
+                {
+                    field: 'callingNumber', title: '主叫号码', align: 'center', width: '10%',
                     formatter: function (value, row, index) {
-                        if(value){
+                        if (value) {
                             return "<span title='" + value + "'>" + value + "</span>";
                         }
-                    }},
+                    }
+                },
                 {field: 'planName', title: '计划名称', align: 'center', width: '10%'},
                 {field: 'acceptNumber', title: '服务号码', align: 'center', width: '10%', hidden: true},
                 {field: 'checkStaffName', title: '质检人', align: 'center', width: '10%'},
@@ -194,8 +198,8 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
                 {
                     field: 'checkEndTime', title: '质检时间', align: 'center', width: '15%',
                     formatter: function (value, row, index) { //格式化时间格式
-                        if(value){
-                            return "<span title='" + DateUtil.formatDateTime(value) + "'>" +  DateUtil.formatDateTime(value) + "</span>";
+                        if (value) {
+                            return "<span title='" + DateUtil.formatDateTime(value) + "'>" + DateUtil.formatDateTime(value) + "</span>";
                         }
                     }
                 }
@@ -292,7 +296,7 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
                     //申诉
                     $("#resultAppeal_" + item.inspectionId).on("click", function () {
                         //临时保存的结果禁止申诉
-                        if ( item.resultStatus === Util.constants.CHECK_RESULT_TEMP_SAVE) {
+                        if (item.resultStatus === Util.constants.CHECK_RESULT_TEMP_SAVE) {
                             $.messager.alert("提示", "暂存结果不能申诉!");
                             return;
                         }
@@ -325,7 +329,7 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
                     //详情
                     $("#resultDetail_" + item.inspectionId).on("click", function () {
                         var url = CommonAjax.createURL(voiceCheckDetail, item);
-                        CommonAjax.showDialog(url, "质检详情", Util.constants.DIALOG_WIDTH, Util.constants.DIALOG_HEIGHT_SMALL);
+                        CommonAjax.showDialog(url, "质检详情", 950, Util.constants.DIALOG_HEIGHT_SMALL);
                     });
                 });
             }

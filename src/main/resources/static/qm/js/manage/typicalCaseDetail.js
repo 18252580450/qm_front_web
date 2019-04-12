@@ -8,7 +8,6 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
 
     function initialize() {
         CommonAjax.getUrlParams(function (data) {
-            debugger;
             caseInfo = data;
             initPageInfo();
             initEvent();
@@ -26,10 +25,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                 {
                     field: 'touchId', title: '接触流水', width: '25%',
                     formatter: function (value, row, index) {
-                        if (caseInfo.checkType === Util.constants.CHECK_TYPE_ORDER) {
-                            return '<a href="javascript:void(0);" style="color: deepskyblue;" id = "checkDetail_' + row.touchId + '">' + value + '</a>';
-                        }
-                        return row.touchId;
+                        return '<a href="javascript:void(0);" style="color: deepskyblue;" id = "checkDetail_' + row.touchId + '">' + value + '</a>';
                     }
                 },
                 {field: 'caseTitle', title: '案例标题', width: '25%'},
@@ -91,11 +87,11 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                 //质检详情
                 $.each(data.rows, function (i, item) {
                     $("#checkDetail_" + item.touchId).on("click", function () {
-                        // if (caseInfo.checkType === Util.constants.CHECK_TYPE_VOICE) {
-                        //     showCheckDetail(item, voiceCheckDetail);
-                        // } //todo
+                        if (caseInfo.checkType === Util.constants.CHECK_TYPE_VOICE) {
+                            showCheckDetail("语音详情", item, voiceCheckDetail, 950, 500);
+                        } //todo
                         if (caseInfo.checkType === Util.constants.CHECK_TYPE_ORDER) {
-                            showCheckDetail(item, orderCheckDetail);
+                            showCheckDetail("工单详情", item, orderCheckDetail, 950, Util.constants.DIALOG_HEIGHT);
                         }
                     });
                 });
@@ -148,13 +144,13 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
     }
 
     //质检详情弹框
-    function showCheckDetail(item, url) {
+    function showCheckDetail(title, item, url, width, height) {
         var param = {
             "provinceId": item.provinceId,
             "touchId": item.touchId
         };
         var checkUrl = CommonAjax.createURL(url, param);
-        CommonAjax.showDialog(checkUrl, "质检详情", Util.constants.DIALOG_WIDTH, Util.constants.DIALOG_HEIGHT);
+        CommonAjax.showDialog(checkUrl, title, width, height);
     }
 
     return {

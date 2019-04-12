@@ -78,31 +78,37 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                             return detail + "&nbsp;&nbsp;" + deal;
                         }
                     },
-                    {field: 'touchId', title: '语音流水', width: '14%',
+                    {
+                        field: 'touchId', title: '语音流水', width: '14%',
                         formatter: function (value, row, index) {
-                            if(value){
+                            if (value) {
                                 return "<span title='" + value + "'>" + value + "</span>";
                             }
-                        }},
+                        }
+                    },
                     {
                         field: 'inspectionId', title: '质检流水', width: '14%',
                         formatter: function (value, row, index) {
                             return '<a href="javascript:void(0);" style="color: deepskyblue;" id = "checkFlow_' + row.appealId + '">' + value + '</a>';
                         }
                     },
-                    {field: 'appealId', title: '申诉单号', width: '14%',
+                    {
+                        field: 'appealId', title: '申诉单号', width: '14%',
                         formatter: function (value, row, index) {
-                            if(value){
+                            if (value) {
                                 return "<span title='" + value + "'>" + value + "</span>";
                             }
-                        }},
+                        }
+                    },
                     {field: 'appealStaffName', title: '申诉人', width: '8%'},
-                    {field: 'appealReason', title: '申诉原因', width: '14%',
+                    {
+                        field: 'appealReason', title: '申诉原因', width: '14%',
                         formatter: function (value, row, index) {
-                            if(value){
+                            if (value) {
                                 return "<span title='" + value + "'>" + value + "</span>";
                             }
-                        }},
+                        }
+                    },
                     {
                         field: 'appealTime', title: '申诉时间', width: '14%',
                         formatter: function (value, row, index) { //格式化时间格式
@@ -379,7 +385,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                 "templateId": item.templateId
             };
             var checkUrl = CommonAjax.createURL(url, param);
-            CommonAjax.showDialog(checkUrl, "质检详情", Util.constants.DIALOG_WIDTH, Util.constants.DIALOG_HEIGHT_SMALL);
+            CommonAjax.showDialog(checkUrl, "质检详情", 950, Util.constants.DIALOG_HEIGHT_SMALL);
         }
 
         //校验开始时间和终止时间

@@ -8,7 +8,6 @@ require(["jquery", "util", "dateUtil", "transfer", "easyui"], function ($, Util)
 
     function initialize() {
         initPageInfo();
-        initEvent();
 
         startTime = new Date();
     }
@@ -121,13 +120,6 @@ require(["jquery", "util", "dateUtil", "transfer", "easyui"], function ($, Util)
         });
 
         initCheckArea();
-
-        //考评评语
-        $("#checkItemRemark").textbox(
-            {
-                multiline: true
-            }
-        );
     }
 
     //初始化基本信息
@@ -289,14 +281,6 @@ require(["jquery", "util", "dateUtil", "transfer", "easyui"], function ($, Util)
                     $("#score" + item.nodeId).val(score);
                 }
             });
-        });
-    }
-
-    //事件初始化
-    function initEvent() {
-        //申诉
-        $("#appealBtn").on("click", function () {
-
         });
     }
 

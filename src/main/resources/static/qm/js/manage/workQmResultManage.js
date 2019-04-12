@@ -130,12 +130,14 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
                         return appeal + "&nbsp;&nbsp;" + checkHistory;
                     }
                 },
-                {field: 'wrkfmShowSwftno', title: '工单流水号', align: 'center', width: '15%',
+                {
+                    field: 'wrkfmShowSwftno', title: '工单流水号', align: 'center', width: '15%',
                     formatter: function (value, row, index) {
-                        if(value){
+                        if (value) {
                             return "<span title='" + value + "'>" + value + "</span>";
                         }
-                    }},
+                    }
+                },
                 {
                     field: 'inspectionId', title: '质检流水号', align: 'center', width: '15%',
                     formatter: function (value, row, index) {
@@ -152,12 +154,14 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
                 },
                 {field: 'finalScore', title: '质检得分', align: 'center', width: '10%'},
                 {field: 'unqualifiedNum', title: '不合格环节数', align: 'center', width: '10%'},
-                {field: 'checkStaffId', title: '质检人工号', align: 'center', width: '10%',
+                {
+                    field: 'checkStaffId', title: '质检人工号', align: 'center', width: '10%',
                     formatter: function (value, row, index) {
-                        if(value){
+                        if (value) {
                             return "<span title='" + value + "'>" + value + "</span>";
                         }
-                    }},
+                    }
+                },
                 {field: 'checkStaffName', title: '质检人', align: 'center', width: '10%'},
                 {
                     field: 'resultStatus', title: '质检状态', align: 'center', width: '10%',
@@ -171,9 +175,10 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
                 {
                     field: 'checkEndTime', title: '质检时间', align: 'center', width: '15%',
                     formatter: function (value, row, index) { //格式化时间格式
-                        if(value){
-                            return "<span title='" + DateUtil.formatDateTime(value) + "'>" +  DateUtil.formatDateTime(value) + "</span>";
-                        }                    }
+                        if (value) {
+                            return "<span title='" + DateUtil.formatDateTime(value) + "'>" + DateUtil.formatDateTime(value) + "</span>";
+                        }
+                    }
                 }
             ]],
             fitColumns: true,
@@ -276,7 +281,7 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
                     //申诉
                     $("#resultAppeal_" + item.inspectionId).on("click", function () {
                         //临时保存的结果禁止申诉
-                        if ( item.resultStatus === Util.constants.CHECK_RESULT_TEMP_SAVE) {
+                        if (item.resultStatus === Util.constants.CHECK_RESULT_TEMP_SAVE) {
                             $.messager.alert("提示", "暂存结果不能申诉!");
                             return;
                         }
@@ -315,7 +320,7 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
                             "templateId": item.templateId
                         };
                         var url = CommonAjax.createURL(orderCheckDetail, param);
-                        CommonAjax.showDialog(url, "质检详情", Util.constants.DIALOG_WIDTH, Util.constants.DIALOG_HEIGHT_SMALL);
+                        CommonAjax.showDialog(url, "质检详情", 950, Util.constants.DIALOG_HEIGHT_SMALL);
                     });
                 });
             }
