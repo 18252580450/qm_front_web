@@ -1,9 +1,9 @@
 define([
-       "text!html/manage/qmPlanManageAdd.tpl",
+       "underscore","text!html/manage/qmPlanManageAdd.tpl",
         "js/manage/qryCheckTemplate",
         "js/manage/qryStrategy",
         "jquery", 'commonAjax','util', "transfer", "easyui","crossAPI","dateUtil",'ztree-exedit'],
-    function (tpl,QryCheckTemplate,QryStrategy,$,CommonAjax, Util, Transfer,crossAPI,dateUtil) {
+    function (underscore,tpl,QryCheckTemplate,QryStrategy,$,CommonAjax, Util, Transfer,crossAPI,dateUtil) {
     //调用初始化方法
     var planTypes = [];
     var $el;
@@ -11,16 +11,18 @@ define([
     var qmBindRlnList=[];
     var list;
     var listTable;
-    var isClicked = false;//是否点击
+    var isClicked = "";//是否是根节点
     var isChildren = false;//是否是子节点
     var disableSubmit;  //禁用提交按钮标志
-    var checkStaffName="";
-    var checkStaffId="";
+    var checkStaffName;
+    var checkStaffId;
     var planIdNew;
     var initialize = function(planId) {
         $el = $(tpl);
         disableSubmit = false;
         planBean = null;
+        checkStaffName="";
+        checkStaffId="";
         if(planId){
             Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.QM_PLAN_DNS + "/" + planId, {}, function (result) {
                 var rspCode = result.RSP.RSP_CODE;
@@ -65,7 +67,7 @@ define([
                         list = queryQmPeople.getList();//获取值
                         if(list.length!=0){
                             //为zTree添加节点
-                            addNodes(list);
+                            addZtreeNodes(list);
                         }
                     }
                 });
@@ -222,7 +224,7 @@ define([
             var planStarttime = $('#planStarttime',$el).datetimebox('getValue');
             var planEndtime = $('#planEndtime',$el).datetimebox('getValue');
             var remark = $('#remark',$el).val();
-            var extractCount = $('#extractCount',$el).val();
+            var planCount = $('#planCount',$el).val();
 
             //质检关系
             var qmBindRlnListNew = [];
@@ -263,11 +265,11 @@ define([
                 'planEndtime': planEndtime,
                 'remark':remark,
                 'qmBindRlnList':qmBindRlnList,
-                'extractCount':extractCount
+                'planCount':planCount
             };
 
             if (planName == null || planName == "" || planType == null || planType == "" || templateId == null || templateId == ""
-                || pId == null || pId == "" || manOrAuto == null || manOrAuto == "" || planRuntype == null || planRuntype == ""|| planRuntime == null || planRuntime == ""|| extractCount == null || extractCount == "") {
+                || pId == null || pId == "" || manOrAuto == null || manOrAuto == "" || planRuntype == null || planRuntype == ""|| planRuntime == null || planRuntime == ""|| planCount == null || planCount == "") {
                 $.messager.alert('警告', '必填项不能为空!');
                 disableSubmit = false;
                 $("#addPlan",$el).linkbutton({disabled: false});  //按钮可用
@@ -285,7 +287,7 @@ define([
                 planBean.planEndtime = planEndtime;
                 planBean.remark = remark;
                 planBean.qmBindRlnList = qmBindRlnList;
-                planBean.extractCount = extractCount;
+                planBean.planCount = planCount;
                 Util.ajax.putJson(Util.constants.CONTEXT.concat(Util.constants.QM_PLAN_DNS).concat("/updateQmPlan"), JSON.stringify(planBean), function (result) {
                     $.messager.show({
                         msg: result.RSP.RSP_DESC,
@@ -449,7 +451,7 @@ define([
         if(planBean){
             $('#planName',$el).textbox('setValue',planBean.planName);
             $("#templateId",$el).val(planBean.templateId);
-            $("#extractCount",$el).textbox('setValue',planBean.extractCount);
+            $("#planCount",$el).textbox('setValue',planBean.planCount);
             $('#template').searchbox("setValue",planBean.templateName);
             $("#pId",$el).val(planBean.pId);
             $('#strategy').searchbox("setValue",planBean.pName);
@@ -487,7 +489,7 @@ define([
             },
             callback:{
                 onClick:function(e, id, node){
-                    isClicked = true;
+                    isClicked = node.checkStaffId;//判断是否是根节点
                     if(node.checkStaffId != 0){ //判断是否点击的是父节点
                         isChildren = true;
                         checkStaffName = node.checkStaffName;
@@ -656,57 +658,89 @@ define([
     }
 
     //为zTree添加节点
-    function addNodes(list){
-        //1、获取zTree对象
+    function addZtreeNodes(list){
+        //获取zTree对象
         var treeObj = $.fn.zTree.getZTreeObj("qmStaffsTree");
+        var flag=0;
         list.forEach(function(value,index,array){
-            //2、给定一个要添加的新节点
+            //给定一个要添加的新节点
             var newNode = { pId:"0",checkStaffId: value.checkStaffId,checkStaffName:value.checkStaffName,planId:planIdNew,userType:"0",checkedObjectId:"",checkedObjectName:""};
-            //3、把这个新节点添加到当前的节点下，作为它的子节点
-            //返回根节点集合
-            var nodes = treeObj.getNodesByFilter(function (node) { return node.level == 0 });
-            treeObj.addNodes(nodes[0], newNode);
-            qmBindRlnList.push(newNode);
+            //判断是否有相同的节点
+            var allChildrenNodes = treeObj.getNodes()[0].children;//获取所有的子节点
+            if(allChildrenNodes){
+                var checkStaffIdAll = [];
+                allChildrenNodes.forEach(function(value,index,array){
+                    checkStaffIdAll.push(value.checkStaffId);
+                });
+               if(checkStaffIdAll.indexOf(newNode.checkStaffId)==-1){//判断节点中是否包含该条数据
+                   //把这个新节点添加到当前的节点下，作为它的子节点
+                   //返回根节点集合
+                   var nodes = treeObj.getNodesByFilter(function (node) { return node.level == 0 });
+                   treeObj.addNodes(nodes[0], newNode);
+                   qmBindRlnList.push(newNode);
+               }
+            }else{
+                var nodes = treeObj.getNodesByFilter(function (node) { return node.level == 0 });
+                treeObj.addNodes(nodes[0], newNode);
+                qmBindRlnList.push(newNode);
+            }
         });
     }
 
     //list表添加数据
     function addListData(listTable){
-            if(isClicked==true){
-                //动态插入数据行
-                listTable.forEach(function(value,index,array){
-                    var map={
-                        checkedObjectId: value.checkStaffId,
-                        checkedObjectName: value.checkStaffName,
-                        checkedDepartName: value.orgs,
-                        checkStaffId: checkStaffId,
-                        checkStaffName: checkStaffName,
-                        userType:"0",
-                        planId:planIdNew
-
-                    };
+        var rows = $("#checkedStaffList",$el).datagrid("getRows");
+        var dataCompare = [];
+        rows.forEach(function(value,index,array){
+            var rowsMap = {};
+            rowsMap["checkedObjectId"]=value.checkedObjectId;
+            rowsMap["checkStaffId"]=value.checkStaffId;
+            rowsMap["checkedObjectName"]=value.checkedObjectName;
+            rowsMap["checkStaffName"]=value.checkStaffName;
+            rowsMap["checkedDepartName"]=value.checkedDepartName;
+            rowsMap["userType"]=value.userType;
+            dataCompare.push(rowsMap);
+        });
+        if(isClicked!="0"){
+            //动态插入数据行
+            listTable.forEach(function(value,index,array){
+                var map={
+                    "checkedObjectId": value.checkStaffId,
+                    "checkedObjectName": value.checkStaffName,
+                    "checkedDepartName": value.orgs,
+                    "checkStaffId": checkStaffId,
+                    "checkStaffName": checkStaffName,
+                    "userType":"0",
+                };
+                //判断list表中是否包含该条数据
+                if(!_.find(dataCompare,map)){
+                    map["planId"]=planIdNew;
                     $("#checkedStaffList",$el).datagrid('insertRow',{
                         row: map
                     });
                     qmBindRlnList.push(map);
-                });
-            }else{
-                listTable.forEach(function(value,index,array){
-                    var map= {
-                        checkedObjectId: value.checkStaffId,
-                        checkedObjectName: value.checkStaffName,
-                        checkedDepartName: value.orgs,
-                        checkStaffId: "",
-                        checkStaffName: "",
-                        userType:"0",
-                        planId:planIdNew
-                    };
+                }
+            });
+        }else{
+            listTable.forEach(function(value,index,array){
+                var map= {
+                    "checkedObjectId": value.checkStaffId,
+                    "checkedObjectName": value.checkStaffName,
+                    "checkedDepartName": value.orgs,
+                    "checkStaffId": "",
+                    "checkStaffName": "",
+                    "userType":"0",
+                };
+                //判断list表中是否包含该条数据
+                if(!_.find(dataCompare,map)){
+                    map["planId"]=planIdNew;
                     $("#checkedStaffList",$el).datagrid('insertRow',{
                         row: map
                     });
                     qmBindRlnList.push(map);
-                });
-            }
+                }
+            });
+        }
     }
 
     //初始化质检员树和被质检员信息

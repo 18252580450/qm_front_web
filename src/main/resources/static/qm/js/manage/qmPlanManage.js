@@ -152,10 +152,7 @@ define([
                     formatter: function (value) {
                         return "<span title='" + value + "'>" + value + "</span>";
                     }},
-                {field: 'extractCount', title: '抽取数量', width: '8%',
-                    formatter: function (value) {
-                        return "<span title='" + value + "'>" + value + "</span>";
-                    }},
+                {field: 'planCount', title: '抽取数量', width: '8%'},
                 {field: 'manOrAuto', title: '任务分派方式', width: '8%',
                     formatter: function (value, row, index) {
                         if (0 == value) {

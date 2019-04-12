@@ -59,7 +59,7 @@
                         <div class='row cl'>
                             <label class='form-label col-3'>抽取数量</label>
                             <div class='formControls col-3'>
-                                <input id='extractCount' type="text" class="easyui-textbox easyui-validatebox" data-options="required:true" style='width:100%;height:30px'>
+                                <input id='planCount' type="text" class="easyui-textbox easyui-validatebox" data-options="required:true" style='width:100%;height:30px'>
                             </div>
                         </div>
                     </form>
