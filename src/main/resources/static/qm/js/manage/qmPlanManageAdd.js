@@ -11,7 +11,6 @@ define([
     var qmBindRlnList=[];
     var list;
     var listTable;
-    var isClicked = "";//是否是根节点
     var isChildren = false;//是否是子节点
     var disableSubmit;  //禁用提交按钮标志
     var checkStaffName;
@@ -137,6 +136,20 @@ define([
             }
         });
 
+        function delRow(nodes) {
+            if(qmBindRlnList && qmBindRlnList.length > 0){
+                for (var i = qmBindRlnList.length-1;i >= 0 ;i--) {//倒序
+                    if (qmBindRlnList[i].checkStaffId==nodes.checkStaffId) {
+                        qmBindRlnList.splice(i,1);
+                    }
+                }
+            }
+            var planBean = {
+                "qmBindRlnList":qmBindRlnList
+            }
+            initDatas(planBean);
+        }
+
         //行数据删除
         $("#page",$el).on("click", "a.delBtn", function () {
             var rowData = $(this).attr('id');
@@ -162,6 +175,13 @@ define([
                             $("#checkedStaffList",$el).datagrid("deleteRow",index);
                             var rows = $("#checkedStaffList",$el).datagrid("getRows");    //重新获取数据生成行号
                             $("#checkedStaffList",$el).datagrid("loadData", rows);
+                            if(qmBindRlnList && qmBindRlnList.length > 0){
+                                for (var i = qmBindRlnList.length-1;i >= 0 ;i--) {
+                                    if (qmBindRlnList[i].checkedObjectId== map["checkedObjectId"]&&qmBindRlnList[i].checkStaffId==map["checkStaffId"]) {
+                                        qmBindRlnList.splice(i,1);
+                                    }
+                                }
+                            }
                         }
                     });
                 }else{
@@ -169,13 +189,6 @@ define([
                     var rows = $("#checkedStaffList",$el).datagrid("getRows");    //重新获取数据生成行号
                     $("#checkedStaffList",$el).datagrid("loadData", rows);
                     if(qmBindRlnList && qmBindRlnList.length > 0){
-                        // $.each(qmBindRlnList,function(i,qmBindRln){
-                        //     if(qmBindRln.checkedObjectId == map["checkedObjectId"]&&qmBindRln.checkStaffId==map["checkStaffId"]){
-                        //         //delete qmBindRlnList[i];
-                        //         qmBindRlnList.splice(i,1);
-                        //         return;
-                        //     }
-                        // });
                         for (var i = qmBindRlnList.length-1;i >= 0 ;i--) {
                             if (qmBindRlnList[i].checkedObjectId== map["checkedObjectId"]&&qmBindRlnList[i].checkStaffId==map["checkStaffId"]) {
                                 qmBindRlnList.splice(i,1);
@@ -489,7 +502,6 @@ define([
             },
             callback:{
                 onClick:function(e, id, node){
-                    isClicked = node.checkStaffId;//判断是否是根节点
                     if(node.checkStaffId != 0){ //判断是否点击的是父节点
                         isChildren = true;
                         checkStaffName = node.checkStaffName;
@@ -606,7 +618,7 @@ define([
                         {field:'checkStaffId',title:'质检人ID',width:'15%'},
                         {field:'checkStaffName',title:'质检人',width:'18%'},
                         {
-                            field: 'action', title: '操作', width: '10%',
+                            field: 'action', title: '操作', width: '40%',
                             formatter: function (value, row, index) {
                                 var bean = {
                                     'index':index,
@@ -620,6 +632,7 @@ define([
                         }
                     ]
                 ],
+                data:[],
                 idField:"checkedObjectId",
                 checkOnSelect: false,
                 height : "260px"
@@ -627,41 +640,10 @@ define([
         }
     }
 
-    //行数据删除
-    // function initDelBut(){
-    //     $("#page",$el).on("click", "a.delBtn", function () {
-    //         var checkedObjectId = $(this).attr('id');
-    //         $("#checkedStaffList",$el).datagrid("deleteRow",$("#checkedStaffList",$el).datagrid("getRowIndex",checkedObjectId));
-    //         if(qmBindRlnList && qmBindRlnList.length > 0){
-    //             $.each(qmBindRlnList,function(i,qmBindRln){
-    //                 if(qmBindRln.checkedObjectId == checkedObjectId){
-    //                     //delete qmBindRlnList[i];
-    //                     qmBindRlnList.splice(i,1);
-    //                     return;
-    //                 }
-    //             });
-    //         }
-    //     });
-    // }
-    function delRow(nodes) {
-        if(qmBindRlnList && qmBindRlnList.length > 0){
-            for (var i = qmBindRlnList.length-1;i >= 0 ;i--) {//倒序
-                if (qmBindRlnList[i].checkStaffId==nodes.checkStaffId) {
-                    qmBindRlnList.splice(i,1);
-                }
-            }
-        }
-        var planBean = {
-           "qmBindRlnList":qmBindRlnList
-        }
-        initDatas(planBean);
-    }
-
     //为zTree添加节点
     function addZtreeNodes(list){
         //获取zTree对象
         var treeObj = $.fn.zTree.getZTreeObj("qmStaffsTree");
-        var flag=0;
         list.forEach(function(value,index,array){
             //给定一个要添加的新节点
             var newNode = { pId:"0",checkStaffId: value.checkStaffId,checkStaffName:value.checkStaffName,planId:planIdNew,userType:"0",checkedObjectId:"",checkedObjectName:""};
@@ -690,57 +672,28 @@ define([
     //list表添加数据
     function addListData(listTable){
         var rows = $("#checkedStaffList",$el).datagrid("getRows");
-        var dataCompare = [];
         rows.forEach(function(value,index,array){
-            var rowsMap = {};
-            rowsMap["checkedObjectId"]=value.checkedObjectId;
-            rowsMap["checkStaffId"]=value.checkStaffId;
-            rowsMap["checkedObjectName"]=value.checkedObjectName;
-            rowsMap["checkStaffName"]=value.checkStaffName;
-            rowsMap["checkedDepartName"]=value.checkedDepartName;
-            rowsMap["userType"]=value.userType;
-            dataCompare.push(rowsMap);
+            delete value["planId"];
         });
-        if(isClicked!="0"){
-            //动态插入数据行
-            listTable.forEach(function(value,index,array){
-                var map={
-                    "checkedObjectId": value.checkStaffId,
-                    "checkedObjectName": value.checkStaffName,
-                    "checkedDepartName": value.orgs,
-                    "checkStaffId": checkStaffId,
-                    "checkStaffName": checkStaffName,
-                    "userType":"0",
-                };
-                //判断list表中是否包含该条数据
-                if(!_.find(dataCompare,map)){
-                    map["planId"]=planIdNew;
-                    $("#checkedStaffList",$el).datagrid('insertRow',{
-                        row: map
-                    });
-                    qmBindRlnList.push(map);
-                }
-            });
-        }else{
-            listTable.forEach(function(value,index,array){
-                var map= {
-                    "checkedObjectId": value.checkStaffId,
-                    "checkedObjectName": value.checkStaffName,
-                    "checkedDepartName": value.orgs,
-                    "checkStaffId": "",
-                    "checkStaffName": "",
-                    "userType":"0",
-                };
-                //判断list表中是否包含该条数据
-                if(!_.find(dataCompare,map)){
-                    map["planId"]=planIdNew;
-                    $("#checkedStaffList",$el).datagrid('insertRow',{
-                        row: map
-                    });
-                    qmBindRlnList.push(map);
-                }
-            });
-        }
+        //动态插入数据行
+        listTable.forEach(function(value,index,array){
+            var map={
+                "checkedObjectId": value.checkStaffId,
+                "checkedObjectName": value.checkStaffName,
+                "checkedDepartName": value.orgs,
+                "checkStaffId": checkStaffId,
+                "checkStaffName": checkStaffName,
+                "userType":"0",
+            };
+            //判断list表中是否包含该条数据
+            if(!_.find(rows,map)){
+                map["planId"]=planIdNew;
+                $("#checkedStaffList",$el).datagrid('insertRow',{
+                    row: map
+                });
+                qmBindRlnList.push(map);
+            }
+        });
     }
 
     //初始化质检员树和被质检员信息
@@ -761,21 +714,13 @@ define([
                     if(qmBindRln.userType == 0 && qmBindRln.checkedObjectId){
                         checkedStaffs.push(qmBindRln);
                     }
+                    if(qmBindRln.checkedObjectId==""){
+                        checkStaffs.push(qmBindRln);
+                    }
                     // else{
                     //     checkedDeparts.push(qmBindRln);
                     // }
                 });
-                //质检员去重。获取非重质检员所在的位置
-                var index = [];
-                $.each(checkStaffIdList,function(i, checkStaffId){
-                    if(checkStaffIdList.indexOf(checkStaffId)==i){
-                        index.push(i);
-                    }
-                });
-                $.each(index,function(i, value){
-                    checkStaffs.push(qmBindRlnList[value]);
-                });
-
                 initTree(checkStaffs);
                 initTable(checkedStaffs,checkedDeparts);
             }else{
