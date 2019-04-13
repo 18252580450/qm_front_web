@@ -3599,3 +3599,8 @@ label       { display: block; cursor: pointer; line-height: 18px; padding-bottom
 .has-js label.r_on      { background: url(../../../../../image/radio-on.png) no-repeat; }
 .has-js .label_check input,
 .has-js .label_radio input  { position: absolute; left: -9999px; }
+
+/*easyui datagrid单元格实现溢出文本显示省略号的效果。*/
+.datagrid-cell, .datagrid-cell-group, .datagrid-header-rownumber, .datagrid-cell-rownumber{
+  text-overflow: ellipsis;
+}
