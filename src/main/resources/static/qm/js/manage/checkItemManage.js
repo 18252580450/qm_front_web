@@ -41,9 +41,6 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
                 if (data.length > 0) {
                     checkItemType.combobox('select', data[0].paramsCode);
                 }
-            },
-            onSelect: function () {
-                $("#checkItemList").datagrid('load');
             }
         });
         //重载下拉框数据
@@ -71,9 +68,6 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
                 if (data.length > 0) {
                     nodeTypeCode.combobox('select', data[0].paramsCode);
                 }
-            },
-            onSelect: function () {
-                $("#checkItemList").datagrid('load');
             }
         });
         //重载下拉框数据

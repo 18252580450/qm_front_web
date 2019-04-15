@@ -73,9 +73,6 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
                 if (data.length > 0) {
                     poolStatus.combobox('select', data[0].paramsCode);
                 }
-            },
-            onSelect: function () {
-                $("#orderCheckList").datagrid("load");
             }
         });
         CommonAjax.getStaticParams("POOL_STATUS", function (datas) {

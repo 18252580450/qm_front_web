@@ -30,9 +30,6 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                 if (data.length > 0) {
                     caseType.combobox('select', data[0].paramsCode);
                 }
-            },
-            onSelect: function () {
-                $("#typicalCaseList").datagrid("load");
             }
         });
         //重载下拉框数据

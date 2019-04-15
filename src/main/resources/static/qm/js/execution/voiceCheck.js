@@ -77,9 +77,6 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
                 if (data.length > 0) {
                     poolStatus.combobox('select', data[0].paramsCode);
                 }
-            },
-            onSelect: function () {
-                $("#voiceCheckList").datagrid("load");
             }
         });
         CommonAjax.getStaticParams("POOL_STATUS", function (datas) {
