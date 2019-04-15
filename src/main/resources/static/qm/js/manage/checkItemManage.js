@@ -11,7 +11,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
             id: "",
             parentId: "",
             name: "",
-            level: "",
+            level: 0,
             isParent: true
         };
 
@@ -154,7 +154,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
                 {
                     field: 'action', title: '操作', width: '10%',
                     formatter: function (value, row, index) {
-                        return '<a href="javascript:void(0);" style="color: black;" id = "checkItem' + row.checkItemId + '">修改</a>';
+                        return '<a href="javascript:void(0);" style="color: dimgrey;" id = "checkItem' + row.checkItemId + '">修改</a>';
                     }
                 },
                 {field: 'checkItemName', title: '考评项名称', width: '20%'},
@@ -919,6 +919,14 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
             }
             $.fn.zTree.init($("#checkItemTree"), setting, zNodes);
             fixIcon();  //将空文件夹显示为文件夹图标
+            if (checkNode.id === "") { //初始化checkNode
+                checkNode.id = data[0].checkItemId;
+                checkNode.parentId = data[0].checkItemId;
+                checkNode.name = data[0].checkItemName;
+
+                $("#parentCheckItemName").val(data[0].checkItemName);
+                $("#parentCheckItemId").val(data[0].checkItemId);
+            }
         });
     }
 
