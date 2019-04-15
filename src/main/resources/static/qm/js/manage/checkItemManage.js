@@ -12,7 +12,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
             parentId: "",
             name: "",
             level: "",
-            isParent: ""
+            isParent: true
         };
 
     initialize();
@@ -105,10 +105,16 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
                     checkNode.name = node.name;
                     checkNode.level = node.level;
                     checkNode.isParent = node.isParent;
+                    if (node.level > 0) {
+                        $("#backBtn").show();   //子目录显示返回键
+                    } else {
+                        $("#backBtn").hide();   //根目录隐藏返回键
+                    }
                     if (node.isParent) {
                         $("#parentCheckItemName").val(node.name);
                         $("#parentCheckItemId").val(node.id);
                         $("#checkItemList").datagrid('load');
+                        $("#checkItemListPath").html(getCatalogPath(node.id)); //刷新列表路径
                     } else {
                         var data = [];
                         $.each(checkItemListData, function (i, item) {
@@ -121,6 +127,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
                             }
                         });
                         $("#checkItemList").datagrid('loadData', data);
+                        $("#checkItemListPath").html(getCatalogPath(node.pId)); //刷新列表路径
                     }
                 },
                 onCollapse: function (e, id, node) {  //目录折叠，保存目录展开路径
@@ -211,6 +218,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
             },
             loader: function (param, success) {
                 var parentCheckItemId = checkNode.id,
+                    orderNo = checkNode.level + 1,
                     start = (param.page - 1) * param.rows,
                     pageNum = param.rows,
                     checkItemName = $("#checkItemName").val();
@@ -225,8 +233,12 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
                 if (nodeTypeCode === "-1") {
                     nodeTypeCode = "";
                 }
+                if (checkItemName !== "") {  //按考评项名称搜索（子目录全局搜索）
+                    orderNo = "";
+                }
                 var reqParams = {
                     "parentCheckItemId": parentCheckItemId,
+                    "orderNo": orderNo,
                     "checkItemName": checkItemName,
                     "tenantId": Util.constants.TENANT_ID,
                     "checkItemType": checkItemType,
@@ -270,6 +282,22 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
                         }
                     });
                 });
+            },
+            onDblClickRow: function (index, rowData) {
+                if (rowData.catalogFlag !== Util.constants.CHECK_ITEM_PARENT) {  //双击进入子目录
+                    return;
+                }
+                checkNode.id = rowData.checkItemId;
+                checkNode.parentId = rowData.parentCheckItemId;
+                checkNode.name = rowData.checkItemName;
+                checkNode.level = rowData.orderNo;
+                checkNode.isParent = true;
+
+                $("#backBtn").show();   //子目录显示返回键
+                $("#parentCheckItemName").val(rowData.checkItemName);
+                $("#parentCheckItemId").val(rowData.checkItemId);
+                $("#checkItemList").datagrid('load');
+                $("#checkItemListPath").html(getCatalogPath(rowData.checkItemId)); //刷新列表路径
             }
         });
     }
@@ -289,6 +317,27 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
                 });
                 $("#checkItemList").datagrid('loadData', data);
             }
+        });
+
+        //返回
+        $("#backBtn").on("click", function () {
+            if (checkNode.level === 0) {
+                return;  //根目录返回
+            }
+            var catalog = getParentCatalog(checkNode.parentId);  //获取父目录
+            checkNode.id = catalog.checkItemId;
+            checkNode.parentId = catalog.parentCheckItemId;
+            checkNode.name = catalog.checkItemName;
+            checkNode.level = catalog.orderNo;
+            checkNode.isParent = true;
+
+            if (catalog.orderNo === 0) {
+                $("#backBtn").hide();   //根目录隐藏返回键
+            }
+            $("#parentCheckItemName").val(catalog.checkItemName);
+            $("#parentCheckItemId").val(catalog.checkItemId);
+            $("#checkItemList").datagrid('load');
+            $("#checkItemListPath").html(getCatalogPath(catalog.checkItemId)); //刷新列表路径
         });
 
         //新增类别
@@ -376,7 +425,6 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
                 var rspCode = result.RSP.RSP_CODE;
                 if (rspCode != null && rspCode === "1") {
                     $("#catalogDialog").window("close");  //关闭对话框
-                    checkNode.id = "";  //展示所有考评项
                     $("#checkItemList").datagrid('reload'); //插入成功后，刷新页面
                     refreshTree(); //刷新考评树
                     //提示
@@ -459,7 +507,6 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
             Util.ajax.putJson(Util.constants.CONTEXT.concat(Util.constants.CHECK_ITEM_DNS).concat("/"), JSON.stringify(item), function (result) {
                 var rspCode = result.RSP.RSP_CODE;
                 if (rspCode != null && rspCode === "1") {
-                    checkNode.id = "";  //展示所有考评项
                     $("#catalogDialog").window("close");  //关闭对话框
                     $("#catalogList").datagrid('reload'); //插入成功后，刷新页面
                     refreshTree(); //刷新考评树
@@ -611,7 +658,6 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
                 var rspCode = result.RSP.RSP_CODE;
                 if (rspCode != null && rspCode === "1") {
                     $("#checkItemDialog").window("close");  //关闭对话框
-                    checkNode.id = "";  //展示所有考评项
                     $("#checkItemList").datagrid('reload'); //插入成功后，刷新页面
                     refreshTree(); //刷新考评树
                     //提示
@@ -775,7 +821,6 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
             Util.ajax.putJson(Util.constants.CONTEXT.concat(Util.constants.CHECK_ITEM_DNS).concat("/"), JSON.stringify(item), function (result) {
                 var rspCode = result.RSP.RSP_CODE;
                 if (rspCode != null && rspCode === "1") {
-                    checkNode.id = "";  //展示所有考评项
                     $("#checkItemDialog").window("close");  //关闭对话框
                     $("#checkItemList").datagrid('reload'); //插入成功后，刷新页面
                     refreshTree(); //刷新考评树
@@ -815,7 +860,6 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
                 Util.ajax.deleteJson(Util.constants.CONTEXT.concat(Util.constants.CHECK_ITEM_DNS).concat("/").concat(delArr), {}, function (result) {
                     var rspCode = result.RSP.RSP_CODE;
                     if (rspCode != null && rspCode === "1") {
-                        checkNode.id = "";  //展示所有考评项
                         $("#checkItemList").datagrid('reload'); //删除成功后，刷新页面
                         refreshTree(); //刷新考评树
                         //提示
@@ -875,17 +919,6 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
             }
             $.fn.zTree.init($("#checkItemTree"), setting, zNodes);
             fixIcon();  //将空文件夹显示为文件夹图标
-
-            if (data.length > 0) {
-                //更新选中节点
-                checkNode.id = data[0].checkItemId;
-                checkNode.parentId = data[0].parentCheckItemId;
-                checkNode.name = data[0].checkItemName;
-                checkNode.level = 0;
-                checkNode.isParent = true;
-                $("#parentCheckItemName").val(checkNode.name);
-                $("#parentCheckItemId").val(checkNode.id);
-            }
         });
     }
 
@@ -924,6 +957,29 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
                 checkLinkData = data;
                 $("#checkLinkConfig").combobox('loadData', data);
             });
+        }
+    }
+
+    //获取目录路径
+    function getCatalogPath(catalogId) {
+        var path = "",
+            parentId = catalogId,
+            level = -1;
+        while (level !== 0) {
+            var catalog = getParentCatalog(parentId);
+            path = catalog.checkItemName + "/" + path;
+            parentId = catalog.parentCheckItemId;
+            level = catalog.orderNo;
+        }
+        path = path.substring(0, path.lastIndexOf("/"));
+        return path;
+    }
+
+    function getParentCatalog(catalogId) {
+        for (var i = 0; i < checkItemListData.length; i++) {
+            if (checkItemListData[i].checkItemId === catalogId) {
+                return checkItemListData[i];
+            }
         }
     }
 
