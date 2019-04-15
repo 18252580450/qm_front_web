@@ -30,7 +30,6 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
                             'remark': row.remark,'crtTime': row.crtTime,'createStaffId': row.createStaffId
                         };
                         var beanStr = JSON.stringify(bean);   //转成字符串
-
                         var Action =
                             "<a href='javascript:void(0);' class='reviseBtn' id =" + beanStr + " >修改</a>";
                         return Action;

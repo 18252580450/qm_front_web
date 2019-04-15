@@ -118,7 +118,6 @@ define([
                     formatter: function (value, row, index) {
                         var Action =
                             "<a href='javascript:void(0);' class='reviseBtn' id =" + row.planId + " >修改</a>";
-                        //" | <a href='javascript:void(0);' class='qryDetailBtn' id =" + row.planId + " >详情</a>";
                         return Action;
                     }
                 },
