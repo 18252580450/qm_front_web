@@ -177,8 +177,16 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
                 },
                 {field: 'planName', title: '计划名称', align: 'center', width: '10%'},
                 {field: 'acceptNumber', title: '服务号码', align: 'center', width: '10%', hidden: true},
-                {field: 'checkStaffName', title: '质检人', align: 'center', width: '10%'},
-                {field: 'checkedStaffName', title: '被质检人', align: 'center', width: '10%'},
+                {field: 'checkStaffId', title: '质检人', align: 'center', width: '10%',
+                    formatter:function(value, row, index){
+                        if(value){
+                            return "<span title='" +row.checkStaffName+"["+row.checkStaffId+"]" + "'>"+row.checkStaffName+"["+row.checkStaffId+"]" + "</span>";
+                    }}},
+                {field: 'checkedStaffId', title: '被质检人', align: 'center', width: '10%',
+                    formatter:function(value, row, index){
+                        if(value){
+                            return "<span title='" +row.checkedStaffName+"["+row.checkedStaffId+"]" + "'>"+row.checkedStaffName+"["+row.checkedStaffId+"]" + "</span>";
+                    }}},
                 {
                     field: 'resultStatus', title: '质检状态', align: 'center', width: '10%',
                     formatter: function (value, row, index) {
