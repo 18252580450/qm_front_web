@@ -193,9 +193,9 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
         */
        $("#page").on("click", "#addBut", function () {
            $("#add_content").find('form.form').form('clear');  //初始化清空
-
+           $('#desc').textbox({});
            $("#add_content").show().window({   //弹框
-               width: 950,
+               width: 750,
                height: 400,
                modal: true,
                title: "新增"
@@ -259,8 +259,9 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
         * 弹出修改窗口
         */
        $("#page").on("click", "a.reviseBtn", function () {
+           $('#remark').textbox({});
            $("#modf_content").show().window({
-               width: 950,
+               width: 750,
                height: 400,
                modal: true,
                title: "修改"

@@ -205,7 +205,7 @@ define([
 
         //重置
         $("#searchForm").on("click", "#clearBut", function () {
-            $("#searchForm").form('clear');
+            $("#paramsType").combobox('setValue', "");
         });
 
         //批量删除
@@ -373,7 +373,7 @@ define([
     function initSearchForm() {
         $('#paramsType').combobox({
             data: [],
-            editable: false,
+            editable: false
             // required: true
         });
         CommonAjax.getStaticParams("STRATEGY_ELE_TYPE",function(datas){

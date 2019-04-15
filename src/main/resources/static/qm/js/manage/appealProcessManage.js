@@ -165,15 +165,6 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                         return "<span title='" + value + "'>" + value + "</span>";
                     }},
                 {
-                    field: 'createTime', title: '创建时间', width: '20%',
-                    formatter: function (value, row, index) { //格式化时间格式
-                        if (row.createTime != null) {
-                            var createTime = DateUtil.formatDateTime(row.createTime);
-                            return '<span title=' + createTime + '>' + createTime + '</span>';
-                        }
-                    }
-                },
-                {
                     field: 'processStatus', title: '流程状态', width: '7%',
                     formatter: function (value, row, index) {
                         var processStatus = "";
@@ -186,6 +177,15 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                             }
                         }
                         return '<span title=' + processStatus + '>' + processStatus + '</span>';
+                    }
+                },
+                {
+                    field: 'createTime', title: '创建时间', width: '20%',
+                    formatter: function (value, row, index) { //格式化时间格式
+                        if (row.createTime != null) {
+                            var createTime = DateUtil.formatDateTime(row.createTime);
+                            return '<span title=' + createTime + '>' + createTime + '</span>';
+                        }
                     }
                 }
             ]],
@@ -217,8 +217,6 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                     pageNum = param.rows,
                     processId = $("#processId").val(),
                     processName = $("#processName").val(),
-                    createStaffId = $("#createStaffName").val(),
-                    tenantId = $("#tenantType").combobox("getValue"),
                     checkType = $("#checkType").combobox("getValue"),
                     processStatus = $("#processStatus").combobox("getValue"),
                     createTimeBegin = $("#createTimeBegin").datetimebox("getValue"),
@@ -234,7 +232,6 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                     "mainProcessFlag": "0",
                     "processId": processId,
                     "processName": processName,
-                    "createStaffId": createStaffId,
                     "tenantId": Util.constants.TENANT_ID,
                     "checkType": checkType,
                     "processStatus": processStatus,

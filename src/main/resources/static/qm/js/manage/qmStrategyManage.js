@@ -179,6 +179,7 @@ define([
         $("#searchForm").on("click", "#btn-default", function () {
             $("#searchForm").form('clear');
             $("input[name='isValidateMain']").removeAttr("checked");
+            $("#paramsType").combobox('setValue', "");
         });
 
         //新增
