@@ -155,14 +155,11 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
                 {field: 'finalScore', title: '质检得分', align: 'center', width: '10%'},
                 {field: 'unqualifiedNum', title: '不合格环节数', align: 'center', width: '10%'},
                 {
-                    field: 'checkStaffId', title: '质检人工号', align: 'center', width: '10%',
-                    formatter: function (value, row, index) {
-                        if (value) {
-                            return "<span title='" + value + "'>" + value + "</span>";
-                        }
-                    }
-                },
-                {field: 'checkStaffName', title: '质检人', align: 'center', width: '10%'},
+                    field: 'checkStaffId', title: '质检人', align: 'center', width: '10%',
+                    formatter:function(value, row, index){
+                        if(value){
+                            return "<span title='" +row.checkStaffName+"["+row.checkStaffId+"]" + "'>"+row.checkStaffName+"["+row.checkStaffId+"]" + "</span>";
+                        }}},
                 {
                     field: 'resultStatus', title: '质检状态', align: 'center', width: '10%',
                     formatter: function (value, row, index) {
