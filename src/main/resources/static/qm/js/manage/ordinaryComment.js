@@ -253,7 +253,6 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
         * 弹出修改窗口
         */
        $("#page").on("click", "a.reviseBtn", function () {
-           $('#remark').textbox({});
            $("#modf_content").show().window({
                width: 750,
                height: 400,
@@ -265,7 +264,9 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
            var sensjson = JSON.parse(rowData); //转成json格式
 
            $('#modfName').val(sensjson.commentName);   //将数据填入弹框中
-           $('#remark').val(sensjson.remark);   //将数据填入弹框中
+           $('#remark').textbox({
+               value:sensjson.remark
+           });
            $("#modf_content").unbind("click");              //解绑事件
 
            $("#modf_content").on("click", "#no", function () {
