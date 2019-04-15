@@ -319,6 +319,13 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
             }
         });
 
+        //重置
+        $("#resetBtn").on("click", function () {
+            $("#checkItemName").val("");
+            $("#checkItemType").combobox("setValue", "-1");
+            $("#nodeTypeCode").combobox("setValue", "-1");
+        });
+
         //返回
         $("#backBtn").on("click", function () {
             if (checkNode.level === 0) {
