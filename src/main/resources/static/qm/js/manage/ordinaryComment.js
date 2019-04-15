@@ -21,7 +21,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
                 {field: '', title: '', hidden: true},
                 {field: 'ck', checkbox: true, align: 'center'},
                 {
-                    field: 'action', title: '操作', width: '20%',
+                    field: 'action', title: '操作', width: '5%',
 
                     formatter: function (value, row, index) {
 
@@ -36,31 +36,31 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
                         return Action;
                     }
                 },
-                {field: 'commentName', title: '评语名称', width: '20%',
+                {field: 'commentName', title: '评语名称', width: '15%',
                         formatter: function (value) {
                             if(value){
                                 return "<span title='" + value + "'>" + value + "</span>";
                             }
                 }},
-                {field: 'crtTime', title: '创建时间', width: '20%',
+                {field: 'crtTime', title: '创建时间', width: '15%',
                  formatter:function(value,row,index){//格式化时间格式
                      if(value){
                          return "<span title='" + DateUtil.formatDateTime(value) + "'>" + DateUtil.formatDateTime(value) + "</span>";
                      }
                 }},
-                {field: 'createStaffId', title: '创建工号', width: '20%',
+                {field: 'createStaffId', title: '创建工号', width: '15%',
                     formatter: function (value) {
                         if(value){
                             return "<span title='" + value + "'>" + value + "</span>";
                         }
                 }},
-                {field: 'modfTime', title: '修改时间', width: '20%',
+                {field: 'modfTime', title: '修改时间', width: '15%',
                     formatter: function (value, row, index) { //格式化时间格式
                         if(value){
                             return "<span title='" + DateUtil.formatDateTime(value) + "'>" + DateUtil.formatDateTime(value) + "</span>";
                         }
                     }},
-                {field: 'operateStaffId', title: '修改工号', width: '20%',
+                {field: 'operateStaffId', title: '修改工号', width: '15%',
                     formatter: function (value) {
                         if(value){
                             return "<span title='" + value + "'>" + value + "</span>";
@@ -158,9 +158,6 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
                 ids.push(id);
             }
 
-            // var params = {'ids': ids};//入参
-            // var ps = $.param(params, true); //序列化
-
             $.messager.confirm('确认删除弹窗', '确定要删除吗？', function (confirm) {
 
                 if (confirm) {
@@ -211,9 +208,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
            });
 
            $("#add_content").on("click", "#global", function () {
-               // if ($(this).textbox({disabled : true})) {
-               //     return;
-               // }
+
                $('#name').validatebox({required:true});//非空校验
                //禁用按钮，防止多次提交
                $('#global').linkbutton({disabled: true});
