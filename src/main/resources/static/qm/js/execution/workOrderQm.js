@@ -280,7 +280,11 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui","dateUti
                         }
                     }},
                 {field: 'acptStaffId', title: '立单人', align: 'center', width: '10%'},
-                {field: 'handleDuration', title: '处理时长', align: 'center', width: '10%'},
+                {field: 'handleDuration', title: '处理时长', align: 'center', width: '10%',formatter: function (value, row, index) { //格式化时间格式
+                        if(value){
+                            return "<span title='" + DateUtil.formatDateTime2(value) + "'>" + DateUtil.formatDateTime2(value) + "</span>";
+                        }
+                    }},
                 {field: 'planId', title: '计划编码', align: 'center', width: '10%',hidden: true},
                 {field: 'isOperate', title: '是否分配', align: 'center', width: '10%',
                     formatter:function(value, row, index){
@@ -292,7 +296,12 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui","dateUti
                         return {'0':'待质检','1':'待复检','2':'已质检'}[value];
                     }
                 },
-                {field: 'checkStaffName', title: '质检员', align: 'center', width: '10%'},
+                {field: 'checkStaffName', title: '质检员', align: 'center', width: '10%',
+                formatter:function(value, row, index){
+                    if(value){
+                        return "<span title='" + row.checkStaffName+"["+row.checkStaffId+"]" + "'>"+row.checkStaffName+"["+row.checkStaffId+"]" + "</span>";
+                    }
+                }},
                 {
                     field: 'operateTime', title: '分配时间', align: 'center', width: '15%',
                     formatter: function (value, row, index) { //格式化时间格式
