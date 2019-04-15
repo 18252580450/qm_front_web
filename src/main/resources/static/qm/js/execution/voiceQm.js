@@ -370,16 +370,6 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
                 }else{
                     checkStaffId = $("#checkStaffId").val();
                 }
-                var hungupType = $("#hungupType").val();
-                var recordTimeMin = $("#recordTimeMin").val();
-                var recordTimeMax = $("#recordTimeMax").val();
-                if(parseInt(recordTimeMin)>parseInt(recordTimeMax)){
-                    $.messager.alert("提示", "最小值不可大于最大值!");
-                    return false;
-                }
-                var staffNumber = $("#staffNumber").val();
-                var customerNumber = $("#customerNumber").val();
-                var satisfyExtentType = $("#satisfyExtentType").val();
                 var mediaType = $("#mediaType").val();
                 var serviceTypeId = $("#serviceTypeId").val();
                 var poolStatus = $("#poolStatus").combobox("getValue");
@@ -394,13 +384,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
                     "extractEndTime": endTime,
                     "checkStaffId": checkStaffId,
                     "checkedStaffId":checkedStaffId,
-                    "hungupType":hungupType,
                     "callType":callType,
-                    "recordTimeMin":recordTimeMin,
-                    "recordTimeMax":recordTimeMax,
-                    "staffNumber":staffNumber,
-                    "customerNumber":customerNumber,
-                    "satisfyExtentType":satisfyExtentType,
                     "mediaType":mediaType,
                     "srvReqstTypeId":serviceTypeId,
                     "poolStatus": poolStatus,
@@ -694,13 +678,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
                 "extractEndTime": "",
                 "checkStaffId": checkStaffId,
                 "checkedStaffId":"",
-                "hungupType":"",
                 "callType":"",
-                "recordTimeMin":"",
-                "recordTimeMax":"",
-                "staffNumber":"",
-                "customerNumber":"",
-                "satisfyExtentType":"",
                 "mediaType":"",
                 "srvReqstTypeId":"",
                 "poolStatus": "",

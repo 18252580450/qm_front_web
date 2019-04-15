@@ -57,11 +57,9 @@
         <!-- 类别增加弹窗，默认隐藏  -->
         <div  id='addtype_window' style='display:none;'>
             <div id='addtype_content' style='overflow:auto'>
-                <div class='panel-tool-box cl' >
-                    <div class='fl text-bold'>新增类别</div>
-                </div>
                 <div class='panel-search'>
                     <form  method='POST' class='form form-horizontal'>
+                        <div class='row cl'></div>
                         <div class='row cl'>
                             <label class='form-label col-2'>参数编码</label>
                             <div class='formControls col-2' style="width: 26%">
@@ -87,7 +85,7 @@
                             </div>
                         </div>
                     </form>
-                    <div class='mt-10 test-c'>
+                    <div class='mt-10 test-c' style="margin-top: 80px;">
                         <label class='form-label col-5'></label>
                         <a href='javascript:void(0)' id='subTypeBut' class='btn btn-green radius  mt-l-20'>确定</a>
                         <a href='javascript:void(0)' id='cancelType' class='btn btn-secondary radius  mt-l-20'>取消</a>
@@ -98,14 +96,12 @@
         <!-- 参数增加弹窗，默认隐藏  -->
         <div  id='add_window' style='display:none;'>
             <div id='add_content' style='overflow:auto'>
-                <div class='panel-tool-box cl' >
-                    <div class='fl text-bold'>新增参数</div>
-                </div>
                 <div class='panel-search'>
                     <form  method='POST' class='form form-horizontal' id='createType'>
                         <div style='display:none'>
                             <input type='hidden' name='paramsPurposeId' class='easyui-textbox' value='0'/>
                         </div>
+                        <div class='row cl'></div>
                         <div class='row cl'>
                             <label class='form-label col-2'>参数编码</label>
                             <div class='formControls col-2' style="width: 26%">
@@ -130,7 +126,7 @@
                             <input id = "paramsPurposeId" name = "paramsPurposeId" style="display:none;">
                         </div>
                     </form>
-                    <div class='mt-10 test-c'>
+                    <div class='mt-10 test-c' style="margin-top: 80px;">
                         <label class='form-label col-5'></label>
                         <a href='javascript:void(0)' id='subBut' class='btn btn-green radius  mt-l-20'>确定</a>
                         <a href='javascript:void(0)' id='cancel' class='btn btn-secondary radius  mt-l-20'>取消</a>
