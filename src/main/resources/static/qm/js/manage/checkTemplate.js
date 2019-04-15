@@ -43,7 +43,7 @@ define(["js/manage/addCheckTemplate","js/manage/modifyCheckTemplate","jquery", '
                 {field: 'ck', checkbox: true, align: 'center'},
                 {field: 'templateId', title: '考评模板编码', width: '20%', hidden: true},
                 {
-                    field: 'action', title: '操作', width: '20%',
+                    field: 'action', title: '操作', width: '10%',
                     formatter: function (value, row, index) {
                         var bean = {
                             'templateId': row.templateId,
@@ -55,7 +55,6 @@ define(["js/manage/addCheckTemplate","js/manage/modifyCheckTemplate","jquery", '
                         var beanRr = JSON.parse(JSON.stringify(bean)); beanRr['status']='release';//深拷贝
                         var beanSt = JSON.parse(JSON.stringify(bean)); beanSt['status']='stop';
 
-                        var action1 = "<a href='javascript:void(0);' class='previewBtn' id =" + JSON.stringify(bean) + " >预览</a>";
                         var action2="<a href='javascript:void(0);' class='actionBtn' id =" + JSON.stringify(beanRr) + " >发布</a>";
                         var action3="<a href='javascript:void(0);' class='actionBtn' id =" + JSON.stringify(beanSt) + " >暂停</a>";
                         return action2+"&nbsp;&nbsp;"+action3;

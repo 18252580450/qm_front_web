@@ -31,24 +31,19 @@
                     <div class='panel-search'>
                         <form class='form form-horizontal'>
                             <div class='row cl'>
-                                <label class='form-label col-2'>考评项名称：</label>
+                                <label class='form-label col-2'>考评项名称</label>
                                 <div class='formControls col-2'>
                                     <input id="checkItemName" type='text' class='easyui-textbox'
                                            style='width:100%;height:30px'>
                                 </div>
-                                <label class='form-label col-2' style="display: none">模板渠道：</label>
-                                <div class='formControls col-2' style="display: none">
-                                    <input id="tenantType" type='text' class='easyui-textbox'
-                                           style='width:100%;height:30px'>
-                                </div>
-                                <label class='form-label col-2'>父节点名称：</label>
+                                <label class='form-label col-2'>父节点名称</label>
                                 <div class='formControls col-2'>
                                     <input id="parentCheckItemName" type='text' class='easyui-textbox'
                                            style='width:100%;height:30px' readonly>
                                     <input id="parentCheckItemId" type='hidden' class='easyui-textbox'
                                            style='width:100%;height:30px'>
                                 </div>
-                                <label class='form-label col-2'>考评项类型：</label>
+                                <label class='form-label col-2'>考评项类型</label>
                                 <div class='formControls col-2'>
                                     <input id="checkItemType" type='text' class='easyui-textbox'
                                            style='width:100%;height:30px'>
@@ -57,17 +52,16 @@
                         </form>
                         <form class='form form-horizontal'>
                             <div class='row cl'>
-                                <label class='form-label col-2'>考评环节：</label>
+                                <label class='form-label col-2'>考评环节</label>
                                 <div class='formControls col-2'>
                                     <input id="nodeTypeCode" type='text' class='easyui-textbox'
                                            style='width:100%;height:30px'>
                                 </div>
-                                <div class='formControls col-2'>
-                                </div>
-                                <div class='formControls col-2'>
-                                    <a href='javascript:void(0)' class='btn btn-green radius mt-l-20' id="queryBtn"><i
-                                            class='iconfont iconfont-search2'></i>查询</a>
-                                </div>
+                                <label class='form-label col-2'></label>
+                                <a href='javascript:void(0)' class='btn btn-green radius mt-l-20' id="queryBtn"><i
+                                        class='iconfont iconfont-search2'></i>查询</a>
+                                <a href='javascript:void(0)' class='btn btn-secondary radius  mt-l-20' id="resetBtn"><i
+                                        class='iconfont iconfont-zhongzuo'></i>重置</a>
                             </div>
                         </form>
                     </div>
@@ -101,7 +95,7 @@
                                 <div class='row cl' style="margin-top: 10px">
                                     <div class='formControls col-1'>
                                     </div>
-                                    <label class='form-label col-3'>父目录：</label>
+                                    <label class='form-label col-3'>父目录</label>
                                     <div class='formControls col-6'>
                                         <input id='parentCatalogNameConfig' type='text'
                                                class='easyui-textbox easyui-validatebox'
@@ -112,7 +106,7 @@
                                 <div class='row cl' style="margin-top: 5px">
                                     <div class='formControls col-1'>
                                     </div>
-                                    <label class='form-label col-3'>考评项名称：</label>
+                                    <label class='form-label col-3'>考评项名称</label>
                                     <div class='formControls col-6'>
                                         <input id='checkItemNameConfig' type='text'
                                                class='easyui-textbox easyui-validatebox'
@@ -124,7 +118,7 @@
                                 <div class='row cl' style="margin-top: 5px">
                                     <div class='formControls col-1'>
                                     </div>
-                                    <label class='form-label col-3'>考评项类型：</label>
+                                    <label class='form-label col-3'>考评项类型</label>
                                     <div class='formControls col-6'>
                                         <input id='checkItemTypeConfig' type='text' class='easyui-textbox'
                                                style='width:90%;height:30px'/>
@@ -134,7 +128,7 @@
                                 <div class='row cl' id="checkLinkSelect" style="margin-top: 5px;">
                                     <div class='formControls col-1'>
                                     </div>
-                                    <label class='form-label col-3'>考评环节：</label>
+                                    <label class='form-label col-3'>考评环节</label>
                                     <div class='formControls col-6'>
                                         <input id='checkLinkConfig' type='text' class='easyui-textbox'
                                                style='width:90%;height:30px'/>
@@ -144,7 +138,7 @@
                                 <div class="row cl" style="margin-top: 5px">
                                     <div class='formControls col-1'>
                                     </div>
-                                    <label class='form-label col-3'>考评项致命类别：</label>
+                                    <label class='form-label col-3'>考评项致命类别</label>
                                     <div class='formControls col-6'>
                                         <input id='checkItemVitalTypeConfig' type='text' class='easyui-textbox'
                                                style='width:90%;height:30px'/>
@@ -154,7 +148,7 @@
                                 <div class="row cl" style="margin-top: 5px">
                                     <div class='formControls col-1'>
                                     </div>
-                                    <label class='form-label col-3'>考评项描述：</label>
+                                    <label class='form-label col-3'>考评项描述</label>
                                     <div class='formControls col-6'>
                                         <input id='checkItemDescConfig' type='text' class='easyui-textbox'
                                                style='width:90%;height:80px'/>
@@ -184,7 +178,7 @@
                                 <div class='row cl' style="margin-top: 20px">
                                     <div class='formControls col-1'>
                                     </div>
-                                    <label class='form-label col-3'>父目录：</label>
+                                    <label class='form-label col-3'>父目录</label>
                                     <div class='formControls col-6'>
                                         <input id='catalogParentNameConfig' type='text'
                                                class='easyui-textbox easyui-validatebox'
@@ -195,7 +189,7 @@
                                 <div class='row cl' style="margin-top: 5px">
                                     <div class='formControls col-1'>
                                     </div>
-                                    <label class='form-label col-3'>目录名称：</label>
+                                    <label class='form-label col-3'>目录名称</label>
                                     <div class='formControls col-6'>
                                         <input id='catalogNameConfig' type='text'
                                                class='easyui-textbox easyui-validatebox'
@@ -207,7 +201,7 @@
                                 <div class="row cl" style="margin-top: 5px">
                                     <div class='formControls col-1'>
                                     </div>
-                                    <label class='form-label col-3'>目录描述：</label>
+                                    <label class='form-label col-3'>目录描述</label>
                                     <div class='formControls col-6'>
                                         <input id='catalogDescConfig' type='text' class='easyui-textbox'
                                                style='width:90%;height:80px'/>

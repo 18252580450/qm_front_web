@@ -92,9 +92,6 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                     if (data.length > 0) {
                         appealStatusSelect.combobox('select', data[0].paramsCode);
                     }
-                },
-                onSelect: function () {
-                    $("#appealCheckList").datagrid("load");
                 }
             });
             CommonAjax.getStaticParams("APPEAL_STATUS", function (datas) {
@@ -123,9 +120,6 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                     if (data.length > 0) {
                         checkTypeSelect.combobox('select', data[0].paramsCode);
                     }
-                },
-                onSelect: function () {
-                    $("#appealCheckList").datagrid("load");
                 }
             });
             CommonAjax.getStaticParams("CHECK_TYPE", function (datas) {

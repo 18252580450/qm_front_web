@@ -11,7 +11,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
             id: "",
             parentId: "",
             name: "",
-            level: "",
+            level: 0,
             isParent: true
         };
 
@@ -41,9 +41,6 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
                 if (data.length > 0) {
                     checkItemType.combobox('select', data[0].paramsCode);
                 }
-            },
-            onSelect: function () {
-                $("#checkItemList").datagrid('load');
             }
         });
         //重载下拉框数据
@@ -71,9 +68,6 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
                 if (data.length > 0) {
                     nodeTypeCode.combobox('select', data[0].paramsCode);
                 }
-            },
-            onSelect: function () {
-                $("#checkItemList").datagrid('load');
             }
         });
         //重载下拉框数据
@@ -151,6 +145,12 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
             columns: [[
                 {field: 'checkItemId', title: '考评项ID', hidden: true},
                 {field: 'ck', checkbox: true, align: 'center'},
+                {
+                    field: 'action', title: '操作', width: '10%',
+                    formatter: function (value, row, index) {
+                        return '<a href="javascript:void(0);" style="color: dimgrey;" id = "checkItem' + row.checkItemId + '">修改</a>';
+                    }
+                },
                 {field: 'checkItemName', title: '考评项名称', width: '20%'},
                 {
                     field: 'checkItemType', title: '考评项类型', width: '15%',
@@ -184,12 +184,6 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
                                 return checkLinkData[i].paramsName;
                             }
                         }
-                    }
-                },
-                {
-                    field: 'action', title: '操作', width: '10%',
-                    formatter: function (value, row, index) {
-                        return '<a href="javascript:void(0);" style="color: black;" id = "checkItem' + row.checkItemId + '">修改</a>';
                     }
                 }
             ]],
@@ -317,6 +311,13 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
                 });
                 $("#checkItemList").datagrid('loadData', data);
             }
+        });
+
+        //重置
+        $("#resetBtn").on("click", function () {
+            $("#checkItemName").val("");
+            $("#checkItemType").combobox("setValue", "-1");
+            $("#nodeTypeCode").combobox("setValue", "-1");
         });
 
         //返回
@@ -919,6 +920,14 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
             }
             $.fn.zTree.init($("#checkItemTree"), setting, zNodes);
             fixIcon();  //将空文件夹显示为文件夹图标
+            if (checkNode.id === "") { //初始化checkNode
+                checkNode.id = data[0].checkItemId;
+                checkNode.parentId = data[0].checkItemId;
+                checkNode.name = data[0].checkItemName;
+
+                $("#parentCheckItemName").val(data[0].checkItemName);
+                $("#parentCheckItemId").val(data[0].checkItemId);
+            }
         });
     }
 

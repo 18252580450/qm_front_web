@@ -33,9 +33,6 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                 if (data.length > 0) {
                     tenantType.combobox('select', data[0].codeValue);
                 }
-            },
-            onSelect: function () {
-                $("#appealProcessList").datagrid("load");
             }
         });
 
@@ -53,9 +50,6 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                 if (data.length > 0) {
                     checkType.combobox('select', data[0].paramsCode);
                 }
-            },
-            onSelect: function () {
-                $("#appealProcessList").datagrid("load");
             }
         });
         //重载下拉框数据
@@ -85,9 +79,6 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                 if (data.length > 0) {
                     processStatus.combobox('select', data[0].paramsCode);
                 }
-            },
-            onSelect: function () {
-                $("#appealProcessList").datagrid("load");
             }
         });
         //重载下拉框数据
