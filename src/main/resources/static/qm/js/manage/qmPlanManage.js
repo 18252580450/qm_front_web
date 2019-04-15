@@ -113,19 +113,19 @@ define([
         $("#page").find("#planList").datagrid({
             columns: [[
                 {field: 'ck', checkbox: true, align: 'center'},
-                {field: 'planId', title: '计划编码', width: '8%',
-                    formatter: function (value) {
-                        return "<span title='" + value + "'>" + value + "</span>";
-                    }},
                 {
                     field: 'action', title: '操作', width: '8%',
                     formatter: function (value, row, index) {
                         var Action =
-                            "<a href='javascript:void(0);' class='reviseBtn' id =" + row.planId + " >编辑</a>";
-                            //" | <a href='javascript:void(0);' class='qryDetailBtn' id =" + row.planId + " >详情</a>";
+                            "<a href='javascript:void(0);' class='reviseBtn' id =" + row.planId + " >修改</a>";
+                        //" | <a href='javascript:void(0);' class='qryDetailBtn' id =" + row.planId + " >详情</a>";
                         return Action;
                     }
                 },
+                {field: 'planId', title: '计划编码', width: '8%',
+                    formatter: function (value) {
+                        return "<span title='" + value + "'>" + value + "</span>";
+                    }},
                 {field: 'planName', title: '计划名称', width: '8%',
                     formatter: function (value) {
                         return "<span title='" + value + "'>" + value + "</span>";

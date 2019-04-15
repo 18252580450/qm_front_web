@@ -151,6 +151,12 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
             columns: [[
                 {field: 'checkItemId', title: '考评项ID', hidden: true},
                 {field: 'ck', checkbox: true, align: 'center'},
+                {
+                    field: 'action', title: '操作', width: '10%',
+                    formatter: function (value, row, index) {
+                        return '<a href="javascript:void(0);" style="color: black;" id = "checkItem' + row.checkItemId + '">修改</a>';
+                    }
+                },
                 {field: 'checkItemName', title: '考评项名称', width: '20%'},
                 {
                     field: 'checkItemType', title: '考评项类型', width: '15%',
@@ -184,12 +190,6 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
                                 return checkLinkData[i].paramsName;
                             }
                         }
-                    }
-                },
-                {
-                    field: 'action', title: '操作', width: '10%',
-                    formatter: function (value, row, index) {
-                        return '<a href="javascript:void(0);" style="color: black;" id = "checkItem' + row.checkItemId + '">修改</a>';
                     }
                 }
             ]],

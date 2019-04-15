@@ -19,23 +19,8 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
         var IsCheckFlag = true; //标示是否是勾选复选框选中行的，true - 是 , false - 否
         $("#page").find("#staticParamsManage").datagrid({
             columns: [[
-                {field: 'paramsPurposeId', title: '参数用途ID', hidden: true},
-                {field: 'paramsTypeId', title: '参数类型ID', hidden: true},
-                {field: 'ck', checkbox: true, align: 'center'},
-                {field: 'paramsTypeName', title: '参数用途名称', width: '20%',
-                    formatter: function (value) {
-                        return "<span title='" + value + "'>" + value + "</span>";
-                    }},
-                {field: 'paramsCode', title: '参数编码', width: '20%',
-                    formatter: function (value) {
-                        return "<span title='" + value + "'>" + value + "</span>";
-                    }},
-                {field: 'paramsName', title: '参数名称', width: '20%',
-                    formatter: function (value) {
-                        return "<span title='" + value + "'>" + value + "</span>";
-                    }},
                 {
-                    field: 'action', title: '操作', width: '20%',
+                    field: 'action', title: '操作', width: '25%',
                     formatter: function (value, row, index) {
                         var bean = {
                             'tenantId': row.tenantId,
@@ -48,7 +33,22 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                             "<a href='javascript:void(0);' class='reviseBtn' id =" + beanStr + " >修改</a>";
                         return Action;
                     }
-                }
+                },
+                {field: 'paramsPurposeId', title: '参数用途ID', hidden: true},
+                {field: 'paramsTypeId', title: '参数类型ID', hidden: true},
+                {field: 'ck', checkbox: true, align: 'center'},
+                {field: 'paramsTypeName', title: '参数用途名称', width: '25%',
+                    formatter: function (value) {
+                        return "<span title='" + value + "'>" + value + "</span>";
+                    }},
+                {field: 'paramsCode', title: '参数编码', width: '25%',
+                    formatter: function (value) {
+                        return "<span title='" + value + "'>" + value + "</span>";
+                    }},
+                {field: 'paramsName', title: '参数名称', width: '25%',
+                    formatter: function (value) {
+                        return "<span title='" + value + "'>" + value + "</span>";
+                    }}
             ]],
             fitColumns: true,
             width: '100%',
