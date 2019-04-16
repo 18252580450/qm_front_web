@@ -195,12 +195,6 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
                         }[value];
                     }
                 },
-                {
-                    field: 'errorRank', title: '差错类型', align: 'center', width: '10%',
-                    formatter: function (value, row, index) {
-                        return {'0': '无错误', '1': '绝对错误'}[value];
-                    }
-                },
                 {field: 'finalScore', title: '质检得分', align: 'center', width: '10%'},
                 {
                     field: 'checkEndTime', title: '质检时间', align: 'center', width: '15%',
