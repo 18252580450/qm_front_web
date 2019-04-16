@@ -205,7 +205,6 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
                     distEndTime = $("#assignEndTime").datetimebox("getValue"),
                     checkLink = $("#checkLink").val(),
                     planId = $("#planId").val(),
-                    custNum = $("#customNum").val(),
                     poolStatus = $("#poolStatus").combobox("getValue");
 
                 if (poolStatus === "" || poolStatus === "-1") {
@@ -219,8 +218,7 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
                     "operateTimeBegin": distStartTime,
                     "operateTimeEnd": distEndTime,
                     "checkLink": checkLink,
-                    "poolStatus": poolStatus,
-                    "custNum": custNum
+                    "poolStatus": poolStatus
                 };
                 var params = $.extend({
                     "start": start,
