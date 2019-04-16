@@ -317,12 +317,12 @@ require([
             //主流程则返回
             if (processOrder === "00") {
                 $.messager.alert("提示", '主流程不允许添加子节点！');
-                return false;
+                return;
             }
             //判断子流程是否已添加
             if (parseInt(processOrder) >= appealProcessData.length) {
                 $.messager.alert("提示", "请先添加" + processOrderName + "!");
-                return false;
+                return;
             }
             addSubNode(appealProcessData[parseInt(processOrder)]);
         });
@@ -348,7 +348,7 @@ require([
         //判断主流程是否已添加
         if (appealProcessData.length === 0 && parseInt(orderNo) > 0) {
             $.messager.alert("提示", "请先添加主流程!");
-            return false;
+            return;
         }
         //判断子流程是否已添加
         if (parseInt(orderNo) < appealProcessData.length) {
@@ -357,14 +357,14 @@ require([
             } else {
                 $.messager.alert("提示", orderName + "已添加!");
             }
-            return false;
+            return;
         }
         //判断前置流程是否已添加
         if (parseInt(orderNo) > appealProcessData.length) {
             orderNoSelect.combobox('select', appealProcessData.length);
             var processOrderName = orderNoSelect.combobox("getText");
             $.messager.alert("提示", "请先添加" + processOrderName + "!");
-            return false;
+            return;
         }
 
         var processName = $("#processName").val(),
@@ -381,11 +381,11 @@ require([
 
         if (processName == null || processName === "") {
             $.messager.alert("提示", "流程名称不能为空!");
-            return false;
+            return;
         }
         if (departmentName == null || departmentName === "") {
             $.messager.alert("提示", "请选择部门!");
-            return false;
+            return;
         }
         var data = {
             "processName": processName,
@@ -472,11 +472,11 @@ require([
             }
             if (subNodeName == null || subNodeName === "") {
                 $.messager.alert("提示", "节点名称不能为空!");
-                return false;
+                return;
             }
             if (userNameArr.length === 0 || userIdArr.length === 0) {
                 $.messager.alert("提示", "请选择审批角色!");
-                return false;
+                return;
             }
             //子流程已有节点数
             var subNodeNum = subProcessObj.subNodeNum;
@@ -518,12 +518,17 @@ require([
         //判断主流程是否添加
         if (appealProcessData.length === 0 || appealProcessData[0] == null) {
             $.messager.alert("提示", "请添加主流程!");
-            return false;
+            return;
         }
         var maxAppealNum = $("#maxAppealNum").val();
         if (parseInt(maxAppealNum) > 3) {
             $.messager.alert("提示", "最大申诉次数不能超过3!");
-            return false;
+            return;
+        }
+
+        if (appealProcessData.length < 2 || appealProcessData[1].subNodeList.length === 0) {
+            $.messager.alert("提示", "请至少添加一个子流程和一个子节点!");
+            return;
         }
 
         var params = {
@@ -555,7 +560,7 @@ require([
         //为空时返回
         if (subNodeList.length === 0) {
             subNodeTable.datagrid("loadData", {rows: []});
-            return false;
+            return;
         }
         //刷新（页面）子节点列表,将同一节点合并到一行
         var subNodeData = [];
