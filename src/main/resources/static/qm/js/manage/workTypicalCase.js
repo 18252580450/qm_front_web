@@ -51,7 +51,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
             columns: [[
                 {field: 'ck', checkbox: true, align: 'center'},
                 {
-                    field: 'detail', title: '操作', width: '10%',
+                    field: 'detail', title: '操作', width: '5%',
                     formatter: function (value, row, index) {
                         return '<a href="javascript:void(0);" id = "caseDetail_' + row.caseType + '"  class="list_operation_color">详情</a>';
                     }

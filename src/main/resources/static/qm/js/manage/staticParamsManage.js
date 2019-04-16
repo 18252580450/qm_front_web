@@ -23,7 +23,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
                 {field: 'paramsTypeId', title: '参数类型ID', hidden: true},
                 {field: 'ck', checkbox: true, align: 'center'},
                 {
-                    field: 'action', title: '操作', width: '10%',
+                    field: 'action', title: '操作', width: '5%',
                     formatter: function (value, row, index) {
                         var bean = {
                             'tenantId': row.tenantId,

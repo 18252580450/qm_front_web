@@ -3607,5 +3607,5 @@ label       { display: block; cursor: pointer; line-height: 18px; padding-bottom
 
 /*列表操作项颜色*/
 .list_operation_color {
-  color: blue;
+  color: #4A90E2;
 }

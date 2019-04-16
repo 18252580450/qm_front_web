@@ -65,9 +65,9 @@
                             <label class='form-label col-2'>质检评分</label>
                             <div class='formControls col-2'>
                                 <input id="minScore" type='text' class='easyui-textbox'
-                                       style='width:45.5%;height:30px'> —</input>
+                                       style='width:40%;height:30px'> —</input>
                                 <input id="maxScore" type='text' class='easyui-textbox'
-                                       style='width:45.5%;height:30px'>
+                                       style='width:40%;height:30px'>
                             </div>
                         </div>
                         <div class='row cl'>
@@ -189,6 +189,17 @@
         <!--查询员工组弹窗，默认隐藏-->
         <div  id='qry_people_window' style='display:none;'>
             <div id='qry_people_content' style='overflow:auto'>
+            </div>
+        </div>
+
+        <!--查询服务请求弹窗，默认隐藏-->
+        <div id='qry_service_window' style='display:none;'>
+            <div class='panel-tool-box cl'>
+                <div class='fl text-bold'>服务请求类型</div>
+            </div>
+            <div id="treeDiv" class="index-west">
+                <ul id="tree" class="ztree" style="border:#fff solid 0px;">
+                </ul>
             </div>
         </div>
 

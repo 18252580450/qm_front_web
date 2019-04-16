@@ -63,13 +63,13 @@ require([
                 columns: [[
                     {field: 'ck', checkbox: true},
                     {
-                        field: 'operate', title: '操作', width: '8%',
+                        field: 'operate', title: '操作', width: '3%',
                         formatter: function (value, row, index) {
                             return '<a href="javascript:void(0);" class="list_operation_color" id = "voiceCheck_' + row.touchId + '">质检</a>';
                         }
                     },
                     {
-                        field: 'templateId', title: '考评模版', width: '10%',
+                        field: 'templateId', title: '考评模版', width: '6%',
                         formatter: function (value, row, index) { //格式化时间格式
                             if (value == null) {
                                 return "未绑定";

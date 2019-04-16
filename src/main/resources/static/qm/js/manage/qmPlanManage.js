@@ -114,7 +114,7 @@ define([
             columns: [[
                 {field: 'ck', checkbox: true, align: 'center'},
                 {
-                    field: 'action', title: '操作', width: '5%',
+                    field: 'action', title: '操作', width: '3%',
                     formatter: function (value, row, index) {
                         var Action =
                             "<a href='javascript:void(0);' class='reviseBtn list_operation_color' id =" + row.planId + " >修改</a>";

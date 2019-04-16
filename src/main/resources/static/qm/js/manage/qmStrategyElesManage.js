@@ -63,7 +63,7 @@ define([
                 {field: 'elementId', title: '元素ID', hidden: true},
                 {field: 'ck', checkbox: true, align: 'center'},
                 {
-                    field: 'action', title: '操作', width: '8%',
+                    field: 'action', title: '操作', width: '3%',
                     formatter: function (value, row, index) {
                         var Action =
                             "<a href='javascript:void(0);' class='reviseBtn list_operation_color' id =" + row.elementId + " >修改</a>";

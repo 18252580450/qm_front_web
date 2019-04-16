@@ -43,7 +43,7 @@ define(["js/manage/addCheckTemplate","js/manage/modifyCheckTemplate","jquery", '
                 {field: 'ck', checkbox: true, align: 'center'},
                 {field: 'templateId', title: '考评模板编码', width: '20%', hidden: true},
                 {
-                    field: 'action', title: '操作', width: '10%',
+                    field: 'action', title: '操作', width: '8%',
                     formatter: function (value, row, index) {
                         var bean = {
                             'templateId': row.templateId,
