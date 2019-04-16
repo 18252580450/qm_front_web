@@ -198,7 +198,8 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
                     "isOperate": Util.constants.VOICE_DISTRIBUTE,        //已分配
                     "poolStatus": poolStatus,
                     "distributeBeginTime": distributeBeginTime,
-                    "distributeEndTime": distributeEndTime
+                    "distributeEndTime": distributeEndTime,
+                    "orderMethod": "1"   //按分配时间降序排序
                 };
                 var params = $.extend({
                     "start": start,

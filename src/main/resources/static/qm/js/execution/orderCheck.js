@@ -216,7 +216,8 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
                     "planId": planId,
                     "operateTimeBegin": distStartTime,
                     "operateTimeEnd": distEndTime,
-                    "poolStatus": poolStatus
+                    "poolStatus": poolStatus,
+                    "orderMethod": "1"   //按分配时间降序排序
                 };
                 var params = $.extend({
                     "start": start,
