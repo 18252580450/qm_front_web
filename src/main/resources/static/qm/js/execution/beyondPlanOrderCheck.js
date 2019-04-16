@@ -177,7 +177,6 @@ require([
                         acptStaffId = $("#acptStaffId").val(),
                         arcBeginTime = $("#arcBeginTime").datetimebox("getValue"),
                         arcEndTime = $("#arcEndTime").datetimebox("getValue"),
-                        custName = $("#custName").val(),
                         custNum = $("#custNum").val();
 
                     var reqParams = {
@@ -185,7 +184,6 @@ require([
                         "acptStaffId": acptStaffId,
                         "arcBeginTime": arcBeginTime,
                         "arcEndTime": arcEndTime,
-                        "custName": custName,
                         "custNum": custNum
                     };
                     var params = $.extend({

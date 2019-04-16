@@ -31,9 +31,10 @@
                                 <input id="cusNumber" type='text' class='easyui-textbox'
                                        style='width:100%;height:30px'>
                             </div>
-                            <label class='form-label col-2'>质检开始时间</label>
+                            <label class='form-label col-2'>质检状态</label>
                             <div class='formControls col-2'>
-                                <input id="qmStartTime" class='easyui-datetimebox' style='width:100%;height:30px'>
+                                <input id="qmResult" type='text' class='easyui-textbox'
+                                       style='width:100%;height:30px'>
                             </div>
                         </div>
                     </form>
@@ -48,32 +49,31 @@
                                 <input id="checkStaffId" hidden="hidden" >
                                 <input id="checkStaffName" type='text' class="easyui-searchbox" style='width:100%;height:30px'>
                             </div>
-                            <label class='form-label col-2'>质检评分</label>
+                            <label class='form-label col-2'>考评计划</label>
                             <div class='formControls col-2'>
-                                <input id="minScore" type='text' class='easyui-textbox'
-                                       style='width:40%;height:30px'> —</input>
-                                <input id="maxScore" type='text' class='easyui-textbox'
-                                       style='width:40%;height:30px'>
+                                <input id="planId" hidden="hidden">
+                                <input id="planName" type='text' class="easyui-searchbox"
+                                       style='width:100%;height:30px'>
                             </div>
                         </div>
                     </form>
                     <form class='form form-horizontal'>
                         <div class='row cl'>
-                            <label class='form-label col-2'>质检状态</label>
+                            <label class='form-label col-2'>质检开始时间</label>
                             <div class='formControls col-2'>
-                                <input id="qmResult" type='text' class='easyui-textbox'
-                                       style='width:100%;height:30px'>
+                                <input id="qmStartTime" class='easyui-datetimebox' style='width:100%;height:30px'>
                             </div>
                             <label class='form-label col-2'>差错类型</label>
                             <div class='formControls col-2'>
                                 <input id="errorType" type='text' class='easyui-textbox'
                                        style='width:100%;height:30px'>
                             </div>
-                            <label class='form-label col-2'>考评计划</label>
+                            <label class='form-label col-2'>质检评分</label>
                             <div class='formControls col-2'>
-                                <input id="planId" hidden="hidden">
-                                <input id="planName" type='text' class="easyui-searchbox"
-                                       style='width:100%;height:30px'>
+                                <input id="minScore" type='text' class='easyui-textbox'
+                                       style='width:45.5%;height:30px'> —</input>
+                                <input id="maxScore" type='text' class='easyui-textbox'
+                                       style='width:45.5%;height:30px'>
                             </div>
                         </div>
                     </form>

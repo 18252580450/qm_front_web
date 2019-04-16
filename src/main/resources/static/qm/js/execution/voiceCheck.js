@@ -182,12 +182,8 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
 
                 var touchId = $("#touchId").val(),
                     planId = $("#planId").val(),
-                    callingNumber = $("#callingNumber").val(),
-                    calledNumber = $("#calledNumber").val(),
                     distributeBeginTime = $("#distributeBeginTime").datetimebox("getValue"),
                     distributeEndTime = $("#distributeEndTime").datetimebox("getValue"),
-                    minRecordTime = $("#minRecordTime").val(),
-                    maxRecordTime = $("#maxRecordTime").val(),
                     poolStatus = $("#poolStatus").combobox("getValue");
 
                 if (poolStatus === "" || poolStatus === "-1") {
@@ -200,12 +196,8 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
                     "planId": planId,
                     "isOperate": Util.constants.VOICE_DISTRIBUTE,        //已分配
                     "poolStatus": poolStatus,
-                    "staffNumber": callingNumber,
-                    "customerNumber": calledNumber,
                     "distributeBeginTime": distributeBeginTime,
-                    "distributeEndTime": distributeEndTime,
-                    "minRecordTime": minRecordTime,
-                    "maxRecordTime": maxRecordTime
+                    "distributeEndTime": distributeEndTime
                 };
                 var params = $.extend({
                     "start": start,

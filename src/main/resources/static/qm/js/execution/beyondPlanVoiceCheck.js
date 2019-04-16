@@ -149,14 +149,12 @@ require([
                     var pageNum = param.rows;
 
                     var touchId = $("#touchId").val(),
-                        callingNumber = $("#callingNumber").val(),
                         calledNumber = $("#calledNumber").val(),
                         beginTime = $("#beginTime").datetimebox("getValue"),
                         endTime = $("#endTime").datetimebox("getValue");
 
                     var reqParams = {
                         "touchId": touchId,
-                        "staffNumber": callingNumber,
                         "customerNumber": calledNumber,
                         "beginTime": beginTime,
                         "endTime": endTime
