@@ -177,10 +177,12 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                     },
                     {
                         field: 'appealStaffName', title: '申诉人', width: '10%',
-                        formatter:function(value, row, index){
-                            if(value){
-                                return "<span title='" +row.appealStaffName+"["+row.appealStaffId+"]" + "'>"+row.appealStaffName+"["+row.appealStaffId+"]" + "</span>";
-                            }}},
+                        formatter: function (value, row, index) {
+                            if (value) {
+                                return "<span title='" + row.appealStaffName + "[" + row.appealStaffId + "]" + "'>" + row.appealStaffName + "[" + row.appealStaffId + "]" + "</span>";
+                            }
+                        }
+                    },
                     {
                         field: 'appealReason', title: '申诉原因', width: '14%',
                         formatter: function (value) {
@@ -398,7 +400,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                                 map.approveTime = "";
                                 record.push(map);
                             });
-                            showAppealDealProcess(record);
+                            showAppealDealProcess(data, record);
                         }
                     });
                 }
@@ -439,10 +441,14 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
         }
 
         //显示审批记录
-        function showAppealDealProcess(data) {
+        function showAppealDealProcess(processData, record) {
             var leftDiv = $("#appealLeftDiv"),
                 rightDiv = $("#appealRightDiv");
-            $.each(data, function (i, item) {
+            //申诉提起人
+            leftDiv.append(getLeftDiv());
+            leftDiv.append(getFirstProcessLine());
+            rightDiv.append(getAppealStaffDiv(processData));
+            $.each(record, function (i, item) {
                 if (i > 0) {
                     leftDiv.append(getProcessLine());
                 }
@@ -463,6 +469,13 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
         function getProcessLine() {
             return '<form class="form form-horizontal"><div class="cl">' +
                 '<div class="formControls col-8" style="margin-left: 8px"><div class="appeal-process-line cl"></div></div>' +
+                '</div></form>';
+        }
+
+        //左侧流程线
+        function getFirstProcessLine() {
+            return '<form class="form form-horizontal"><div class="cl">' +
+                '<div class="formControls col-8" style="margin-left: 8px"><div class="process-line-2 cl"></div></div>' +
                 '</div></form>';
         }
 
@@ -491,6 +504,22 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                 '</div></form></div>' +
                 '<div class="panel-transparent-20 cl"><form class="form form-horizontal"><div class="cl">' +
                 '<div class="formControls col-12"><div class="fl text-small">审批时间：' + approveTime + '</div></div>' +
+                '</div></form> </div>' +
+                '</div>';
+        }
+
+        //右侧流程处理过程列表
+        function getAppealStaffDiv(item) {
+            var appealTime = "";
+            if (item.approveTime !== "") {
+                appealTime = DateUtil.formatDateTime(item.appealTime);
+            }
+            return '<div style="margin-bottom:30px;">' +
+                '<div class="panel-transparent-20 cl"><form class="form form-horizontal"><div class="cl">' +
+                '<div class="formControls col-12"><div class="fl text-small">申诉提起人：' + item.appealStaffName + '</div></div>' +
+                '</div></form></div>' +
+                '<div class="panel-transparent-20 cl"><form class="form form-horizontal"><div class="cl">' +
+                '<div class="formControls col-12"><div class="fl text-small">申诉时间：' + appealTime + '</div></div>' +
                 '</div></form> </div>' +
                 '</div>';
         }

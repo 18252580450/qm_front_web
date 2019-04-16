@@ -3571,6 +3571,26 @@ placeholder {
   background:#FFF
 }
 
+.process-line {
+  padding: 0px 0px;
+  color: #666;
+  height: 74px;
+  line-height: 94px;
+  background: #E6E9F0;
+  border-right: solid 1px #e0e0e0;
+  background:#FFF
+}
+
+.process-line-2 {
+    padding: 0px 0px;
+    color: #666;
+    height: 54px;
+    line-height: 94px;
+    background: #E6E9F0;
+    border-right: solid 1px #e0e0e0;
+    background:#FFF
+}
+
 /*实心原点*/
 .circle {
   display: block;
