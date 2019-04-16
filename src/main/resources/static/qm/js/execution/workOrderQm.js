@@ -267,6 +267,14 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui","dateUti
                             return "<span title='" + value + "'>" + value + "</span>";
                         }
                 }},
+                {
+                    field: 'checkedTime', title: '抽取时间', align: 'center', width: '10%',
+                    formatter: function (value, row, index) { //格式化时间格式
+                        if (value) {
+                            return "<span title='" + DateUtil.formatDateTime(value) + "'>" + DateUtil.formatDateTime(value) + "</span>";
+                        }
+                    }
+                },
                 {field: 'crtTime', title: '提交时间', align: 'center', width: '10%',
                     formatter: function (value, row, index) { //格式化时间格式
                         if(value){
