@@ -3,7 +3,6 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
     var userInfo,
         processStatusData = [],   //流程状态下拉框静态数据
         checkTypeData = [],       //质检类型静态数据
-        processDetailUrl = Util.constants.URL_CONTEXT + "/qm/html/manage/appealProcessDetail.html",
         processAddUrl = Util.constants.URL_CONTEXT + "/qm/html/manage/appealProcessAdd.html",
         processEditUrl = Util.constants.URL_CONTEXT + "/qm/html/manage/appealProcessEdit.html";
 
@@ -254,8 +253,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                 //详情
                 $.each(data.rows, function (i, item) {
                     $("#processDetail" + item.processId).on("click", function () {
-                        var url = CommonAjax.createURL(processDetailUrl, item);
-                        showDialog(url, "流程详情", Util.constants.DIALOG_WIDTH, Util.constants.DIALOG_HEIGHT, false);
+                        showAppealProcessDetail(item);
                     });
                 });
                 //修改
@@ -272,8 +270,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
             },
             //双击显示详情
             onDblClickRow: function (index, data) {
-                var url = CommonAjax.createURL(processDetailUrl, data);
-                showDialog(url, "流程详情", Util.constants.DIALOG_WIDTH, Util.constants.DIALOG_HEIGHT, false);
+                showAppealProcessDetail(data);
             }
         });
     }
@@ -312,6 +309,45 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
         //暂停
         $("#stopBtn").on("click", function () {
             changeProcessStatus(Util.constants.PROCESS_STATUS_PAUSE);
+        });
+    }
+
+    //审批流程详情
+    function showAppealProcessDetail(data) {
+        $("#appealLeftDiv").empty();
+        $("#appealRightDiv").empty();
+        $("#appealRecordDialog").show().window({
+            width: 600,
+            height: 400,
+            modal: true,
+            title: "流程详情"
+        });
+
+        //查询审批流程
+        var reqParams = {
+            "processId": data.processId
+        };
+        var params = $.extend({
+            "start": 0,
+            "pageNum": 0,
+            "params": JSON.stringify(reqParams)
+        }, Util.PageUtil.getParams($("#searchForm")));
+
+        Util.loading.showLoading();
+        Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.APPEAL_PROCESS_CONFIG_DNS + "/queryAppealProcessDetail", params, function (result) {
+            Util.loading.destroyLoading();
+            var processData = result.RSP.DATA,
+                rspCode = result.RSP.RSP_CODE;
+            if (rspCode != null && rspCode !== "1") {
+                $.messager.show({
+                    msg: result.RSP.RSP_DESC,
+                    timeout: 1000,
+                    style: {right: '', bottom: ''},     //居中显示
+                    showType: 'show'
+                });
+            } else {
+                showAppealProcess(processData);
+            }
         });
     }
 
@@ -422,23 +458,47 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
         }
     }
 
-    //dialog弹框
-    //url：窗口调用地址，title：窗口标题，width：宽度，height：高度，shadow：是否显示背景阴影罩层
-    function showDialog(url, title, width, height, shadow) {
-        var content = '<iframe src="' + url + '" width="100%" height="100%" frameborder="0" scrolling="auto"></iframe>';
-        var dialogDiv = '<div id="processDetailDialog" title="' + title + '"></div>'; //style="overflow:hidden;"可以去掉滚动条
-        $(document.body).append(dialogDiv);
-        var win = $('#processDetailDialog').dialog({
-            content: content,
-            width: width,
-            height: height,
-            modal: shadow,
-            title: title,
-            onClose: function () {
-                $(this).dialog('destroy');//后面可以关闭后的事件
+    //显示审批记录
+    function showAppealProcess(data) {
+        var leftDiv = $("#appealLeftDiv"),
+            rightDiv = $("#appealRightDiv");
+        $.each(data, function (i, item) {
+            if (i > 0) {
+                leftDiv.append(getProcessLine());
             }
+            leftDiv.append(getLeftDiv());
+            rightDiv.append(getRightDiv(item));
         });
-        win.dialog('open');
+    }
+
+    //左侧操作区域
+    function getLeftDiv() {
+        return '<div class="panel-transparent"><form class="form form-horizontal"><div class="cl">' +
+            '<div class="formControls col-8"><div class="fl text-small"></div></div>' +
+            '<div class="formControls col-4"><div class="circle"></div></div>' +
+            '</div></form></div>';
+    }
+
+    //左侧流程线
+    function getProcessLine() {
+        return '<form class="form form-horizontal"><div class="cl">' +
+            '<div class="formControls col-8" style="margin-left: 8px"><div class="process-line cl"></div></div>' +
+            '</div></form>';
+    }
+
+    //右侧流程处理过程列表
+    function getRightDiv(item) {
+        return '<div style="margin-bottom:30px;">' +
+            '<div class="panel-transparent-20 cl"><form class="form form-horizontal"><div class="cl">' +
+            '<div class="formControls col-12"><div class="fl text-small">子节点：' + item.nodeName + '</div></div>' +
+            '</div></form></div>' +
+            '<div class="panel-transparent-20 cl"><form class="form form-horizontal"><div class="cl">' +
+            '<div class="formControls col-12"><div class="fl text-small">审批人：' + item.userName + '</div></div>' +
+            '</div></form></div>' +
+            '<div class="panel-transparent-20 cl"><form class="form form-horizontal"><div class="cl">' +
+            '<div class="formControls col-12"><div class="fl text-small">部门：' + item.departmentName + '</div></div>' +
+            '</div></form></div>' +
+            '</div>';
     }
 
     return {

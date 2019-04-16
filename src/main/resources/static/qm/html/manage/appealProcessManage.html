@@ -7,9 +7,6 @@
     <link rel="stylesheet" type="text/css" href="../../assets/lib/easyui/themes/cmcui/iconfont/iconfont.min.css"/>
     <link rel="stylesheet" type="text/css" href="../../assets/lib/ztree/css/cmcStyle/tree.css"/>
     <link rel="stylesheet" type="text/css" href="../../assets/components/rating/themes/fontawesome-stars.css"/>
-    <script src="../../assets/components/ckeditor/ckeditor.js"></script>
-
-    <link href="../../css/style.min.css" rel="stylesheet">
 
 </head>
 <body>
@@ -75,10 +72,18 @@
             </div>
         </div>
 
-        <!--流程新增弹窗，默认隐藏-->
-        <div id='process_add_window' style='display:none;'>
-            <div id='process_add_content' style='overflow:auto'>
-            </div>
+        <!-- 审批流程详情弹窗，默认隐藏  -->
+        <div id='appealRecordDialog' style='overflow: auto;display:none;'>
+            <form id='appealDealRecordConfig' method='GET' class='form form-horizontal'>
+                <div class='panel-search' style='overflow: auto;margin-top: 20px;'>
+                    <!--左侧区域-->
+                    <div id="appealLeftDiv" style="float:left ; width:20%; height:100%;">
+                    </div>
+                    <!--右侧区域-->
+                    <div id="appealRightDiv" style="float:right ; width:80%; height:100%;">
+                    </div>
+                </div>
+            </form>
         </div>
 
     </div>
