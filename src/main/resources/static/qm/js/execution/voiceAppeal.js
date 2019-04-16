@@ -73,8 +73,8 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                     {
                         field: 'operate', title: '操作', width: '10%',
                         formatter: function (value, row, index) {
-                            var detail = '<a href="javascript:void(0);" style="color: deepskyblue;" id = "appealRecord_' + row.appealId + '">审批记录</a>';
-                            var deal = '<a href="javascript:void(0);" style="color: deepskyblue;" id = "appealDeal_' + row.appealId + '">审批</a>';
+                            var detail = '<a href="javascript:void(0);" class="list_operation_color" id = "appealRecord_' + row.appealId + '">审批记录</a>';
+                            var deal = '<a href="javascript:void(0);" class="list_operation_color" id = "appealDeal_' + row.appealId + '">审批</a>';
                             return detail + "&nbsp;&nbsp;" + deal;
                         }
                     },
@@ -100,7 +100,11 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                             }
                         }
                     },
-                    {field: 'appealStaffName', title: '申诉人', width: '8%'},
+                    {field: 'appealStaffName', title: '申诉人', width: '8%',
+                        formatter:function(value, row, index){
+                            if(value){
+                                return "<span title='" +row.appealStaffName+"["+row.appealStaffId+"]" + "'>"+row.appealStaffName+"["+row.appealStaffId+"]" + "</span>";
+                            }}},
                     {
                         field: 'appealReason', title: '申诉原因', width: '14%',
                         formatter: function (value, row, index) {
@@ -385,7 +389,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                 "templateId": item.templateId
             };
             var checkUrl = CommonAjax.createURL(url, param);
-            CommonAjax.showDialog(checkUrl, "质检详情", 950, Util.constants.DIALOG_HEIGHT_SMALL);
+            CommonAjax.showDialog(checkUrl, "质检详情", 1000, Util.constants.DIALOG_HEIGHT_SMALL);
         }
 
         //校验开始时间和终止时间

@@ -72,6 +72,7 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
                     data = poolStatus.combobox('getData');
                 if (data.length > 0) {
                     poolStatus.combobox('select', data[0].paramsCode);
+                    $("#orderCheckList").datagrid("load");
                 }
             }
         });
@@ -89,8 +90,8 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
                 {
                     field: 'operate', title: '操作', width: '8%',
                     formatter: function (value, row, index) {
-                        var check = '<a href="javascript:void(0);" style="color: deepskyblue;" id = "orderCheck_' + row.workFormId + '">质检</a>',
-                            checkHistory = '<a href="javascript:void(0);" style="color: deepskyblue;" id = "checkHistory_' + row.workFormId + '">质检记录</a>';
+                        var check = '<a href="javascript:void(0);" class="list_operation_color" id = "orderCheck_' + row.workFormId + '">质检</a>',
+                            checkHistory = '<a href="javascript:void(0);" class="list_operation_color" id = "checkHistory_' + row.workFormId + '">质检记录</a>';
                         if (row.poolStatus.toString() === Util.constants.CHECK_STATUS_CHECK) {
                             return check;
                         }

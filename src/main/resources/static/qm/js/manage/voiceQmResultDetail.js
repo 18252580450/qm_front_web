@@ -20,6 +20,14 @@ require(["jquery", "util", "dateUtil", "transfer", "easyui"], function ($, Util)
         //基本信息初始化
         initBaseInfo();
 
+        //考评评语
+        $("#checkComment").textbox(
+            {
+                multiline: true,
+                editable: false
+            }
+        );
+
         //考评项列表
         var IsCheckFlag = true; //标示是否是勾选复选框选中行的，true - 是 , false - 否
         $("#checkItemList").datagrid({
@@ -265,7 +273,7 @@ require(["jquery", "util", "dateUtil", "transfer", "easyui"], function ($, Util)
             var data = result.RSP.DATA,
                 rspCode = result.RSP.RSP_CODE;
             if (rspCode != null && rspCode === "1") {
-                $("#checkComment").html(data[0].checkComment);
+                $("#checkComment").textbox('setValue', data[0].checkComment);
             }
         });
     }

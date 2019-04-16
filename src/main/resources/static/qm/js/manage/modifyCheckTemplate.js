@@ -418,8 +418,8 @@ define(["text!html/manage/modifyCheckTemplate.tpl","jquery", 'util', "transfer",
                             "index":index,
                         };
                         var beanStr = JSON.stringify(bean);   //转成字符串
-                        var action = "<a href='javascript:void(0);' class='delBtn' id =" + beanStr + " >删除</a>";
-                        var action2 = "<a href='javascript:void(0);' class='saveBtn' id =" + beanStr + " >保存</a>";
+                        var action = "<a href='javascript:void(0);' class='delBtn list_operation_color' id =" + beanStr + " >删除</a>";
+                        var action2 = "<a href='javascript:void(0);' class='saveBtn list_operation_color' id =" + beanStr + " >保存</a>";
                         return action+"&nbsp;&nbsp;"+action2;
                     }
                 },

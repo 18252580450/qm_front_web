@@ -65,7 +65,7 @@ require([
                     {
                         field: 'operate', title: '操作', width: '8%',
                         formatter: function (value, row, index) {
-                            return '<a href="javascript:void(0);" style="color: deepskyblue;" id = "voiceCheck_' + row.touchId + '">质检</a>';
+                            return '<a href="javascript:void(0);" class="list_operation_color" id = "voiceCheck_' + row.touchId + '">质检</a>';
                         }
                     },
                     {

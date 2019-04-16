@@ -184,7 +184,7 @@ require([
                         var edit = '<a href="javascript:void(0);" id = "processEdit' + row.orderNo + '" style="color: black;">修改</a>';
                         //只允许删除最后一个子流程
                         if (row.orderNo === processListData.length - 1) {
-                            return edit + "&nbsp;&nbsp;" + '<a href="javascript:void(0);" id = "processDel' + row.orderNo + '" style="color: black;">删除</a>';
+                            return edit + "&nbsp;&nbsp;" + '<a href="javascript:void(0);" id = "processDel' + row.orderNo + '" class="list_operation_color">删除</a>';
                         }
                         return edit;
                     }

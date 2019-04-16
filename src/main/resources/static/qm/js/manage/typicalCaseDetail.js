@@ -25,7 +25,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                 {
                     field: 'touchId', title: '接触流水', width: '25%',
                     formatter: function (value, row, index) {
-                        return '<a href="javascript:void(0);" style="color: deepskyblue;" id = "checkDetail_' + row.touchId + '">' + value + '</a>';
+                        return '<a href="javascript:void(0);" class="list_operation_color" id = "checkDetail_' + row.touchId + '">' + value + '</a>';
                     }
                 },
                 {field: 'caseTitle', title: '案例标题', width: '25%'},
@@ -91,7 +91,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                             showCheckDetail("语音详情", item, voiceCheckDetail, 950, 500);
                         } //todo
                         if (caseInfo.checkType === Util.constants.CHECK_TYPE_ORDER) {
-                            showCheckDetail("工单详情", item, orderCheckDetail, 950, Util.constants.DIALOG_HEIGHT);
+                            showCheckDetail("工单详情", item, orderCheckDetail, 1000, Util.constants.DIALOG_HEIGHT);
                         }
                     });
                 });

@@ -141,7 +141,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                     {
                         field: 'operate', title: '操作', width: '8%',
                         formatter: function (value, row, index) {
-                            return '<a href="javascript:void(0);" style="color: deepskyblue;" id = "appealRecord_' + row.appealId + '">审批记录</a>';
+                            return '<a href="javascript:void(0);" id = "appealRecord_' + row.appealId + '" class="list_operation_color">审批记录</a>';
                         }
                     },
                     {
@@ -166,7 +166,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                     {
                         field: 'inspectionId', title: '质检流水', width: '14%',
                         formatter: function (value, row, index) {
-                            return '<a href="javascript:void(0);" style="color: deepskyblue;" id = "checkFlow_' + row.appealId + '">' + value + '</a>';
+                            return '<a href="javascript:void(0);" class="list_operation_color" id = "checkFlow_' + row.appealId + '">' + value + '</a>';
                         }
                     },
                     {
@@ -177,10 +177,10 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                     },
                     {
                         field: 'appealStaffName', title: '申诉人', width: '10%',
-                        formatter: function (value) {
-                            return "<span title='" + value + "'>" + value + "</span>";
-                        }
-                    },
+                        formatter:function(value, row, index){
+                            if(value){
+                                return "<span title='" +row.appealStaffName+"["+row.appealStaffId+"]" + "'>"+row.appealStaffName+"["+row.appealStaffId+"]" + "</span>";
+                            }}},
                     {
                         field: 'appealReason', title: '申诉原因', width: '14%',
                         formatter: function (value) {
@@ -414,7 +414,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                 "templateId": item.templateId
             };
             var checkUrl = CommonAjax.createURL(url, param);
-            CommonAjax.showDialog(checkUrl, "质检详情", 950, Util.constants.DIALOG_HEIGHT);
+            CommonAjax.showDialog(checkUrl, "质检详情", 1000, Util.constants.DIALOG_HEIGHT);
         }
 
         //校验开始时间和终止时间

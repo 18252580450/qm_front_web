@@ -32,7 +32,7 @@ define(["js/manage/addCheckTemplate","js/manage/modifyCheckTemplate","jquery", '
                 var templateStatus = $("#templateStatus");
                 var data = templateStatus.combobox('getData');
                 if (data.length > 0) {
-                    templateStatus.combobox('select', data[3].codeValue);
+                    templateStatus.combobox('select', data[0].codeValue);
                 }
             }
         });
@@ -55,8 +55,8 @@ define(["js/manage/addCheckTemplate","js/manage/modifyCheckTemplate","jquery", '
                         var beanRr = JSON.parse(JSON.stringify(bean)); beanRr['status']='release';//深拷贝
                         var beanSt = JSON.parse(JSON.stringify(bean)); beanSt['status']='stop';
 
-                        var action2="<a href='javascript:void(0);' class='actionBtn' id =" + JSON.stringify(beanRr) + " >发布</a>";
-                        var action3="<a href='javascript:void(0);' class='actionBtn' id =" + JSON.stringify(beanSt) + " >暂停</a>";
+                        var action2 = "<a href='javascript:void(0);' class='actionBtn list_operation_color' id =" + JSON.stringify(beanRr) + " >发布</a>";
+                        var action3 = "<a href='javascript:void(0);' class='actionBtn list_operation_color' id =" + JSON.stringify(beanSt) + " >暂停</a>";
                         return action2+"&nbsp;&nbsp;"+action3;
                     }
                 },
@@ -114,8 +114,8 @@ define(["js/manage/addCheckTemplate","js/manage/modifyCheckTemplate","jquery", '
                 var pageNum = param.rows;
                 var templateName = $("#templateName").val();
                 var templateStatus = $("#templateStatus").combobox("getValue");
-                if(templateStatus == '3'){
-                    templateStatus = null;
+                if (templateStatus == '-1') {
+                    templateStatus = "";
                 }
                 var reqParams = {
                     "templateName": templateName,

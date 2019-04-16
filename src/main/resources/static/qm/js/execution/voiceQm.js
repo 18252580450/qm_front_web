@@ -19,84 +19,6 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
         });
     }
 
-    /**
-     * 过滤数据
-     */
-    function filterData(datas) {
-        if (isEmpty(datas)) {
-            return;
-        }
-        for (var index in datas) {
-            datas[index].isParent = datas[index].parent;
-            datas[index].children = [];
-            if (!isCheckParent && datas[index].isParent) {
-                //父节点不可选
-                datas[index].chkDisabled = true;
-            }
-            if (isChoice && datas[index].optnlFlag == "0") {
-                //表示节点不可选
-                datas[index].chkDisabled = true;
-            }
-            if (isVisual && datas[index].vsblFlag == "0") {
-                //隐藏节点
-                datas[index].isHidden = true;
-            }
-        }
-    }
-
-    function initTree(data) {
-        var url = Util.constants.SRV_REQTYPE_REDIS_TREE;
-        var setting = {
-            async: {
-                dataType: "json",
-                type: "POST",
-                enable: true,
-                url: url,
-                autoParam: ["srvReqstTypeId=suprSrvReqstTypeId"],
-                otherParam: {
-                    "provCode": Util.constants.PROVCODE
-                },
-                dataFilter : filter
-            },
-            data: {
-                key: {
-                    name: "srvReqstTypeNm"
-                },
-                simpleData: {
-                    enable: true,
-                    idKey: "srvReqstTypeId",
-                    pIdKey: "suprSrvReqstTypeId",
-                    rootPId: 1
-                }
-            },
-            callback : {
-                onClick: function (e, id, node) {//点击事件
-                    if(node.isParent){
-                        $.messager.alert("提示", "请点击子节点!");
-                        return false;
-                    }
-                    $('#serviceTypeName').searchbox("setValue",node.srvReqstTypeNm);
-                    $('#serviceTypeId').val(node.srvReqstTypeId);
-                    $("#qry_service_window").window('close'); // 关闭窗口
-                }
-            }
-        };
-        function filter(treeId, parentNode, json) {
-            var childNodes = json.rsp.datas;
-            if (!childNodes) {
-                return;
-            }
-            filterData(childNodes);
-            return childNodes;
-        }
-
-        var newNode = data.rsp.datas;
-        filterData(newNode);
-        $(document).ready(function () {
-            zTreeObj = $.fn.zTree.init($("#tree"), setting, newNode);
-        });
-    }
-
     //页面信息初始化
     function initPageInfo() {
 
@@ -161,39 +83,6 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
             }
         });
 
-        $('#serviceTypeName').searchbox({ //服务请求类型输入框点击查询事件
-            editable:false,//禁止手动输入
-            searcher: function(value){
-                $('#qry_service_window').show().window({
-                    title: '查询服务请求类型',
-                    width: 300,
-                    height: 500,
-                    cache: false,
-                    modal: true
-                });
-                $.ajax({
-                    url:Util.constants.SRV_REQTYPE_REDIS_TREE,
-                    dataType:'json',
-                    type:"POST",
-                    data:{
-                        suprSrvReqstTypeId:0,
-                        provCode: Util.constants.PROVCODE
-                    },
-                    success:function(data){
-                        initTree(data);
-                    },
-                    error:function(){
-                        $.messager.show({
-                            title: "Error",
-                            msg: "获取服务请求树失败!",
-                            timeout: 2000,
-                            style: {}
-                        });
-                    }
-                });
-            }
-        });
-
         //呼叫类型下拉框
         $("#callType").combobox({
             url: '../../data/callType.json',
@@ -206,7 +95,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
                 var callType = $("#callType");
                 var data = callType.combobox('getData');
                 if (data.length > 0) {
-                    callType.combobox('select', data[2].codeValue);
+                    callType.combobox('select', data[0].codeValue);
                 }
             }
         });
@@ -223,7 +112,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
                 var isOperate = $("#isOperate");
                 var data = isOperate.combobox('getData');
                 if (data.length > 0) {
-                    isOperate.combobox('select', data[2].codeValue);
+                    isOperate.combobox('select', data[0].codeValue);
                 }
             }
         });
@@ -240,7 +129,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
                 var poolStatus = $("#poolStatus");
                 var data = poolStatus.combobox('getData');
                 if (data.length > 0) {
-                    poolStatus.combobox('select', data[3].codeValue);
+                    poolStatus.combobox('select', data[0].codeValue);
                 }
             }
         });
@@ -279,8 +168,8 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
                             'recordPath':row.recordPath
                         };
                         var beanStr = JSON.stringify(bean);   //转成字符串
-                        var action = "<a href='javascript:void(0);' style='color: dimgrey' class='playBtn' id =" + beanStr + " >语音播放</a>",
-                            download = "<a href='javascript:void(0);' style='color: dimgrey' class='downloadBtn' id =" + beanStr + " >下载</a>";
+                        var action = "<a href='javascript:void(0);' class='playBtn list_operation_color' id =" + beanStr + " >语音播放</a>",
+                            download = "<a href='javascript:void(0);' class='downloadBtn list_operation_color' id =" + beanStr + " >下载</a>";
                         return action + "&nbsp;&nbsp;" + download;
                     }
                 },
@@ -359,11 +248,11 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
                 var touchId = $("#touchId").val();
                 var planId = $("#planId").val();
                 var isOperate = $("#isOperate").combobox("getValue");
-                if(isOperate=="2"){
+                if (isOperate == "-1") {
                     isOperate = "";
                 }
                 var callType = $("#callType").combobox("getValue");
-                if(callType=="2"){
+                if (callType == "-1") {
                     callType = "";
                 }
                 var startTime = $("#startTime").datetimebox("getValue");
@@ -381,7 +270,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
                 var mediaType = $("#mediaType").val();
                 var serviceTypeId = $("#serviceTypeId").val();
                 var poolStatus = $("#poolStatus").combobox("getValue");
-                if(poolStatus=="3"){
+                if (poolStatus == "-1") {
                     poolStatus = "";
                 }
                 reqParams = {
