@@ -65,7 +65,7 @@
                         <!--</div>-->
                         <div class='cl'>
                             <div class='panel-tool-box cl' >
-                                <div class='fl text-bold'>人工考评项<span style="margin-left: 10px;color: #acacac ">[点击行进行修改分数后,请点击行保存操作]</span></div>
+                                <div class='fl text-bold'>人工考评项</div>
                             </div>
                             <table id='peopleManage' name = 'peopleManage' class='easyui-datagrid'  style=' width:100%;'>
                             </table>

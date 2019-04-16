@@ -246,10 +246,25 @@ define(["text!html/manage/modifyCheckTemplate.tpl","jquery", 'util', "transfer",
             //随机生成数字
             var num = Math.random()*15000 + 800;
             num = parseInt(num, 10);
-            $.each(rowsData, function (i)
+            $.each(rowsData, function (i, row)
             {
-                var maxScore =  parseInt(rowsData[i].maxScore);
-                var nodeScore = parseInt(rowsData[i].nodeScore);
+                var rowIndex = $("#peopleManage", $el).datagrid('getRowIndex', row);
+                var maxScoreEd = $("#peopleManage", $el).datagrid('getEditor', {index: rowIndex, field: 'maxScore'});
+                var maxScoreStr;
+                if (maxScoreEd) {
+                    maxScoreStr = $(maxScoreEd.target).val();
+                } else {
+                    maxScoreStr = row.maxScore;
+                }
+                var nodeScoreEd = $("#peopleManage", $el).datagrid('getEditor', {index: rowIndex, field: 'nodeScore'});
+                var nodeScoreStr;
+                if (nodeScoreEd) {
+                    nodeScoreStr = $(nodeScoreEd.target).val();
+                } else {
+                    nodeScoreStr = row.nodeScore;
+                }
+                var maxScore = parseInt(maxScoreStr);
+                var nodeScore = parseInt(nodeScoreStr);
                 if(nodeScore<maxScore){
                     return false;
                 }
@@ -294,7 +309,7 @@ define(["text!html/manage/modifyCheckTemplate.tpl","jquery", 'util', "transfer",
                 nAllScore = nAllScore+i;
             });
             if(nAll.indexOf(0)!=-1){
-                $.messager.alert("提示", "点击行填写分数,然后请点击行保存操作并且每行所占分值不可为0!");
+                $.messager.alert("提示", "点击行填写分数,并且每行所占分值不可为0!");
                 return false;
             }
             if(nAllScore!=100||maxAllScore>100){
@@ -409,7 +424,7 @@ define(["text!html/manage/modifyCheckTemplate.tpl","jquery", 'util', "transfer",
         $("#page",$el).find("#peopleManage").datagrid({
             columns: [[
                 {
-                    field: 'action', title: '操作', width: '10%',
+                    field: 'action', title: '操作', width: '5%',
                     formatter: function (value, row, index) {
                         var bean = {//根据参数进行定位修改
                             "templateId":row.templateId,
@@ -419,8 +434,7 @@ define(["text!html/manage/modifyCheckTemplate.tpl","jquery", 'util', "transfer",
                         };
                         var beanStr = JSON.stringify(bean);   //转成字符串
                         var action = "<a href='javascript:void(0);' class='delBtn list_operation_color' id =" + beanStr + " >删除</a>";
-                        var action2 = "<a href='javascript:void(0);' class='saveBtn list_operation_color' id =" + beanStr + " >保存</a>";
-                        return action+"&nbsp;&nbsp;"+action2;
+                        return action;
                     }
                 },
                 {field: 'nodeName', title: '考评项名称', width: '20%',
@@ -483,10 +497,6 @@ define(["text!html/manage/modifyCheckTemplate.tpl","jquery", 'util', "transfer",
                 tempIndex = index;
                 $("#peopleManage",$el).datagrid('beginEdit', index);//编辑行
             }
-        });
-
-        $("#page",$el).on("click", "a.saveBtn", function () {
-            $('#peopleManage',$el).datagrid('endEdit', tempIndex);//保存行
         });
     }
     return initialize;

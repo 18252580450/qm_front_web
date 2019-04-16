@@ -198,10 +198,25 @@ define(["text!html/manage/addCheckTemplate.tpl","jquery", 'util', "transfer", "e
         var maxAll = [];// 扣分范围
         var nAll = [];//所占分值
         var loc;
-        $.each(rowsData, function (i)
+        $.each(rowsData, function (i, row)
         {
-            var maxScore =  parseInt(rowsData[i].maxScore);
-            var nodeScore = parseInt(rowsData[i].nodeScore);
+            var rowIndex = $("#peopleManage", $el).datagrid('getRowIndex', row);
+            var maxScoreEd = $("#peopleManage", $el).datagrid('getEditor', {index: rowIndex, field: 'maxScore'});
+            var maxScoreStr;
+            if (maxScoreEd) {
+                maxScoreStr = $(maxScoreEd.target).val();
+            } else {
+                maxScoreStr = row.maxScore;
+            }
+            var nodeScoreEd = $("#peopleManage", $el).datagrid('getEditor', {index: rowIndex, field: 'nodeScore'});
+            var nodeScoreStr;
+            if (nodeScoreEd) {
+                nodeScoreStr = $(nodeScoreEd.target).val();
+            } else {
+                nodeScoreStr = row.nodeScore;
+            }
+            var maxScore = parseInt(maxScoreStr);
+            var nodeScore = parseInt(nodeScoreStr);
             if(nodeScore<maxScore){
                 return false;
             }
@@ -237,7 +252,7 @@ define(["text!html/manage/addCheckTemplate.tpl","jquery", 'util', "transfer", "e
         });
         if(nAll.indexOf(0)!=-1){
             flag = false;
-            $.messager.alert("提示", "点击行填写分数,然后请点击行保存操作并且每行所占分值不可为0!");
+            $.messager.alert("提示", "点击行填写分数,每行所占分值不可为0!");
             return false;
         }
         if(nAllScore!=100||maxAllScore>100){
@@ -338,7 +353,7 @@ define(["text!html/manage/addCheckTemplate.tpl","jquery", 'util', "transfer", "e
         $("#page",$el).find("#peopleManage",$el).datagrid({
             columns: [[
                 {
-                    field: 'action', title: '操作', width: '10%',
+                    field: 'action', title: '操作', width: '5%',
                     formatter: function (value, row, index) {
                         var bean = {//根据参数进行定位修改
                             'templateId': row.templateId,
@@ -346,8 +361,7 @@ define(["text!html/manage/addCheckTemplate.tpl","jquery", 'util', "transfer", "e
                         };
                         var beanStr = JSON.stringify(bean);   //转成字符串
                         var action = "<a href='javascript:void(0);' class='delBtn list_operation_color' id =" + beanStr + " >删除</a>";
-                        var action2 = "<a href='javascript:void(0);' class='saveBtn list_operation_color' id =" + beanStr + " >保存</a>";
-                        return action+"&nbsp;&nbsp;"+action2;
+                        return action;
                     }
                 },
                 {field: 'nodeName', title: '考评项名称', width: '20%',
@@ -361,14 +375,8 @@ define(["text!html/manage/addCheckTemplate.tpl","jquery", 'util', "transfer", "e
                     formatter: function (value, row, index) {
                         return {'0':'非致命性','1':'致命性'}[value];
                     }},
-                {field: 'nodeScore', title: '所占分值', width: '15%', editor:'numberbox',
-                    formatter: function (value) {
-                        return "<span title='" + value + "'>" + value + "</span>";
-                    }},
-                {field: 'maxScore', title: '扣分范围', width: '15%', editor:'numberbox',
-                    formatter: function (value) {
-                        return "<span title='" + value + "'>" + value + "</span>";
-                    }}
+                {field: 'nodeScore', title: '所占分值', width: '15%', editor: "text"},
+                {field: 'maxScore', title: '扣分范围', width: '15%', editor: "text"}
             ]],
             fitColumns: true,
             width: '100%',
@@ -389,10 +397,6 @@ define(["text!html/manage/addCheckTemplate.tpl","jquery", 'util', "transfer", "e
                 tempIndex = index;
                 $("#peopleManage",$el).datagrid('beginEdit', index);//编辑行
             }
-        });
-
-        $("#page",$el).on("click", "a.saveBtn", function () {
-            $('#peopleManage',$el).datagrid('endEdit', tempIndex);//保存行
         });
     }
     return initialize;
