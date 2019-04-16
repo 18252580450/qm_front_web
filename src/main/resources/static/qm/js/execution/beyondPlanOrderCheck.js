@@ -59,7 +59,7 @@ require([
                 searcher: function (value) {
                     require(["js/execution/queryQmPeople"], function (qryQmPeople) {
                         var queryQmPeople = qryQmPeople;
-                        queryQmPeople.initialize();
+                        queryQmPeople.initialize("", "", "");
                         $('#qry_people_window').show().window({
                             title: '立单人搜索',
                             width: Util.constants.DIALOG_WIDTH,
@@ -98,36 +98,46 @@ require([
                             }
                         }
                     },
-                    {field: 'wrkfmShowSwftno', title: '工单流水', width: '15%',
+                    {
+                        field: 'wrkfmShowSwftno', title: '工单流水', width: '15%',
                         formatter: function (value, row, index) {
-                            if(value){
+                            if (value) {
                                 return "<span title='" + value + "'>" + value + "</span>";
                             }
-                        }},
-                    {field: 'bizTitle', title: '工单标题', width: '10%',
+                        }
+                    },
+                    {
+                        field: 'bizTitle', title: '工单标题', width: '10%',
                         formatter: function (value, row, index) {
-                            if(value){
+                            if (value) {
                                 return "<span title='" + value + "'>" + value + "</span>";
                             }
-                        }},
-                    {field: 'srvReqstTypeFullNm', title: '服务请求类型', width: '15%',
+                        }
+                    },
+                    {
+                        field: 'srvReqstTypeFullNm', title: '服务请求类型', width: '15%',
                         formatter: function (value, row, index) {
-                            if(value){
+                            if (value) {
                                 return "<span title='" + value + "'>" + value + "</span>";
                             }
-                        }},
-                    {field: 'custEmail', title: '客户账号', width: '10%',
+                        }
+                    },
+                    {
+                        field: 'custEmail', title: '客户账号', width: '10%',
                         formatter: function (value, row, index) {
-                            if(value){
+                            if (value) {
                                 return "<span title='" + value + "'>" + value + "</span>";
                             }
-                        }},
-                    {field: 'custName', title: '客户名称', width: '10%',
+                        }
+                    },
+                    {
+                        field: 'custName', title: '客户名称', width: '10%',
                         formatter: function (value, row, index) {
-                            if(value){
+                            if (value) {
                                 return "<span title='" + value + "'>" + value + "</span>";
                             }
-                        }},
+                        }
+                    },
                     {field: 'custNum', title: '客户号码', width: '10%'},
                     {field: 'handleDuration', title: '处理时长', width: '10%'},
                     {

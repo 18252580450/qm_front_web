@@ -181,10 +181,10 @@ require([
                 {
                     field: 'operation', title: '操作', width: '20%',
                     formatter: function (value, row, index) {
-                        var edit = '<a href="javascript:void(0);" id = "processEdit' + row.orderNo + '" style="color: black;">修改</a>';
+                        var edit = '<a href="javascript:void(0);" class="list_operation_color" id = "processEdit' + row.orderNo + '">修改</a>';
                         //只允许删除最后一个子流程
                         if (row.orderNo === processListData.length - 1) {
-                            return edit + "&nbsp;&nbsp;" + '<a href="javascript:void(0);" id = "processDel' + row.orderNo + '" class="list_operation_color">删除</a>';
+                            return edit + "&nbsp;&nbsp;" + '<a href="javascript:void(0);" class="list_operation_color" id = "processDel' + row.orderNo + '">删除</a>';
                         }
                         return edit;
                     }
@@ -402,11 +402,11 @@ require([
                     field: 'detail', title: '操作', width: '10%',
                     formatter: function (value, row, index) {
                         if (processListData[row.processOrder].hasOwnProperty("subNodeList")) {
-                            var edit = '<a href="javascript:void(0);" id = "nodeEdit' + row.orderNo + '" style="color:black;">修改</a>';
+                            var edit = '<a href="javascript:void(0);" class="list_operation_color" id = "nodeEdit' + row.orderNo + '">修改</a>';
                             //只允许删除末子节点
                             var subNodeList = processListData[row.processOrder].subNodeList;
                             if (row.orderNo === subNodeList[subNodeList.length - 1].orderNo) {
-                                return edit + "&nbsp;&nbsp;" + '<a href="javascript:void(0);" id = "nodeDel' + row.orderNo + '" style="color: black;">删除</a>';
+                                return edit + "&nbsp;&nbsp;" + '<a href="javascript:void(0);" class="list_operation_color" id = "nodeDel' + row.orderNo + '">删除</a>';
                             }
                             return edit;
                         }
@@ -618,9 +618,9 @@ require([
         userNameInput.searchbox({
                 editable: false,//禁止手动输入
                 searcher: function () {
-                    require(["js/manage/queryQmPeople"], function (qryQmPeople) {
+                    require(["js/execution/queryQmPeople"], function (qryQmPeople) {
                         var queryQmPeople = qryQmPeople;
-                        queryQmPeople.initialize("");
+                        queryQmPeople.initialize("", "", "");
                         $('#qry_people_window').show().window({
                             title: '审批人员信息',
                             width: Util.constants.DIALOG_WIDTH,
@@ -628,7 +628,7 @@ require([
                             cache: false,
                             content: queryQmPeople.$el,
                             modal: true,
-                            onClose: function () {//弹框关闭前触发事件
+                            onBeforeClose: function () {//弹框关闭前触发事件
                                 var checkStaff = queryQmPeople.getMap();//获取审批人员信息
                                 userNameInput.searchbox("setValue", checkStaff.staffName);
                                 $("#userId").val(checkStaff.staffId);
@@ -863,9 +863,9 @@ require([
         userNameInput.searchbox({
                 editable: false,//禁止手动输入
                 searcher: function () {
-                    require(["js/manage/queryQmPeople"], function (qryQmPeople) {
+                    require(["js/execution/queryQmPeople"], function (qryQmPeople) {
                         var queryQmPeople = qryQmPeople;
-                        queryQmPeople.initialize("");
+                        queryQmPeople.initialize("", "", "");
                         $('#qry_people_window').show().window({
                             title: '审批人员信息',
                             width: Util.constants.DIALOG_WIDTH,
@@ -873,7 +873,7 @@ require([
                             cache: false,
                             content: queryQmPeople.$el,
                             modal: true,
-                            onClose: function () {//弹框关闭前触发事件
+                            onBeforeClose: function () {//弹框关闭前触发事件
                                 var checkStaff = queryQmPeople.getMap();//获取审批人员信息
                                 userNameInput.searchbox("setValue", checkStaff.staffName);
                                 $("#userId").val(checkStaff.staffId);

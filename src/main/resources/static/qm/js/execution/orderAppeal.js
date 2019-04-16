@@ -21,7 +21,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                     searcher: function () {
                         require(["js/execution/queryQmPeople"], function (qryQmPeople) {
                             var queryQmPeople = qryQmPeople;
-                            queryQmPeople.initialize();
+                            queryQmPeople.initialize("", "", "");
                             $('#qry_people_window').show().window({
                                 title: '审批人员信息',
                                 width: Util.constants.DIALOG_WIDTH,

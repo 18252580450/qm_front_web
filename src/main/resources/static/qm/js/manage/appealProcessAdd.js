@@ -134,15 +134,6 @@ require([
         var IsCheckFlag = true; //标示是否是勾选复选框选中行的，true - 是 , false - 否
         $("#processList").datagrid({
             columns: [[
-                {
-                    field: 'operation', title: '操作', width: '20%',
-                    formatter: function (value, row, index) {
-                        //只允许删除主流程和最后一个子流程
-                        if (parseInt(row.orderNo) === 0 || parseInt(row.orderNo) === appealProcessData.length - 1) {
-                            return '<a href="javascript:void(0);" id = "appealProcess' + row.orderNo + '" class="list_operation_color">删除</a>';
-                        }
-                    }
-                },
                 {field: 'orderName', title: '流程顺序', width: '20%'},
                 {field: 'orderNo', title: '流程序号', hidden: true},
                 {field: 'processName', title: '流程名称', width: '20%'},
@@ -161,6 +152,15 @@ require([
                             }
                         }
                         return itemType;
+                    }
+                },
+                {
+                    field: 'operation', title: '操作', width: '20%',
+                    formatter: function (value, row, index) {
+                        //只允许删除主流程和最后一个子流程
+                        if (parseInt(row.orderNo) === 0 || parseInt(row.orderNo) === appealProcessData.length - 1) {
+                            return '<a href="javascript:void(0);" class="list_operation_color" id = "appealProcess' + row.orderNo + '">删除</a>';
+                        }
                     }
                 }
             ]],
@@ -426,9 +426,9 @@ require([
         userNameInput.searchbox({
                 editable: false,//禁止手动输入
                 searcher: function () {
-                    require(["js/manage/queryQmPeople"], function (qryQmPeople) {
+                    require(["js/execution/queryQmPeople"], function (qryQmPeople) {
                         var queryQmPeople = qryQmPeople;
-                        queryQmPeople.initialize("");
+                        queryQmPeople.initialize("", "", "");
                         $('#qry_people_window').show().window({
                             title: '审批人员信息',
                             width: Util.constants.DIALOG_WIDTH,
@@ -436,7 +436,7 @@ require([
                             cache: false,
                             content: queryQmPeople.$el,
                             modal: true,
-                            onClose: function () {//弹框关闭前触发事件
+                            onBeforeClose: function () {//弹框关闭前触发事件
                                 var checkStaff = queryQmPeople.getMap();//获取审批人员信息
                                 userNameInput.searchbox("setValue", checkStaff.staffName);
                                 $("#userId").val(checkStaff.staffId);
