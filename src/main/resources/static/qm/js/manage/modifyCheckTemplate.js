@@ -409,7 +409,7 @@ define(["text!html/manage/modifyCheckTemplate.tpl","jquery", 'util', "transfer",
         $("#page",$el).find("#peopleManage").datagrid({
             columns: [[
                 {
-                    field: 'action', title: '操作', width: '20%',
+                    field: 'action', title: '操作', width: '10%',
                     formatter: function (value, row, index) {
                         var bean = {//根据参数进行定位修改
                             "templateId":row.templateId,

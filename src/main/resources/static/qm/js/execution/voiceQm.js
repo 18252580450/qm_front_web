@@ -179,6 +179,22 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
                             return "<span title='" + value + "'>" + value + "</span>";
                         }
                     }},
+                {
+                    field: 'checkStaffName', title: '质检人员', align: 'center', width: '10%',
+                    formatter: function (value, row, index) {
+                        if (value) {
+                            return "<span title='" + row.checkStaffName + "[" + row.checkStaffId + "]" + "'>" + row.checkStaffName + "[" + row.checkStaffId + "]" + "</span>";
+                        }
+                    }
+                },
+                {
+                    field: 'checkedStaffName', title: '被检人员', align: 'center', width: '10%',
+                    formatter: function (value, row, index) {
+                        if (value) {
+                            return "<span title='" + row.checkedStaffName + "[" + row.checkedStaffId + "]" + "'>" + row.checkedStaffName + "[" + row.checkedStaffId + "]" + "</span>";
+                        }
+                    }
+                },
                 {field: 'staffNumber', title: '坐席号码', align: 'center', width: '10%',
                     formatter: function (value, row, index) {
                         if(value){
@@ -204,11 +220,6 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
                         }
                     }
                 },
-                {field: 'checkStaffName', title: '质检人员', align: 'center', width: '10%',
-                    formatter:function(value, row, index){
-                    if(value){
-                        return "<span title='" +row.checkStaffName+"["+row.checkStaffId+"]" + "'>"+row.checkStaffName+"["+row.checkStaffId+"]" + "</span>";
-                    }}},
                 {field: 'operateTime', title: '指派时间', align: 'center', width: '10%',
                     formatter: function (value, row, index) { //格式化时间格式
                     if(value){
@@ -216,11 +227,6 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
                     }
                   }
                 },
-                {field: 'checkedStaffName', title: '被检人员', align: 'center', width: '10%',
-                    formatter:function(value, row, index){
-                     if(value){
-                        return "<span title='" + row.checkedStaffName+"["+row.checkedStaffId+"]" + "'>"+row.checkedStaffName+"["+row.checkedStaffId+"]" + "</span>";
-                     }}},
                 {field: 'poolStatus', title: '是否质检', align: 'center', width: '10%',
                     formatter:function(value, row, index){
                         return {'0':'待质检','1':'待复检','2':'已质检'}[value];

@@ -338,7 +338,7 @@ define(["text!html/manage/addCheckTemplate.tpl","jquery", 'util', "transfer", "e
         $("#page",$el).find("#peopleManage",$el).datagrid({
             columns: [[
                 {
-                    field: 'action', title: '操作', width: '20%',
+                    field: 'action', title: '操作', width: '10%',
                     formatter: function (value, row, index) {
                         var bean = {//根据参数进行定位修改
                             'templateId': row.templateId,

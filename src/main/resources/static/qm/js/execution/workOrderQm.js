@@ -249,6 +249,14 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui","dateUti
                             return "<span title='" + value + "'>" + value + "</span>";
                         }
                 }},
+                {
+                    field: 'checkStaffName', title: '质检员', align: 'center', width: '10%',
+                    formatter: function (value, row, index) {
+                        if (value) {
+                            return "<span title='" + row.checkStaffName + "[" + row.checkStaffId + "]" + "'>" + row.checkStaffName + "[" + row.checkStaffId + "]" + "</span>";
+                        }
+                    }
+                },
                 {field: 'custEmail', title: '客户账号', align: 'center', width: '10%',
                     formatter: function (value, row, index) {
                         if(value){
@@ -304,12 +312,6 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui","dateUti
                         return {'0':'待质检','1':'待复检','2':'已质检'}[value];
                     }
                 },
-                {field: 'checkStaffName', title: '质检员', align: 'center', width: '10%',
-                formatter:function(value, row, index){
-                    if(value){
-                        return "<span title='" + row.checkStaffName+"["+row.checkStaffId+"]" + "'>"+row.checkStaffName+"["+row.checkStaffId+"]" + "</span>";
-                    }
-                }},
                 {
                     field: 'operateTime', title: '分配时间', align: 'center', width: '15%',
                     formatter: function (value, row, index) { //格式化时间格式

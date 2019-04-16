@@ -249,7 +249,7 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
                 {
                     field: 'inspectionId', title: '质检流水号', align: 'center', width: '15%',
                     formatter: function (value, row, index) {
-                        return '<a href="javascript:void(0);" id = "resultDetail_' + row.inspectionId + '">' + value + '</a>';
+                        return '<a href="javascript:void(0);" class="list_operation_color" id = "resultDetail_' + row.inspectionId + '">' + value + '</a>';
                     }
                 },
                 {field: 'acceptNumber', title: '客户号码', align: 'center', width: '10%', hidden: true},
