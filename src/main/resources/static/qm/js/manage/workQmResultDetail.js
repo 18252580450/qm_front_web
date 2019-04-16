@@ -517,7 +517,7 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
             columns: [[
                 {field: 'wrkfmShowSwftno', title: '工单编号', width: '20%'},
                 {field: 'crtTime', title: '受理时间', width: '20%'},
-                {field: 'dspsComplteStaffNm', title: '工单责任人', width: '15%'},
+                {field: 'dspsComplteStaffNm', title: '立单人', width: '15%'},
                 {field: 'srvReqstTypeFullNm', title: '服务请求类型', width: '25%'},
                 {field: 'wrkfmStsNm', title: '工单状态', width: '20%'}
             ]],

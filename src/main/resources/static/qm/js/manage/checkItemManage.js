@@ -175,7 +175,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
                         return vitalType;
                     }
                 },
-                {field: 'remark', title: '考评项描述', width: '25%'},
+                {field: 'remark', title: '考评项描述', width: '28%'},
                 {
                     field: 'nodeTypeCode', title: '考评环节', width: '15%',
                     formatter: function (value, row, index) {
@@ -364,8 +364,8 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
         $("#catalogConfig").form('clear');  //清空表单
         var disableSubmit = false;  //禁用提交按钮标志
         $("#catalogDialog").show().window({
-            width: 600,
-            height: 400,
+            width: 720,
+            height: 450,
             modal: true,
             title: "目录新增"
         });
@@ -374,6 +374,12 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
         $('#catalogNameConfig').validatebox({
             required: true
         });
+        //描述
+        $("#catalogDescConfig").textbox(
+            {
+                multiline: true
+            }
+        );
 
         //取消
         var cancelBtn = $("#catalogCancelBtn");
@@ -394,7 +400,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
 
             var parentCheckItemId = $("#parentCheckItemId").val(),
                 checkItemName = $("#catalogNameConfig").val(),
-                checkItemDesc = $("#catalogDescConfig").val(),
+                checkItemDesc = $("#catalogDescConfig").textbox('getValue'),
                 orderNo = checkNode.level;
             if (checkNode.isParent) {
                 orderNo = checkNode.level + 1;
@@ -452,19 +458,26 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
         $("#catalogConfig").form('clear');  //清空表单
         var disableSubmit = false;  //禁用提交按钮标志
         $("#catalogDialog").show().window({
-            width: 600,
-            height: 400,
+            width: 720,
+            height: 450,
             modal: true,
             title: "目录新增"
         });
         var parentCatalogName = $("#parentCheckItemName").val(),
-            catalogNameInput = $('#catalogNameConfig');
+            catalogNameInput = $('#catalogNameConfig'),
+            catalogDescInput = $("#catalogDescConfig");
         $("#catalogParentNameConfig").val(parentCatalogName);
         catalogNameInput.validatebox({
             required: true
         });
+        //描述
+        catalogDescInput.textbox(
+            {
+                multiline: true
+            }
+        );
         catalogNameInput.val(item.checkItemName);
-        $("#catalogDescConfig").val(item.remark);
+        catalogDescInput.textbox('setValue', item.remark);
         //取消
         var cancelBtn = $("#catalogCancelBtn");
         cancelBtn.unbind("click");
@@ -483,7 +496,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
             submitBtn.linkbutton({disabled: true});  //禁用提交按钮（样式）
 
             var checkItemName = $("#catalogNameConfig").val(),
-                checkItemDesc = $("#catalogDescConfig").val();
+                checkItemDesc = $("#catalogDescConfig").textbox('getValue');
 
             if (checkItemName == null || checkItemName === "") {
                 $.messager.alert("提示", "目录名称不能为空!");
@@ -535,8 +548,8 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
         $("#checkItemConfig").form('clear');  //清空表单
         var disableSubmit = false;  //禁用提交按钮标志
         $("#checkItemDialog").show().window({
-            width: 700,
-            height: 450,
+            width: 720,
+            height: 500,
             modal: true,
             title: "考评项新增"
         });
@@ -600,6 +613,12 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
                 $("#checkItemVitalTypeConfig").combobox('loadData', data);
             });
         }
+        //描述
+        $("#checkItemDescConfig").textbox(
+            {
+                multiline: true
+            }
+        );
 
         //取消
         var cancelBtn = $("#cancelBtn");
@@ -622,7 +641,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
                 checkItemName = $("#checkItemNameConfig").val(),
                 checkItemType = $("#checkItemTypeConfig").combobox("getValue"),
                 checkItemVitalType = $("#checkItemVitalTypeConfig").combobox("getValue"),
-                checkItemDesc = $("#checkItemDescConfig").val(),
+                checkItemDesc = $("#checkItemDescConfig").textbox('getValue'),
                 nodeTypeCode = "",
                 orderNo = checkNode.level;
             if (checkNode.isParent) {
@@ -685,15 +704,22 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
         $("#checkItemConfig").form('clear');  //清空表单
         var disableSubmit = false;  //禁用提交按钮标志
         $("#checkItemDialog").show().window({
-            width: 700,
-            height: 450,
+            width: 720,
+            height: 500,
             modal: true,
             title: "考评项修改"
         });
-        var checkItemNameInput = $('#checkItemNameConfig');
+        var checkItemNameInput = $('#checkItemNameConfig'),
+            checkItemDescInput = $("#checkItemDescConfig");
         checkItemNameInput.validatebox({
             required: true
         });
+        //描述
+        checkItemDescInput.textbox(
+            {
+                multiline: true
+            }
+        );
         //父目录名称
         $("#parentCatalogNameConfig").val($("#parentCheckItemName").val());
         if (item.checkItemType === Util.constants.CHECK_TYPE_ORDER) {
@@ -704,7 +730,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
         //自动填入待修改考评项名称
         checkItemNameInput.val(item.checkItemName);
         //自动填入待修改考评项描述
-        $("#checkItemDescConfig").val(item.remark);
+        checkItemDescInput.textbox('setValue', item.remark);
         //考评项类型下拉框
         $("#checkItemTypeConfig").combobox({
             data: checkItemData,
@@ -780,7 +806,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
                 checkItemType = $("#checkItemTypeConfig").combobox("getValue"),
                 nodeTypeCode = "",
                 checkItemVitalType = $("#checkItemVitalTypeConfig").combobox("getValue"),
-                checkItemDesc = $("#checkItemDescConfig").val();
+                checkItemDesc = $("#checkItemDescConfig").textbox('getValue');
 
             if (checkItemType === Util.constants.CHECK_TYPE_ORDER) {
                 nodeTypeCode = $("#checkLinkConfig").combobox("getValue");
