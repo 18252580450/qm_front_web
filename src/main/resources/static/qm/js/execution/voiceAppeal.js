@@ -100,7 +100,11 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                             }
                         }
                     },
-                    {field: 'appealStaffName', title: '申诉人', width: '8%'},
+                    {field: 'appealStaffName', title: '申诉人', width: '8%',
+                        formatter:function(value, row, index){
+                            if(value){
+                                return "<span title='" +row.appealStaffName+"["+row.appealStaffId+"]" + "'>"+row.appealStaffName+"["+row.appealStaffId+"]" + "</span>";
+                            }}},
                     {
                         field: 'appealReason', title: '申诉原因', width: '14%',
                         formatter: function (value, row, index) {

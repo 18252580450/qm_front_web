@@ -120,14 +120,13 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
         var IsCheckFlag = true; //标示是否是勾选复选框选中行的，true - 是 , false - 否
         $("#queryInfo").datagrid({
             columns: [[
-                {field: 'ck', checkbox: true, align: 'center'},
                 {
-                    field: 'action', title: '操作', align: 'center', width: '15%',
+                    field: 'action', title: '操作', align: 'center', width: '10%',
                     formatter: function (value, row, index) {
                         var checkHistory = "<a href='javascript:void(0);' id ='resultHistory_" + row.inspectionId + "'>质检记录</a>",
                             appeal = "<a href='javascript:void(0);' id ='resultAppeal_" + row.inspectionId + "'>申诉</a>",
                             typicalCase = "<a href='javascript:void(0);' id ='typicalCase_" + row.inspectionId + "'>案例收集</a>";
-                        return appeal + "&nbsp;&nbsp;" + checkHistory;
+                        return checkHistory + "&nbsp;&nbsp;" + appeal;
                     }
                 },
                 {

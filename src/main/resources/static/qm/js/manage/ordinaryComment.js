@@ -47,7 +47,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
                          return "<span title='" + DateUtil.formatDateTime(value) + "'>" + DateUtil.formatDateTime(value) + "</span>";
                      }
                 }},
-                {field: 'createStaffId', title: '创建工号', width: '15%',
+                {field: 'createStaffId', title: '创建员工', width: '15%',
                     formatter: function (value) {
                         if(value){
                             return "<span title='" + value + "'>" + value + "</span>";
@@ -59,7 +59,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
                             return "<span title='" + DateUtil.formatDateTime(value) + "'>" + DateUtil.formatDateTime(value) + "</span>";
                         }
                     }},
-                {field: 'operateStaffId', title: '修改工号', width: '15%',
+                {field: 'operateStaffId', title: '修改员工', width: '15%',
                     formatter: function (value) {
                         if(value){
                             return "<span title='" + value + "'>" + value + "</span>";
@@ -216,7 +216,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
 
                var params = {'tenantId': Util.constants.TENANT_ID,
                    'commentName': name, 'remark': desc,
-                   "createStaffId":userInfo.staffId};
+                   "createStaffId":userInfo.staffName+"["+userInfo.staffId+"]"};
 
                if (name == null || name == "") {
                    $.messager.alert('警告', '名称不能为空!');
@@ -284,7 +284,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
 
                var params = {'tenantId': Util.constants.TENANT_ID,'commentId':commentId,
                    'commentName':modfName, 'remark': remark,'createStaffId':createStaffId,'crtTime':crtTime,
-                   "operateStaffId":userInfo.staffId};
+                   "operateStaffId":userInfo.staffName+"["+userInfo.staffId+"]"};
 
                if (modfName == null || modfName == "" ) {
                    $.messager.alert('警告', '名称不能为空！');
