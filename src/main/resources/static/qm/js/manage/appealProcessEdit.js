@@ -379,27 +379,14 @@ require([
         var IsNodeCheckFlag = true; //标示是否是勾选复选框选中行的，true - 是 , false - 否
         $("#subNodeList").datagrid({
             columns: [[
-                {
-                    field: 'processOrder', title: '子流程', width: '15%',
-                    formatter: function (value, row, index) {
-                        var order = "";
-                        if (orderData.length !== 0) {
-                            for (var i = 0; i < orderData.length; i++) {
-                                if (parseInt(orderData[i].paramsCode) === value) {
-                                    order = orderData[i].paramsName;
-                                    return order;
-                                }
-                            }
-                        }
-                    }
-                },
+                {field: 'processOrder', title: '子流程', hidden: true},
                 {field: 'processName', title: '子流程', hidden: true},
-                {field: 'orderNo', title: '节点序号', width: '15%'},
+                {field: 'orderNo', title: '节点序号', width: '20%'},
                 {field: 'nodeName', title: '节点名称', width: '20%'},
                 {field: 'userName', title: '角色', width: '40'},
                 {field: 'userId', title: '角色Id', hidden: true},
                 {
-                    field: 'detail', title: '操作', width: '10%',
+                    field: 'detail', title: '操作', width: '20%',
                     formatter: function (value, row, index) {
                         if (processListData[row.processOrder].hasOwnProperty("subNodeList")) {
                             var edit = '<a href="javascript:void(0);" class="list_operation_color" id = "nodeEdit' + row.orderNo + '">修改</a>';

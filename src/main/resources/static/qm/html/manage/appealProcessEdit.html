@@ -18,36 +18,36 @@
                 <div class='panel-search'>
                     <form class='form form-horizontal'>
                         <div class='row cl'>
-                            <label class='form-label col-1' data-options="required:'true'">流程名称</label>
+                            <label class='form-label col-2' data-options="required:'true'">流程名称</label>
                             <div class='formControls col-2'>
                                 <input id="processName" type='text' class='easyui-textbox'
                                        style='width:100%;height:30px'>
                             </div>
-                            <label class='form-label col-1'>部门</label>
+                            <label class='form-label col-2'>部门</label>
                             <div class='formControls col-2'>
                                 <input id="departmentName" type='text' class='easyui-searchbox easyui-validatebox'
                                        style='width:100%;height:30px' data-options="required:true">
                                 <input id="departmentId" type='text' class='easyui-textbox' style="display:none">
                             </div>
-                            <label class='form-label col-1'>选择流程</label>
+                            <label class='form-label col-2'>最大节点数</label>
                             <div class='formControls col-2'>
-                                <input id="orderNo" type='text' class='easyui-textbox' style='width:100%;height:30px'>
-                            </div>
-                            <label class='form-label col-1'>质检类型</label>
-                            <div class='formControls col-2'>
-                                <input id="checkType" type='text' class='easyui-textbox' style='width:100%;height:30px'
-                                       readonly>
+                                <input id="maxNodeNum" type='text' class='easyui-textbox' style='width:100%;height:30px'
+                                       value="10" readonly>
                             </div>
                         </div>
                     </form>
                     <form class='form form-horizontal'>
                         <div class='row cl'>
-                            <label class='form-label col-1'>最大节点数</label>
+                            <label class='form-label col-2'>质检类型</label>
                             <div class='formControls col-2'>
-                                <input id="maxNodeNum" type='text' class='easyui-textbox' style='width:100%;height:30px'
-                                       value="10" readonly>
+                                <input id="checkType" type='text' class='easyui-textbox' style='width:100%;height:30px'
+                                       readonly>
                             </div>
-                            <label class='form-label col-1'>最大申诉次数</label>
+                            <label class='form-label col-2'>选择流程</label>
+                            <div class='formControls col-2'>
+                                <input id="orderNo" type='text' class='easyui-textbox' style='width:100%;height:30px'>
+                            </div>
+                            <label class='form-label col-2'>最大申诉次数</label>
                             <div class='formControls col-2'>
                                 <input id="maxAppealNum" type='text' class='easyui-textbox'
                                        style='width:100%;height:30px' readonly>

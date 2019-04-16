@@ -20,26 +20,6 @@ require([
     //页面信息初始化
     function initPageInfo() {
         $("#processName").validatebox();
-        //模板渠道下拉框
-        $("#tenantType").combobox({
-            url: '../../data/tenant_type.json',
-            method: "GET",
-            valueField: 'codeValue',
-            textField: 'codeName',
-            panelHeight: 'auto',
-            editable: false,
-            onLoadSuccess: function () {
-                var tenantType = $("#tenantType");
-                var data = tenantType.combobox('getData');
-                if (data.length > 0) {
-                    tenantType.combobox('select', data[0].codeValue);
-                }
-            },
-            onSelect: function () {
-                $("#appealProcessList").datagrid("load");
-            }
-        });
-
         //部门搜索框
         var department = $("#departmentName");
         department.searchbox({
@@ -74,10 +54,10 @@ require([
             panelHeight: 'auto',
             editable: false,
             onLoadSuccess: function () {
-                var tenantType = $("#checkType");
-                var data = tenantType.combobox('getData');
+                var checkType = $("#checkType");
+                var data = checkType.combobox('getData');
                 if (data.length > 0) {
-                    tenantType.combobox('select', data[0].paramsCode);
+                    checkType.combobox('select', data[0].paramsCode);
                 }
             },
             onSelect: function () {
@@ -109,12 +89,10 @@ require([
                 var orderNo = $("#orderNo").combobox("getValue");
                 if (orderNo === "00") {
                     $("#departmentName").combotree('enable');
-                    $("#tenantType").combobox('enable');
                     $("#checkType").combobox('enable');
                     $("#maxAppealNum").attr("readOnly", false)
                 } else {
                     $("#departmentName").combotree('disable');
-                    $("#tenantType").combobox('disable');
                     $("#checkType").combobox('disable');
                     $("#maxAppealNum").attr("readOnly", true);
                 }
@@ -239,16 +217,16 @@ require([
             columns: [[
                 {field: 'processId', title: '子流程序号', hidden: true},
                 {field: 'processName', title: '子流程', hidden: true},
-                {field: 'orderNo', title: '节点序号', width: '15%'},
-                {field: 'nodeName', title: '节点名称', width: '25%'},
-                {field: 'userName', title: '审批人', width: '50'},
+                {field: 'orderNo', title: '节点序号', width: '20%'},
+                {field: 'nodeName', title: '节点名称', width: '20%'},
+                {field: 'userName', title: '审批人', width: '40'},
                 {
-                    field: 'detail', title: '操作', width: '10%',
+                    field: 'detail', title: '操作', width: '20%',
                     formatter: function (value, row, index) {
                         //只允许删除末子节点
                         var subNodeList = appealProcessData[parseInt(row.processId)].subNodeList;
                         if (parseInt(row.orderNo) === subNodeList[subNodeList.length - 1].orderNo) {
-                            return '<a href="javascript:void(0);" id = "appealNode' + row.orderNo + '" style="color: black;">删除</a>';
+                            return '<a href="javascript:void(0);" class="list_operation_color" id = "appealNode' + row.orderNo + '">删除</a>';
                         }
                     }
                 }
