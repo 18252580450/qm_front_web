@@ -3604,3 +3604,8 @@ label       { display: block; cursor: pointer; line-height: 18px; padding-bottom
 .datagrid-cell, .datagrid-cell-group, .datagrid-header-rownumber, .datagrid-cell-rownumber{
   text-overflow: ellipsis;
 }
+
+/*列表操作项颜色*/
+.list_operation_color {
+  color: blue;
+}

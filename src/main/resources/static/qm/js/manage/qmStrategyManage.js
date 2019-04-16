@@ -63,7 +63,7 @@ define([
                     field: 'action', title: '操作', width: '5%',
                     formatter: function (value, row, index) {
                         var Action =
-                            "<a href='javascript:void(0);' class='reviseBtn' id =" + row.pId + " >修改</a>";
+                            "<a href='javascript:void(0);' class='reviseBtn list_operation_color' id =" + row.pId + " >修改</a>";
                             //" | <a href='javascript:void(0);' class='qryDetail' id =" + row.pId + " >查看明细</a>";
                         return Action;
                     }

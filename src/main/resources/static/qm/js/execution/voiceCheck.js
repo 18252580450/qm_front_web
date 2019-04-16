@@ -94,9 +94,9 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
                 {
                     field: 'operate', title: '操作', width: '12%',
                     formatter: function (value, row, index) {
-                        var play = '<a href="javascript:void(0);" style="color: deepskyblue;" id = "voicePlay_' + row.touchId + '">播放</a>',
-                            check = '<a href="javascript:void(0);" style="color: deepskyblue;" id = "voiceCheck_' + row.touchId + '">质检</a>',
-                            checkHistory = '<a href="javascript:void(0);" style="color: deepskyblue;" id = "checkHistory_' + row.touchId + '">质检记录</a>';
+                        var play = '<a href="javascript:void(0);" class="list_operation_color" id = "voicePlay_' + row.touchId + '">播放</a>',
+                            check = '<a href="javascript:void(0);" class="list_operation_color" id = "voiceCheck_' + row.touchId + '">质检</a>',
+                            checkHistory = '<a href="javascript:void(0);" class="list_operation_color" id = "checkHistory_' + row.touchId + '">质检记录</a>';
                         if (row.poolStatus.toString() === Util.constants.CHECK_STATUS_CHECK) {
                             // return play + "&nbsp;&nbsp;" + check; //todo
                             return check;

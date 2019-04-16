@@ -25,7 +25,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                 {
                     field: 'touchId', title: '接触流水', width: '25%',
                     formatter: function (value, row, index) {
-                        return '<a href="javascript:void(0);" style="color: deepskyblue;" id = "checkDetail_' + row.touchId + '">' + value + '</a>';
+                        return '<a href="javascript:void(0);" class="list_operation_color" id = "checkDetail_' + row.touchId + '">' + value + '</a>';
                     }
                 },
                 {field: 'caseTitle', title: '案例标题', width: '25%'},

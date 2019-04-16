@@ -279,8 +279,8 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
                             'recordPath':row.recordPath
                         };
                         var beanStr = JSON.stringify(bean);   //转成字符串
-                        var action = "<a href='javascript:void(0);' style='color: blue' class='playBtn' id =" + beanStr + " >语音播放</a>",
-                            download = "<a href='javascript:void(0);' style='color: blue' class='downloadBtn' id =" + beanStr + " >下载</a>";
+                        var action = "<a href='javascript:void(0);' class='playBtn list_operation_color' id =" + beanStr + " >语音播放</a>",
+                            download = "<a href='javascript:void(0);' class='downloadBtn list_operation_color' id =" + beanStr + " >下载</a>";
                         return action + "&nbsp;&nbsp;" + download;
                     }
                 },

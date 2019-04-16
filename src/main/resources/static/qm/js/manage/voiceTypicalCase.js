@@ -53,7 +53,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                 {
                     field: 'detail', title: '操作', width: '10%',
                     formatter: function (value, row, index) {
-                        return '<a href="javascript:void(0);" id = "caseDetail_' + row.caseType + '">详情</a>';
+                        return '<a href="javascript:void(0);" id = "caseDetail_' + row.caseType + '" class="list_operation_color">详情</a>';
                     }
                 },
                 {

@@ -141,7 +141,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                     {
                         field: 'operate', title: '操作', width: '8%',
                         formatter: function (value, row, index) {
-                            return '<a href="javascript:void(0);" style="color: deepskyblue;" id = "appealRecord_' + row.appealId + '">审批记录</a>';
+                            return '<a href="javascript:void(0);" id = "appealRecord_' + row.appealId + '" class="list_operation_color">审批记录</a>';
                         }
                     },
                     {
@@ -166,7 +166,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                     {
                         field: 'inspectionId', title: '质检流水', width: '14%',
                         formatter: function (value, row, index) {
-                            return '<a href="javascript:void(0);" style="color: deepskyblue;" id = "checkFlow_' + row.appealId + '">' + value + '</a>';
+                            return '<a href="javascript:void(0);" class="list_operation_color" id = "checkFlow_' + row.appealId + '">' + value + '</a>';
                         }
                     },
                     {

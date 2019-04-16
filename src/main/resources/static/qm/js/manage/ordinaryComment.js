@@ -31,7 +31,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
                         };
                         var beanStr = JSON.stringify(bean);   //转成字符串
                         var Action =
-                            "<a href='javascript:void(0);' class='reviseBtn' id =" + beanStr + " >修改</a>";
+                            "<a href='javascript:void(0);' class='reviseBtn list_operation_color' id =" + beanStr + " >修改</a>";
                         return Action;
                     }
                 },

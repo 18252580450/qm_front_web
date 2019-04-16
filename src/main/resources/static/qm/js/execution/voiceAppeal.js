@@ -73,8 +73,8 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                     {
                         field: 'operate', title: '操作', width: '10%',
                         formatter: function (value, row, index) {
-                            var detail = '<a href="javascript:void(0);" style="color: deepskyblue;" id = "appealRecord_' + row.appealId + '">审批记录</a>';
-                            var deal = '<a href="javascript:void(0);" style="color: deepskyblue;" id = "appealDeal_' + row.appealId + '">审批</a>';
+                            var detail = '<a href="javascript:void(0);" class="list_operation_color" id = "appealRecord_' + row.appealId + '">审批记录</a>';
+                            var deal = '<a href="javascript:void(0);" class="list_operation_color" id = "appealDeal_' + row.appealId + '">审批</a>';
                             return detail + "&nbsp;&nbsp;" + deal;
                         }
                     },

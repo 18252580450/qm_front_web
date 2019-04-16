@@ -148,7 +148,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
                 {
                     field: 'action', title: '操作', width: '10%',
                     formatter: function (value, row, index) {
-                        return '<a href="javascript:void(0);" style="color: dimgrey;" id = "checkItem' + row.checkItemId + '">修改</a>';
+                        return '<a href="javascript:void(0);" class="list_operation_color" id = "checkItem' + row.checkItemId + '">修改</a>';
                     }
                 },
                 {field: 'checkItemName', title: '考评项名称', width: '20%'},

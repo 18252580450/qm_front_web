@@ -128,8 +128,8 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                 {
                     field: 'detail', title: '操作', width: '8%',
                     formatter: function (value, row, index) {
-                        var detail = '<a href="javascript:void(0);" id = "processDetail' + row.processId + '">详情</a>';
-                        var edit = '<a href="javascript:void(0);" id = "processEdit' + row.processId + '">修改</a>';
+                        var detail = '<a href="javascript:void(0);" id = "processDetail' + row.processId + '" class="list_operation_color">详情</a>';
+                        var edit = '<a href="javascript:void(0);" id = "processEdit' + row.processId + '" class="list_operation_color">修改</a>';
                         return detail + "&nbsp;&nbsp;" + edit;
                     }
                 },

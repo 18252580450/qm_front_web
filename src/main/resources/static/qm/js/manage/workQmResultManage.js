@@ -123,9 +123,9 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
                 {
                     field: 'action', title: '操作', align: 'center', width: '10%',
                     formatter: function (value, row, index) {
-                        var checkHistory = "<a href='javascript:void(0);' id ='resultHistory_" + row.inspectionId + "'>质检记录</a>",
-                            appeal = "<a href='javascript:void(0);' id ='resultAppeal_" + row.inspectionId + "'>申诉</a>",
-                            typicalCase = "<a href='javascript:void(0);' id ='typicalCase_" + row.inspectionId + "'>案例收集</a>";
+                        var checkHistory = "<a href='javascript:void(0);' id ='resultHistory_" + row.inspectionId + "' class='list_operation_color'>质检记录</a>",
+                            appeal = "<a href='javascript:void(0);' id ='resultAppeal_" + row.inspectionId + "' class='list_operation_color'>申诉</a>",
+                            typicalCase = "<a href='javascript:void(0);' id ='typicalCase_" + row.inspectionId + "' class='list_operation_color'>案例收集</a>";
                         return checkHistory + "&nbsp;&nbsp;" + appeal;
                     }
                 },
