@@ -1,6 +1,14 @@
 [
   {
     "codeType": "CHECK_ITEM_TYPE@CS_IR",
+    "codeValue": "-1",
+    "codeName": "全部",
+    "codeDesc": "全部",
+    "sortId": 0,
+    "state": "1"
+  },
+  {
+    "codeType": "CHECK_ITEM_TYPE@CS_IR",
     "codeValue": "0",
     "codeName": "待质检",
     "codeDesc": "待质检",
@@ -12,7 +20,7 @@
     "codeValue": "1",
     "codeName": "待复检",
     "codeDesc": "待复检",
-    "sortId": 1,
+    "sortId": 0,
     "state": "1"
   },
   {
@@ -20,15 +28,7 @@
     "codeValue": "2",
     "codeName": "已质检",
     "codeDesc": "已质检",
-    "sortId": 2,
-    "state": "1"
-  },
-  {
-    "codeType": "CHECK_ITEM_TYPE@CS_IR",
-    "codeValue": "3",
-    "codeName": "全部",
-    "codeDesc": "全部",
-    "sortId": 3,
+    "sortId": 0,
     "state": "1"
   }
 ]

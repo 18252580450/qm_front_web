@@ -206,7 +206,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
                 var callType = $("#callType");
                 var data = callType.combobox('getData');
                 if (data.length > 0) {
-                    callType.combobox('select', data[2].codeValue);
+                    callType.combobox('select', data[0].codeValue);
                 }
             }
         });
@@ -223,7 +223,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
                 var isOperate = $("#isOperate");
                 var data = isOperate.combobox('getData');
                 if (data.length > 0) {
-                    isOperate.combobox('select', data[2].codeValue);
+                    isOperate.combobox('select', data[0].codeValue);
                 }
             }
         });
@@ -240,7 +240,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
                 var poolStatus = $("#poolStatus");
                 var data = poolStatus.combobox('getData');
                 if (data.length > 0) {
-                    poolStatus.combobox('select', data[3].codeValue);
+                    poolStatus.combobox('select', data[0].codeValue);
                 }
             }
         });
@@ -279,8 +279,8 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
                             'recordPath':row.recordPath
                         };
                         var beanStr = JSON.stringify(bean);   //转成字符串
-                        var action = "<a href='javascript:void(0);' style='color: dimgrey' class='playBtn' id =" + beanStr + " >语音播放</a>",
-                            download = "<a href='javascript:void(0);' style='color: dimgrey' class='downloadBtn' id =" + beanStr + " >下载</a>";
+                        var action = "<a href='javascript:void(0);' style='color: blue' class='playBtn' id =" + beanStr + " >语音播放</a>",
+                            download = "<a href='javascript:void(0);' style='color: blue' class='downloadBtn' id =" + beanStr + " >下载</a>";
                         return action + "&nbsp;&nbsp;" + download;
                     }
                 },
@@ -359,11 +359,11 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
                 var touchId = $("#touchId").val();
                 var planId = $("#planId").val();
                 var isOperate = $("#isOperate").combobox("getValue");
-                if(isOperate=="2"){
+                if (isOperate == "-1") {
                     isOperate = "";
                 }
                 var callType = $("#callType").combobox("getValue");
-                if(callType=="2"){
+                if (callType == "-1") {
                     callType = "";
                 }
                 var startTime = $("#startTime").datetimebox("getValue");
@@ -381,7 +381,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
                 var mediaType = $("#mediaType").val();
                 var serviceTypeId = $("#serviceTypeId").val();
                 var poolStatus = $("#poolStatus").combobox("getValue");
-                if(poolStatus=="3"){
+                if (poolStatus == "-1") {
                     poolStatus = "";
                 }
                 reqParams = {

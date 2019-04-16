@@ -97,7 +97,7 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
                 var resultStatus = $("#resultStatus");
                 var data = resultStatus.combobox('getData');
                 if (data.length > 0) {
-                    resultStatus.combobox('select', data[11].codeValue);
+                    resultStatus.combobox('select', data[0].codeValue);
                 }
             }
         });
@@ -113,7 +113,7 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
                 var isDis = $("#qmResult");
                 var data = isDis.combobox('getData');
                 if (data.length > 0) {
-                    isDis.combobox('select', data[11].codeValue);
+                    isDis.combobox('select', data[0].codeValue);
                 }
             }
         });
@@ -253,7 +253,7 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
                 }
                 var inspectionId = $("#inspectionId").val();
                 var resultStatus = $("#resultStatus").combobox("getValue");
-                if (resultStatus == "10") {
+                if (resultStatus == "-1") {
                     resultStatus = "";
                 }
                 var planId = $("#planId").val();
@@ -426,23 +426,23 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
             $("#queryInfo").datagrid("load");
         });
 
-        //修改
-        $("#modifyBut").on("click", function () {
-            var selRows = $("#queryInfo").datagrid("getSelections");//选中多行
-            if (selRows.length == 0 || selRows.length > 1) {
-                $.messager.alert("提示", "请只选择一行数据!");
-                return false;
-            }
-            var map = {};
-            for (var i = 0; i < selRows.length; i++) {
-                map["touchId"] = selRows[i].touchId;
-                map["inspectionId"] = selRows[i].inspectionId;
-                map["checkedStaffId"] = selRows[i].checkedStaffId;
-                map["acceptNumber"] = selRows[i].acceptNumber;
-            }
-            addTabs("修改语音质检详情", "http://127.0.0.1:8080/qm/html/manage/modiVoiceQmResultManage.html?touchId=" + map["touchId"] +
-                "&inspectionId=" + map["inspectionId"] + "&checkedStaffId=" + map["checkedStaffId"] + "&acceptNumber=" + map["acceptNumber"]);
-        });
+        // //修改
+        // $("#modifyBut").on("click", function () {
+        //     var selRows = $("#queryInfo").datagrid("getSelections");//选中多行
+        //     if (selRows.length == 0 || selRows.length > 1) {
+        //         $.messager.alert("提示", "请只选择一行数据!");
+        //         return false;
+        //     }
+        //     var map = {};
+        //     for (var i = 0; i < selRows.length; i++) {
+        //         map["touchId"] = selRows[i].touchId;
+        //         map["inspectionId"] = selRows[i].inspectionId;
+        //         map["checkedStaffId"] = selRows[i].checkedStaffId;
+        //         map["acceptNumber"] = selRows[i].acceptNumber;
+        //     }
+        //     addTabs("修改语音质检详情", "http://127.0.0.1:8080/qm/html/manage/modiVoiceQmResultManage.html?touchId=" + map["touchId"] +
+        //         "&inspectionId=" + map["inspectionId"] + "&checkedStaffId=" + map["checkedStaffId"] + "&acceptNumber=" + map["acceptNumber"]);
+        // });
 
         //导出
         $("#daoBut").on("click", function () {

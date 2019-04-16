@@ -32,7 +32,7 @@ define(["js/manage/addCheckTemplate","js/manage/modifyCheckTemplate","jquery", '
                 var templateStatus = $("#templateStatus");
                 var data = templateStatus.combobox('getData');
                 if (data.length > 0) {
-                    templateStatus.combobox('select', data[3].codeValue);
+                    templateStatus.combobox('select', data[0].codeValue);
                 }
             }
         });
@@ -114,8 +114,8 @@ define(["js/manage/addCheckTemplate","js/manage/modifyCheckTemplate","jquery", '
                 var pageNum = param.rows;
                 var templateName = $("#templateName").val();
                 var templateStatus = $("#templateStatus").combobox("getValue");
-                if(templateStatus == '3'){
-                    templateStatus = null;
+                if (templateStatus == '-1') {
+                    templateStatus = "";
                 }
                 var reqParams = {
                     "templateName": templateName,

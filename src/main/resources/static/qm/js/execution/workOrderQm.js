@@ -183,7 +183,7 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui","dateUti
                 var isDis = $("#isDis");
                 var data = isDis.combobox('getData');
                 if (data.length > 0) {
-                    isDis.combobox('select', data[2].codeValue);
+                    isDis.combobox('select', data[0].codeValue);
                 }
             }
         });
@@ -200,7 +200,7 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui","dateUti
                 var poolStatus = $("#poolStatus");
                 var data = poolStatus.combobox('getData');
                 if (data.length > 0) {
-                    poolStatus.combobox('select', data[3].codeValue);
+                    poolStatus.combobox('select', data[0].codeValue);
                 }
             }
         });
@@ -339,11 +339,11 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui","dateUti
                 var planId = $("#planId").val();
                 var serviceTypeId = $("#serviceTypeId").val();
                 var isOperate = $("#isDis").combobox("getValue");
-                if(isOperate=="2"){
+                if (isOperate == "-1") {
                     isOperate = "";
                 }
                 var poolStatus = $("#poolStatus").combobox("getValue");
-                if(poolStatus=="3"){
+                if (poolStatus == "-1") {
                     poolStatus = "";
                 }
                 var planStartTime = $("#planStartTime").datetimebox("getValue");
