@@ -76,6 +76,7 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
                     data = poolStatus.combobox('getData');
                 if (data.length > 0) {
                     poolStatus.combobox('select', data[0].paramsCode);
+                    $("#orderCheckList").datagrid("load");
                 }
             }
         });
