@@ -62,22 +62,6 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
             }
         });
 
-        //差错类型
-        $("#errorType").combobox({
-            url: '../../data/errorType.json',
-            method: "GET",
-            valueField: 'codeValue',
-            textField: 'codeName',
-            panelHeight: 'auto',
-            editable: false,
-            onLoadSuccess: function () {
-                var isDis = $("#errorType");
-                var data = isDis.combobox('getData');
-                if (data.length > 0) {
-                    isDis.combobox('select', data[0].codeValue);
-                }
-            }
-        });
         //质检结果
         $("#qmResult").combobox({
             url: '../../data/releaseResult.json',
@@ -223,10 +207,6 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
                 if (qmResult == "-1") {
                     qmResult = "";
                 }
-                var errorType = $("#errorType").combobox("getValue");
-                if (errorType == "-1") {
-                    errorType = "";
-                }
                 var planId = $("#planId").val();
 
                 reqParams = {
@@ -238,7 +218,6 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
                     "minScore": minScore,
                     "maxScore": maxScore,
                     "resultStatus": qmResult,
-                    "errorRank": errorType,
                     "planId": planId,
                     "reqTypeEndNode": reqTypeEndNode,
                     "lastResultFlag": "1"
