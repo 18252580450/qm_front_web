@@ -330,7 +330,7 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
                     //详情
                     $("#resultDetail_" + item.inspectionId).on("click", function () {
                         var url = CommonAjax.createURL(voiceCheckDetail, item);
-                        CommonAjax.showDialog(url, "质检详情", 950, Util.constants.DIALOG_HEIGHT_SMALL);
+                        CommonAjax.showDialog(url, "质检详情", 1000, Util.constants.DIALOG_HEIGHT_SMALL);
                     });
                 });
             }

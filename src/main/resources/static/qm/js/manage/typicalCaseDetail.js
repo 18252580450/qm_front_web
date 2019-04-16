@@ -91,7 +91,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                             showCheckDetail("语音详情", item, voiceCheckDetail, 950, 500);
                         } //todo
                         if (caseInfo.checkType === Util.constants.CHECK_TYPE_ORDER) {
-                            showCheckDetail("工单详情", item, orderCheckDetail, 950, Util.constants.DIALOG_HEIGHT);
+                            showCheckDetail("工单详情", item, orderCheckDetail, 1000, Util.constants.DIALOG_HEIGHT);
                         }
                     });
                 });

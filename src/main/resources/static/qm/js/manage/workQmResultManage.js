@@ -316,7 +316,7 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
                             "templateId": item.templateId
                         };
                         var url = CommonAjax.createURL(orderCheckDetail, param);
-                        CommonAjax.showDialog(url, "质检详情", 950, Util.constants.DIALOG_HEIGHT_SMALL);
+                        CommonAjax.showDialog(url, "质检详情", 1000, Util.constants.DIALOG_HEIGHT_SMALL);
                     });
                 });
             }

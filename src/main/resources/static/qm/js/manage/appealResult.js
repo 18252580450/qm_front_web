@@ -414,7 +414,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                 "templateId": item.templateId
             };
             var checkUrl = CommonAjax.createURL(url, param);
-            CommonAjax.showDialog(checkUrl, "质检详情", 950, Util.constants.DIALOG_HEIGHT);
+            CommonAjax.showDialog(checkUrl, "质检详情", 1000, Util.constants.DIALOG_HEIGHT);
         }
 
         //校验开始时间和终止时间

@@ -115,7 +115,7 @@ define(["text!html/manage/workQmResultHistory.tpl", "jquery", 'util', "transfer"
                             "templateId": item.templateId
                         };
                         var url = CommonAjax.createURL(orderCheckDetail, param);
-                        CommonAjax.showDialog(url, "质检详情", 950, Util.constants.DIALOG_HEIGHT_SMALL);
+                        CommonAjax.showDialog(url, "质检详情", 1000, Util.constants.DIALOG_HEIGHT_SMALL);
                     });
                 });
             }

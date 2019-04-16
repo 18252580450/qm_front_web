@@ -33,6 +33,21 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
         //获取工单基本信息
         initWrkfmDetail();
 
+        //工单受理内容
+        $("#bizCntt").textbox(
+            {
+                multiline: true,
+                editable: false
+            }
+        );
+        //考评评语
+        $("#checkComment").textbox(
+            {
+                multiline: true,
+                editable: false
+            }
+        );
+
         //考评项列表
         var IsCheckFlag = true; //标示是否是勾选复选框选中行的，true - 是 , false - 否
         $("#checkItemList").datagrid({
@@ -139,7 +154,7 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
                 $("#faultLvlNm").val(data.acceptInfo.faultLvlNm);
                 $("#urgntExtentNm").val(data.acceptInfo.urgntExtentNm);
                 $("#custMoodTypeNm").val(data.acceptInfo.custMoodTypeNm);
-                $("#bizCntt").val(data.acceptInfo.bizCntt);
+                $("#bizCntt").textbox('setValue', data.acceptInfo.bizCntt);
             }
         });
     }
@@ -278,7 +293,7 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
             var data = result.RSP.DATA,
                 rspCode = result.RSP.RSP_CODE;
             if (rspCode != null && rspCode === "1") {
-                $("#checkComment").html(data[0].checkComment);
+                $("#checkComment").textbox('setValue', data[0].checkComment);
             }
         });
     }
@@ -373,9 +388,9 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
                 {
                     field: 'staffNumber', title: '坐席号码', width: '15%',
                     formatter: function (value, row, index) {
-                        if(row.callTypeCd === "1"){
+                        if (row.callTypeCd === "1") {
                             return row.callingNumber;
-                        }else {
+                        } else {
                             return row.calledNumber;
                         }
                     }
@@ -383,9 +398,9 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
                 {
                     field: 'customNumber', title: '客户号码', width: '15%',
                     formatter: function (value, row, index) {
-                        if(row.callTypeCd === "0"){
+                        if (row.callTypeCd === "0") {
                             return row.callingNumber;
-                        }else {
+                        } else {
                             return row.calledNumber;
                         }
                     }
@@ -402,7 +417,7 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
             ]],
             fitColumns: true,
             width: '100%',
-            height: 298,
+            height: 292,
             pagination: false,
             // pageSize: 10,
             // pageList: [5, 10, 20, 50],
@@ -508,7 +523,7 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
             ]],
             fitColumns: true,
             width: '100%',
-            height: 298,
+            height: 292,
             pagination: true,
             pageSize: 10,
             pageList: [5, 10, 20, 50],
