@@ -49,6 +49,31 @@ require([
             });
             endTime.datetimebox('setValue', endDate);
 
+            //立单人搜索框
+            var staffNameInput = $('#staffName');
+            staffNameInput.searchbox({//输入框点击查询事件
+                editable: false,//禁止手动输入
+                searcher: function (value) {
+                    require(["js/execution/queryQmPeople"], function (qryQmPeople) {
+                        var queryQmPeople = qryQmPeople;
+                        queryQmPeople.initialize("", "", "");
+                        $('#qry_people_window').show().window({
+                            title: '立单人搜索',
+                            width: Util.constants.DIALOG_WIDTH,
+                            height: Util.constants.DIALOG_HEIGHT_SMALL,
+                            cache: false,
+                            content: queryQmPeople.$el,
+                            modal: true,
+                            onClose: function () {//弹框关闭前触发事件
+                                var acptStaff = queryQmPeople.getMap();//获取人员信息
+                                staffNameInput.searchbox("setValue", acptStaff.staffName);
+                                $("#staffId").val(acptStaff.staffId);
+                            }
+                        });
+                    });
+                }
+            });
+
             //待质检语音列表
             var IsCheckFlag = true; //标示是否是勾选复选框选中行的，true - 是 , false - 否
             $("#voiceCheckList").datagrid({
@@ -148,12 +173,14 @@ require([
 
                     var touchId = $("#touchId").val(),
                         calledNumber = $("#calledNumber").val(),
+                        staffId = $("#staffId").val(),
                         beginTime = $("#beginTime").datetimebox("getValue"),
                         endTime = $("#endTime").datetimebox("getValue");
 
                     var reqParams = {
                         "touchId": touchId,
                         "customerNumber": calledNumber,
+                        "staffId": staffId,
                         "beginTime": beginTime,
                         "endTime": endTime
                     };
