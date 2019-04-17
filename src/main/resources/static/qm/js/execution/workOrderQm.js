@@ -205,26 +205,27 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui","dateUti
             }
         });
 
-        //时间控件初始化
-        var planStartTime = $('#planStartTime');
+        //计划开始时间选择框
+        var planStartTime = $("#planStartTime"),
+            beginDate = getFirstDayOfMonth();
         planStartTime.datetimebox({
-            onShowPanel:function(){
-                $(this).datetimebox("spinner").timespinner("setValue","00:00:00");
-            },
-            onChange: function () {
-                checkTime();
+            editable: false,
+            onShowPanel: function () {
+                $("#planStartTime").datetimebox("spinner").timespinner("setValue", "00:00:00");
             }
         });
+        planStartTime.datetimebox('setValue', beginDate);
 
-        var planEndTime = $('#planEndTime');
+        //计划结束时间选择框
+        var planEndTime = $('#planEndTime'),
+            endDate = (DateUtil.formatDateTime(new Date() - 24 * 60 * 60 * 1000)).substr(0, 11) + " 23:59:59";
         planEndTime.datetimebox({
-            onShowPanel:function(){
-                $(this).datetimebox("spinner").timespinner("setValue","23:59:59");
-            },
-            onChange: function () {
-                checkTime();
+            editable: false,
+            onShowPanel: function () {
+                $("#planEndTime").datetimebox("spinner").timespinner("setValue", "23:59:59");
             }
         });
+        planEndTime.datetimebox('setValue', endDate);
 
         //列表
         $("#queryInfo").datagrid({
@@ -283,13 +284,13 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui","dateUti
                         }
                     }
                 },
-                {field: 'crtTime', title: '提交时间', align: 'center', width: '10%',
+                {field: 'crtTime', title: '立单时间', align: 'center', width: '10%',
                     formatter: function (value, row, index) { //格式化时间格式
                         if(value){
                             return "<span title='" + DateUtil.formatDateTime(value) + "'>" + DateUtil.formatDateTime(value) + "</span>";
                         }
                     }},
-                {field: 'arcTime', title: '完成时间', align: 'center', width: '10%',
+                {field: 'arcTime', title: '归档时间', align: 'center', width: '10%',
                     formatter: function (value, row, index) { //格式化时间格式
                         if(value!=null){
                             return "<span title='" + DateUtil.formatDateTime(value) + "'>" + DateUtil.formatDateTime(value) + "</span>";
@@ -441,6 +442,11 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui","dateUti
 
         //查询
         $("#queryBtn").on("click", function () {
+            var planStartTime = $("#planStartTime").datetimebox("getValue"),
+                planEndTime = $("#planEndTime").datetimebox("getValue");
+            if (!checkTime(planStartTime, planEndTime)) {  //查询时间校验
+                return;
+            }
             $("#queryInfo").datagrid("load");
         });
 
@@ -586,7 +592,7 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui","dateUti
             }
         });
     }
-    
+
     //导出
     function dao(){
         var fields = $('#queryInfo').datagrid('getColumnFields'); //获取datagrid的所有fields
@@ -625,31 +631,6 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui","dateUti
         window.location.href = Util.constants.CONTEXT + Util.constants.ORDER_POOL_DNS+"/export?params="+encodeURI(encodeURI(JSON.stringify(params)));
     }
 
-    //校验开始时间和终止时间
-    function checkTime() {
-        var planStartTime = $("#planStartTime").datetimebox("getValue");
-        var planEndTime = $("#planEndTime").datetimebox("getValue");
-        checkBeginEndTime(planStartTime,planEndTime);
-    }
-
-    function checkBeginEndTime(startTime,endTime){
-        var d1 = new Date(startTime.replace(/-/g, "\/"));
-        var d2 = new Date(endTime.replace(/-/g, "\/"));
-
-        if (startTime !== "" && endTime !== "" && d1 > d2) {
-            $.messager.show({
-                msg: "开始时间不能大于结束时间!",
-                timeout: 1000,
-                showType: 'show',
-                style: {
-                    right: '',
-                    top: document.body.scrollTop + document.documentElement.scrollTop,
-                    bottom: ''
-                }
-            });
-        }
-    }
-
     //判断字符是否为空的方法
     function isEmpty(obj){
         if(typeof obj == "undefined" || obj == null || obj == ""){
@@ -657,6 +638,39 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui","dateUti
         }else{
             return false;
         }
+    }
+
+    //获取当前月1号
+    function getFirstDayOfMonth() {
+        var date = new Date,
+            year = date.getFullYear(),
+            month = date.getMonth() + 1,
+            mon = (month < 10 ? "0" + month : month);
+        return year + "-" + mon + "-01 00:00:00";
+    }
+
+    //校验开始时间和终止时间
+    function checkTime(beginTime, endTime) {
+        var d1 = new Date(beginTime.replace(/-/g, "\/")),
+            d2 = new Date(endTime.replace(/-/g, "\/"));
+
+        if (beginTime !== "" && endTime === "") {
+            $.messager.alert("提示", "请选择结束时间");
+            return false;
+        }
+        if (beginTime === "" && endTime !== "") {
+            $.messager.alert("提示", "请选择开始时间!");
+            return false;
+        }
+        if (beginTime !== "" && endTime !== "" && beginTime.substring(0, 7) !== endTime.substring(0, 7)) {
+            $.messager.alert("提示", "不能跨月查询!");
+            return false;
+        }
+        if (beginTime !== "" && endTime !== "" && d1 > d2) {
+            $.messager.alert("提示", "开始时间不能大于结束时间!");
+            return false;
+        }
+        return true;
     }
 
     return {

@@ -118,26 +118,27 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
             }
         });
 
-        //时间控件初始化
-        var startTime = $('#startTime');
+        //质检开始时间选择框
+        var startTime = $("#startTime"),
+            beginDate = getFirstDayOfMonth();
         startTime.datetimebox({
+            editable: false,
             onShowPanel: function () {
-                $(this).datetimebox("spinner").timespinner("setValue", "00:00:00");
-            },
-            onChange: function () {
-                checkTime();
+                $("#startTime").datetimebox("spinner").timespinner("setValue", "00:00:00");
             }
         });
+        startTime.datetimebox('setValue', beginDate);
 
-        var endTime = $('#endTime');
+        //质检结束时间选择框
+        var endTime = $('#endTime'),
+            endDate = (DateUtil.formatDateTime(new Date() - 24 * 60 * 60 * 1000)).substr(0, 11) + " 23:59:59";
         endTime.datetimebox({
+            editable: false,
             onShowPanel: function () {
-                $(this).datetimebox("spinner").timespinner("setValue", "23:59:59");
-            },
-            onChange: function () {
-                checkTime();
+                $("#endTime").datetimebox("spinner").timespinner("setValue", "23:59:59");
             }
         });
+        endTime.datetimebox('setValue', endDate);
 
         //申诉流程列表
         var IsCheckFlag = true; //标示是否是勾选复选框选中行的，true - 是 , false - 否
@@ -417,6 +418,11 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
 
         //查询
         $("#queryBtn").on("click", function () {
+            var qmStartTime = $("#startTime").datetimebox("getValue"),
+                qmEndTime = $("#endTime").datetimebox("getValue");
+            if (!checkTime(qmStartTime, qmEndTime)) {  //查询时间校验
+                return;
+            }
             $("#queryInfo").datagrid("load");
         });
 
@@ -642,27 +648,6 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
         });
     }
 
-    //校验开始时间和终止时间
-    function checkTime() {
-        var startTime = $("#startTime").datetimebox("getValue");
-        var endTime = $("#endTime").datetimebox("getValue");
-        var d1 = new Date(startTime.replace(/-/g, "\/"));
-        var d2 = new Date(endTime.replace(/-/g, "\/"));
-
-        if (startTime !== "" && startTime !== "" && d1 > d2) {
-            $.messager.show({
-                msg: "开始时间不能大于结束时间!",
-                timeout: 1000,
-                showType: 'show',
-                style: {
-                    right: '',
-                    top: document.body.scrollTop + document.documentElement.scrollTop,
-                    bottom: ''
-                }
-            });
-        }
-    }
-
     //点击后添加页面
     $("#page").on("click", "a.processIdBtn", function () {
 
@@ -690,6 +675,39 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
                 departmentId = result.RSP.DATA[0].jsonArray[0].GROUP_ID;
             }
         });
+    }
+
+    //获取当前月1号
+    function getFirstDayOfMonth() {
+        var date = new Date,
+            year = date.getFullYear(),
+            month = date.getMonth() + 1,
+            mon = (month < 10 ? "0" + month : month);
+        return year + "-" + mon + "-01 00:00:00";
+    }
+
+    //校验开始时间和终止时间
+    function checkTime(beginTime, endTime) {
+        var d1 = new Date(beginTime.replace(/-/g, "\/")),
+            d2 = new Date(endTime.replace(/-/g, "\/"));
+
+        if (beginTime !== "" && endTime === "") {
+            $.messager.alert("提示", "请选择结束时间");
+            return false;
+        }
+        if (beginTime === "" && endTime !== "") {
+            $.messager.alert("提示", "请选择开始时间!");
+            return false;
+        }
+        if (beginTime !== "" && endTime !== "" && beginTime.substring(0, 7) !== endTime.substring(0, 7)) {
+            $.messager.alert("提示", "不能跨月查询!");
+            return false;
+        }
+        if (beginTime !== "" && endTime !== "" && d1 > d2) {
+            $.messager.alert("提示", "开始时间不能大于结束时间!");
+            return false;
+        }
+        return true;
     }
 
     return {

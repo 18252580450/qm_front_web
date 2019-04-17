@@ -17,30 +17,26 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
     function initPageInfo() {
 
         //分配开始时间选择框
-        // var beginDate = (DateUtil.formatDateTime(new Date() - 24 * 60 * 60 * 1000)).substr(0, 11) + "00:00:00";
-        var beginDate = "2018-10-10 00:00:00";
-        $("#assignBeginTime").datetimebox({
-            // value: beginDate,
+        var assignBeginTime = $("#assignBeginTime"),
+            beginDate = getFirstDayOfMonth();
+        assignBeginTime.datetimebox({
+            editable: false,
             onShowPanel: function () {
                 $("#assignBeginTime").datetimebox("spinner").timespinner("setValue", "00:00:00");
-            },
-            onChange: function () {
-                checkBeginEndTime();
             }
         });
+        assignBeginTime.datetimebox('setValue', beginDate);
 
         //分配结束时间选择框
-        var endDate = (DateUtil.formatDateTime(new Date())).substr(0, 11) + "00:00:00";
-        // var endDate = (DateUtil.formatDateTime(new Date()-24*60*60*1000)).substr(0,11) + "23:59:59";
-        $('#assignEndTime').datetimebox({
-            // value: endDate,
+        var assignEndTime = $('#assignEndTime'),
+            endDate = (DateUtil.formatDateTime(new Date() - 24 * 60 * 60 * 1000)).substr(0, 11) + " 23:59:59";
+        assignEndTime.datetimebox({
+            editable: false,
             onShowPanel: function () {
                 $("#assignEndTime").datetimebox("spinner").timespinner("setValue", "23:59:59");
-            },
-            onChange: function () {
-                checkBeginEndTime();
             }
         });
+        assignEndTime.datetimebox('setValue', endDate);
 
         //计划名称搜索框
         $('#planName').searchbox({//输入框点击查询事件
@@ -100,18 +96,22 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
                         }
                     }
                 },
-                {field: 'wrkfmShowSwftno', title: '工单流水', width: '15%',
+                {
+                    field: 'wrkfmShowSwftno', title: '工单流水', width: '15%',
                     formatter: function (value, row, index) {
-                        if(value){
+                        if (value) {
                             return "<span title='" + value + "'>" + value + "</span>";
                         }
-                    }},
-                {field: 'srvReqstTypeFullNm', title: '服务请求类型', width: '15%', hidden:true,
+                    }
+                },
+                {
+                    field: 'srvReqstTypeFullNm', title: '服务请求类型', width: '15%', hidden: true,
                     formatter: function (value, row, index) {
-                        if(value){
+                        if (value) {
                             return "<span title='" + value + "'>" + value + "</span>";
                         }
-                    }},
+                    }
+                },
                 {
                     field: 'planName', title: '计划名称', width: '15%',
                     formatter: function (value, row, index) {
@@ -120,24 +120,30 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
                         }
                     }
                 },
-                {field: 'custEmail', title: '客户账号', align: 'center', width: '10%',
+                {
+                    field: 'custEmail', title: '客户账号', align: 'center', width: '10%',
                     formatter: function (value, row, index) {
-                        if(value){
+                        if (value) {
                             return "<span title='" + value + "'>" + value + "</span>";
                         }
-                    }},
-                {field: 'custName', title: '客户名称', align: 'center', width: '10%',
+                    }
+                },
+                {
+                    field: 'custName', title: '客户名称', align: 'center', width: '10%',
                     formatter: function (value, row, index) {
-                        if(value){
+                        if (value) {
                             return "<span title='" + value + "'>" + value + "</span>";
                         }
-                    }},
-                {field: 'custNum', title: '客户号码', align: 'center', width: '10%',
+                    }
+                },
+                {
+                    field: 'custNum', title: '客户号码', align: 'center', width: '10%',
                     formatter: function (value, row, index) {
-                        if(value){
+                        if (value) {
                             return "<span title='" + value + "'>" + value + "</span>";
                         }
-                    }},
+                    }
+                },
                 {
                     field: 'crtTime', title: '立单时间', width: '15%',
                     formatter: function (value, row, index) { //格式化时间格式
@@ -197,8 +203,8 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
                 }
             },
             loader: function (param, success) {
-                var start = (param.page - 1) * param.rows;
-                var pageNum = param.rows;
+                var start = (param.page - 1) * param.rows,
+                    pageNum = param.rows;
 
                 var wrkfmShowSwftno = $("#orderId").val(),
                     distStartTime = $("#assignBeginTime").datetimebox("getValue"),
@@ -296,6 +302,11 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
     //事件初始化
     function initEvent() {
         $("#queryBtn").on("click", function () {
+            var distStartTime = $("#assignBeginTime").datetimebox("getValue"),
+                distEndTime = $("#assignEndTime").datetimebox("getValue");
+            if (!checkTime(distStartTime, distEndTime)) {  //查询时间校验
+                return;
+            }
             $("#orderCheckList").datagrid('load');
         });
         $("#resetBtn").on("click", function () {
@@ -304,25 +315,37 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
         });
     }
 
-    //校验开始时间和终止时间
-    function checkBeginEndTime() {
-        var beginTime = $("#assignBeginTime").datetimebox("getValue");
-        var endTime = $("#assignEndTime").datetimebox("getValue");
-        var d1 = new Date(beginTime.replace(/-/g, "\/"));
-        var d2 = new Date(endTime.replace(/-/g, "\/"));
+    //获取当前月1号
+    function getFirstDayOfMonth() {
+        var date = new Date,
+            year = date.getFullYear(),
+            month = date.getMonth() + 1,
+            mon = (month < 10 ? "0" + month : month);
+        return year + "-" + mon + "-01 00:00:00";
+    }
 
-        if (beginTime !== "" && endTime !== "" && d1 > d2) {
-            $.messager.show({
-                msg: "开始时间不能大于结束时间!",
-                timeout: 1000,
-                showType: 'show',
-                style: {
-                    right: '',
-                    top: document.body.scrollTop + document.documentElement.scrollTop,
-                    bottom: ''
-                }
-            });
+    //校验开始时间和终止时间
+    function checkTime(beginTime, endTime) {
+        var d1 = new Date(beginTime.replace(/-/g, "\/")),
+            d2 = new Date(endTime.replace(/-/g, "\/"));
+
+        if (beginTime !== "" && endTime === "") {
+            $.messager.alert("提示", "请选择分配结束时间");
+            return false;
         }
+        if (beginTime === "" && endTime !== "") {
+            $.messager.alert("提示", "请选择分配开始时间!");
+            return false;
+        }
+        if (beginTime !== "" && endTime !== "" && beginTime.substring(0, 7) !== endTime.substring(0, 7)) {
+            $.messager.alert("提示", "不能跨月查询!");
+            return false;
+        }
+        if (beginTime !== "" && endTime !== "" && d1 > d2) {
+            $.messager.alert("提示", "开始时间不能大于结束时间!");
+            return false;
+        }
+        return true;
     }
 
     return {

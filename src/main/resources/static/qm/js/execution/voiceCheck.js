@@ -34,34 +34,26 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
         });
 
         //分配开始时间选择框
-        // var distributeBeginDate = (DateUtil.formatDateTime(new Date() - 24 * 60 * 60 * 1000)).substr(0, 11) + "00:00:00";
-        var distributeBeginDate = "2018-10-10 00:00:00";
-        $("#distributeBeginTime").datetimebox({
-            // value: distributeBeginDate,
+        var distributeBeginTime = $("#distributeBeginTime"),
+            beginDate = getFirstDayOfMonth();
+        distributeBeginTime.datetimebox({
+            editable: false,
             onShowPanel: function () {
                 $("#distributeBeginTime").datetimebox("spinner").timespinner("setValue", "00:00:00");
-            },
-            onChange: function () {
-                var beginDate = $("#distributeBeginTime").datetimebox("getValue"),
-                    endDate = $("#distributeEndTime").datetimebox("getValue");
-                checkBeginEndTime(beginDate, endDate);
             }
         });
+        distributeBeginTime.datetimebox('setValue', beginDate);
 
         //分配结束时间选择框
-        var distributeEndDate = (DateUtil.formatDateTime(new Date())).substr(0, 11) + "00:00:00";
-        // var endDate = (DateUtil.formatDateTime(new Date()-24*60*60*1000)).substr(0,11) + "23:59:59";
-        $('#distributeEndTime').datetimebox({
-            // value: distributeEndDate,
+        var distributeEndTime = $('#distributeEndTime'),
+            endDate = (DateUtil.formatDateTime(new Date() - 24 * 60 * 60 * 1000)).substr(0, 11) + " 23:59:59";
+        distributeEndTime.datetimebox({
+            editable: false,
             onShowPanel: function () {
                 $("#distributeEndTime").datetimebox("spinner").timespinner("setValue", "23:59:59");
-            },
-            onChange: function () {
-                var beginDate = $("#distributeBeginTime").datetimebox("getValue"),
-                    endDate = $("#distributeEndTime").datetimebox("getValue");
-                checkBeginEndTime(beginDate, endDate);
             }
         });
+        distributeEndTime.datetimebox('setValue', endDate);
 
         //质检状态下拉框
         $("#poolStatus").combobox({
@@ -107,25 +99,31 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
                         }
                     }
                 },
-                {field: 'touchId', title: '语音流水', width: '15%',
+                {
+                    field: 'touchId', title: '语音流水', width: '15%',
                     formatter: function (value, row, index) {
-                        if(value){
+                        if (value) {
                             return "<span title='" + value + "'>" + value + "</span>";
                         }
-                    }},
+                    }
+                },
                 {field: 'planName', title: '计划名称', width: '15%'},
-                {field: 'staffNumber', title: '坐席号码', width: '15%',
+                {
+                    field: 'staffNumber', title: '坐席号码', width: '15%',
                     formatter: function (value, row, index) {
-                        if(value){
+                        if (value) {
                             return "<span title='" + value + "'>" + value + "</span>";
                         }
-                    }},
-                {field: 'customerNumber', title: '客户号码', width: '15%',
+                    }
+                },
+                {
+                    field: 'customerNumber', title: '客户号码', width: '15%',
                     formatter: function (value, row, index) {
-                        if(value){
+                        if (value) {
                             return "<span title='" + value + "'>" + value + "</span>";
                         }
-                    }},
+                    }
+                },
                 {
                     field: 'checkedTime', title: '抽取时间', width: '15%',
                     formatter: function (value, row, index) { //格式化时间格式
@@ -291,6 +289,11 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
     //事件初始化
     function initEvent() {
         $("#queryBtn").on("click", function () {
+            var distStartTime = $("#distributeBeginTime").datetimebox("getValue"),
+                distEndTime = $("#distributeEndTime").datetimebox("getValue");
+            if (!checkTime(distStartTime, distEndTime)) {  //查询时间校验
+                return;
+            }
             $("#voiceCheckList").datagrid('load');
         });
         $("#resetBtn").on("click", function () {
@@ -299,23 +302,37 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
         });
     }
 
-    //校验开始时间和终止时间
-    function checkBeginEndTime(beginTime, endTime) {
-        var d1 = new Date(beginTime.replace(/-/g, "\/"));
-        var d2 = new Date(endTime.replace(/-/g, "\/"));
+    //获取当前月1号
+    function getFirstDayOfMonth() {
+        var date = new Date,
+            year = date.getFullYear(),
+            month = date.getMonth() + 1,
+            mon = (month < 10 ? "0" + month : month);
+        return year + "-" + mon + "-01 00:00:00";
+    }
 
-        if (beginTime !== "" && endTime !== "" && d1 > d2) {
-            $.messager.show({
-                msg: "开始时间不能大于结束时间!",
-                timeout: 1000,
-                showType: 'show',
-                style: {
-                    right: '',
-                    top: document.body.scrollTop + document.documentElement.scrollTop,
-                    bottom: ''
-                }
-            });
+    //校验开始时间和终止时间
+    function checkTime(beginTime, endTime) {
+        var d1 = new Date(beginTime.replace(/-/g, "\/")),
+            d2 = new Date(endTime.replace(/-/g, "\/"));
+
+        if (beginTime !== "" && endTime === "") {
+            $.messager.alert("提示", "请选择分配结束时间");
+            return false;
         }
+        if (beginTime === "" && endTime !== "") {
+            $.messager.alert("提示", "请选择分配开始时间!");
+            return false;
+        }
+        if (beginTime !== "" && endTime !== "" && beginTime.substring(0, 7) !== endTime.substring(0, 7)) {
+            $.messager.alert("提示", "不能跨月查询!");
+            return false;
+        }
+        if (beginTime !== "" && endTime !== "" && d1 > d2) {
+            $.messager.alert("提示", "开始时间不能大于结束时间!");
+            return false;
+        }
+        return true;
     }
 
     return {

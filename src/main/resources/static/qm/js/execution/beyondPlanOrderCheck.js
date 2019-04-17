@@ -29,28 +29,26 @@ require([
         function initPageInfo() {
 
             //归档开始时间选择框
-            // var beginDate = (DateUtil.formatDateTime(new Date() - 24 * 60 * 60 * 1000)).substr(0, 11) + "00:00:00";
-            var beginDate = "2018-10-10 00:00:00";
-            $("#arcBeginTime").datetimebox({
-                // value: beginDate,
+            var arcBeginTime = $("#arcBeginTime"),
+                beginDate = getFirstDayOfMonth();
+            arcBeginTime.datetimebox({
+                editable: false,
                 onShowPanel: function () {
                     $("#arcBeginTime").datetimebox("spinner").timespinner("setValue", "00:00:00");
-                },
-                onChange: function () {
                 }
             });
+            arcBeginTime.datetimebox('setValue', beginDate);
 
             //归档结束时间选择框
-            var endDate = (DateUtil.formatDateTime(new Date())).substr(0, 11) + "00:00:00";
-            // var endDate = (DateUtil.formatDateTime(new Date()-24*60*60*1000)).substr(0,11) + "23:59:59";
-            $('#arcEndTime').datetimebox({
-                // value: endDate,
+            var arcEndTime = $('#arcEndTime'),
+                endDate = (DateUtil.formatDateTime(new Date() - 24 * 60 * 60 * 1000)).substr(0, 11) + " 23:59:59";
+            arcEndTime.datetimebox({
+                editable: false,
                 onShowPanel: function () {
                     $("#arcEndTime").datetimebox("spinner").timespinner("setValue", "23:59:59");
-                },
-                onChange: function () {
                 }
             });
+            arcEndTime.datetimebox('setValue', endDate);
 
             //立单人搜索框
             var acptStaffInput = $('#acptStaffName');
@@ -257,6 +255,11 @@ require([
         //事件初始化
         function initEvent() {
             $("#queryBtn").on("click", function () {
+                var arcBeginTime = $("#arcBeginTime").datetimebox("getValue"),
+                    arcEndTime = $("#arcEndTime").datetimebox("getValue");
+                if (!checkTime(arcBeginTime, arcEndTime)) {  //查询时间校验
+                    return;
+                }
                 $("#workFormList").datagrid('load');
             });
             $("#resetBtn").on("click", function () {
@@ -293,6 +296,39 @@ require([
                     }
                 });
             });
+        }
+
+        //获取当前月1号
+        function getFirstDayOfMonth() {
+            var date = new Date,
+                year = date.getFullYear(),
+                month = date.getMonth() + 1,
+                mon = (month < 10 ? "0" + month : month);
+            return year + "-" + mon + "-01 00:00:00";
+        }
+
+        //校验开始时间和终止时间
+        function checkTime(beginTime, endTime) {
+            var d1 = new Date(beginTime.replace(/-/g, "\/")),
+                d2 = new Date(endTime.replace(/-/g, "\/"));
+
+            if (beginTime !== "" && endTime === "") {
+                $.messager.alert("提示", "请选择归档结束时间");
+                return false;
+            }
+            if (beginTime === "" && endTime !== "") {
+                $.messager.alert("提示", "请选择归档开始时间!");
+                return false;
+            }
+            if (beginTime !== "" && endTime !== "" && beginTime.substring(0, 7) !== endTime.substring(0, 7)) {
+                $.messager.alert("提示", "不能跨月查询!");
+                return false;
+            }
+            if (beginTime !== "" && endTime !== "" && d1 > d2) {
+                $.messager.alert("提示", "开始时间不能大于结束时间!");
+                return false;
+            }
+            return true;
         }
 
         return {

@@ -40,31 +40,28 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                     }
                 }
             );
+
             //申诉开始时间选择框
-            // var beginDate = (DateUtil.formatDateTime(new Date() - 24 * 60 * 60 * 1000)).substr(0, 11) + "00:00:00";
-            var beginDate = "2018-10-10 00:00:00";
-            $("#appealBeginTime").datetimebox({
-                // value: beginDate,
+            var appealBeginTime = $("#appealBeginTime"),
+                beginDate = getFirstDayOfMonth();
+            appealBeginTime.datetimebox({
+                editable: false,
                 onShowPanel: function () {
                     $("#appealBeginTime").datetimebox("spinner").timespinner("setValue", "00:00:00");
-                },
-                onChange: function () {
-                    checkBeginEndTime();
                 }
             });
+            appealBeginTime.datetimebox('setValue', beginDate);
 
             //申诉结束时间选择框
-            var endDate = (DateUtil.formatDateTime(new Date())).substr(0, 11) + "00:00:00";
-            // var endDate = (DateUtil.formatDateTime(new Date()-24*60*60*1000)).substr(0,11) + "23:59:59";
-            $('#appealEndTime').datetimebox({
-                // value: endDate,
+            var appealEndTime = $('#appealEndTime'),
+                endDate = (DateUtil.formatDateTime(new Date() - 24 * 60 * 60 * 1000)).substr(0, 11) + " 23:59:59";
+            appealEndTime.datetimebox({
+                editable: false,
                 onShowPanel: function () {
                     $("#appealEndTime").datetimebox("spinner").timespinner("setValue", "23:59:59");
-                },
-                onChange: function () {
-                    checkBeginEndTime();
                 }
             });
+            appealEndTime.datetimebox('setValue', endDate);
 
             //申诉处理列表
             var IsCheckFlag = true; //标示是否是勾选复选框选中行的，true - 是 , false - 否
@@ -212,7 +209,12 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
         //事件初始化
         function initEvent() {
             $("#queryBtn").on("click", function () {
-                $("#appealCheckList").datagrid("reload");
+                var appealBeginTime = $("#appealBeginTime").datetimebox("getValue"),
+                    appealEndTime = $("#appealEndTime").datetimebox("getValue");
+                if (!checkTime(appealBeginTime, appealEndTime)) {  //查询时间校验
+                    return;
+                }
+                $("#appealCheckList").datagrid("load");
             });
             $("#resetBtn").on("click", function () {
                 $("#searchForm").form('clear');
@@ -395,25 +397,37 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
             CommonAjax.showDialog(checkUrl, "质检详情", 1000, Util.constants.DIALOG_HEIGHT_SMALL);
         }
 
+        //获取当前月1号
+        function getFirstDayOfMonth() {
+            var date = new Date,
+                year = date.getFullYear(),
+                month = date.getMonth() + 1,
+                mon = (month < 10 ? "0" + month : month);
+            return year + "-" + mon + "-01 00:00:00";
+        }
+
         //校验开始时间和终止时间
-        function checkBeginEndTime() {
-            var beginTime = $("#appealBeginTime").datetimebox("getValue"),
-                endTime = $("#appealEndTime").datetimebox("getValue"),
-                d1 = new Date(beginTime.replace(/-/g, "\/")),
+        function checkTime(beginTime, endTime) {
+            var d1 = new Date(beginTime.replace(/-/g, "\/")),
                 d2 = new Date(endTime.replace(/-/g, "\/"));
 
-            if (beginTime !== "" && endTime !== "" && d1 > d2) {
-                $.messager.show({
-                    msg: "开始时间不能大于结束时间!",
-                    timeout: 1000,
-                    showType: 'show',
-                    style: {
-                        right: '',
-                        top: document.body.scrollTop + document.documentElement.scrollTop,
-                        bottom: ''
-                    }
-                });
+            if (beginTime !== "" && endTime === "") {
+                $.messager.alert("提示", "请选择申诉结束时间");
+                return false;
             }
+            if (beginTime === "" && endTime !== "") {
+                $.messager.alert("提示", "请选择申诉开始时间!");
+                return false;
+            }
+            // if (beginTime !== "" && endTime !== "" && beginTime.substring(0, 7) !== endTime.substring(0, 7)) {
+            //     $.messager.alert("提示", "不能跨月查询!");
+            //     return false;
+            // }
+            if (beginTime !== "" && endTime !== "" && d1 > d2) {
+                $.messager.alert("提示", "开始时间不能大于结束时间!");
+                return false;
+            }
+            return true;
         }
 
         //显示审批记录

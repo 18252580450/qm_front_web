@@ -134,26 +134,27 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
             }
         });
 
-        //时间控件初始化
-        var startTime = $('#startTime');
+        //抽取开始时间选择框
+        var startTime = $("#startTime"),
+            beginDate = getFirstDayOfMonth();
         startTime.datetimebox({
-            onShowPanel:function(){
-                $(this).datetimebox("spinner").timespinner("setV    alue","00:00:00");
-            },
-            onChange: function () {
-                check();
+            editable: false,
+            onShowPanel: function () {
+                $("#startTime").datetimebox("spinner").timespinner("setValue", "00:00:00");
             }
         });
+        startTime.datetimebox('setValue', beginDate);
 
-        var endTime = $('#endTime');
+        //抽取结束时间选择框
+        var endTime = $('#endTime'),
+            endDate = (DateUtil.formatDateTime(new Date() - 24 * 60 * 60 * 1000)).substr(0, 11) + " 23:59:59";
         endTime.datetimebox({
-            onShowPanel:function(){
-                $(this).datetimebox("spinner").timespinner("setValue","23:59:59");
-            },
-            onChange: function () {
-                check();
+            editable: false,
+            onShowPanel: function () {
+                $("#endTime").datetimebox("spinner").timespinner("setValue", "23:59:59");
             }
         });
+        endTime.datetimebox('setValue', endDate);
 
         //质检信息
         $("#queryInfo").datagrid({
@@ -350,6 +351,11 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
 
         //查询
         $("#queryBtn").on("click", function () {
+            var startTime = $("#startTime").datetimebox("getValue"),
+                endTime = $("#endTime").datetimebox("getValue");
+            if (!checkTime(startTime, endTime)) {  //查询时间校验
+                return;
+            }
             $("#queryInfo").datagrid("load");
         });
 
@@ -536,27 +542,6 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
         });
     }
 
-    //校验开始时间和终止时间
-    function check() {
-        var startTime = $("#startTime").datetimebox("getValue");
-        var endTime = $("#endTime").datetimebox("getValue");
-        var d1 = new Date(startTime.replace(/-/g, "\/"));
-        var d2 = new Date(endTime.replace(/-/g, "\/"));
-
-        if (startTime !== "" && endTime !== "" && d1 > d2) {
-            $.messager.show({
-                msg: "开始时间不能大于结束时间!",
-                timeout: 1000,
-                showType: 'show',
-                style: {
-                    right: '',
-                    top: document.body.scrollTop + document.documentElement.scrollTop,
-                    bottom: ''
-                }
-            });
-        }
-    }
-
     /**
      * 后台导出
      */
@@ -606,6 +591,39 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
         }else{
             return false;
         }
+    }
+
+    //获取当前月1号
+    function getFirstDayOfMonth() {
+        var date = new Date,
+            year = date.getFullYear(),
+            month = date.getMonth() + 1,
+            mon = (month < 10 ? "0" + month : month);
+        return year + "-" + mon + "-01 00:00:00";
+    }
+
+    //校验开始时间和终止时间
+    function checkTime(beginTime, endTime) {
+        var d1 = new Date(beginTime.replace(/-/g, "\/")),
+            d2 = new Date(endTime.replace(/-/g, "\/"));
+
+        if (beginTime !== "" && endTime === "") {
+            $.messager.alert("提示", "请选择结束时间");
+            return false;
+        }
+        if (beginTime === "" && endTime !== "") {
+            $.messager.alert("提示", "请选择开始时间!");
+            return false;
+        }
+        if (beginTime !== "" && endTime !== "" && beginTime.substring(0, 7) !== endTime.substring(0, 7)) {
+            $.messager.alert("提示", "不能跨月查询!");
+            return false;
+        }
+        if (beginTime !== "" && endTime !== "" && d1 > d2) {
+            $.messager.alert("提示", "开始时间不能大于结束时间!");
+            return false;
+        }
+        return true;
     }
 
     return {

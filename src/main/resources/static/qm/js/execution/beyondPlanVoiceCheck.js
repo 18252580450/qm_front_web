@@ -27,35 +27,27 @@ require([
         //页面信息初始化
         function initPageInfo() {
 
-            //开始时间选择框
-            // var extractBeginDate = (DateUtil.formatDateTime(new Date() - 24 * 60 * 60 * 1000)).substr(0, 11) + "00:00:00";
-            var extractBeginDate = "2018-10-10 00:00:00";
-            $("#beginTime").datetimebox({
-                // value: extractBeginDate,
+            //接触开始时间选择框
+            var beginTime = $("#beginTime"),
+                beginDate = getFirstDayOfMonth();
+            beginTime.datetimebox({
+                editable: false,
                 onShowPanel: function () {
                     $("#beginTime").datetimebox("spinner").timespinner("setValue", "00:00:00");
-                },
-                onChange: function () {
-                    var beginDate = $("#beginTime").datetimebox("getValue"),
-                        endDate = $("#endTime").datetimebox("getValue");
-                    checkBeginEndTime(beginDate, endDate);
                 }
             });
+            beginTime.datetimebox('setValue', beginDate);
 
-            //结束时间选择框
-            var extractEndDate = (DateUtil.formatDateTime(new Date())).substr(0, 11) + "00:00:00";
-            // var endDate = (DateUtil.formatDateTime(new Date()-24*60*60*1000)).substr(0,11) + "23:59:59";
-            $('#endTime').datetimebox({
-                // value: extractEndDate,
+            //接触结束时间选择框
+            var endTime = $('#endTime'),
+                endDate = (DateUtil.formatDateTime(new Date() - 24 * 60 * 60 * 1000)).substr(0, 11) + " 23:59:59";
+            endTime.datetimebox({
+                editable: false,
                 onShowPanel: function () {
                     $("#endTime").datetimebox("spinner").timespinner("setValue", "23:59:59");
-                },
-                onChange: function () {
-                    var beginDate = $("#beginTime").datetimebox("getValue"),
-                        endDate = $("#endTime").datetimebox("getValue");
-                    checkBeginEndTime(beginDate, endDate);
                 }
             });
+            endTime.datetimebox('setValue', endDate);
 
             //待质检语音列表
             var IsCheckFlag = true; //标示是否是勾选复选框选中行的，true - 是 , false - 否
@@ -78,26 +70,32 @@ require([
                             }
                         }
                     },
-                    {field: 'touchId', title: '语音流水', width: '15%',
+                    {
+                        field: 'touchId', title: '语音流水', width: '15%',
                         formatter: function (value, row, index) {
-                            if(value){
+                            if (value) {
                                 return "<span title='" + value + "'>" + value + "</span>";
                             }
-                        }},
+                        }
+                    },
                     {field: 'staffName', title: '坐席', width: '10%'},
                     {field: 'departName', title: '部门', width: '15%'},
-                    {field: 'staffNumber', title: '坐席号码', width: '15%',
+                    {
+                        field: 'staffNumber', title: '坐席号码', width: '15%',
                         formatter: function (value, row, index) {
-                            if(value){
+                            if (value) {
                                 return "<span title='" + value + "'>" + value + "</span>";
                             }
-                        }},
-                    {field: 'customerNumber', title: '客户号码', width: '15%',
+                        }
+                    },
+                    {
+                        field: 'customerNumber', title: '客户号码', width: '15%',
                         formatter: function (value, row, index) {
-                            if(value){
+                            if (value) {
                                 return "<span title='" + value + "'>" + value + "</span>";
                             }
-                        }},
+                        }
+                    },
                     {
                         field: 'callType', title: '呼叫类型', width: '10%',
                         formatter: function (value, row, index) {
@@ -211,6 +209,11 @@ require([
         //事件初始化
         function initEvent() {
             $("#queryBtn").on("click", function () {
+                var beginTime = $("#beginTime").datetimebox("getValue"),
+                    endTime = $("#endTime").datetimebox("getValue");
+                if (!checkTime(beginTime, endTime)) {  //查询时间校验
+                    return;
+                }
                 $("#voiceCheckList").datagrid('reload');
             });
             $("#resetBtn").on("click", function () {
@@ -249,23 +252,37 @@ require([
             });
         }
 
-        //校验开始时间和终止时间
-        function checkBeginEndTime(beginTime, endTime) {
-            var d1 = new Date(beginTime.replace(/-/g, "\/"));
-            var d2 = new Date(endTime.replace(/-/g, "\/"));
+        //获取当前月1号
+        function getFirstDayOfMonth() {
+            var date = new Date,
+                year = date.getFullYear(),
+                month = date.getMonth() + 1,
+                mon = (month < 10 ? "0" + month : month);
+            return year + "-" + mon + "-01 00:00:00";
+        }
 
-            if (beginTime !== "" && endTime !== "" && d1 > d2) {
-                $.messager.show({
-                    msg: "开始时间不能大于结束时间!",
-                    timeout: 1000,
-                    showType: 'show',
-                    style: {
-                        right: '',
-                        top: document.body.scrollTop + document.documentElement.scrollTop,
-                        bottom: ''
-                    }
-                });
+        //校验开始时间和终止时间
+        function checkTime(beginTime, endTime) {
+            var d1 = new Date(beginTime.replace(/-/g, "\/")),
+                d2 = new Date(endTime.replace(/-/g, "\/"));
+
+            if (beginTime !== "" && endTime === "") {
+                $.messager.alert("提示", "请选择归档结束时间");
+                return false;
             }
+            if (beginTime === "" && endTime !== "") {
+                $.messager.alert("提示", "请选择归档开始时间!");
+                return false;
+            }
+            if (beginTime !== "" && endTime !== "" && beginTime.substring(0, 7) !== endTime.substring(0, 7)) {
+                $.messager.alert("提示", "不能跨月查询!");
+                return false;
+            }
+            if (beginTime !== "" && endTime !== "" && d1 > d2) {
+                $.messager.alert("提示", "开始时间不能大于结束时间!");
+                return false;
+            }
+            return true;
         }
 
         return {
