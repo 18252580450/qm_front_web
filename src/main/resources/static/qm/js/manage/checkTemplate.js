@@ -70,6 +70,12 @@ define(["js/manage/addCheckTemplate","js/manage/modifyCheckTemplate","jquery", '
                     formatter:function(value,row,index){
                         return {'0':'未发布','1':'发布','2':'暂停','3':'删除'}[value];
                     }},
+                {
+                    field: 'templateType', title: '模板类型', width: '15%',
+                    formatter: function (value, row, index) {
+                        return {'0': '录音考评模板', '1': '工单考评模板', '2': '互联网考评模板'}[value];
+                    }
+                },
                 {field: 'remark', title: '备注', width: '20%',
                     formatter: function (value) {
                         if(value){

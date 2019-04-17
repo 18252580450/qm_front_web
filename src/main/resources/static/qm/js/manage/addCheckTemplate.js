@@ -191,6 +191,7 @@ define(["text!html/manage/addCheckTemplate.tpl","jquery", 'util', "transfer", "e
 
     //保存操作。将表中的数据保存到数据库中（新增）。
     function insertTempDetail(){
+        var templateType = $("#templateType", $el).combobox("getValue");
         //将表中数据保存到详情信息表中
         //获取datagrid中的所有数据，将其拼接成json格式字符串数组
         var rowsData = $('#peopleManage',$el).datagrid('getRows');
@@ -255,10 +256,12 @@ define(["text!html/manage/addCheckTemplate.tpl","jquery", 'util', "transfer", "e
             $.messager.alert("提示", "点击行填写分数,每行所占分值不可为0!");
             return false;
         }
-        if(nAllScore!=100||maxAllScore>100){
-            flag = false;
-            $.messager.alert("提示", "所占分值总和必须为100以及扣分范围总和不得高于100!");
-            return false;
+        if (templateType != "1") {//工单模版不做分数限制
+            if (nAllScore != 100 || maxAllScore > 100) {
+                flag = false;
+                $.messager.alert("提示", "所占分值总和必须为100以及扣分范围总和不得高于100!");
+                return false;
+            }
         }
         var param =  {"params":json};
         Util.ajax.postJson(Util.constants.CONTEXT.concat(Util.constants.ADD_CHECK_TEMPLATE).concat("/insertTempDetail"),JSON.stringify(param), function (result) {
@@ -268,8 +271,8 @@ define(["text!html/manage/addCheckTemplate.tpl","jquery", 'util', "transfer", "e
 
     function insertCheckTemplate(){
         //将基本信息保存到基本信息表中
+        var templateType = $("#templateType", $el).combobox("getValue");
         var templateName = $("#templateName",$el).val();
-        var templateType = $("#templateType",$el).combobox("getValue");
         var templateStatus = $("#templateStatus",$el).combobox("getValue");
         var templateDesc = $("#templateDesc",$el).val();
         var crtStaffId = createStaffId;

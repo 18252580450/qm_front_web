@@ -8,6 +8,7 @@ define(["text!html/manage/modifyCheckTemplate.tpl","jquery", 'util', "transfer",
      templateName="",
      createTime = "",
      templateStatus = "",
+        templateType = "",
      remark = "",
      operateStaffId = "",//操作员工
      crtStaffId = "",//创建员工
@@ -19,6 +20,7 @@ define(["text!html/manage/modifyCheckTemplate.tpl","jquery", 'util', "transfer",
         templateName=map["templateName"];
         createTime = map["createTime"];
         templateStatus = map["templateStatus"];
+        templateType = map["templateType"];
         remark = map["remark"];
         Util.getLogInData(function (data) {
             userInfo = data;//用户角色
@@ -229,6 +231,7 @@ define(["text!html/manage/modifyCheckTemplate.tpl","jquery", 'util', "transfer",
     //保存操作。将表中的数据保存到数据库中（更新）
     function saveEvent(){
         $("#page",$el).on("click", "#saveBut", function () {
+            var templateType = $("#templateType", $el).combobox("getValue");//工单模版不做分数限制
             $('#templateName',$el).validatebox({required:true});//非空校验
             if($("#templateName",$el).val()==""){
                 $.messager.alert('警告', '必填项不可为空!');
@@ -312,11 +315,12 @@ define(["text!html/manage/modifyCheckTemplate.tpl","jquery", 'util', "transfer",
                 $.messager.alert("提示", "点击行填写分数,并且每行所占分值不可为0!");
                 return false;
             }
-            if(nAllScore!=100||maxAllScore>100){
-                $.messager.alert("提示", "所占分值总和必须为100以及扣分范围总和不得高于100!");
-                return false;
+            if (templateType != "1") {//工单模版不做分数限制
+                if (nAllScore != 100 || maxAllScore > 100) {
+                    $.messager.alert("提示", "所占分值总和必须为100以及扣分范围总和不得高于100!");
+                    return false;
+                }
             }
-
             //更新
             Util.ajax.putJson(Util.constants.CONTEXT.concat(Util.constants.ADD_CHECK_TEMPLATE).concat("/update"),JSON.stringify(json), function (result) {
                 $.messager.show({
@@ -352,7 +356,6 @@ define(["text!html/manage/modifyCheckTemplate.tpl","jquery", 'util', "transfer",
 
             //将修改的基本信息更新到基本信息表中
             var templateName = $("#templateName",$el).val();
-            var templateType = $("#templateType",$el).combobox("getValue");
             var templateStatus = $("#templateStatus",$el).combobox("getValue");
             var templateDesc = $("#templateDesc",$el).val();
 
@@ -399,11 +402,8 @@ define(["text!html/manage/modifyCheckTemplate.tpl","jquery", 'util', "transfer",
             panelHeight:'auto',
             editable:false,
             onLoadSuccess : function(){//当数据加载成功时，默认显示第一个数据
-                var templatChannel = $("#templateType",$el);
-                var data = templatChannel.combobox('getData');
-                if (data.length > 0) {
-                    templatChannel.combobox('select', data[0].codeValue);
-                }
+                var type = $("#templateType", $el);
+                type.combobox('select', templateType);
             }
         });
 
