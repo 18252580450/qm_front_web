@@ -277,6 +277,14 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui","dateUti
                         }
                 }},
                 {
+                    field: 'crtTime', title: '立单时间', align: 'center', width: '10%',
+                    formatter: function (value, row, index) { //格式化时间格式
+                        if (value) {
+                            return "<span title='" + DateUtil.formatDateTime(value) + "'>" + DateUtil.formatDateTime(value) + "</span>";
+                        }
+                    }
+                },
+                {
                     field: 'checkedTime', title: '抽取时间', align: 'center', width: '10%',
                     formatter: function (value, row, index) { //格式化时间格式
                         if (value) {
@@ -284,12 +292,6 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui","dateUti
                         }
                     }
                 },
-                {field: 'crtTime', title: '立单时间', align: 'center', width: '10%',
-                    formatter: function (value, row, index) { //格式化时间格式
-                        if(value){
-                            return "<span title='" + DateUtil.formatDateTime(value) + "'>" + DateUtil.formatDateTime(value) + "</span>";
-                        }
-                    }},
                 {field: 'arcTime', title: '归档时间', align: 'center', width: '10%',
                     formatter: function (value, row, index) { //格式化时间格式
                         if(value!=null){
