@@ -12,8 +12,10 @@ define(["text!html/manage/modifyCheckTemplate.tpl","jquery", 'util', "transfer",
      remark = "",
      operateStaffId = "",//操作员工
      crtStaffId = "",//创建员工
-     openCheckItem = [];   //记录展开的目录路径（保存节点id）
+        openCheckItem = [],   //记录展开的目录路径（保存节点id）
+        deleteRow;   //需要删除的数据
     function initialize(data) {
+        deleteRow = [];
         $el = $(modifyCheckTemplateTpl);
         var map = data[0];
         templateId=map["templateId"];
@@ -212,16 +214,11 @@ define(["text!html/manage/modifyCheckTemplate.tpl","jquery", 'util', "transfer",
             };
             var param =  {"params":JSON.stringify(map)};
             Util.ajax.getJson(Util.constants.CONTEXT.concat(Util.constants.ADD_CHECK_TEMPLATE).concat("/selectByPrimaryKey"),param, function (result) {
+                $('#peopleManage', $el).datagrid('deleteRow', index);
+                var rows = $('#peopleManage', $el).datagrid("getRows");    //重新获取数据生成行号
+                $('#peopleManage', $el).datagrid("loadData", rows);
                 if (result.RSP.RSP_CODE == "1") {
-                    Util.ajax.deleteJson(Util.constants.CONTEXT.concat( Util.constants.ADD_CHECK_TEMPLATE).concat("/deleteByPrimaryKey/"), JSON.stringify(map), function (result) {
-                        if (result.RSP.RSP_CODE == "1") {
-                            $('#peopleManage',$el).datagrid('deleteRow', index);
-                        }
-                    });
-                }else{
-                    $('#peopleManage',$el).datagrid('deleteRow', index);
-                    var rows = $('#peopleManage',$el).datagrid("getRows");    //重新获取数据生成行号
-                    $('#peopleManage',$el).datagrid("loadData", rows);
+                    deleteRow.push(map);//需要再数据库中进行删除的数据
                 }
             });
 
@@ -377,6 +374,24 @@ define(["text!html/manage/modifyCheckTemplate.tpl","jquery", 'util', "transfer",
                     $("#modif_window").window("close"); // 关闭窗口
                 }
             });
+
+            //删除
+            if (deleteRow.length != 0) {
+                deleteRow.forEach(function (value) {
+                    Util.ajax.deleteJson(Util.constants.CONTEXT.concat(Util.constants.ADD_CHECK_TEMPLATE).concat("/deleteByPrimaryKey/"), JSON.stringify(value), function (result) {
+                        $.messager.show({
+                            msg: result.RSP.RSP_DESC,
+                            timeout: 1000,
+                            style: {right: '', bottom: ''},     //居中显示
+                            showType: 'slide'
+                        });
+                        var rspCode = result.RSP.RSP_CODE;
+                        if (rspCode == "1") {
+                            $("#modif_window").window("close"); // 关闭窗口
+                        }
+                    });
+                })
+            }
         });
     }
 
