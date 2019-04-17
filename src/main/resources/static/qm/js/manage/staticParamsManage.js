@@ -167,7 +167,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
             $("#add_content").find('form.form').form('clear');  //初始化清空
 
             $("#add_content").show().window({   //弹框
-                width: 950,
+                width: 650,
                 height: 400,
                 modal: true,
                 title: "新增参数"
@@ -265,7 +265,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
             $("#addtype_content").find('form.form').form('clear');  //初始化清空
 
             $("#addtype_content").show().window({   //弹框
-                width: 950,
+                width: 650,
                 height: 400,
                 modal: true,
                 title: "新增类别"
