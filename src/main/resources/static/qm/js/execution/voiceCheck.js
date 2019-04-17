@@ -98,12 +98,12 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
                             check = '<a href="javascript:void(0);" class="list_operation_color" id = "voiceCheck_' + row.touchId + '">质检</a>',
                             checkHistory = '<a href="javascript:void(0);" class="list_operation_color" id = "checkHistory_' + row.touchId + '">质检记录</a>';
                         if (row.poolStatus.toString() === Util.constants.CHECK_STATUS_CHECK) {
-                            // return play + "&nbsp;&nbsp;" + check; //todo
-                            return check;
+                            return play + "&nbsp;&nbsp;" + check; //todo
+                            // return check;
                         }
                         if (row.poolStatus.toString() === Util.constants.CHECK_STATUS_RECHECK) {
-                            // return play + "&nbsp;&nbsp;" + check + "&nbsp;&nbsp;" + checkHistory; //todo
-                            return check + "&nbsp;&nbsp;" + checkHistory;
+                            return play + "&nbsp;&nbsp;" + check + "&nbsp;&nbsp;" + checkHistory; //todo
+                            // return check + "&nbsp;&nbsp;" + checkHistory;
                         }
                     }
                 },
@@ -248,18 +248,18 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
                             } else { //播放其他录音
                                 $("#voicePlay_" + playingRecord).html("播放");
                                 $("#voicePlay_" + item.touchId).html("暂停");
-                                audio.src = "../../data/voice2.wav";
+                                // audio.src = "../../data/voice2.wav";
                                 // audio.src = item.recordPath;  //todo
-                                audio.load();
-                                audio.play();
+                                // audio.load();
+                                // audio.play();
                                 playingRecord = item.touchId;
                             }
                         } else {
                             $("#voicePlay_" + item.touchId).html("暂停");
                             audio.src = "../../data/voice2.wav";
                             // audio.src = item.recordPath;  //todo
-                            audio.load();
-                            audio.play();
+                            // audio.load();
+                            // audio.play();
                             playingRecord = item.touchId;
                         }
                     });

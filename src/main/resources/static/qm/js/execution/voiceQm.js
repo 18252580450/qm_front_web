@@ -435,14 +435,14 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
             var index = sensjson.index;
             voice.src=voicePath;
             // voice.src=sensjson.recordPath;
-            voice.load();//重新加载音频，用于更改src之后使用
+            // voice.load();//重新加载音频，用于更改src之后使用 //todo
 
             if(i++%2==0){
                 $("a.playBtn")[index].innerHTML='语音停止';
-                voice.play(); //播放
+                // voice.play(); //播放
             }else{
                 $("a.playBtn")[index].innerHTML='语音播放';
-                voice.pause();//暂停
+                // voice.pause();//暂停
             }
         });
         //语音下载

@@ -106,7 +106,7 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
                             return "<span title='" + value + "'>" + value + "</span>";
                         }
                     }},
-                {field: 'srvReqstTypeFullNm', title: '服务请求类型', width: '15%',
+                {field: 'srvReqstTypeFullNm', title: '服务请求类型', width: '15%', hidden:true,
                     formatter: function (value, row, index) {
                         if(value){
                             return "<span title='" + value + "'>" + value + "</span>";

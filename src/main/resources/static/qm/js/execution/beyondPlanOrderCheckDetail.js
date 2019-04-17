@@ -170,16 +170,27 @@ require(["jquery", 'util', "commonAjax", "transfer", "dateUtil", "easyui"], func
             } else {
                 workFormDetail = data;
                 $("#workFormId").val(data.acceptInfo.wrkfmShowSwftno);
+                $("#workFormId").attr('title', data.acceptInfo.wrkfmShowSwftno);
                 $("#custNum").val(data.userInfo.custNum);
+                $("#custNum").attr('title', data.userInfo.custNum);
                 $("#srvReqstTypeFullNm").val(data.acceptInfo.srvReqstTypeFullNm);
+                $("#srvReqstTypeFullNm").attr('title', data.acceptInfo.srvReqstTypeFullNm);
                 $("#custBelgCityNm").val(data.userInfo.custBelgCityNm);
+                $("#custBelgCityNm").attr('title', data.userInfo.custBelgCityNm);
                 $("#isVipNm").val(data.userInfo.isVipNm);
+                $("#isVipNm").attr('title', data.userInfo.isVipNm);
                 $("#acptChnlNm").val(data.acceptInfo.acptChnlNm);
+                $("#acptChnlNm").attr('title', data.acceptInfo.acptChnlNm);
                 $("#dplctCmplntsFlagNm").val(data.acceptInfo.dplctCmplntsFlagNm);
+                $("#dplctCmplntsFlagNm").attr('title', data.acceptInfo.dplctCmplntsFlagNm);
                 $("#isMajorCmplntsNm").val(data.acceptInfo.isMajorCmplntsNm);
+                $("#isMajorCmplntsNm").attr('title', data.acceptInfo.isMajorCmplntsNm);
                 $("#faultLvlNm").val(data.acceptInfo.faultLvlNm);
+                $("#faultLvlNm").attr('title', data.acceptInfo.faultLvlNm);
                 $("#urgntExtentNm").val(data.acceptInfo.urgntExtentNm);
+                $("#urgntExtentNm").attr('title', data.acceptInfo.urgntExtentNm);
                 $("#custMoodTypeNm").val(data.acceptInfo.custMoodTypeNm);
+                $("#custMoodTypeNm").attr('title', data.acceptInfo.custMoodTypeNm);
                 $("#bizCntt").val(data.acceptInfo.bizCntt);
             }
         });
@@ -866,7 +877,7 @@ require(["jquery", 'util', "commonAjax", "transfer", "dateUtil", "easyui"], func
                     gainScore = linkItem.checkLinkScore;
                 }
             });
-            if (totalScore !== 0 && gainScore / totalScore > 0.6) {
+            if (totalScore !== 0 && gainScore / totalScore >= 0.6) {
                 checkResult.html("合格");
                 checkResult.css("color", "#4A4A4A");
             } else {
@@ -891,7 +902,7 @@ require(["jquery", 'util', "commonAjax", "transfer", "dateUtil", "easyui"], func
             }
         });
         var checkResult = $("#checkResult_" + currentNode.lgId);
-        if (totalScore !== 0 && gainScore / totalScore > 0.6) {
+        if (totalScore !== 0 && gainScore / totalScore >= 0.6) {
             checkResult.html("合格");
             checkResult.css("color", "#4A4A4A");
         } else {
