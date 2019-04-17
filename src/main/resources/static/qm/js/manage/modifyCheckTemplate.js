@@ -477,6 +477,10 @@ define(["text!html/manage/modifyCheckTemplate.tpl","jquery", 'util', "transfer",
 
                 Util.ajax.getJson(Util.constants.CONTEXT +  Util.constants.ADD_CHECK_TEMPLATE + "/selectByParams", param, function (result) {
                     var data = Transfer.DataGrid.transfer(result);
+                    data.rows.forEach(function (value, index, arr) {
+                        var checkItemName = value.checkItem.checkItemName;
+                        value.nodeName = checkItemName;
+                    });
                     var rspCode = result.RSP.RSP_CODE;
                     if (rspCode != "1") {
                         $.messager.show({
