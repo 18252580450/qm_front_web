@@ -20,7 +20,7 @@ define(["text!html/manage/voiceQmResultHistory.tpl", "jquery", 'util', "transfer
                 {
                     field: 'inspectionId', title: '质检流水号', width: '20%',
                     formatter: function (value, row, index) {
-                        return '<a href="javascript:void(0);" id = "resultDetail_' + row.inspectionId + '">' + value + '</a>';
+                        return '<a href="javascript:void(0);" class="list_operation_color" id = "resultDetail_' + row.inspectionId + '">' + value + '</a>';
                     }
                 },
                 {field: 'planName', title: '计划名称', width: '15%'},
