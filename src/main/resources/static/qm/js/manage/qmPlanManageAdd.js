@@ -8,7 +8,7 @@ define([
     var planTypes = [];
     var $el;
     var planBean;
-    var qmBindRlnList=[];
+        var qmBindRlnList;
     var list;
     var listTable;
     var isChildren = false;//是否是子节点
@@ -18,6 +18,7 @@ define([
     var planIdNew;
     var initialize = function(planId) {
         $el = $(tpl);
+        qmBindRlnList = [];
         disableSubmit = false;
         planBean = null;
         checkStaffName="";
@@ -333,7 +334,13 @@ define([
 
     //初始化搜索表单
     function initSearchForm(planBean) {
-        $("#showDiv",$el).attr("style","display:block;");
+        if (planBean) {
+            if (planBean.planType == "1") {
+                $("#showDiv", $el).attr("style", "display:none;");
+            }
+        } else {
+            $("#showDiv", $el).attr("style", "display:block;");
+        }
         //查询弹窗，默认隐藏
         function getSearchDiv() {
             return '<div  id="qry_window" style="display:none;">'+
@@ -446,6 +453,7 @@ define([
                     onSelect: function (value) {
                         if(value.paramsCode=="1"){
                             $("#showDiv",$el).attr("style","display:none;");
+                            qmBindRlnList = [];// 清除数据
                         }else {
                             $("#showDiv",$el).attr("style","display:block;");
                         }
