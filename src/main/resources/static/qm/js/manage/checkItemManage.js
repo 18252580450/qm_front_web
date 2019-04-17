@@ -978,7 +978,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
             method: "GET",
             valueField: 'paramsCode',
             textField: 'paramsName',
-            panelHeight: 120,
+            panelHeight: 200,
             editable: false,
             onLoadSuccess: function () {
                 if (item != null && item.nodeTypeCode != null) {

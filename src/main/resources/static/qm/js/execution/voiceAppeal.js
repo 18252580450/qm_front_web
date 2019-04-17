@@ -226,10 +226,18 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
             $("#appealLeftDiv").empty();
             $("#appealRightDiv").empty();
             $("#appealRecordDialog").show().window({
-                width: 600,
-                height: 400,
+                width: 720,
+                height: 480,
                 modal: true,
                 title: "审批记录"
+            });
+
+            //取消
+            var cancelBtn = $("#recordCloseBtn");
+            cancelBtn.unbind("click");
+            cancelBtn.on("click", function () {
+                cancelBtn.hide();
+                $("#appealRecordDialog").window("close");
             });
 
             //查询审批流程
@@ -295,6 +303,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                                 map.approveTime = "";
                                 record.push(map);
                             });
+                            $("#recordCloseBtn").show();   //显示关闭按钮
                             showAppealDealProcess(data, record);
                         }
                     });
