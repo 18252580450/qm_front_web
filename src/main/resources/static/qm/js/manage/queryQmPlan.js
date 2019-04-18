@@ -36,20 +36,20 @@ define([
                 {field: 'pName', title: '抽取策略', width: '8%'},
                 {field: 'manOrAuto', title: '任务分派方式', width: '8%',
                     formatter: function (value, row, index) {
-                        if (0 == value) {
+                        if ("0" == value) {
                             return "自动分派";
-                        } else if (1 == value) {
+                        } else if ("1" == value) {
                             return "人工分派";
                         }
                     }
                 },
                 {field: 'planRuntype', title: '执行方式', width: '8%',
                     formatter: function (value, row, index) {
-                        if(0 == value){
+                        if ("0" == value) {
                             return "每天自动执行";
-                        }else if(1 == value){
+                        } else if ("1" == value) {
                             return "执行一次";
-                        }else if(2 == value){
+                        } else if ("2" == value) {
                             return  "手动执行";
                         }
                     }},
