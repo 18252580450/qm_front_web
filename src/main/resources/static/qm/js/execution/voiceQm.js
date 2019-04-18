@@ -157,11 +157,12 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
         endTime.datetimebox('setValue', endDate);
 
         //质检信息
+        var IsCheckFlag = true; //标示是否是勾选复选框选中行的，true - 是 , false - 否
         $("#queryInfo").datagrid({
             columns: [[
                 {field: 'ck', checkbox: true, align: 'center'},
                 {
-                    field: 'action', title: '操作', width: '10%',
+                    field: 'action', title: '操作', width: '5%',
                     formatter: function (value, row, index) {
                         var bean = {//根据参数进行定位修改
                             'index':index,
@@ -169,12 +170,12 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
                             'recordPath':row.recordPath
                         };
                         var beanStr = JSON.stringify(bean);   //转成字符串
-                        var action = "<a href='javascript:void(0);' class='playBtn list_operation_color' id =" + beanStr + " >语音播放</a>",
-                            download = "<a href='javascript:void(0);' class='downloadBtn list_operation_color' id =" + beanStr + " >下载</a>";
+                        var action = "<img href='javascript:void(0);' class='playBtn' src='../../image/record.png' style='height: 12px;width: 12px;' title='播放' alt='播放' id =" + beanStr + " >",
+                            download = "<img href='javascript:void(0);' class='downloadBtn' src='../../image/download.png' style='height: 12px;width: 12px;' title='下载' alt='下载' id =" + beanStr + " >";
                         return action + "&nbsp;&nbsp;" + download;
                     }
                 },
-                {field: 'touchId', title: '语音流水', align: 'center', width: '10%',
+                {field: 'touchId', title: '语音流水', align: 'center', width: '15%',
                     formatter: function (value, row, index) {
                         if(value){
                             return "<span title='" + value + "'>" + value + "</span>";
@@ -221,7 +222,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
                         }
                     }
                 },
-                {field: 'operateTime', title: '指派时间', align: 'center', width: '10%',
+                {field: 'operateTime', title: '指派时间', align: 'center', width: '15%',
                     formatter: function (value, row, index) { //格式化时间格式
                     if(value){
                         return "<span title='" + DateUtil.formatDateTime(value) + "'>" +  DateUtil.formatDateTime(value) + "</span>";
@@ -247,6 +248,22 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
             pageSize: 10,
             pageList: [5, 10, 20, 50],
             rownumbers: false,
+            checkOnSelect: false,
+            onClickCell: function (rowIndex, field, value) {
+                IsCheckFlag = false;
+            },
+            onSelect: function (rowIndex, rowData) {
+                if (!IsCheckFlag) {
+                    IsCheckFlag = true;
+                    $("#queryInfo").datagrid("unselectRow", rowIndex);
+                }
+            },
+            onUnselect: function (rowIndex, rowData) {
+                if (!IsCheckFlag) {
+                    IsCheckFlag = true;
+                    $("#queryInfo").datagrid("selectRow", rowIndex);
+                }
+            },
             loader: function (param, success) {
                 var checkedStaffId = "";
                 var checkStaffId = "";
@@ -435,24 +452,16 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
         var voicePath = "../../data/voice2.wav";
         var voice  = new Audio(voicePath);
         //语音播放
-        $("#page").on('click','a.playBtn',function(){
+        $("#page").on('click','img.playBtn',function(){
             var rowData = $(this).attr('id'); //获取a标签中传递的值
             var sensjson = JSON.parse(rowData); //转成json格式
-            var index = sensjson.index;
             voice.src=voicePath;
             // voice.src=sensjson.recordPath;
             // voice.load();//重新加载音频，用于更改src之后使用 //todo
 
-            if(i++%2==0){
-                $("a.playBtn")[index].innerHTML='语音停止';
-                // voice.play(); //播放
-            }else{
-                $("a.playBtn")[index].innerHTML='语音播放';
-                // voice.pause();//暂停
-            }
         });
         //语音下载
-        $("#page").on('click', 'a.downloadBtn', function () {
+        $("#page").on('click', 'img.downloadBtn', function () {
             var rowData = $(this).attr('id'); //获取a标签中传递的值
             var sensjson = JSON.parse(rowData); //转成json格式
             var recordPath = sensjson.recordPath;
@@ -461,14 +470,6 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
             } else {
                 window.location.href = Util.constants.CONTEXT + Util.constants.WRKFM_DETAIL_DNS + "/recordDownload" + '?ftpPath=' + recordPath;
             }
-        });
-
-        //语音下载
-        $("#downloadBut").on('click',function () {
-            var selRows = $("#queryInfo").datagrid("getSelections");//选中多行
-
-            window.open("https://codeload.github.com/douban/douban-client/legacy.zip/master",'_blank');
-
         });
     }
 

@@ -81,14 +81,14 @@ require([
                 columns: [[
                     {field: 'ck', checkbox: true},
                     {
-                        field: 'operate', title: '操作', width: '3%',
+                        field: 'operate', title: '操作', width: '5%',
                         formatter: function (value, row, index) {
                             return '<a href="javascript:void(0);" class="list_operation_color" id = "orderCheck_' + row.wrkfmId + '">质检</a>';
                         }
                     },
                     {
-                        field: 'templateId', title: '考评模版', width: '6%',
-                        formatter: function (value, row, index) { //格式化时间格式
+                        field: 'templateId', title: '考评模版', width: '10%',
+                        formatter: function (value, row, index) {
                             if (value == null) {
                                 return "未绑定";
                             } else {

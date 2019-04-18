@@ -86,15 +86,16 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
                 {
                     field: 'operate', title: '操作', width: '12%',
                     formatter: function (value, row, index) {
-                        var play = '<a href="javascript:void(0);" class="list_operation_color" id = "voicePlay_' + row.touchId + '">播放</a>',
+                        var play = '<img href="javascript:void(0);" src="../../image/record.png" style="height: 12px;width: 12px;" title="播放" alt="播放" id = "voicePlay_' + row.touchId + '">',
+                            download = '<img href="javascript:void(0);" src="../../image/download.png" style="height: 12px;width: 12px;" title="下载" alt="下载" id = "voiceDownload_' + row.touchId + '">',
                             check = '<a href="javascript:void(0);" class="list_operation_color" id = "voiceCheck_' + row.touchId + '">质检</a>',
                             checkHistory = '<a href="javascript:void(0);" class="list_operation_color" id = "checkHistory_' + row.touchId + '">质检记录</a>';
                         if (row.poolStatus.toString() === Util.constants.CHECK_STATUS_CHECK) {
-                            return play + "&nbsp;&nbsp;" + check; //todo
+                            return check + "&nbsp;&nbsp;" + play + "&nbsp;&nbsp;" + download; //todo
                             // return check;
                         }
                         if (row.poolStatus.toString() === Util.constants.CHECK_STATUS_RECHECK) {
-                            return play + "&nbsp;&nbsp;" + check + "&nbsp;&nbsp;" + checkHistory; //todo
+                            return checkHistory + "&nbsp;&nbsp;" + check + "&nbsp;&nbsp;" + play + "&nbsp;&nbsp;" + download; //todo
                             // return check + "&nbsp;&nbsp;" + checkHistory;
                         }
                     }
@@ -108,6 +109,7 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
                     }
                 },
                 {field: 'planName', title: '计划名称', width: '15%'},
+                {field: 'checkedStaffName', title: '被检人员', width: '15%'},
                 {
                     field: 'staffNumber', title: '坐席号码', width: '15%',
                     formatter: function (value, row, index) {
@@ -125,6 +127,16 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
                     }
                 },
                 {
+                    field: 'poolStatus', title: '状态', width: '15%',
+                    formatter: function (value, row, index) {
+                        for (var i = 0; i < poolStatusData.length; i++) {
+                            if (parseInt(poolStatusData[i].paramsCode) === value) {
+                                return poolStatusData[i].paramsName;
+                            }
+                        }
+                    }
+                },
+                {
                     field: 'checkedTime', title: '抽取时间', width: '15%',
                     formatter: function (value, row, index) { //格式化时间格式
                         if (row.checkedTime != null) {
@@ -137,17 +149,6 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
                     formatter: function (value, row, index) { //格式化时间格式
                         if (row.operateTime != null) {
                             return "<span title='" + DateUtil.formatDateTime(row.operateTime) + "'>" + DateUtil.formatDateTime(row.operateTime) + "</span>";
-                        }
-                    }
-                },
-                {field: 'checkedStaffName', title: '被检人员', width: '15%'},
-                {
-                    field: 'poolStatus', title: '状态', width: '15%',
-                    formatter: function (value, row, index) {
-                        for (var i = 0; i < poolStatusData.length; i++) {
-                            if (parseInt(poolStatusData[i].paramsCode) === value) {
-                                return poolStatusData[i].paramsName;
-                            }
                         }
                     }
                 }

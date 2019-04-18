@@ -228,10 +228,11 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui","dateUti
         planEndTime.datetimebox('setValue', endDate);
 
         //列表
+        var IsCheckFlag = true; //标示是否是勾选复选框选中行的，true - 是 , false - 否
         $("#queryInfo").datagrid({
             columns: [[
                 {field: 'ck', checkbox: true, align: 'center'},
-                {field: 'wrkfmShowSwftno', title: '工单流水', align: 'center', width: '15%',
+                {field: 'wrkfmShowSwftno', title: '工单流水', align: 'center', width: '18%',
                     formatter: function (value, row, index) {
                         if(value){
                             return "<span title='" + value + "'>" + value + "</span>";
@@ -244,7 +245,7 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui","dateUti
                         }
                 }},
                 {field: 'planName', title: '计划名称', align: 'center', width: '10%'},
-                {field: 'srvReqstTypeFullNm', title: '问题分类', align: 'center', width: '10%',
+                {field: 'srvReqstTypeFullNm', title: '问题分类', align: 'center', width: '15%',
                     formatter: function (value, row, index) {
                         if(value){
                             return "<span title='" + value + "'>" + value + "</span>";
@@ -277,7 +278,7 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui","dateUti
                         }
                 }},
                 {
-                    field: 'crtTime', title: '立单时间', align: 'center', width: '10%',
+                    field: 'crtTime', title: '立单时间', align: 'center', width: '15%',
                     formatter: function (value, row, index) { //格式化时间格式
                         if (value) {
                             return "<span title='" + DateUtil.formatDateTime(value) + "'>" + DateUtil.formatDateTime(value) + "</span>";
@@ -285,14 +286,14 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui","dateUti
                     }
                 },
                 {
-                    field: 'checkedTime', title: '抽取时间', align: 'center', width: '10%',
+                    field: 'checkedTime', title: '抽取时间', align: 'center', width: '15%',
                     formatter: function (value, row, index) { //格式化时间格式
                         if (value) {
                             return "<span title='" + DateUtil.formatDateTime(value) + "'>" + DateUtil.formatDateTime(value) + "</span>";
                         }
                     }
                 },
-                {field: 'arcTime', title: '归档时间', align: 'center', width: '10%',
+                {field: 'arcTime', title: '归档时间', align: 'center', width: '15%',
                     formatter: function (value, row, index) { //格式化时间格式
                         if(value!=null){
                             return "<span title='" + DateUtil.formatDateTime(value) + "'>" + DateUtil.formatDateTime(value) + "</span>";
@@ -331,6 +332,22 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui","dateUti
             pageSize: 10,
             pageList: [5, 10, 20, 50],
             rownumbers: false,
+            checkOnSelect: false,
+            onClickCell: function (rowIndex, field, value) {
+                IsCheckFlag = false;
+            },
+            onSelect: function (rowIndex, rowData) {
+                if (!IsCheckFlag) {
+                    IsCheckFlag = true;
+                    $("#queryInfo").datagrid("unselectRow", rowIndex);
+                }
+            },
+            onUnselect: function (rowIndex, rowData) {
+                if (!IsCheckFlag) {
+                    IsCheckFlag = true;
+                    $("#queryInfo").datagrid("selectRow", rowIndex);
+                }
+            },
             loader: function (param, success) {
                 var checkStaffId = "";
                 var start = (param.page - 1) * param.rows;

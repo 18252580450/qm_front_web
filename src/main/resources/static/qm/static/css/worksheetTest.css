@@ -78,8 +78,7 @@
     height: 30px;
     background: #F8F8F9;
     border: 1px solid #EAEAEA;
-    margin-right: 16px;
-    text-indent: 1em;
+    text-indent: 0.5em;
 }
 
 .formBox-3 {
@@ -219,13 +218,13 @@
 .process-left {
     position: absolute;
     left: -50px;
-    top: -8px;
+    top: -3px;
 }
 
 .process-spot {
     position: absolute;
     left: -6px;
-    top: -1px;
+    top: 0px;
 }
 
 .spot-1 {
