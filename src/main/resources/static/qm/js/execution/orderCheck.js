@@ -97,7 +97,7 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
                     }
                 },
                 {
-                    field: 'wrkfmShowSwftno', title: '工单流水', width: '15%',
+                    field: 'wrkfmShowSwftno', title: '工单流水', width: '18%',
                     formatter: function (value, row, index) {
                         if (value) {
                             return "<span title='" + value + "'>" + value + "</span>";
@@ -121,7 +121,7 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
                     }
                 },
                 {
-                    field: 'custEmail', title: '客户账号', align: 'center', width: '10%',
+                    field: 'custName', title: '客户名称', width: '12%',
                     formatter: function (value, row, index) {
                         if (value) {
                             return "<span title='" + value + "'>" + value + "</span>";
@@ -129,7 +129,7 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
                     }
                 },
                 {
-                    field: 'custName', title: '客户名称', align: 'center', width: '10%',
+                    field: 'custEmail', title: '客户账号', width: '15%',
                     formatter: function (value, row, index) {
                         if (value) {
                             return "<span title='" + value + "'>" + value + "</span>";
@@ -137,10 +137,28 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
                     }
                 },
                 {
-                    field: 'custNum', title: '客户号码', align: 'center', width: '10%',
+                    field: 'custNum', title: '客户号码', width: '15%',
                     formatter: function (value, row, index) {
                         if (value) {
                             return "<span title='" + value + "'>" + value + "</span>";
+                        }
+                    }
+                },
+                {
+                    field: 'poolStatus', title: '状态', width: '15%',
+                    formatter: function (value, row, index) {
+                        for (var i = 0; i < poolStatusData.length; i++) {
+                            if (parseInt(poolStatusData[i].paramsCode) === value) {
+                                return poolStatusData[i].paramsName;
+                            }
+                        }
+                    }
+                },
+                {
+                    field: 'operateTime', title: '分配时间', width: '15%',
+                    formatter: function (value, row, index) { //格式化时间格式
+                        if (row.operateTime) {
+                            return "<span title='" + DateUtil.formatDateTime(row.operateTime) + "'>" + DateUtil.formatDateTime(row.operateTime) + "</span>";
                         }
                     }
                 },
@@ -157,24 +175,6 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
                     formatter: function (value, row, index) { //格式化时间格式
                         if (value) {
                             return "<span title='" + DateUtil.formatDateTime(value) + "'>" + DateUtil.formatDateTime(value) + "</span>";
-                        }
-                    }
-                },
-                {
-                    field: 'operateTime', title: '分配时间', width: '15%',
-                    formatter: function (value, row, index) { //格式化时间格式
-                        if (row.operateTime) {
-                            return "<span title='" + DateUtil.formatDateTime(row.operateTime) + "'>" + DateUtil.formatDateTime(row.operateTime) + "</span>";
-                        }
-                    }
-                },
-                {
-                    field: 'poolStatus', title: '状态', width: '15%',
-                    formatter: function (value, row, index) {
-                        for (var i = 0; i < poolStatusData.length; i++) {
-                            if (parseInt(poolStatusData[i].paramsCode) === value) {
-                                return poolStatusData[i].paramsName;
-                            }
                         }
                     }
                 }
@@ -272,6 +272,7 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
                             "wrkfmShowSwftno": item.wrkfmShowSwftno,
                             "planId": planId,
                             "templateId": templateId,
+                            "operateTime": item.operateTime,
                             "acptStaffNum": item.acptStaffNum,
                             "checkStaffId": item.checkStaffId,
                             "checkStaffName": item.checkStaffName

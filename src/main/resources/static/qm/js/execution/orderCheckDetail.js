@@ -955,24 +955,27 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
         }
         //工单质检基本信息
         var orderCheckInfo = {
-            "tenantId": Util.constants.TENANT_ID,                          //租户id
-            "provinceId": workForm.provinceId,                             //省份id
-            "callingNumber": workForm.acptStaffNum,                        //主叫号码
-            "acceptNumber": workFormDetail.userInfo.custNum,               //受理号码
-            "touchId": workForm.wrkfmId,                                   //工单流水
-            "wrkfmShowSwftno": workFormDetail.acceptInfo.wrkfmShowSwftno,  //工单显示流水
-            "planId": planId,                                              //考评计划
-            "templateId": templateId,                                      //考评模版ID
-            "checkModel": checkModel,                                      //质检模式、计划内质检
-            "checkStaffId": workForm.checkStaffId,                         //质检员id
-            "checkStaffName": workForm.checkStaffName,                     //质检员名
-            "checkStartTime": checkStartTime,                              //质检开始时间（质检分配时间）
-            "checkTime": checkTime,                                        //质检时长
-            "scoreType": scoreType,                                        //分值类型
-            "finalScore": finalScore,                                      //总得分
-            "checkComment": checkComment,                                  //考评评语
-            "unqualifiedNum": unqualifiedNum,                              //不合格环节数
-            "resultStatus": checkStatus                                    //质检结果状态（暂存、质检、复检）
+            "tenantId": Util.constants.TENANT_ID,                               //租户id
+            "provinceId": workForm.provinceId,                                  //省份id
+            "callingNumber": workForm.acptStaffNum,                             //主叫号码
+            "acceptNumber": workFormDetail.userInfo.custNum,                    //受理号码
+            "touchId": workForm.wrkfmId,                                        //工单流水
+            "wrkfmShowSwftno": workFormDetail.acceptInfo.wrkfmShowSwftno,       //工单显示流水
+            "srvReqstTypeId": workFormDetail.acceptInfo.srvReqstTypeId,         //服务请求类型id
+            "srvReqstTypeNm": workFormDetail.acceptInfo.srvReqstTypeNm,         //服务请求类型名称
+            "srvReqstTypeFullNm": workFormDetail.acceptInfo.srvReqstTypeFullNm, //服务请求类型全称
+            "planId": planId,                                                    //考评计划
+            "templateId": templateId,                                            //考评模版ID
+            "checkModel": checkModel,                                            //质检模式、计划内质检
+            "checkStaffId": workForm.checkStaffId,                               //质检员id
+            "checkStaffName": workForm.checkStaffName,                           //质检员名
+            "checkStartTime": checkStartTime,                                    //质检开始时间（质检分配时间）
+            "checkTime": checkTime,                                              //质检时长
+            "scoreType": scoreType,                                              //分值类型
+            "finalScore": finalScore,                                            //总得分
+            "checkComment": checkComment,                                        //考评评语
+            "unqualifiedNum": unqualifiedNum,                                    //不合格环节数
+            "resultStatus": checkStatus                                          //质检结果状态（暂存、质检、复检）
         };
 
         var params = {

@@ -941,6 +941,9 @@ require(["jquery", 'util', "commonAjax", "transfer", "dateUtil", "easyui"], func
             "acceptNumber": workFormDetail.userInfo.custNum,                    //受理号码
             "touchId": workForm.wrkfmId,                                        //工单流水
             "wrkfmShowSwftno": workFormDetail.acceptInfo.wrkfmShowSwftno,       //工单显示流水
+            "srvReqstTypeId": workFormDetail.acceptInfo.srvReqstTypeId,         //服务请求类型id
+            "srvReqstTypeNm": workForm.srvReqstTypeNm,                          //服务请求类型名称
+            "srvReqstTypeFullNm": workFormDetail.acceptInfo.srvReqstTypeFullNm, //服务请求类型全称
             "planId": "",                                                       //考评计划（计划外质检不绑定计划）
             "templateId": workForm.templateId,                                  //考评模版ID
             "checkModel": Util.constants.CHECK_TYPE_BEYOND_PLAN,                //计划外质检

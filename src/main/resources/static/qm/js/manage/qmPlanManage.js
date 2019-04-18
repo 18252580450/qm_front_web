@@ -97,13 +97,13 @@ define([
 
     function addToolsDom() {
         $(["<td><a href='javascript:void(0)' id='batchStart' class='btn btn-secondary radius  mt-l-20'"+
-            " style='height: 24px;line-height: 1.42857;padding: 2px 6px;'>发布</a></td>"].join("")
+            " style='height: 24px;line-height: 1.421257;padding: 2px 6px;'>发布</a></td>"].join("")
         ).appendTo($(".datagrid .datagrid-pager > table > tbody > tr"));
         $(["<td><a href='javascript:void(0)' id='batchStop' class='btn btn-secondary radius  mt-l-20'"+
-            " style='height: 24px;line-height: 1.42857;padding: 2px 6px;'>暂停</a></td>"].join("")
+            " style='height: 24px;line-height: 1.421257;padding: 2px 6px;'>暂停</a></td>"].join("")
         ).appendTo($(".datagrid .datagrid-pager > table > tbody > tr"));
         $(["<td><a href='javascript:void(0)' id='batchDelete' class='btn btn-secondary radius  mt-l-20'"+
-            " style='height: 24px;line-height: 1.42857;padding: 2px 6px;'>删除</a></td>"].join("")
+            " style='height: 24px;line-height: 1.421257;padding: 2px 6px;'>删除</a></td>"].join("")
         ).appendTo($(".datagrid .datagrid-pager > table > tbody > tr"));
     }
 
@@ -114,22 +114,22 @@ define([
             columns: [[
                 {field: 'ck', checkbox: true, align: 'center'},
                 {
-                    field: 'action', title: '操作', width: '3%',
+                    field: 'action', title: '操作', width: '5%',
                     formatter: function (value, row, index) {
                         var Action =
                             "<a href='javascript:void(0);' class='reviseBtn list_operation_color' id =" + row.planId + " >修改</a>";
                         return Action;
                     }
                 },
-                {field: 'planId', title: '计划编码', width: '8%',
+                {field: 'planId', title: '计划编码', width: '12%',
                     formatter: function (value) {
                         return "<span title='" + value + "'>" + value + "</span>";
                     }},
-                {field: 'planName', title: '计划名称', width: '8%',
+                {field: 'planName', title: '计划名称', width: '12%',
                     formatter: function (value) {
                         return "<span title='" + value + "'>" + value + "</span>";
                     }},
-                {field: 'planType', title: '计划类型', width: '8%',
+                {field: 'planType', title: '计划类型', width: '12%',
                     formatter: function (value, row, index) {
                         var str = "";
                         if(planTypes){
@@ -143,16 +143,16 @@ define([
                         return "<span title='" + str + "'>" + str + "</span>";
                     }
                 },
-                {field: 'templateName', title: '考评模板', width: '8%',
+                {field: 'templateName', title: '考评模板', width: '12%',
                     formatter: function (value) {
                         return "<span title='" + value + "'>" + value + "</span>";
                     }},
-                {field: 'pName', title: '抽取策略', width: '8%',
+                {field: 'pName', title: '抽取策略', width: '12%',
                     formatter: function (value) {
                         return "<span title='" + value + "'>" + value + "</span>";
                     }},
-                {field: 'planCount', title: '抽取数量', width: '8%'},
-                {field: 'manOrAuto', title: '任务分派方式', width: '8%',
+                {field: 'planCount', title: '抽取数量', width: '12%'},
+                {field: 'manOrAuto', title: '任务分派方式', width: '12%',
                     formatter: function (value, row, index) {
                         if (0 == value) {
                             return "<span title='自动分派'>自动分派</span>";
@@ -161,7 +161,7 @@ define([
                         }
                     }
                 },
-                {field: 'planRuntype', title: '执行方式', width: '8%',
+                {field: 'planRuntype', title: '执行方式', width: '12%',
                     formatter: function (value, row, index) {
                         if(0 == value){
                             return "<span title='每天自动执行'>每天自动执行</span>";
@@ -171,7 +171,7 @@ define([
                             return "<span title='手动执行'>手动执行</span>";
                         }
                     }},
-                {field: 'planRuntime', title: '执行时间', width: '8%',
+                {field: 'planRuntime', title: '执行时间', width: '12%',
                     formatter: function (value, row, index) {
                         if(value){
                             return "<span title='" + DateUtil.formatDateTime(value,"hh:mm:ss") + "'>" + DateUtil.formatDateTime(value,"hh:mm:ss") + "</span>";
