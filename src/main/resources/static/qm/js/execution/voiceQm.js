@@ -4,9 +4,6 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
     var userInfo;
     var userPermission;
     var reqParams = null;
-    var isCheckParent=false;//设置父节点是否可被选 true 可选 false不可选 默认可选
-    var isChoice=false; //节点是否区分可选标志 true区分 false不区分 默认不区分(节点是否可被选)
-    var isVisual=true; // 节点是否区分可见性标志 true区分 false不区分 默认不区分
     var i = 0;//播放按钮点击次数
     function initialize() {
         Util.getLogInData(function (data) {

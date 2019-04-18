@@ -544,11 +544,46 @@ define([
                                 return Action;
                             }
                         },
-                        {field: 'checkedObjectId', title: '被质检人ID', width: '20%'},
-                        {field: 'checkedObjectName', title: '被质检人姓名', width: '15%'},
-                        {field: 'checkedDepartName', title: '所属部门', width: '15%'},
-                        {field: 'checkStaffId', title: '质检人ID', width: '20%'},
-                        {field: 'checkStaffName', title: '质检人', width: '15%'},
+                        {
+                            field: 'checkedObjectId', title: '被质检人ID', width: '20%',
+                            formatter: function (value, row, index) {
+                                if (value) {
+                                    return "<span title='" + value + "'>" + value + "</span>";
+                                }
+                            }
+                        },
+                        {
+                            field: 'checkedObjectName', title: '被质检人姓名', width: '15%',
+                            formatter: function (value, row, index) {
+                                if (value) {
+                                    return "<span title='" + value + "'>" + value + "</span>";
+                                }
+                            }
+                        },
+                        {
+                            field: 'checkedDepartName', title: '所属部门', width: '15%',
+                            formatter: function (value, row, index) {
+                                if (value) {
+                                    return "<span title='" + value + "'>" + value + "</span>";
+                                }
+                            }
+                        },
+                        {
+                            field: 'checkStaffId', title: '质检人ID', width: '20%',
+                            formatter: function (value, row, index) {
+                                if (value) {
+                                    return "<span title='" + value + "'>" + value + "</span>";
+                                }
+                            }
+                        },
+                        {
+                            field: 'checkStaffName', title: '质检人', width: '15%',
+                            formatter: function (value, row, index) {
+                                if (value) {
+                                    return "<span title='" + value + "'>" + value + "</span>";
+                                }
+                            }
+                        },
                     ]
                 ],
                 data:checkedStaffs,
@@ -572,9 +607,22 @@ define([
                                 return Action;
                             }
                         },
-                        {field:'checkedDepartId',title:'被质检部门ID',width:'30%'},
-                        {field:'checkedDepartName',title:'被质检部门姓名',width:'30%'},
-
+                        {
+                            field: 'checkedDepartId', title: '被质检部门ID', width: '30%',
+                            formatter: function (value, row, index) {
+                                if (value) {
+                                    return "<span title='" + value + "'>" + value + "</span>";
+                                }
+                            }
+                        },
+                        {
+                            field: 'checkedDepartName', title: '被质检部门姓名', width: '30%',
+                            formatter: function (value, row, index) {
+                                if (value) {
+                                    return "<span title='" + value + "'>" + value + "</span>";
+                                }
+                            }
+                        },
                     ]
                 ],
                 data:checkedDeparts,
@@ -598,11 +646,46 @@ define([
                                 return Action;
                             }
                         },
-                        {field: 'checkedObjectId', title: '被质检人ID', width: '20%'},
-                        {field: 'checkedObjectName', title: '被质检人姓名', width: '15%'},
-                        {field: 'checkedDepartName', title: '所属部门', width: '15%'},
-                        {field: 'checkStaffId', title: '质检人ID', width: '20%'},
-                        {field: 'checkStaffName', title: '质检人', width: '15%'},
+                        {
+                            field: 'checkedObjectId', title: '被质检人ID', width: '20%',
+                            formatter: function (value, row, index) {
+                                if (value) {
+                                    return "<span title='" + value + "'>" + value + "</span>";
+                                }
+                            }
+                        },
+                        {
+                            field: 'checkedObjectName', title: '被质检人姓名', width: '15%',
+                            formatter: function (value, row, index) {
+                                if (value) {
+                                    return "<span title='" + value + "'>" + value + "</span>";
+                                }
+                            }
+                        },
+                        {
+                            field: 'checkedDepartName', title: '所属部门', width: '15%',
+                            formatter: function (value, row, index) {
+                                if (value) {
+                                    return "<span title='" + value + "'>" + value + "</span>";
+                                }
+                            }
+                        },
+                        {
+                            field: 'checkStaffId', title: '质检人ID', width: '20%',
+                            formatter: function (value, row, index) {
+                                if (value) {
+                                    return "<span title='" + value + "'>" + value + "</span>";
+                                }
+                            }
+                        },
+                        {
+                            field: 'checkStaffName', title: '质检人', width: '15%',
+                            formatter: function (value, row, index) {
+                                if (value) {
+                                    return "<span title='" + value + "'>" + value + "</span>";
+                                }
+                            }
+                        }
                     ]
                 ],
                 data:[],
