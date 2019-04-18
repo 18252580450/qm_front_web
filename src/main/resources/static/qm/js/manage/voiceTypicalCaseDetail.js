@@ -1,8 +1,6 @@
 require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], function ($, Util, Transfer, CommonAjax) {
 
-    var caseInfo,  //案例信息
-        voiceCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/manage/voiceCaseDetail.html",
-        orderCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/manage/workCaseDetail.html";
+    var caseInfo;  //案例信息
 
     initialize();
 
@@ -23,14 +21,69 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
             columns: [[
                 {field: 'ck', checkbox: true, align: 'center'},
                 {
-                    field: 'touchId', title: '接触流水', width: '25%',
+                    field: 'operate', title: '操作', width: '5%',
                     formatter: function (value, row, index) {
-                        return '<a href="javascript:void(0);" class="list_operation_color" id = "checkDetail_' + row.touchId + '">' + value + '</a>';
+                        var play = '<img href="javascript:void(0);" src="../../image/record.png" style="height: 12px;width: 12px;" title="播放" alt="播放" id = "voicePlay_' + row.touchId + '">',
+                            download = '<img href="javascript:void(0);" src="../../image/download.png" style="height: 12px;width: 12px;" title="下载" alt="下载" id = "voiceDownload_' + row.touchId + '">';
+                        return play + "&nbsp;&nbsp;" + download;
                     }
                 },
-                {field: 'caseTitle', title: '案例标题', width: '25%'},
-                {field: 'checkStaffId', title: '质检员工号', width: '25%'},
-                {field: 'createReason', title: '添加原因', width: '25%'}
+                {
+                    field: 'touchId', title: '语音流水', width: '15%',
+                    formatter: function (value, row, index) {
+                        if (value) {
+                            return "<span title='" + value + "'>" + value + "</span>";
+                        }
+                    }
+                },
+                {
+                    field: 'caseTitle', title: '案例标题', width: '15%',
+                    formatter: function (value, row, index) {
+                        if (value) {
+                            return "<span title='" + value + "'>" + value + "</span>";
+                        }
+                    }
+                },
+                {
+                    field: 'createReason', title: '添加原因', width: '15%',
+                    formatter: function (value, row, index) {
+                        if (value) {
+                            return "<span title='" + value + "'>" + value + "</span>";
+                        }
+                    }
+                },
+                {
+                    field: 'staffName', title: '坐席', width: '10%',
+                    formatter: function (value, row, index) {
+                        if (value) {
+                            return "<span title='" + value + "'>" + value + "</span>";
+                        }
+                    }
+                },
+                {
+                    field: 'departName', title: '班组', width: '10%',
+                    formatter: function (value, row, index) {
+                        if (value) {
+                            return "<span title='" + value + "'>" + value + "</span>";
+                        }
+                    }
+                },
+                {
+                    field: 'staffNumber', title: '坐席号码', width: '10%',
+                    formatter: function (value, row, index) {
+                        if (value) {
+                            return "<span title='" + value + "'>" + value + "</span>";
+                        }
+                    }
+                },
+                {
+                    field: 'customerNumber', title: '客户号码', width: '10%',
+                    formatter: function (value, row, index) {
+                        if (value) {
+                            return "<span title='" + value + "'>" + value + "</span>";
+                        }
+                    }
+                }
             ]],
             fitColumns: true,
             width: '100%',
@@ -84,17 +137,6 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                 });
             },
             onLoadSuccess: function (data) {
-                //质检详情
-                $.each(data.rows, function (i, item) {
-                    $("#checkDetail_" + item.touchId).on("click", function () {
-                        if (caseInfo.checkType === Util.constants.CHECK_TYPE_VOICE) {
-                            showCheckDetail("语音详情", item, voiceCheckDetail, 950, 500);
-                        } //todo
-                        if (caseInfo.checkType === Util.constants.CHECK_TYPE_ORDER) {
-                            showCheckDetail("工单详情", item, orderCheckDetail, 1000, Util.constants.DIALOG_HEIGHT);
-                        }
-                    });
-                });
             }
         });
     }

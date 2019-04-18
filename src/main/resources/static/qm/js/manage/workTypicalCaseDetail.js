@@ -1,14 +1,13 @@
 require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], function ($, Util, Transfer, CommonAjax) {
 
-    var userInfo,
-        caseTypeData = [],    //案例类型静态数据
-        caseDetailUrl = Util.constants.URL_CONTEXT + "/qm/html/manage/voiceTypicalCaseDetail.html";
+    var caseInfo,  //案例信息
+        orderCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/manage/workCaseDetail.html";
 
     initialize();
 
     function initialize() {
-        Util.getLogInData(function (data) {
-            userInfo = data;//用户角色
+        CommonAjax.getUrlParams(function (data) {
+            caseInfo = data;
             initPageInfo();
             initEvent();
         });
@@ -16,34 +15,6 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
 
     //页面信息初始化
     function initPageInfo() {
-        //典型案例下拉框
-        $("#caseType").combobox({
-            url: '../../data/select_init_data.json',
-            method: "GET",
-            valueField: 'paramsCode',
-            textField: 'paramsName',
-            panelHeight: 'auto',
-            editable: false,
-            onLoadSuccess: function () {
-                var caseType = $("#caseType");
-                var data = caseType.combobox('getData');
-                if (data.length > 0) {
-                    caseType.combobox('select', data[0].paramsCode);
-                }
-            }
-        });
-        //重载下拉框数据
-        CommonAjax.getStaticParams("TYPICAL_CASE_TYPE", function (datas) {
-            if (datas) {
-                caseTypeData = datas;
-                var data = {
-                    "paramsCode": "-1",
-                    "paramsName": "全部"
-                };
-                datas.unshift(data);
-                $("#caseType").combobox('loadData', datas);
-            }
-        });
 
         //典型案例列表
         var IsCheckFlag = true; //标示是否是勾选复选框选中行的，true - 是 , false - 否
@@ -51,26 +22,18 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
             columns: [[
                 {field: 'ck', checkbox: true, align: 'center'},
                 {
-                    field: 'detail', title: '操作', width: '5%',
+                    field: 'touchId', title: '接触流水', width: '25%',
                     formatter: function (value, row, index) {
-                        return '<a href="javascript:void(0);" id = "caseDetail_' + row.caseType + '" class="list_operation_color">详情</a>';
+                        return '<a href="javascript:void(0);" class="list_operation_color" id = "checkDetail_' + row.touchId + '">' + value + '</a>';
                     }
                 },
-                {
-                    field: 'caseType', title: '案例类型', width: '45%',
-                    formatter: function (value, row, index) {
-                        for (var i = 0; i < caseTypeData.length; i++) {
-                            if (caseTypeData[i].paramsCode === value) {
-                                return caseTypeData[i].paramsName;
-                            }
-                        }
-                    }
-                },
-                {field: 'caseNum', title: '条数', width: '45%'}
+                {field: 'caseTitle', title: '案例标题', width: '25%'},
+                {field: 'checkStaffId', title: '质检员工号', width: '25%'},
+                {field: 'createReason', title: '添加原因', width: '25%'}
             ]],
             fitColumns: true,
             width: '100%',
-            height: 480,
+            height: 580,
             pagination: true,
             pageSize: 10,
             pageList: [5, 10, 20, 50],
@@ -93,14 +56,11 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
             },
             loader: function (param, success) {
                 var start = (param.page - 1) * param.rows,
-                    pageNum = param.rows,
-                    caseType = $("#caseType").combobox("getValue");
-                if (caseType === "-1") {
-                    caseType = "";
-                }
+                    pageNum = param.rows;
+
                 var reqParams = {
-                    "checkType": Util.constants.CHECK_TYPE_VOICE,
-                    "caseType": caseType
+                    "checkType": caseInfo.checkType,
+                    "caseType": caseInfo.caseType
                 };
                 var params = $.extend({
                     "start": start,
@@ -108,9 +68,9 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                     "params": JSON.stringify(reqParams)
                 }, Util.PageUtil.getParams($("#searchForm")));
 
-                Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.TYPICAL_CASE_DNS + "/queryTypicalCase", params, function (result) {
-                    var data = Transfer.DataGrid.transfer(result),
-                        rspCode = result.RSP.RSP_CODE;
+                Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.TYPICAL_CASE_DNS + "/queryTypicalCaseDetail", params, function (result) {
+                    var data = Transfer.DataGrid.transfer(result);
+                    var rspCode = result.RSP.RSP_CODE;
                     if (rspCode != null && rspCode !== "1") {
                         $.messager.show({
                             msg: result.RSP.RSP_DESC,
@@ -119,25 +79,14 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                             showType: 'show'
                         });
                     }
-                    if (caseTypeData.length > 0) {
-                        success(data);
-                    } else {
-                        CommonAjax.getStaticParams("TYPICAL_CASE_TYPE", function (datas) {
-                            if (datas) {
-                                caseTypeData = datas;
-                                success(data);
-                            }
-                        });
-                    }
+                    success(data);
                 });
             },
             onLoadSuccess: function (data) {
-                //详情
+                //质检详情
                 $.each(data.rows, function (i, item) {
-                    $("#caseDetail_" + item.caseType).on("click", function () {
-                        var url = caseDetailUrl + "?checkType=" + Util.constants.CHECK_TYPE_VOICE + "&caseType=" + item.caseType;
-                        CommonAjax.closeMenuByNameAndId("语音典型案例_详情", "语音典型案例_详情");
-                        CommonAjax.openMenu(url, "语音典型案例_详情", "语音典型案例_详情");
+                    $("#checkDetail_" + item.touchId).on("click", function () {
+                        showCheckDetail("工单详情", item, orderCheckDetail, 1000, Util.constants.DIALOG_HEIGHT);
                     });
                 });
             }
@@ -146,11 +95,6 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
 
     //事件初始化
     function initEvent() {
-        //查询
-        $("#queryBtn").on("click", function () {
-            $("#typicalCaseList").datagrid("load");
-        });
-
         //删除
         $("#delBtn").on("click", function () {
             caseDeleteDialog();
@@ -168,11 +112,11 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
         }
         var delArr = [];
         for (var i = 0; i < delRows.length; i++) {
-            var id = delRows[i].caseType;
+            var id = delRows[i].caseId;
             delArr.push(id);
         }
         var params = {
-            "delType": "0",  //删除指定类型
+            "delType": "1",  //删除具体案例
             "delArr": delArr
         };
         $.messager.confirm('确认删除弹窗', '确定要删除吗？', function (confirm) {
@@ -191,6 +135,16 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                 });
             }
         });
+    }
+
+    //质检详情弹框
+    function showCheckDetail(title, item, url, width, height) {
+        var param = {
+            "provinceId": item.provinceId,
+            "touchId": item.touchId
+        };
+        var checkUrl = CommonAjax.createURL(url, param);
+        CommonAjax.showDialog(checkUrl, title, width, height);
     }
 
     return {

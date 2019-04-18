@@ -1087,6 +1087,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                 return false;
             }
             var params = {
+                "provinceId": workForm.provinceId,
                 "caseTitle": caseTitle,
                 "caseType": caseType,
                 "checkType": Util.constants.CHECK_TYPE_ORDER,

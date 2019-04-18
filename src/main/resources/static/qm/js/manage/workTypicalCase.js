@@ -2,7 +2,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
 
     var userInfo,
         caseTypeData = [],    //案例类型静态数据
-        caseDetailUrl = Util.constants.URL_CONTEXT + "/qm/html/manage/typicalCaseDetail.html";
+        caseDetailUrl = Util.constants.URL_CONTEXT + "/qm/html/manage/workTypicalCaseDetail.html";
 
     initialize();
 
@@ -109,8 +109,8 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                 }, Util.PageUtil.getParams($("#searchForm")));
 
                 Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.TYPICAL_CASE_DNS + "/queryTypicalCase", params, function (result) {
-                    var data = Transfer.DataGrid.transfer(result);
-                    var rspCode = result.RSP.RSP_CODE;
+                    var data = Transfer.DataGrid.transfer(result),
+                        rspCode = result.RSP.RSP_CODE;
                     if (rspCode != null && rspCode !== "1") {
                         $.messager.show({
                             msg: result.RSP.RSP_DESC,
@@ -119,7 +119,16 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                             showType: 'show'
                         });
                     }
-                    success(data);
+                    if (caseTypeData.length > 0) {
+                        success(data);
+                    } else {
+                        CommonAjax.getStaticParams("TYPICAL_CASE_TYPE", function (datas) {
+                            if (datas) {
+                                caseTypeData = datas;
+                                success(data);
+                            }
+                        });
+                    }
                 });
             },
             onLoadSuccess: function (data) {
@@ -127,8 +136,8 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                 $.each(data.rows, function (i, item) {
                     $("#caseDetail_" + item.caseType).on("click", function () {
                         var url = caseDetailUrl + "?checkType=" + Util.constants.CHECK_TYPE_ORDER + "&caseType=" + item.caseType;
-                        CommonAjax.closeMenuByNameAndId("典型案例_详情", "典型案例_详情");
-                        CommonAjax.openMenu(url, "典型案例_详情", "典型案例_详情");
+                        CommonAjax.closeMenuByNameAndId("工单典型案例_详情", "工单典型案例_详情");
+                        CommonAjax.openMenu(url, "工单典型案例_详情", "工单典型案例_详情");
                     });
                 });
             }
