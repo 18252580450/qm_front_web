@@ -154,20 +154,20 @@ define([
                 {field: 'planCount', title: '抽取数量', width: '12%'},
                 {field: 'manOrAuto', title: '任务分派方式', width: '12%',
                     formatter: function (value, row, index) {
-                        if (0 == value) {
+                        if ("0" == value) {
                             return "<span title='自动分派'>自动分派</span>";
-                        } else if (1 == value) {
+                        } else if ("1" == value) {
                             return "<span title='人工分派'>人工分派</span>";
                         }
                     }
                 },
                 {field: 'planRuntype', title: '执行方式', width: '12%',
                     formatter: function (value, row, index) {
-                        if(0 == value){
+                        if ("0" == value) {
                             return "<span title='每天自动执行'>每天自动执行</span>";
-                        }else if(1 == value){
+                        } else if ("1" == value) {
                             return "<span title='执行一次'>执行一次</span>";
-                        }else if(2 == value){
+                        } else if ("2" == value) {
                             return "<span title='手动执行'>手动执行</span>";
                         }
                     }},
@@ -179,9 +179,9 @@ define([
                     }},
                 {field: 'haltFlag', title: '发布状态', width: '5%',
                     formatter: function (value, row, index) {
-                        if(0 == value){
+                        if ("0" == value) {
                             return "<span title='暂停'>暂停</span>";
-                        }else if(1 == value){
+                        } else if ("1" == value) {
                             return "<span title='发布'>发布</span>";
                         }
                     }

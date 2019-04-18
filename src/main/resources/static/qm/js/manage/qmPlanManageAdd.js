@@ -16,6 +16,8 @@ define([
     var checkStaffName;
     var checkStaffId;
     var planIdNew;
+        var planTypeFlag;
+        var manOrAutoFlag;
     var initialize = function(planId) {
         $el = $(tpl);
         qmBindRlnList = [];
@@ -23,6 +25,8 @@ define([
         planBean = null;
         checkStaffName="";
         checkStaffId="";
+        planTypeFlag = "";
+        manOrAutoFlag = "";
         if(planId){
             Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.QM_PLAN_DNS + "/" + planId, {}, function (result) {
                 var rspCode = result.RSP.RSP_CODE;
@@ -111,27 +115,9 @@ define([
                 var param =  {"params":JSON.stringify(map)};
                 $.messager.confirm('确认删除弹窗', '确定要删除吗？', function (confirm) {
                     if (confirm) {
-                        Util.ajax.getJson(Util.constants.CONTEXT.concat(Util.constants.QM_BIND_RLN_DNS).concat("/selectByPrimaryKey"),param, function (result) {
-                            if (result.RSP.RSP_CODE == "1") {
-                                Util.ajax.deleteJson(Util.constants.CONTEXT.concat(Util.constants.QM_BIND_RLN_DNS).concat("/deleteById"),JSON.stringify(map), function (result) {
-                                    $.messager.show({
-                                        msg: result.RSP.RSP_DESC,
-                                        timeout: 1000,
-                                        style: {right: '', bottom: ''},     //居中显示
-                                        showType: 'slide'
-                                    });
-                                    if (result.RSP.RSP_CODE == "1") {
-                                        treeObj.removeNode(nodes[0]);//删除选中的节点
-                                        //删除节点之后，需要删除页面上和该节点匹配的数据
-                                        delRow(nodes[0]);
-                                    }
-                                });
-                            }else{
-                                treeObj.removeNode(nodes[0]);//删除选中的节点
-                                //删除节点之后，需要删除页面上和该节点匹配的数据
-                                delRow(nodes[0]);
-                            }
-                        });
+                        treeObj.removeNode(nodes[0]);//删除选中的节点
+                        //删除节点之后，需要删除页面上和该节点匹配的数据
+                        delRow(nodes[0]);
                     }
                 });
             }
@@ -161,43 +147,16 @@ define([
                 "checkedObjectId":sensjson.checkedObjectId,
                 "planId":planIdNew
             };
-            var param =  {"params":JSON.stringify(map)};
-            //先查询数据库中有没有该条数据，有的话就删除数据库中的，没有的话则删除页面上的
-            Util.ajax.getJson(Util.constants.CONTEXT.concat(Util.constants.QM_BIND_RLN_DNS).concat("/selectByPrimaryKey"),param, function (result) {
-                if (result.RSP.RSP_CODE == "1") {
-                    Util.ajax.deleteJson(Util.constants.CONTEXT.concat(Util.constants.QM_BIND_RLN_DNS).concat("/deleteByPrimaryKey"),JSON.stringify(map), function (result) {
-                        $.messager.show({
-                            msg: result.RSP.RSP_DESC,
-                            timeout: 1000,
-                            style: {right: '', bottom: ''},     //居中显示
-                            showType: 'slide'
-                        });
-                        if (result.RSP.RSP_CODE == "1") {
-                            $("#checkedStaffList",$el).datagrid("deleteRow",index);
-                            var rows = $("#checkedStaffList",$el).datagrid("getRows");    //重新获取数据生成行号
-                            $("#checkedStaffList",$el).datagrid("loadData", rows);
-                            if(qmBindRlnList && qmBindRlnList.length > 0){
-                                for (var i = qmBindRlnList.length-1;i >= 0 ;i--) {
-                                    if (qmBindRlnList[i].checkedObjectId== map["checkedObjectId"]&&qmBindRlnList[i].checkStaffId==map["checkStaffId"]) {
-                                        qmBindRlnList.splice(i,1);
-                                    }
-                                }
-                            }
-                        }
-                    });
-                }else{
-                    $("#checkedStaffList",$el).datagrid("deleteRow",index);
-                    var rows = $("#checkedStaffList",$el).datagrid("getRows");    //重新获取数据生成行号
-                    $("#checkedStaffList",$el).datagrid("loadData", rows);
-                    if(qmBindRlnList && qmBindRlnList.length > 0){
-                        for (var i = qmBindRlnList.length-1;i >= 0 ;i--) {
-                            if (qmBindRlnList[i].checkedObjectId== map["checkedObjectId"]&&qmBindRlnList[i].checkStaffId==map["checkStaffId"]) {
-                                qmBindRlnList.splice(i,1);
-                            }
-                        }
+            $("#checkedStaffList", $el).datagrid("deleteRow", index);
+            var rows = $("#checkedStaffList", $el).datagrid("getRows");    //重新获取数据生成行号
+            $("#checkedStaffList", $el).datagrid("loadData", rows);
+            if (qmBindRlnList && qmBindRlnList.length > 0) {
+                for (var i = qmBindRlnList.length - 1; i >= 0; i--) {
+                    if (qmBindRlnList[i].checkedObjectId == map["checkedObjectId"] && qmBindRlnList[i].checkStaffId == map["checkStaffId"]) {
+                        qmBindRlnList.splice(i, 1);
                     }
                 }
-            });
+            }
         });
 
         //关闭
@@ -213,27 +172,10 @@ define([
             }
             var planName = $("#planName",$el).val();
             var planType = $("#planType",$el).combobox('getValue');
-            if(planType==""){
-                $.messager.alert('警告', '请选择计划类型!');
-                disableSubmit = false;
-                return false;
-            }
             var templateId = $("#templateId",$el).val();
             var pId = $("#pId",$el).val();
             var manOrAuto = $("#manOrAuto",$el).combobox('getValue');
-            if(manOrAuto=="自动分派"){
-                manOrAuto = "1";
-            }else{
-                manOrAuto = "0";
-            }
             var planRuntype = $("#planRuntype",$el).combobox('getValue');
-            if(planRuntype=="每天自动执行"){
-                planRuntype = "0";
-            }else if(planRuntype=="执行一次"){
-                planRuntype = "1";
-            }else{
-                planRuntype = "2";
-            }
             var planRuntime = $('#planRuntime',$el).timespinner('getValue');
             var planStarttime = $('#planStarttime',$el).datetimebox('getValue');
             var planEndtime = $('#planEndtime',$el).datetimebox('getValue');
@@ -335,8 +277,12 @@ define([
     //初始化搜索表单
     function initSearchForm(planBean) {
         if (planBean) {
-            if (planBean.planType == "1") {
-                $("#showDiv", $el).attr("style", "display:none;");
+            manOrAutoFlag = planBean.manOrAuto;
+            planTypeFlag = planBean.planType;
+            if (planBean.planType == "0" && planBean.manOrAuto == "1") {
+                $("#showDiv", $el).attr("style", "visibility:visible;");
+            } else {
+                $("#showDiv", $el).attr("style", "visibility:hidden;");
             }
         } else {
             $("#showDiv", $el).attr("style", "display:block;");
@@ -387,9 +333,24 @@ define([
                     text:"人工分派"
                 }
             ],
-            editable: false
+            editable: false,
+            onSelect: function (value) {
+                manOrAutoFlag = value.value;
+                if (manOrAutoFlag == "1" && planTypeFlag == "0") {//人工分派且是语音质检
+                    $("#showDiv", $el).attr("style", "visibility:visible;");
+                } else {
+                    $("#showDiv", $el).attr("style", "visibility:hidden;");
+                    qmBindRlnList = [];// 清除数据
+                }
+            },
+            onLoadSuccess: function () {
+                var manOrAuto = $('#manOrAuto', $el);
+                var data = manOrAuto.combobox('getData');
+                if (!planBean) {
+                    manOrAuto.combobox('select', data[1].value);
+                }
+            }
         });
-        $('#manOrAuto',$el).combobox("setValue","0");
         $('#planRuntype',$el).combobox({
             data: [
                 {
@@ -444,24 +405,30 @@ define([
         CommonAjax.getStaticParams("PLAN_TYPE",function(datas){
             if(datas){
                 planTypes = datas;
-                planTypes.unshift({paramsCode:"",paramsName:"全部"});
                 $('#planType',$el).combobox({
                     data: planTypes,
                     valueField: 'paramsCode',
                     textField: 'paramsName',
                     editable: false,
                     onSelect: function (value) {
-                        if(value.paramsCode=="1"){
-                            $("#showDiv",$el).attr("style","display:none;");
+                        planTypeFlag = value.paramsCode;
+                        if (planTypeFlag == "0" && manOrAutoFlag == "1") {//语音质检且是人工分派
+                            $("#showDiv", $el).attr("style", "visibility:visible;");
+                        } else {
+                            $("#showDiv", $el).attr("style", "visibility:hidden;");
                             qmBindRlnList = [];// 清除数据
-                        }else {
-                            $("#showDiv",$el).attr("style","display:block;");
                         }
-                  }
+                    },
+                    onLoadSuccess: function () {
+                        var planType = $('#planType', $el);
+                        var data = planType.combobox('getData');
+                        if (!planBean) {
+                            planType.combobox('select', data[0].paramsCode);
+                        } else {
+                            $("#planType", $el).combobox('setValue', planBean.planType);
+                        }
+                    }
                 });
-                if(planBean){
-                    $("#planType",$el).combobox('setValue',planBean.planType);
-                }
             }
         });
         $('#planType',$el).combobox({
@@ -473,9 +440,9 @@ define([
             $('#planName',$el).textbox('setValue',planBean.planName);
             $("#templateId",$el).val(planBean.templateId);
             $("#planCount",$el).textbox('setValue',planBean.planCount);
-            $('#template').searchbox("setValue",planBean.templateName);
+            $('#template', $el).searchbox("setValue", planBean.templateName);
             $("#pId",$el).val(planBean.pId);
-            $('#strategy').searchbox("setValue",planBean.pName);
+            $('#strategy', $el).searchbox("setValue", planBean.pName);
             $("#manOrAuto",$el).combobox('setValue',planBean.manOrAuto);
             $("#planRuntype",$el).combobox('setValue',planBean.planRuntype);
             if(planBean.planRuntime){
@@ -515,7 +482,7 @@ define([
                         checkStaffName = node.checkStaffName;
                         checkStaffId = node.checkStaffId;
                         var checkedStaffsOfCheckStaff = [];
-                        if(qmBindRlnList.length > 0) {//判断考评计划是否绑定了人员关系
+                        if (qmBindRlnList.length > 0) { //判断考评计划是否绑定了人员关系
                             $.each(qmBindRlnList, function (i, qmBindRln) {
                                 if (qmBindRln.checkStaffId == node.checkStaffId && qmBindRln.checkedObjectId != "") {
                                     checkedStaffsOfCheckStaff.push(qmBindRln);
@@ -564,14 +531,8 @@ define([
             $("#checkedStaffList",$el).datagrid({
                 columns:[
                     [
-                        {field: 'ck', checkbox: true, align: 'center'},
-                        {field:'checkedObjectId',title:'被质检人ID',width:'15%'},
-                        {field:'checkedObjectName',title:'被质检人姓名',width:'20%'},
-                        {field:'checkedDepartName',title:'所属部门',width:'20%'},
-                        {field:'checkStaffId',title:'质检人ID',width:'15%'},
-                        {field:'checkStaffName',title:'质检人',width:'18%'},
                         {
-                            field: 'action', title: '操作', width: '10%',
+                            field: 'action', title: '操作', width: '6%',
                             formatter: function (value, row, index) {
                                 var bean = {
                                     'index':index,
@@ -579,10 +540,50 @@ define([
                                     'checkStaffId': row.checkStaffId,
                                 };
                                 var Action =
-                                    "<a href='javascript:void(0);' class='delBtn' id =" + JSON.stringify(bean) + " >删除</a>";
+                                    "<a href='javascript:void(0);' class='delBtn list_operation_color' id =" + JSON.stringify(bean) + " >删除</a>";
                                 return Action;
                             }
-                        }
+                        },
+                        {
+                            field: 'checkedObjectId', title: '被质检人ID', width: '20%',
+                            formatter: function (value, row, index) {
+                                if (value) {
+                                    return "<span title='" + value + "'>" + value + "</span>";
+                                }
+                            }
+                        },
+                        {
+                            field: 'checkedObjectName', title: '被质检人姓名', width: '15%',
+                            formatter: function (value, row, index) {
+                                if (value) {
+                                    return "<span title='" + value + "'>" + value + "</span>";
+                                }
+                            }
+                        },
+                        {
+                            field: 'checkedDepartName', title: '所属部门', width: '15%',
+                            formatter: function (value, row, index) {
+                                if (value) {
+                                    return "<span title='" + value + "'>" + value + "</span>";
+                                }
+                            }
+                        },
+                        {
+                            field: 'checkStaffId', title: '质检人ID', width: '20%',
+                            formatter: function (value, row, index) {
+                                if (value) {
+                                    return "<span title='" + value + "'>" + value + "</span>";
+                                }
+                            }
+                        },
+                        {
+                            field: 'checkStaffName', title: '质检人', width: '15%',
+                            formatter: function (value, row, index) {
+                                if (value) {
+                                    return "<span title='" + value + "'>" + value + "</span>";
+                                }
+                            }
+                        },
                     ]
                 ],
                 data:checkedStaffs,
@@ -594,21 +595,34 @@ define([
             $("#checkedStaffList",$el).datagrid({
                 columns : [
                     [
-                        {field: 'ck', checkbox: true, align: 'center'},
-                        {field:'checkedDepartId',title:'被质检部门ID',width:'30%'},
-                        {field:'checkedDepartName',title:'被质检部门姓名',width:'30%'},
                         {
-                            field: 'action', title: '操作', width: '40%',
+                            field: 'action', title: '操作', width: '10%',
                             formatter: function (value, row, index) {
                                 var bean = {
-                                    'index':index,
+                                    'index': index,
                                     'checkedDepartId': row.checkedDepartId,
                                 };
                                 var Action =
-                                    "<a href='javascript:void(0);' class='delBtn' id =" + JSON.stringify(bean) + " >删除</a>";
+                                    "<a href='javascript:void(0);' class='delBtn list_operation_color' id =" + JSON.stringify(bean) + " >删除</a>";
                                 return Action;
                             }
-                        }
+                        },
+                        {
+                            field: 'checkedDepartId', title: '被质检部门ID', width: '30%',
+                            formatter: function (value, row, index) {
+                                if (value) {
+                                    return "<span title='" + value + "'>" + value + "</span>";
+                                }
+                            }
+                        },
+                        {
+                            field: 'checkedDepartName', title: '被质检部门姓名', width: '30%',
+                            formatter: function (value, row, index) {
+                                if (value) {
+                                    return "<span title='" + value + "'>" + value + "</span>";
+                                }
+                            }
+                        },
                     ]
                 ],
                 data:checkedDeparts,
@@ -619,14 +633,8 @@ define([
             $("#checkedStaffList",$el).datagrid({
                 columns:[
                     [
-                        {field: 'ck', checkbox: true, align: 'center'},
-                        {field:'checkedObjectId',title:'被质检人ID',width:'15%'},
-                        {field:'checkedObjectName',title:'被质检人姓名',width:'20%'},
-                        {field:'checkedDepartName',title:'所属部门',width:'20%'},
-                        {field:'checkStaffId',title:'质检人ID',width:'15%'},
-                        {field:'checkStaffName',title:'质检人',width:'18%'},
                         {
-                            field: 'action', title: '操作', width: '40%',
+                            field: 'action', title: '操作', width: '6%',
                             formatter: function (value, row, index) {
                                 var bean = {
                                     'index':index,
@@ -634,8 +642,48 @@ define([
                                     'checkStaffId': row.checkStaffId,
                                 };
                                 var Action =
-                                    "<a href='javascript:void(0);' class='delBtn' id =" + JSON.stringify(bean) + " >删除</a>";
+                                    "<a href='javascript:void(0);' class='delBtn list_operation_color' id =" + JSON.stringify(bean) + " >删除</a>";
                                 return Action;
+                            }
+                        },
+                        {
+                            field: 'checkedObjectId', title: '被质检人ID', width: '20%',
+                            formatter: function (value, row, index) {
+                                if (value) {
+                                    return "<span title='" + value + "'>" + value + "</span>";
+                                }
+                            }
+                        },
+                        {
+                            field: 'checkedObjectName', title: '被质检人姓名', width: '15%',
+                            formatter: function (value, row, index) {
+                                if (value) {
+                                    return "<span title='" + value + "'>" + value + "</span>";
+                                }
+                            }
+                        },
+                        {
+                            field: 'checkedDepartName', title: '所属部门', width: '15%',
+                            formatter: function (value, row, index) {
+                                if (value) {
+                                    return "<span title='" + value + "'>" + value + "</span>";
+                                }
+                            }
+                        },
+                        {
+                            field: 'checkStaffId', title: '质检人ID', width: '20%',
+                            formatter: function (value, row, index) {
+                                if (value) {
+                                    return "<span title='" + value + "'>" + value + "</span>";
+                                }
+                            }
+                        },
+                        {
+                            field: 'checkStaffName', title: '质检人', width: '15%',
+                            formatter: function (value, row, index) {
+                                if (value) {
+                                    return "<span title='" + value + "'>" + value + "</span>";
+                                }
                             }
                         }
                     ]
