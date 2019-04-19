@@ -280,6 +280,7 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
                             "wrkfmShowSwftno": item.wrkfmShowSwftno,
                             "planId": planId,
                             "templateId": templateId,
+                            "custNum": item.custNum,
                             "operateTime": item.operateTime,
                             "acptStaffNum": item.acptStaffNum,
                             "checkStaffId": item.checkStaffId,

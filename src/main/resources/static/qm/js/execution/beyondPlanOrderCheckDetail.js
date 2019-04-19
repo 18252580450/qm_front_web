@@ -170,28 +170,17 @@ require(["jquery", 'util', "commonAjax", "transfer", "dateUtil", "easyui"], func
                 });
             } else {
                 workFormDetail = data;
-                $("#workFormId").val(data.acceptInfo.wrkfmShowSwftno);
-                $("#workFormId").attr('title', data.acceptInfo.wrkfmShowSwftno);
-                $("#custNum").val(data.userInfo.custNum);
-                $("#custNum").attr('title', data.userInfo.custNum);
-                $("#srvReqstTypeFullNm").val(data.acceptInfo.srvReqstTypeFullNm);
-                $("#srvReqstTypeFullNm").attr('title', data.acceptInfo.srvReqstTypeFullNm);
-                $("#custBelgCityNm").val(data.userInfo.custBelgCityNm);
-                $("#custBelgCityNm").attr('title', data.userInfo.custBelgCityNm);
-                $("#isVipNm").val(data.userInfo.isVipNm);
-                $("#isVipNm").attr('title', data.userInfo.isVipNm);
-                $("#acptChnlNm").val(data.acceptInfo.acptChnlNm);
-                $("#acptChnlNm").attr('title', data.acceptInfo.acptChnlNm);
-                $("#dplctCmplntsFlagNm").val(data.acceptInfo.dplctCmplntsFlagNm);
-                $("#dplctCmplntsFlagNm").attr('title', data.acceptInfo.dplctCmplntsFlagNm);
-                $("#isMajorCmplntsNm").val(data.acceptInfo.isMajorCmplntsNm);
-                $("#isMajorCmplntsNm").attr('title', data.acceptInfo.isMajorCmplntsNm);
-                $("#faultLvlNm").val(data.acceptInfo.faultLvlNm);
-                $("#faultLvlNm").attr('title', data.acceptInfo.faultLvlNm);
-                $("#urgntExtentNm").val(data.acceptInfo.urgntExtentNm);
-                $("#urgntExtentNm").attr('title', data.acceptInfo.urgntExtentNm);
-                $("#custMoodTypeNm").val(data.acceptInfo.custMoodTypeNm);
-                $("#custMoodTypeNm").attr('title', data.acceptInfo.custMoodTypeNm);
+                $("#workFormId").val(data.acceptInfo.wrkfmShowSwftno).attr('title', data.acceptInfo.wrkfmShowSwftno);
+                $("#custNum").val(data.userInfo.custNum).attr('title', data.userInfo.custNum);
+                $("#srvReqstTypeFullNm").val(data.acceptInfo.srvReqstTypeFullNm).attr('title', data.acceptInfo.srvReqstTypeFullNm);
+                $("#custBelgCityNm").val(data.userInfo.custBelgCityNm).attr('title', data.userInfo.custBelgCityNm);
+                $("#isVipNm").val(data.userInfo.isVipNm).attr('title', data.userInfo.isVipNm);
+                $("#acptChnlNm").val(data.acceptInfo.acptChnlNm).attr('title', data.acceptInfo.acptChnlNm);
+                $("#dplctCmplntsFlagNm").val(data.acceptInfo.dplctCmplntsFlagNm).attr('title', data.acceptInfo.dplctCmplntsFlagNm);
+                $("#isMajorCmplntsNm").val(data.acceptInfo.isMajorCmplntsNm).attr('title', data.acceptInfo.isMajorCmplntsNm);
+                $("#faultLvlNm").val(data.acceptInfo.faultLvlNm).attr('title', data.acceptInfo.faultLvlNm);
+                $("#urgntExtentNm").val(data.acceptInfo.urgntExtentNm).attr('title', data.acceptInfo.urgntExtentNm);
+                $("#custMoodTypeNm").val(data.acceptInfo.custMoodTypeNm).attr('title', data.acceptInfo.custMoodTypeNm);
                 $("#bizCntt").val(data.acceptInfo.bizCntt);
             }
         });
@@ -703,7 +692,7 @@ require(["jquery", 'util', "commonAjax", "transfer", "dateUtil", "easyui"], func
                     "start": start,
                     "limit": pageNum,
                     "provCode": workForm.provCode,
-                    "phoneNum": workFormDetail.userInfo.custNum
+                    "phoneNum": workForm.custNum
                 };
                 var params = $.extend({
                     "params": JSON.stringify(reqParams)

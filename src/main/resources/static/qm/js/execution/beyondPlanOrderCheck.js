@@ -237,6 +237,7 @@ require([
                                     "wrkfmId": item.wrkfmId,
                                     "wrkfmShowSwftno": item.wrkfmShowSwftno,
                                     "templateId": item.templateId,
+                                    "custNum": item.custNum,
                                     "acptStaffNum": item.acptStaffNum,
                                     "checkStaffId": userInfo.staffId,
                                     "checkStaffName": userInfo.staffName,
