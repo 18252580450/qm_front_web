@@ -105,7 +105,7 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
                     }
                 },
                 {
-                    field: 'srvReqstTypeFullNm', title: '服务请求类型', width: '15%', hidden: true,
+                    field: 'bizTitle', title: '工单标题', width: '15%',
                     formatter: function (value, row, index) {
                         if (value) {
                             return "<span title='" + value + "'>" + value + "</span>";
@@ -117,6 +117,14 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
                     formatter: function (value, row, index) {
                         if (row.qmPlan != null) {
                             return row.qmPlan.planName;
+                        }
+                    }
+                },
+                {
+                    field: 'srvReqstTypeFullNm', title: '问题分类', width: '15%',
+                    formatter: function (value, row, index) {
+                        if (value) {
+                            return "<span title='" + value + "'>" + value + "</span>";
                         }
                     }
                 },
@@ -145,7 +153,7 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
                     }
                 },
                 {
-                    field: 'poolStatus', title: '状态', width: '15%',
+                    field: 'poolStatus', title: '状态', width: '8%',
                     formatter: function (value, row, index) {
                         for (var i = 0; i < poolStatusData.length; i++) {
                             if (parseInt(poolStatusData[i].paramsCode) === value) {
