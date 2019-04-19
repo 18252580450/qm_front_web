@@ -231,9 +231,10 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
                         return {'0':'待质检','1':'待复检','2':'已质检'}[value];
                     }
                 },
-                {field: 'isOperate', title: '是否分派', align: 'center', width: '10%',
+                {
+                    field: 'isOperate', title: '是否分配', align: 'center', width: '10%',
                     formatter:function(value, row, index){
-                        return {'0':'未分派','1':'已分派'}[value];
+                        return {'0': '未分配', '1': '已分配'}[value];
                     }
                 },
                 {field: 'recordPath', title: '录音地址', align: 'center', width: '10%',hidden: true},

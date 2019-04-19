@@ -175,7 +175,23 @@ define([
             var templateId = $("#templateId",$el).val();
             var pId = $("#pId",$el).val();
             var manOrAuto = $("#manOrAuto",$el).combobox('getValue');
+            if (planType == "0") {//语音质检显示分派方式
+                if (manOrAuto == "自动分派") {
+                    manOrAuto = "0";
+                } else if (manOrAuto == "人工分派") {
+                    manOrAuto = "1";
+                }
+            } else {
+                manOrAuto = "";
+            }
             var planRuntype = $("#planRuntype",$el).combobox('getValue');
+            if (planRuntype == "每天自动执行") {
+                planRuntype = "0";
+            } else if (planRuntype == "执行一次") {
+                planRuntype = "1";
+            } else {
+                planRuntype = "2";
+            }
             var planRuntime = $('#planRuntime',$el).timespinner('getValue');
             var planStarttime = $('#planStarttime',$el).datetimebox('getValue');
             var planEndtime = $('#planEndtime',$el).datetimebox('getValue');
@@ -225,11 +241,19 @@ define([
             };
 
             if (planName == null || planName == "" || planType == null || planType == "" || templateId == null || templateId == ""
-                || pId == null || pId == "" || manOrAuto == null || manOrAuto == "" || planRuntype == null || planRuntype == ""|| planRuntime == null || planRuntime == ""|| planCount == null || planCount == "") {
+                || pId == null || pId == "" || planRuntype == null || planRuntype == "" || planRuntime == null || planRuntime == "" || planCount == null || planCount == "") {
                 $.messager.alert('警告', '必填项不能为空!');
                 disableSubmit = false;
                 $("#addPlan",$el).linkbutton({disabled: false});  //按钮可用
                 return false;
+            }
+            if (planType == "0") {
+                if (manOrAuto == null || manOrAuto == "") {
+                    $.messager.alert('警告', '必填项不能为空!');
+                    disableSubmit = false;
+                    $("#addPlan", $el).linkbutton({disabled: false});  //按钮可用
+                    return false;
+                }
             }
             if(planBean){
                 planBean.planName = planName;
@@ -279,10 +303,15 @@ define([
         if (planBean) {
             manOrAutoFlag = planBean.manOrAuto;
             planTypeFlag = planBean.planType;
-            if (planBean.planType == "0" && planBean.manOrAuto == "1") {
+            if (planBean.planType == "0" && planBean.manOrAuto == "1") {//语音质检及人工分派才会显示质检人信息
                 $("#showDiv", $el).attr("style", "visibility:visible;");
             } else {
                 $("#showDiv", $el).attr("style", "visibility:hidden;");
+            }
+            if (planBean.planType == "1") {//工单质检隐藏任务分派方式
+                $("#manOrAutoDiv", $el).attr("style", "visibility:hidden;");
+            } else {
+                $("#manOrAutoDiv", $el).attr("style", "visibility:visible;");
             }
         } else {
             $("#showDiv", $el).attr("style", "display:block;");
@@ -417,6 +446,11 @@ define([
                         } else {
                             $("#showDiv", $el).attr("style", "visibility:hidden;");
                             qmBindRlnList = [];// 清除数据
+                        }
+                        if (planTypeFlag == "0") {
+                            $("#manOrAutoDiv", $el).attr("style", "visibility:visible;");
+                        } else {
+                            $("#manOrAutoDiv", $el).attr("style", "visibility:hidden;");
                         }
                     },
                     onLoadSuccess: function () {
