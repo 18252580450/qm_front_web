@@ -22,14 +22,14 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
             columns: [[
                 {field: 'ck', checkbox: true, align: 'center'},
                 {
-                    field: 'touchId', title: '接触流水', width: '25%',
+                    field: 'wrkfmShowSwftno', title: '工单流水号', width: '20%',
                     formatter: function (value, row, index) {
                         return '<a href="javascript:void(0);" class="list_operation_color" id = "checkDetail_' + row.touchId + '">' + value + '</a>';
                     }
                 },
-                {field: 'caseTitle', title: '案例标题', width: '25%'},
-                {field: 'checkStaffId', title: '质检员工号', width: '25%'},
-                {field: 'createReason', title: '添加原因', width: '25%'}
+                {field: 'srvReqstTypeFullNm', title: '服务请求类型', width: '20%'},
+                {field: 'caseTitle', title: '案例标题', width: '30%'},
+                {field: 'createReason', title: '添加原因', width: '30%'}
             ]],
             fitColumns: true,
             width: '100%',

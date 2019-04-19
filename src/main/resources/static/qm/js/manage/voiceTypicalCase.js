@@ -51,7 +51,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
             columns: [[
                 {field: 'ck', checkbox: true, align: 'center'},
                 {
-                    field: 'detail', title: '操作', width: '5%',
+                    field: 'detail', title: '操作', width: '10%',
                     formatter: function (value, row, index) {
                         return '<a href="javascript:void(0);" id = "caseDetail_' + row.caseType + '" class="list_operation_color">详情</a>';
                     }
@@ -136,8 +136,8 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                 $.each(data.rows, function (i, item) {
                     $("#caseDetail_" + item.caseType).on("click", function () {
                         var url = caseDetailUrl + "?checkType=" + Util.constants.CHECK_TYPE_VOICE + "&caseType=" + item.caseType;
-                        CommonAjax.closeMenuByNameAndId("语音典型案例_详情", "语音典型案例_详情");
-                        CommonAjax.openMenu(url, "语音典型案例_详情", "语音典型案例_详情");
+                        CommonAjax.closeMenuByNameAndId("语音典型案例", "语音典型案例");
+                        CommonAjax.openMenu(url, "语音典型案例", "语音典型案例");
                     });
                 });
             }
