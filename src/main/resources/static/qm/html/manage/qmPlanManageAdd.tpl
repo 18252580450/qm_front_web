@@ -11,7 +11,7 @@
                             </div>
                             <label class='form-label col-3'>计划类型</label>
                             <div class='formControls col-3'>
-                                <input id="planType" type='text' class='easyui-textbox easyui-validatebox' data-options="required:true" style='width:100%;height:30px' >
+                                <input id="planType" type='text' class='easyui-textbox' data-options="required:true" style='width:100%;height:30px' >
                             </div>
                         </div>
                         <div class='row cl'>
@@ -30,12 +30,12 @@
                             <div id='manOrAutoDiv'>
                                 <label class='form-label col-3'>任务分派方式</label>
                                 <div class='formControls col-3'>
-                                    <input id="manOrAuto" type='text' class="easyui-textbox easyui-validatebox" data-options="required:true" style='width:100%;height:30px' >
+                                    <input id="manOrAuto" type='text' class="easyui-textbox" data-options="required:true" style='width:100%;height:30px' >
                                 </div>
                             </div>
                             <label class='form-label col-3'>任务执行方式</label>
                             <div class='formControls col-3'>
-                                <input id="planRuntype" type='text' class="easyui-textbox easyui-validatebox" data-options="required:true" style='width:100%;height:30px' >
+                                <input id="planRuntype" type='text' class="easyui-textbox" data-options="required:true" style='width:100%;height:30px' >
                             </div>
                         </div>
                         <div class='row cl'>
