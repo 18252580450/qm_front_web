@@ -40,6 +40,13 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
             editable: false,
             onShowPanel: function () {
                 $("#distributeBeginTime").datetimebox("spinner").timespinner("setValue", "00:00:00");
+            },
+            onSelect: function (beginDate) {
+                $('#distributeEndTime').datetimebox().datetimebox('calendar').calendar({
+                    validator: function (date) {
+                        return beginDate <= date;
+                    }
+                })
             }
         });
         distributeBeginTime.datetimebox('setValue', beginDate);

@@ -23,6 +23,13 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
             editable: false,
             onShowPanel: function () {
                 $("#assignBeginTime").datetimebox("spinner").timespinner("setValue", "00:00:00");
+            },
+            onSelect: function (beginDate) {
+                $('#assignEndTime').datetimebox().datetimebox('calendar').calendar({
+                    validator: function (date) {
+                        return beginDate <= date;
+                    }
+                })
             }
         });
         assignBeginTime.datetimebox('setValue', beginDate);

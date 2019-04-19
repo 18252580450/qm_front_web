@@ -212,6 +212,13 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui","dateUti
             editable: false,
             onShowPanel: function () {
                 $("#planStartTime").datetimebox("spinner").timespinner("setValue", "00:00:00");
+            },
+            onSelect: function (beginDate) {
+                $('#planEndTime').datetimebox().datetimebox('calendar').calendar({
+                    validator: function (date) {
+                        return beginDate <= date;
+                    }
+                })
             }
         });
         planStartTime.datetimebox('setValue', beginDate);

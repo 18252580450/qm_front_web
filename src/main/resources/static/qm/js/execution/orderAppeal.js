@@ -47,6 +47,13 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                 editable: false,
                 onShowPanel: function () {
                     $("#appealBeginTime").datetimebox("spinner").timespinner("setValue", "00:00:00");
+                },
+                onSelect: function (beginDate) {
+                    $('#appealEndTime').datetimebox().datetimebox('calendar').calendar({
+                        validator: function (date) {
+                            return beginDate <= date;
+                        }
+                    })
                 }
             });
             appealBeginTime.datetimebox('setValue', beginDate);

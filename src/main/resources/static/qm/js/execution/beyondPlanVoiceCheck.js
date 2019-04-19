@@ -34,6 +34,13 @@ require([
                 editable: false,
                 onShowPanel: function () {
                     $("#beginTime").datetimebox("spinner").timespinner("setValue", "00:00:00");
+                },
+                onSelect: function (beginDate) {
+                    $('#endTime').datetimebox().datetimebox('calendar').calendar({
+                        validator: function (date) {
+                            return beginDate <= date;
+                        }
+                    })
                 }
             });
             beginTime.datetimebox('setValue', beginDate);

@@ -35,6 +35,13 @@ require([
                 editable: false,
                 onShowPanel: function () {
                     $("#arcBeginTime").datetimebox("spinner").timespinner("setValue", "00:00:00");
+                },
+                onSelect: function (beginDate) {
+                    $('#arcEndTime').datetimebox().datetimebox('calendar').calendar({
+                        validator: function (date) {
+                            return beginDate <= date;
+                        }
+                    })
                 }
             });
             arcBeginTime.datetimebox('setValue', beginDate);

@@ -125,6 +125,13 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
             editable: false,
             onShowPanel: function () {
                 $("#startTime").datetimebox("spinner").timespinner("setValue", "00:00:00");
+            },
+            onSelect: function (beginDate) {
+                $('#endTime').datetimebox().datetimebox('calendar').calendar({
+                    validator: function (date) {
+                        return beginDate <= date;
+                    }
+                })
             }
         });
         startTime.datetimebox('setValue', beginDate);

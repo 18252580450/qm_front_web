@@ -94,28 +94,24 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
         });
 
         //时间控件初始化
-        var beginDateBox = $('#createTimeBegin');
-        var beginDate = (DateUtil.formatDateTime(new Date() - 24 * 60 * 60 * 1000)).substr(0, 11) + "00:00:00";
-        beginDateBox.datetimebox({
-            // value: beginDate,
+        $('#createTimeBegin').datetimebox({
+            editable: false,
             onShowPanel: function () {
                 $("#createTimeBegin").datetimebox("spinner").timespinner("setValue", "00:00:00");
             },
-            onChange: function () {
-                checkBeginEndTime();
+            onSelect: function (beginDate) {
+                $('#createTimeEnd').datetimebox().datetimebox('calendar').calendar({
+                    validator: function (date) {
+                        return beginDate <= date;
+                    }
+                })
             }
         });
 
-        var endDateBox = $('#createTimeEnd');
-        var endDate = (DateUtil.formatDateTime(new Date())).substr(0, 11) + "00:00:00";
-        // var endDate = (DateUtil.formatDateTime(new Date()-24*60*60*1000)).substr(0,11) + "23:59:59";
-        endDateBox.datetimebox({
-            // value: endDate,
+        $('#createTimeEnd').datetimebox({
+            editable: false,
             onShowPanel: function () {
                 $("#createTimeEnd").datetimebox("spinner").timespinner("setValue", "23:59:59");
-            },
-            onChange: function () {
-                checkBeginEndTime();
             }
         });
 
@@ -142,18 +138,24 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                         }
                     }
                 },
-                {field: 'processId', title: '流程编码', width: '15%',
+                {
+                    field: 'processId', title: '流程编码', width: '15%',
                     formatter: function (value) {
                         return "<span title='" + value + "'>" + value + "</span>";
-                    }},
-                {field: 'processName', title: '流程名称', width: '20%',
+                    }
+                },
+                {
+                    field: 'processName', title: '流程名称', width: '20%',
                     formatter: function (value) {
                         return "<span title='" + value + "'>" + value + "</span>";
-                    }},
-                {field: 'departmentName', title: '部门', width: '20%',
+                    }
+                },
+                {
+                    field: 'departmentName', title: '部门', width: '20%',
                     formatter: function (value) {
                         return "<span title='" + value + "'>" + value + "</span>";
-                    }},
+                    }
+                },
                 {
                     field: 'processStatus', title: '流程状态', width: '7%',
                     formatter: function (value, row, index) {

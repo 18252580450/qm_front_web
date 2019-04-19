@@ -14,7 +14,7 @@ define([
             initGrid();//初始化列表
             initGlobalEvent();//初始化按钮事件
         });
-    };
+    }
 
     //批量更新计划  发布和暂停
     function batchUpdate(targetBut){
@@ -44,7 +44,7 @@ define([
         var params = {
             ids : ids,
             halfFlag : halfFlag
-        }
+        };
         $.messager.confirm(title, msg, function (confirm) {
             if (confirm) {
                 Util.ajax.putJson(Util.constants.CONTEXT.concat(Util.constants.QM_PLAN_DNS).concat("/batchUpdate"),JSON.stringify(params), function (result) {
@@ -334,6 +334,7 @@ define([
             required: false,
             showSeconds: true,
             panelHeight:'auto',
+            editable: false,
             onShowPanel:function(){
                 $("#createTimeStart").datetimebox("spinner").timespinner("setValue","00:00:00");
             },
@@ -348,6 +349,7 @@ define([
         $('#createTimeEnd').datetimebox({
             required: false,
             showSeconds: true,
+            editable: false,
             onShowPanel:function(){
                  $("#createTimeEnd").datetimebox("spinner").timespinner("setValue","23:59:59");
             }
