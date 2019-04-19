@@ -167,6 +167,7 @@ define([
             required: false,
             showSeconds: true,
             panelHeight:'auto',
+            editable: false,
             onShowPanel:function(){
                 $("#createTimeStart",$el).datetimebox("spinner").timespinner("setValue","00:00:00");
             },
@@ -181,6 +182,7 @@ define([
         $('#createTimeEnd',$el).datetimebox({
             required: false,
             showSeconds: true,
+            editable: false,
             onShowPanel:function(){
                 $("#createTimeEnd",$el).datetimebox("spinner").timespinner("setValue","23:59:59");
             }

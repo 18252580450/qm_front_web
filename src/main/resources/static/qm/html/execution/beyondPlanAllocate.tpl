@@ -17,7 +17,7 @@
                             </div>
                             <label class='form-label col-1'>员工工号</label>
                             <div class='formControls col-3'>
-                                <input id="staffId" type="easyui-textbox" style='width:100%;height:30px' >
+                                <input id="staffId" type="easyui-textbox" style='width:100%;height:30px' onkeyup="value=value.replace(/[\W]/g,'')">
                             </div>
                         </div>
                         <div class='row cl'>

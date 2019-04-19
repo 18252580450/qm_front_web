@@ -21,12 +21,12 @@
                             <label class='form-label col-2'>工单流水号</label>
                             <div class='formControls col-2'>
                                 <input id="workOrderId" type='text' class='easyui-textbox'
-                                       style='width:100%;height:30px'>
+                                       style='width:100%;height:30px' onkeyup="value=value.replace(/[\W]/g,'')">
                             </div>
                             <label class='form-label col-2'>客户号码</label>
                             <div class='formControls col-2'>
                                 <input id="cusNumber" type='text' class='easyui-textbox'
-                                       style='width:100%;height:30px'>
+                                       style='width:100%;height:30px' onkeyup="value=value.replace(/[^\d]/g,'')">
                             </div>
                             <label class='form-label col-2'>质检员</label>
                             <div class='formControls col-2'>
@@ -65,9 +65,9 @@
                             <label class='form-label col-2'>质检评分</label>
                             <div class='formControls col-2'>
                                 <input id="minScore" type='text' class='easyui-textbox'
-                                       style='width:40%;height:30px'> —</input>
+                                       style='width:40%;height:30px' onkeyup="value=value.replace(/[^\d]/g,'')"> —</input>
                                 <input id="maxScore" type='text' class='easyui-textbox'
-                                       style='width:40%;height:30px'>
+                                       style='width:40%;height:30px' onkeyup="value=value.replace(/[^\d]/g,'')">
                             </div>
                         </div>
                         <div class='row cl'>
