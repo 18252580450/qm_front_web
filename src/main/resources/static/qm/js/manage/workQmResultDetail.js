@@ -420,8 +420,8 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
                 {
                     field: 'operate', title: '操作', width: '10%',
                     formatter: function (value, row, index) {
-                        var play = '<a href="javascript:void(0);" class="list_operation_color" id = "recordPlay_' + row.cntmngSwftno + '">播放</a>',
-                            download = '<a href="javascript:void(0);" class="list_operation_color" id = "recordDownload_' + row.cntmngSwftno + '">下载</a>';
+                        var play = '<img src="../../image/record.png" style="height: 12px;width: 12px;" title="播放" alt="播放" id = "recordPlay_' + row.cntmngSwftno + '">',
+                            download = '<img src="../../image/download.png" style="height: 12px;width: 12px;" title="下载" alt="下载" id = "recordDownload_' + row.cntmngSwftno + '">';
                         return download; //todo
                     }
                 }

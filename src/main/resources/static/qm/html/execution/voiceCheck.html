@@ -27,7 +27,8 @@
                             </div>
                             <label class='form-label col-2'>分配开始时间</label>
                             <div class='formControls col-2'>
-                                <input id="distributeBeginTime" class='easyui-datetimebox' style='width:100%;height:30px'>
+                                <input id="distributeBeginTime" class='easyui-datetimebox'
+                                       style='width:100%;height:30px'>
                             </div>
                             <label class='form-label col-2'>分配结束时间</label>
                             <div class='formControls col-2'>
@@ -37,8 +38,9 @@
                         <div class='row cl'>
                             <label class='form-label col-2'>考评计划</label>
                             <div class='formControls col-2'>
-                                <input id="planId" hidden="hidden" >
-                                <input id="planName" type='text' class="easyui-searchbox"  style='width:100%;height:30px' >
+                                <input id="planId" hidden="hidden">
+                                <input id="planName" type='text' class="easyui-searchbox"
+                                       style='width:100%;height:30px'>
                             </div>
                             <label class='form-label col-2'>质检状态</label>
                             <div class='formControls col-2'>
@@ -68,14 +70,21 @@
             </div>
         </div>
 
-        <!--查询弹窗，默认隐藏-->
-        <div  id='qry_window' style='display:none;'>
+        <!--录音播放弹窗，默认隐藏-->
+        <div id='voice_play_window' style='display:none;'>
+            <div style="margin-top: 80px;margin-left: 88px">
+                <audio controls="controls" id="voicePlayer"></audio>
+            </div>
+        </div>
+
+        <!--考评计划查询弹窗，默认隐藏-->
+        <div id='qry_window' style='display:none;'>
             <div id='qry_content' style='overflow:auto'>
             </div>
         </div>
 
         <!--质检历史弹框，默认隐藏-->
-        <div  id='qryQmHistoryWindow' style='display:none;'></div>
+        <div id='qryQmHistoryWindow' style='display:none;'></div>
 
     </div>
 </div>

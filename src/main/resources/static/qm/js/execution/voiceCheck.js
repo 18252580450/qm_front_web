@@ -86,8 +86,8 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
                 {
                     field: 'operate', title: '操作', width: '12%',
                     formatter: function (value, row, index) {
-                        var play = '<img href="javascript:void(0);" src="../../image/record.png" style="height: 12px;width: 12px;" title="播放" alt="播放" id = "voicePlay_' + row.touchId + '">',
-                            download = '<img href="javascript:void(0);" src="../../image/download.png" style="height: 12px;width: 12px;" title="下载" alt="下载" id = "voiceDownload_' + row.touchId + '">',
+                        var play = '<img src="../../image/record.png" style="height: 12px;width: 12px;" title="播放" alt="播放" id = "voicePlay_' + row.touchId + '">',
+                            download = '<img src="../../image/download.png" style="height: 12px;width: 12px;" title="下载" alt="下载" id = "voiceDownload_' + row.touchId + '">',
                             check = '<a href="javascript:void(0);" class="list_operation_color" id = "voiceCheck_' + row.touchId + '">质检</a>',
                             checkHistory = '<a href="javascript:void(0);" class="list_operation_color" id = "checkHistory_' + row.touchId + '">质检记录</a>';
                         if (row.poolStatus.toString() === Util.constants.CHECK_STATUS_CHECK) {
@@ -239,27 +239,18 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
                 $.each(data.rows, function (i, item) {
                     //语音播放
                     $("#voicePlay_" + item.touchId).on("click", function () {
-                        if (playingRecord !== null && playingRecord !== "") {  //有正在播放录音的情况
-                            audio.pause();
-                            if (playingRecord === item.touchId) {  //暂停播放
-                                $("#voicePlay_" + item.touchId).html("播放");
-                                playingRecord = "";
-                            } else { //播放其他录音
-                                $("#voicePlay_" + playingRecord).html("播放");
-                                $("#voicePlay_" + item.touchId).html("暂停");
-                                // audio.src = "../../data/voice2.wav";
-                                // audio.src = item.recordPath;  //todo
-                                // audio.load();
-                                // audio.play();
-                                playingRecord = item.touchId;
-                            }
+                        if (item.recordPath == null || item.recordPath === "") {
+                            $.messager.alert("提示", "未找到录音地址!");
                         } else {
-                            $("#voicePlay_" + item.touchId).html("暂停");
-                            audio.src = "../../data/voice2.wav";
-                            // audio.src = item.recordPath;  //todo
-                            // audio.load();
-                            // audio.play();
-                            playingRecord = item.touchId;
+                            showPlayDialog(item);
+                        }
+                    });
+                    //语音下载
+                    $("#voiceDownload_" + item.touchId).on("click", function () {
+                        if (item.recordPath == null || item.recordPath === "") {
+                            $.messager.alert("提示", "未找到录音地址!");
+                        } else {
+                            window.location.href = Util.constants.CONTEXT + Util.constants.WRKFM_DETAIL_DNS + "/recordDownload" + '?ftpPath=' + item.recordPath;
                         }
                     });
                     //语音质检详情
@@ -300,6 +291,25 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
         $("#resetBtn").on("click", function () {
             $("#searchForm").form('clear');
             $("#poolStatus").combobox('setValue', poolStatusData[0].paramsCode);
+        });
+    }
+
+    //录音播放
+    function showPlayDialog(record) {
+        //加载录音
+        var voicePlayer = $("#voicePlayer");
+        voicePlayer.attr('src', "../../data/voice2.wav");
+        // voicePlayer.attr('src', record.recordPath); //todo
+        voicePlayer.get('0').load();
+
+        $("#voice_play_window").show().window({
+            width: 500,
+            height: 320,
+            modal: true,
+            title: record.touchId,
+            onClose: function () {
+                voicePlayer.get('0').pause();
+            }
         });
     }
 

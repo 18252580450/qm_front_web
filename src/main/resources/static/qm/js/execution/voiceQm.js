@@ -446,17 +446,15 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
                 }});
         });
 
-        // var voicePath = "../../data/voice.mp3";
-        var voicePath = "../../data/voice2.wav";
-        var voice  = new Audio(voicePath);
         //语音播放
         $("#page").on('click','img.playBtn',function(){
-            var rowData = $(this).attr('id'); //获取a标签中传递的值
-            var sensjson = JSON.parse(rowData); //转成json格式
-            voice.src=voicePath;
-            // voice.src=sensjson.recordPath;
-            // voice.load();//重新加载音频，用于更改src之后使用 //todo
-
+            var rowData = $(this).attr('id'), //获取a标签中传递的值
+                sensjson = JSON.parse(rowData); //转成json格式
+            if (sensjson.recordPath == null || sensjson.recordPath === "") {
+                $.messager.alert("提示", "未找到录音地址!");
+            } else {
+                showPlayDialog(sensjson);
+            }
         });
         //语音下载
         $("#page").on('click', 'img.downloadBtn', function () {
@@ -467,6 +465,25 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
                 $.messager.alert("提示", "未找到录音地址!");
             } else {
                 window.location.href = Util.constants.CONTEXT + Util.constants.WRKFM_DETAIL_DNS + "/recordDownload" + '?ftpPath=' + recordPath;
+            }
+        });
+    }
+
+    //录音播放
+    function showPlayDialog(record) {
+        //加载录音
+        var voicePlayer = $("#voicePlayer");
+        voicePlayer.attr('src', "../../data/voice2.wav");
+        // voicePlayer.attr('src', record.recordPath); //todo
+        voicePlayer.get('0').load();
+
+        $("#voice_play_window").show().window({
+            width: 500,
+            height: 320,
+            modal: true,
+            title: record.touchId,
+            onClose: function () {
+                voicePlayer.get('0').pause();
             }
         });
     }
