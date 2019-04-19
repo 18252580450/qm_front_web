@@ -303,7 +303,7 @@ define([
         if (planBean) {
             manOrAutoFlag = planBean.manOrAuto;
             planTypeFlag = planBean.planType;
-            if (planBean.planType == "0" && planBean.manOrAuto == "1") {//语音质检及人工分派才会显示质检人信息
+            if (planBean.planType == "0" && planBean.manOrAuto == "0") {//语音质检及自动分派才会显示质检人信息
                 $("#showDiv", $el).attr("style", "visibility:visible;");
             } else {
                 $("#showDiv", $el).attr("style", "visibility:hidden;");
@@ -327,6 +327,7 @@ define([
             required: false,
             showSeconds: true,
             panelHeight:'auto',
+            editable: false,
             onShowPanel:function(){
                 $("#planStarttime",$el).datetimebox("spinner").timespinner("setValue","00:00:00");
             },
@@ -342,6 +343,7 @@ define([
         $('#planEndtime',$el).datetimebox({
             required: false,
             showSeconds: true,
+            editable: false,
             onShowPanel:function(){
                 $("#planEndtime",$el).datetimebox("spinner").timespinner("setValue","23:59:59");
             }
@@ -365,7 +367,7 @@ define([
             editable: false,
             onSelect: function (value) {
                 manOrAutoFlag = value.value;
-                if (manOrAutoFlag == "1" && planTypeFlag == "0") {//人工分派且是语音质检
+                if (manOrAutoFlag == "0" && planTypeFlag == "0") {//自动分派且是语音质检
                     $("#showDiv", $el).attr("style", "visibility:visible;");
                 } else {
                     $("#showDiv", $el).attr("style", "visibility:hidden;");
@@ -441,7 +443,7 @@ define([
                     editable: false,
                     onSelect: function (value) {
                         planTypeFlag = value.paramsCode;
-                        if (planTypeFlag == "0" && manOrAutoFlag == "1") {//语音质检且是人工分派
+                        if (planTypeFlag == "0" && manOrAutoFlag == "0") {//语音质检且是自动分派
                             $("#showDiv", $el).attr("style", "visibility:visible;");
                         } else {
                             $("#showDiv", $el).attr("style", "visibility:hidden;");
