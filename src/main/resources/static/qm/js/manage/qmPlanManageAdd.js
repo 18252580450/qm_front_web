@@ -378,7 +378,7 @@ define([
                 var manOrAuto = $('#manOrAuto', $el);
                 var data = manOrAuto.combobox('getData');
                 if (!planBean) {
-                    manOrAuto.combobox('select', data[1].value);
+                    manOrAuto.combobox('select', data[0].value);
                 }
             }
         });
