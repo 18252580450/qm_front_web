@@ -383,7 +383,7 @@ require([
                 {field: 'processName', title: '子流程', hidden: true},
                 {field: 'orderNo', title: '节点序号', width: '20%'},
                 {field: 'nodeName', title: '节点名称', width: '20%'},
-                {field: 'userName', title: '角色', width: '40'},
+                {field: 'userName', title: '审批人', width: '40'},
                 {field: 'userId', title: '角色Id', hidden: true},
                 {
                     field: 'detail', title: '操作', width: '20%',
