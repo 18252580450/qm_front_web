@@ -232,7 +232,7 @@ require([
                                 item.checkStaffId = userInfo.staffId;
                                 item.checkStaffName = userInfo.staffName;
                                 var url = CommonAjax.createURL(voiceCheckDetail, item);
-                                CommonAjax.openMenu2(url, "语音质检详情", item.touchId);  //todo
+                                CommonAjax.openMenu(url, "语音质检详情", item.touchId);  //todo
                             }
                         });
                     });

@@ -252,7 +252,7 @@ require([
                                     "actualHandleDuration": item.actualHandleDuration
                                 };
                                 var url = CommonAjax.createURL(orderCheckDetail, param);
-                                CommonAjax.openMenu2(url, "工单质检详情", item.wrkfmId); //todo
+                                CommonAjax.openMenu(url, "工单质检详情", item.wrkfmId); //todo
                             }
                         });
                     });
