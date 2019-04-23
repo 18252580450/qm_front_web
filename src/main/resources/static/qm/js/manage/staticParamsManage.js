@@ -242,6 +242,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
 
                     if (rspCode == "1") {
                         $("#staticParamsManage").datagrid('reload'); //插入成功后，刷新页面
+                        $("#add_content").window("close");
                     }
                 });
                 //enable按钮
@@ -318,7 +319,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
 
                     if (rspCode == "1") {
                         $("#staticParamsManage").datagrid('reload'); //插入成功后，刷新页面
-                        $("#add_window").window("close");
+                        $("#addtype_content").window("close");
                     }
                 });
                 //enable按钮
@@ -383,7 +384,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
 
                     if (rspCode == "1") {
                         $("#staticParamsManage").datagrid('reload'); //修改成功后，刷新页面
-                        $("#add_window").window("close");
+                        $("#add_content").window("close");
                     }
 
                 })
