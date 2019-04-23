@@ -55,14 +55,13 @@ define([
                 autoRowHeight: true,
                 onDblClickRow: function (rowIndex, rowData) {
                     if (operateType === "0") {  //质检
-                        checkObj.templateId = rowData.templateId;
                         //工单质检
                         if (templateType === Util.constants.CHECK_TYPE_ORDER) {
                             var param = {
                                 "provCode": checkObj.provCode,
                                 "wrkfmId": checkObj.wrkfmId,
                                 "wrkfmShowSwftno": checkObj.wrkfmShowSwftno,
-                                "templateId": checkObj.templateId,
+                                "templateId": rowData.templateId,
                                 "acptStaffNum": checkObj.acptStaffNum,
                                 "checkStaffId": checkObj.checkStaffId,
                                 "checkStaffName": checkObj.checkStaffName,
@@ -75,6 +74,7 @@ define([
                         //语音质检
                         if (templateType === Util.constants.CHECK_TYPE_VOICE) {
                             var voiceCheckUrl = CommonAjax.createURL(voiceCheckDetail, checkObj);
+                            voiceCheckUrl += "&templateId=" + encodeURI(rowData.templateId);
                             CommonAjax.openMenu(voiceCheckUrl, "语音质检详情", checkObj.touchId);  //todo
                         }
                     }

@@ -29,7 +29,7 @@ define(["jquery", 'util'], function ($, Util) {
         },
         //url参数拼接
         createURL: function (url, param) {
-            var urlLink = url;
+            var urlLink = "";
             if (param != null) {
                 $.each(param, function (item, value) {
                     urlLink += '&' + item + "=" + encodeURI(value);

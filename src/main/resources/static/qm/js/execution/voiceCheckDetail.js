@@ -371,13 +371,19 @@ require(["jquery", "util", "commonAjax", "dateUtil", "transfer", "easyui"], func
     }
 
     function checkSubmit(checkStatus) {
+        //未绑定考评项的情况
+        if (checkItemScoreList.length === 0) {
+            $.messager.alert("提示", "未指定考评项!");
+            return;
+        }
+
         var currentTime = new Date(),
             checkTime = currentTime - startTime,
             finalScore = $("#checkScore").val(),
             checkStartTime = DateUtil.formatDateTime(parseInt(voicePool.operateTime)),
             checkComment = $("#checkComment").val();
         var voiceCheckResult = {
-            "tenantId": Util.constants.TENANT_ID,                          //租户id
+            "tenantId": Util.constants.TENANT_ID,                    //租户id
             "provinceId": voicePool.provinceId,                      //省份id
             "callingNumber": voicePool.staffNumber,                  //主叫号码
             "acceptNumber": voicePool.customerNumber,                //被叫号码

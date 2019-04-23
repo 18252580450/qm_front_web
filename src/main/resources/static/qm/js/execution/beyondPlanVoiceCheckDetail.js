@@ -370,6 +370,12 @@ require(["jquery", "util", "commonAjax", "dateUtil", "transfer", "easyui"], func
     }
 
     function checkSubmit(checkStatus) {
+        //未绑定考评项的情况
+        if (checkItemScoreList.length === 0) {
+            $.messager.alert("提示", "未指定考评项!");
+            return;
+        }
+
         var currentTime = new Date(),
             checkTime = currentTime - startTime,
             finalScore = $("#checkScore").val(),

@@ -918,9 +918,9 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
 
     //质检提交or保存
     function checkSubmit(checkStatus) {
-        //未考评则返回
+        //未绑定考评项的情况
         if (checkLinkData.length === 0) {
-            $.messager.alert("提示", "未对任何环节进行考评!");
+            $.messager.alert("提示", "未指定考评项!");
             return;
         }
 
