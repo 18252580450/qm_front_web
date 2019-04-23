@@ -34,7 +34,7 @@
                 </div>
                 <div>
                     <!--左侧区域-->
-                    <div id="treeDiv" style="float:left;overflow-y: auto; overflow-x: auto;width:20%;height: 400px;">
+                    <div id="treeDiv" style="float:left;overflow-y: auto; overflow-x: auto;width:20%;height: 420px;">
                         <div class='cl'>
                             <div class='panel-tool-box cl' >
                                 <div class='fl text-bold'>考评树</div>
