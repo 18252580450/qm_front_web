@@ -53,19 +53,19 @@ define(["jquery", 'util'], function ($, Util) {
         },
         //新增标签页
         openMenu: function (url, menuName, menuId) {
-            operMenu(url, menuName, menuId);
-            // openTab(url, menuName);
+            operMenu(url, menuName, menuId);//测试Tab
+            // openTab(url, menuName);//本地Tab
         },
         //关闭指定标签页
         closeMenuByNameAndId: function (menuName, menuId) {
-            operMenu(null, menuName, menuId);
-            // closeTab(menuName);
+            operMenu(null, menuName, menuId);//测试Tab
+            // closeTab(menuName);//本地Tab
         },
         //刷新指定标签页
         refreshMenuByUrl: function (url, menuName, menuId) {
-            operMenu(url, null, null);
-            operMenu(url, menuName, menuId);
-            // refreshTab(menuName);
+            operMenu(url, null, null);//测试Tab
+            operMenu(url, menuName, menuId);//测试Tab
+            // refreshTab(menuName);//本地Tab
         },
         //dialog弹框
         //url：窗口调用地址，title：窗口标题，width：宽度，height：高度，shadow：是否显示背景阴影罩层
