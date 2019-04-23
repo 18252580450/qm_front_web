@@ -70,12 +70,12 @@ define([
                                 "actualHandleDuration": checkObj.actualHandleDuration
                             };
                             var orderCheckUrl = CommonAjax.createURL(orderCheckDetail, param);
-                            CommonAjax.openMenu2(orderCheckUrl, "工单质检详情", checkObj.wrkfmId);
+                            CommonAjax.openMenu(orderCheckUrl, "工单质检详情", checkObj.wrkfmId);
                         }
                         //语音质检
                         if (templateType === Util.constants.CHECK_TYPE_VOICE) {
                             var voiceCheckUrl = CommonAjax.createURL(voiceCheckDetail, checkObj);
-                            CommonAjax.openMenu2(voiceCheckUrl, "语音质检详情", checkObj.touchId);  //todo
+                            CommonAjax.openMenu(voiceCheckUrl, "语音质检详情", checkObj.touchId);  //todo
                         }
                     }
                     if (operateType === "1") {  //分派
