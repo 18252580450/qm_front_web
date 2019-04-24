@@ -77,7 +77,7 @@ define(["text!html/manage/workQmResultHistory.tpl", "jquery", 'util', "transfer"
                 var start = (param.page - 1) * param.rows,
                     pageNum = param.rows;
                 var reqParams = {
-                    "touchId": touchId
+                    "wrkfmId": touchId
                 };
                 var params = $.extend({
                     "start": start,
