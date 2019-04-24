@@ -1,7 +1,7 @@
-require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util) {
+require(["jquery", 'util', "commonAjax", "dateUtil", "transfer", "easyui"], function ($, Util, CommonAjax) {
 
     var workForm,
-        playingRecord,              //当前正在播放的录音id
+        audioPlayUrl = Util.constants.URL_CONTEXT + "/qm/html/audioPlay/audioPlay.html",
         showingInfo = 0,            //当前显示的基本信息（0工单基本信息、1内外部回复、2接触记录、3工单历史）
         scoreType,                  //分值类型（默认扣分）
         startTime,                  //页面初始化时间
@@ -411,7 +411,7 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
                     formatter: function (value, row, index) {
                         var play = '<img src="../../image/record.png" style="height: 12px;width: 12px;" title="播放" alt="播放" id = "recordPlay_' + row.cntmngSwftno + '">',
                             download = '<img src="../../image/download.png" style="height: 12px;width: 12px;" title="下载" alt="下载" id = "recordDownload_' + row.cntmngSwftno + '">';
-                        return download; //todo
+                        return play + "&nbsp;&nbsp;" + download; //todo
                     }
                 }
             ]],
@@ -479,26 +479,7 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
                 $.each(data.rows, function (i, item) {
                     //语音播放
                     $("#recordPlay_" + item.cntmngSwftno).on("click", function () {
-                        if (playingRecord !== null && playingRecord !== "") {  //有正在播放录音的情况
-                            audio.pause();
-                            if (playingRecord === item.cntmngSwftno) {  //暂停播放
-                                $("#recordPlay_" + item.cntmngSwftno).html("播放");
-                                playingRecord = "";
-                            } else { //播放其他录音
-                                $("#recordPlay_" + playingRecord).html("播放");
-                                $("#recordPlay_" + item.cntmngSwftno).html("暂停");
-                                audio.src = item.recordFilePath;  //todo
-                                audio.load();
-                                audio.play();
-                                playingRecord = item.cntmngSwftno;
-                            }
-                        } else {
-                            $("#recordPlay_" + item.cntmngSwftno).html("暂停");
-                            audio.src = item.recordFilePath;  //todo
-                            audio.load();
-                            audio.play();
-                            playingRecord = item.cntmngSwftno;
-                        }
+                        CommonAjax.showDialog(audioPlayUrl, item.cntmngSwftno, 600, 400);
                     });
                     //录音下载
                     $("#recordDownload_" + item.cntmngSwftno).on("click", function () {
