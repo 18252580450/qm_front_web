@@ -56,7 +56,7 @@ require(["jquery", 'util', "transfer", "easyui"], function ($, Util, Transfer) {
             pagination: true,
             pageSize: 10,
             pageList: [5, 10, 20, 50],
-            rownumbers: false,
+            rownumbers: true,
             singleSelect: false,
             checkOnSelect: false,
             autoRowHeight: true,

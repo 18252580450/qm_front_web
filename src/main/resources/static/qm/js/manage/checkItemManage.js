@@ -193,7 +193,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
             pagination: true,
             pageSize: 10,
             pageList: [5, 10, 20, 50],
-            rownumbers: false,
+            rownumbers: true,
             checkOnSelect: false,
             onClickCell: function (rowIndex, field, value) {
                 IsCheckFlag = false;
