@@ -247,10 +247,10 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
                 }, Util.PageUtil.getParams($("#searchForm")));
 
                 Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.ORDER_POOL_DNS + "/selectByParams", params, function (result) {
-                    var data = Transfer.DataGrid.transfer(result);
-
-                    var rspCode = result.RSP.RSP_CODE;
-                    if (rspCode != null && rspCode !== "1") {
+                    var data = {rows: [], total: 0};
+                    if (result.RSP.RSP_CODE === "1") {
+                        data = Transfer.DataGrid.transfer(result);
+                    } else {
                         $.messager.show({
                             msg: result.RSP.RSP_DESC,
                             timeout: 1000,

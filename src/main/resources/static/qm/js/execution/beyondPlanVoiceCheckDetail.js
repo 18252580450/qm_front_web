@@ -223,10 +223,9 @@ require(["jquery", "util", "commonAjax", "dateUtil", "transfer", "easyui"], func
         };
         //查询
         Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.ORDINARY_COMMENT + "/selectByParams", params, function (result) {
-            var rspCode = result.RSP.RSP_CODE,
-                data = result.RSP.DATA;
-            if (rspCode != null && rspCode === "1") {
-                var map = {
+            if (result.RSP.RSP_CODE === "1") {
+                var data = result.RSP.DATA;
+                map = {
                     "commentId": "-1",
                     "commentName": "其他"
                 };
@@ -250,8 +249,7 @@ require(["jquery", "util", "commonAjax", "dateUtil", "transfer", "easyui"], func
         }, Util.PageUtil.getParams($("#searchForm")));
 
         Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.CHECK_ITEM_DNS + "/queryCheckItemDetail", params, function (result) {
-            var checkItemData = result.RSP.DATA,
-                rspCode = result.RSP.RSP_CODE;
+            var rspCode = result.RSP.RSP_CODE;
             if (rspCode != null && rspCode !== "1") {
                 $.messager.show({
                     msg: result.RSP.RSP_DESC,
@@ -260,6 +258,7 @@ require(["jquery", "util", "commonAjax", "dateUtil", "transfer", "easyui"], func
                     showType: 'show'
                 });
             } else {
+                var checkItemData = result.RSP.DATA;
                 //模版id
                 templateId = checkItemData[0].templateId;
                 //分值类型
@@ -288,10 +287,9 @@ require(["jquery", "util", "commonAjax", "dateUtil", "transfer", "easyui"], func
                 }, Util.PageUtil.getParams($("#searchForm")));
 
                 Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.VOICE_CHECK_DNS + "/querySavedResult", params, function (result) {
-                    var savedData = result.RSP.DATA,
-                        rspCode = result.RSP.RSP_CODE,
-                        totalScore = 0;    //考评项总得分
-                    if (rspCode != null && rspCode === "1") {
+                    var totalScore = 0;    //考评项总得分
+                    if (result.RSP.RSP_CODE === "1") {
+                        var savedData = result.RSP.DATA;
                         $.each(savedData, function (i, item) {
                             var checkItem = {};
                             checkItem.nodeType = item.nodeType;
@@ -347,10 +345,8 @@ require(["jquery", "util", "commonAjax", "dateUtil", "transfer", "easyui"], func
         }, Util.PageUtil.getParams($("#searchForm")));
 
         Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.VOICE_CHECK_DNS + "/queryVoiceCheckResult", param, function (result) {
-            var data = result.RSP.DATA,
-                rspCode = result.RSP.RSP_CODE;
-            if (rspCode != null && rspCode === "1") {
-                $("#checkComment").val(data[0].checkComment);
+            if (result.RSP.RSP_CODE === "1") {
+                $("#checkComment").val(result.RSP.DATA[0].checkComment);
             }
         });
     }

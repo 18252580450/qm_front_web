@@ -214,14 +214,15 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
                 }, Util.PageUtil.getParams($("#searchForm")));
 
                 Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.VOICE_POOL_DNS + "/selectByParams", params, function (result) {
-                    var data = Transfer.DataGrid.transfer(result),
-                        rspCode = result.RSP.RSP_CODE;
-                    for (var i = 0; i < data.rows.length; i++) {
-                        if (data.rows[i].qmPlan != null) {
-                            data.rows[i]["planName"] = data.rows[i].qmPlan.planName;
+                    var data = {rows: [], total: 0};
+                    if (result.RSP.RSP_CODE === "1") {
+                        data = Transfer.DataGrid.transfer(result);
+                        for (var i = 0; i < data.rows.length; i++) {
+                            if (data.rows[i].qmPlan != null) {
+                                data.rows[i]["planName"] = data.rows[i].qmPlan.planName;
+                            }
                         }
-                    }
-                    if (rspCode != null && rspCode !== "1") {
+                    } else {
                         $.messager.show({
                             msg: result.RSP.RSP_DESC,
                             timeout: 1000,

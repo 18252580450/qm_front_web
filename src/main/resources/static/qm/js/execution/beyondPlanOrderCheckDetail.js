@@ -159,8 +159,7 @@ require(["jquery", 'util', "commonAjax", "transfer", "dateUtil", "easyui"], func
         Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.WRKFM_DETAIL_DNS + "/queryWrkfmDetail", params, function (result) {
 
             Util.loading.destroyLoading();
-            var data = result.RSP.DATA,
-                rspCode = result.RSP.RSP_CODE;
+            var rspCode = result.RSP.RSP_CODE;
             if (rspCode != null && rspCode !== "1") {
                 $.messager.show({
                     msg: result.RSP.RSP_DESC,
@@ -169,19 +168,19 @@ require(["jquery", 'util', "commonAjax", "transfer", "dateUtil", "easyui"], func
                     showType: 'show'
                 });
             } else {
-                workFormDetail = data;
-                $("#workFormId").val(data.acceptInfo.wrkfmShowSwftno).attr('title', data.acceptInfo.wrkfmShowSwftno);
-                $("#custNum").val(data.userInfo.custNum).attr('title', data.userInfo.custNum);
-                $("#srvReqstTypeFullNm").val(data.acceptInfo.srvReqstTypeFullNm).attr('title', data.acceptInfo.srvReqstTypeFullNm);
-                $("#custBelgCityNm").val(data.userInfo.custBelgCityNm).attr('title', data.userInfo.custBelgCityNm);
-                $("#isVipNm").val(data.userInfo.isVipNm).attr('title', data.userInfo.isVipNm);
-                $("#acptChnlNm").val(data.acceptInfo.acptChnlNm).attr('title', data.acceptInfo.acptChnlNm);
-                $("#dplctCmplntsFlagNm").val(data.acceptInfo.dplctCmplntsFlagNm).attr('title', data.acceptInfo.dplctCmplntsFlagNm);
-                $("#isMajorCmplntsNm").val(data.acceptInfo.isMajorCmplntsNm).attr('title', data.acceptInfo.isMajorCmplntsNm);
-                $("#faultLvlNm").val(data.acceptInfo.faultLvlNm).attr('title', data.acceptInfo.faultLvlNm);
-                $("#urgntExtentNm").val(data.acceptInfo.urgntExtentNm).attr('title', data.acceptInfo.urgntExtentNm);
-                $("#custMoodTypeNm").val(data.acceptInfo.custMoodTypeNm).attr('title', data.acceptInfo.custMoodTypeNm);
-                $("#bizCntt").val(data.acceptInfo.bizCntt);
+                workFormDetail = result.RSP.DATA;
+                $("#workFormId").val(workFormDetail.acceptInfo.wrkfmShowSwftno).attr('title', workFormDetail.acceptInfo.wrkfmShowSwftno);
+                $("#custNum").val(workFormDetail.userInfo.custNum).attr('title', workFormDetail.userInfo.custNum);
+                $("#srvReqstTypeFullNm").val(workFormDetail.acceptInfo.srvReqstTypeFullNm).attr('title', workFormDetail.acceptInfo.srvReqstTypeFullNm);
+                $("#custBelgCityNm").val(workFormDetail.userInfo.custBelgCityNm).attr('title', workFormDetail.userInfo.custBelgCityNm);
+                $("#isVipNm").val(workFormDetail.userInfo.isVipNm).attr('title', workFormDetail.userInfo.isVipNm);
+                $("#acptChnlNm").val(workFormDetail.acceptInfo.acptChnlNm).attr('title', workFormDetail.acceptInfo.acptChnlNm);
+                $("#dplctCmplntsFlagNm").val(workFormDetail.acceptInfo.dplctCmplntsFlagNm).attr('title', workFormDetail.acceptInfo.dplctCmplntsFlagNm);
+                $("#isMajorCmplntsNm").val(workFormDetail.acceptInfo.isMajorCmplntsNm).attr('title', workFormDetail.acceptInfo.isMajorCmplntsNm);
+                $("#faultLvlNm").val(workFormDetail.acceptInfo.faultLvlNm).attr('title', workFormDetail.acceptInfo.faultLvlNm);
+                $("#urgntExtentNm").val(workFormDetail.acceptInfo.urgntExtentNm).attr('title', workFormDetail.acceptInfo.urgntExtentNm);
+                $("#custMoodTypeNm").val(workFormDetail.acceptInfo.custMoodTypeNm).attr('title', workFormDetail.acceptInfo.custMoodTypeNm);
+                $("#bizCntt").val(workFormDetail.acceptInfo.bizCntt);
             }
         });
     }
@@ -200,8 +199,7 @@ require(["jquery", 'util', "commonAjax", "transfer", "dateUtil", "easyui"], func
         Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.WRKFM_DETAIL_DNS + "/getProcProceLocus", params, function (result) {
 
             Util.loading.destroyLoading();
-            var data = result.RSP.DATAS,
-                rspCode = result.RSP.RSP_CODE;
+            var rspCode = result.RSP.RSP_CODE;
             if (rspCode != null && rspCode !== "1") {
                 $.messager.show({
                     msg: result.RSP.RSP_DESC,
@@ -210,7 +208,7 @@ require(["jquery", 'util', "commonAjax", "transfer", "dateUtil", "easyui"], func
                     showType: 'show'
                 });
             } else {
-                processData = data;
+                processData = result.RSP.DATAS;
                 showDealProcess(processData);  //初始化工单轨迹
 
                 //初始化考评项列表
@@ -225,9 +223,6 @@ require(["jquery", 'util', "commonAjax", "transfer", "dateUtil", "easyui"], func
                 }, Util.PageUtil.getParams($("#searchForm")));
 
                 Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.CHECK_ITEM_DNS + "/queryCheckItemDetail", params, function (result) {
-                    checkItemListData = result.RSP.DATA;
-                    //分值类型
-                    scoreType = checkItemListData[0].scoreType;
                     var rspCode = result.RSP.RSP_CODE;
                     if (rspCode != null && rspCode !== "1") {
                         $.messager.show({
@@ -237,6 +232,9 @@ require(["jquery", 'util', "commonAjax", "transfer", "dateUtil", "easyui"], func
                             showType: 'show'
                         });
                     } else {
+                        checkItemListData = result.RSP.DATA;
+                        //分值类型
+                        scoreType = checkItemListData[0].scoreType;
                         //初始化考评项列表
                         var checkLink = processData[0].opTypeCd;
                         $.each(checkItemListData, function (i, item) {
@@ -469,13 +467,12 @@ require(["jquery", 'util', "commonAjax", "transfer", "dateUtil", "easyui"], func
         };
         //查询
         Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.ORDINARY_COMMENT + "/selectByParams", params, function (result) {
-            var rspCode = result.RSP.RSP_CODE,
-                data = result.RSP.DATA;
-            if (rspCode != null && rspCode === "1") {
-                var map = {
-                    "commentId": "-1",
-                    "commentName": "其他"
-                };
+            if (result.RSP.RSP_CODE === "1") {
+                var data = result.RSP.DATA,
+                    map = {
+                        "commentId": "-1",
+                        "commentName": "其他"
+                    };
                 data.unshift(map);
                 $("#checkCommentSearch").combobox('loadData', data);
             }
@@ -593,13 +590,13 @@ require(["jquery", 'util', "commonAjax", "transfer", "dateUtil", "easyui"], func
                 }, {});
 
                 Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.WRKFM_DETAIL_DNS + "/getRecordList", params, function (result) {
+                    var data = {rows: [], total: 0};
                     if (result.RSP.RSP_CODE === "1") {
-                        var data = {
+                        data = {
                             rows: result.RSP.DATAS,
                             total: result.RSP.ATTACH.TOTAL
                         };
                         recordData = result.RSP.DATAS;
-                        success(data);
                     } else {
                         $.messager.show({
                             msg: result.RSP.RSP_DESC,
@@ -607,12 +604,8 @@ require(["jquery", 'util', "commonAjax", "transfer", "dateUtil", "easyui"], func
                             style: {right: '', bottom: ''},     //居中显示
                             showType: 'show'
                         });
-                        var emptyData = {
-                            rows: [],
-                            total: 0
-                        };
-                        success(emptyData);
                     }
+                    success(data);
                 });
             },
             onLoadSuccess: function (data) {
@@ -699,22 +692,22 @@ require(["jquery", 'util', "commonAjax", "transfer", "dateUtil", "easyui"], func
                 }, {});
 
                 Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.WRKFM_DETAIL_DNS + "/getHistoryProProce", params, function (result) {
-                    var data = {
+                    var data = {rows: [], total: 0};
+                    if (result.RSP.RSP_CODE === "1") {
+                        data = {
                             rows: result.RSP.DATAS,
                             total: result.RSP.ATTACH.TOTAL
-                        },
-                        rspCode = result.RSP.RSP_CODE;
-                    if (rspCode != null && rspCode !== "1") {
+                        };
+                        historyData = result.RSP.DATAS;
+                    } else {
                         $.messager.show({
                             msg: result.RSP.RSP_DESC,
                             timeout: 1000,
                             style: {right: '', bottom: ''},     //居中显示
                             showType: 'show'
                         });
-                    } else {
-                        historyData = result.RSP.DATAS;
-                        success(data);
                     }
+                    success(data);
                 });
             }
         });

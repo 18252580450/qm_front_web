@@ -94,7 +94,10 @@ define([
                                 showType: 'show'
                             });
                         } else {
-                            data = {"rows": result.RSP.DATA[0].jsonArray, "total": result.RSP.DATA[0].totalAll};
+                            data = {
+                                "rows": result.RSP.DATA[0].jsonArray,
+                                "total": result.RSP.DATA[0].totalAll
+                            };
                         }
                         success(data);
                     });
@@ -128,8 +131,7 @@ define([
                         },
                         param = {"params": JSON.stringify(reqParams)};
                     Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.QM_PLAN_DNS + "/getWorkList", param, function (result) {
-                        var rspCode = result.RSP.RSP_CODE,
-                            data = result.RSP.DATA;
+                        var rspCode = result.RSP.RSP_CODE;
                         if (rspCode != null && rspCode !== "1") {
                             $.messager.show({
                                 msg: "工作组" + result.RSP.RSP_DESC,
@@ -138,6 +140,7 @@ define([
                                 showType: 'show'
                             });
                         } else {
+                            var data = result.RSP.DATA;
                             for (var i = 0; i < data.length; i++) {
                                 var nodeMap =
                                     {

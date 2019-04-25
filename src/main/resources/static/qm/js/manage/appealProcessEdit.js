@@ -228,12 +228,13 @@ require([
                 //流程列表加载之前先查询流程顺序
                 if (orderData.length !== 0) {
                     Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.APPEAL_PROCESS_CONFIG_DNS + "/queryAppealProcess", params, function (result) {
-                        var data = {
-                            rows: result.RSP.DATA
-                        };
-
-                        var rspCode = result.RSP.RSP_CODE;
-                        if (rspCode != null && rspCode !== "1") {
+                        var data = {rows: []},
+                            rspCode = result.RSP.RSP_CODE;
+                        if (rspCode === "1") {
+                            data = {
+                                rows: result.RSP.DATA
+                            };
+                        } else {
                             $.messager.show({
                                 msg: result.RSP.RSP_DESC,
                                 timeout: 1000,
@@ -260,12 +261,13 @@ require([
                             orderData = result.RSP.DATA;
                             //流程顺序数据查询成功后再加载子流程列表
                             Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.APPEAL_PROCESS_CONFIG_DNS + "/queryAppealProcess", params, function (result) {
-                                var data = {
-                                    rows: result.RSP.DATA
-                                };
-
-                                var rspCode = result.RSP.RSP_CODE;
-                                if (rspCode != null && rspCode !== "1") {
+                                var data = {rows: []},
+                                    rspCode = result.RSP.RSP_CODE;
+                                if (rspCode === "1") {
+                                    data = {
+                                        rows: result.RSP.DATA
+                                    };
+                                } else {
                                     $.messager.show({
                                         msg: result.RSP.RSP_DESC,
                                         timeout: 1000,
@@ -1088,9 +1090,12 @@ require([
         }, Util.PageUtil.getParams($("#searchForm")));
 
         Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.APPEAL_NODE_CONFIG_DNS + "/queryAppealNode", params, function (result) {
-            var rspCode = result.RSP.RSP_CODE,
+            var rspData = [],
+                rspCode = result.RSP.RSP_CODE;
+
+            if (rspCode === "1") {
                 rspData = result.RSP.DATA;
-            if (rspCode != null && rspCode !== "1") {
+            } else {
                 $.messager.show({
                     msg: result.RSP.RSP_DESC,
                     timeout: 1000,

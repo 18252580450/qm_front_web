@@ -180,10 +180,10 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                     }, Util.PageUtil.getParams($("#searchForm")));
 
                     Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.APPEAL_DEAL_DNS + "/queryAppealDeal", params, function (result) {
-                        var data = Transfer.DataGrid.transfer(result);
-
-                        var rspCode = result.RSP.RSP_CODE;
-                        if (rspCode != null && rspCode !== "1") {
+                        var data = {rows: [], total: 0};
+                        if (result.RSP.RSP_CODE === "1") {
+                            data = Transfer.DataGrid.transfer(result);
+                        } else {
                             $.messager.show({
                                 msg: result.RSP.RSP_DESC,
                                 timeout: 1000,
@@ -260,8 +260,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
 
             Util.loading.showLoading();
             Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.APPEAL_PROCESS_CONFIG_DNS + "/queryAppealProcessDetail", params, function (result) {
-                var processData = result.RSP.DATA,
-                    rspCode = result.RSP.RSP_CODE;
+                var rspCode = result.RSP.RSP_CODE;
                 if (rspCode != null && rspCode !== "1") {
                     $.messager.show({
                         msg: result.RSP.RSP_DESC,
@@ -270,6 +269,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                         showType: 'show'
                     });
                 } else {
+                    var processData = result.RSP.DATA;
                     //查询审批记录
                     var reqParams = {
                         "appealId": data.appealId
@@ -283,8 +283,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                     Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.APPEAL_DEAL_DNS + "/queryDealRecord", params, function (result) {
                         Util.loading.destroyLoading();
 
-                        var record = result.RSP.DATA,
-                            rspCode = result.RSP.RSP_CODE;
+                        var rspCode = result.RSP.RSP_CODE;
                         if (rspCode != null && rspCode !== "1") {
                             $.messager.show({
                                 msg: result.RSP.RSP_DESC,
@@ -293,6 +292,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                                 showType: 'show'
                             });
                         } else {
+                            var record = result.RSP.DATA;
                             for (var i = 0; i < processData.length; i++) {
                                 for (var j = 0; j < record.length; j++) {
                                     if (record[j].processId === processData[i].processId && record[j].nodeId === parseInt(processData[i].nodeId)) {

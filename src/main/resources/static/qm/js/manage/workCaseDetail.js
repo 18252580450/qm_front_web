@@ -108,8 +108,7 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
         Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.WRKFM_DETAIL_DNS + "/queryWrkfmDetail", params, function (result) {
 
             Util.loading.destroyLoading();
-            var data = result.RSP.DATA,
-                rspCode = result.RSP.RSP_CODE;
+            var rspCode = result.RSP.RSP_CODE;
             if (rspCode != null && rspCode !== "1") {
                 $.messager.show({
                     msg: result.RSP.RSP_DESC,
@@ -118,6 +117,7 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
                     showType: 'show'
                 });
             } else {
+                var data = result.RSP.DATA;
                 phoneNum = data.userInfo.custNum;
                 $("#workFormId").val(data.acceptInfo.wrkfmShowSwftno).attr('title', data.acceptInfo.wrkfmShowSwftno);
                 $("#custNum").val(data.userInfo.custNum).attr('title', data.userInfo.custNum);
@@ -149,8 +149,7 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
         Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.WRKFM_DETAIL_DNS + "/getProcProceLocus", params, function (result) {
 
             Util.loading.destroyLoading();
-            var data = result.RSP.DATAS,
-                rspCode = result.RSP.RSP_CODE;
+            var rspCode = result.RSP.RSP_CODE;
             if (rspCode != null && rspCode !== "1") {
                 $.messager.show({
                     msg: result.RSP.RSP_DESC,
@@ -159,7 +158,7 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
                     showType: 'show'
                 });
             } else {
-                processData = data;
+                processData = result.RSP.DATAS;
                 showDealProcess(processData);  //初始化工单轨迹
             }
         });
@@ -221,8 +220,7 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
             Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.WRKFM_DETAIL_DNS + "/getHandingLog", params, function (result) {
 
                 Util.loading.destroyLoading();
-                var data = result.RSP.DATA,
-                    rspCode = result.RSP.RSP_CODE;
+                var rspCode = result.RSP.RSP_CODE;
                 if (rspCode != null && rspCode !== "1") {
                     $.messager.show({
                         msg: result.RSP.RSP_DESC,
@@ -231,7 +229,7 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
                         showType: 'show'
                     });
                 } else {
-                    replyData = data;
+                    replyData = result.RSP.DATA;
                     showHandlingLog(replyData.externalReply, true); //展示外回复信息
                 }
             });
@@ -319,13 +317,14 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
                 }, {});
 
                 Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.WRKFM_DETAIL_DNS + "/getRecordList", params, function (result) {
-                    if (result.RSP.RSP_CODE === "1") {
-                        var data = {
+                    var data = {rows: [], total: 0},
+                        rspCode = result.RSP.RSP_CODE;
+                    if (rspCode === "1") {
+                        data = {
                             rows: result.RSP.DATAS,
                             total: result.RSP.ATTACH.TOTAL
                         };
                         recordData = result.RSP.DATAS;
-                        success(data);
                     } else {
                         $.messager.show({
                             msg: result.RSP.RSP_DESC,
@@ -333,12 +332,8 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
                             style: {right: '', bottom: ''},     //居中显示
                             showType: 'show'
                         });
-                        var emptyData = {
-                            rows: [],
-                            total: 0
-                        };
-                        success(emptyData);
                     }
+                    success(data);
                 });
             },
             onLoadSuccess: function (data) {
@@ -425,10 +420,7 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
                 }, {});
 
                 Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.WRKFM_DETAIL_DNS + "/getHistoryProProce", params, function (result) {
-                    var data = {
-                            rows: result.RSP.DATAS,
-                            total: result.RSP.ATTACH.TOTAL
-                        },
+                    var data = {rows: [], total: 0},
                         rspCode = result.RSP.RSP_CODE;
                     if (rspCode != null && rspCode !== "1") {
                         $.messager.show({
@@ -438,9 +430,13 @@ require(["jquery", 'util', "dateUtil", "transfer", "easyui"], function ($, Util)
                             showType: 'show'
                         });
                     } else {
+                        data = {
+                            rows: result.RSP.DATAS,
+                            total: result.RSP.ATTACH.TOTAL
+                        };
                         historyData = result.RSP.DATAS;
-                        success(data);
                     }
+                    success(data);
                 });
             }
         });

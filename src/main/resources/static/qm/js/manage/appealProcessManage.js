@@ -237,10 +237,11 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                 }, Util.PageUtil.getParams($("#searchForm")));
 
                 Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.APPEAL_PROCESS_CONFIG_DNS + "/queryAppealProcess", params, function (result) {
-                    var data = Transfer.DataGrid.transfer(result);
-
-                    var rspCode = result.RSP.RSP_CODE;
-                    if (rspCode != null && rspCode !== "1") {
+                    var data = {rows: [], total: 0},
+                        rspCode = result.RSP.RSP_CODE;
+                    if (rspCode === "1") {
+                        data = Transfer.DataGrid.transfer(result);
+                    } else {
                         $.messager.show({
                             msg: result.RSP.RSP_DESC,
                             timeout: 1000,
@@ -338,17 +339,16 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
         Util.loading.showLoading();
         Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.APPEAL_PROCESS_CONFIG_DNS + "/queryAppealProcessDetail", params, function (result) {
             Util.loading.destroyLoading();
-            var processData = result.RSP.DATA,
-                rspCode = result.RSP.RSP_CODE;
-            if (rspCode != null && rspCode !== "1") {
+            var rspCode = result.RSP.RSP_CODE;
+            if (rspCode === "1") {
+                showAppealProcess(result.RSP.DATA);
+            } else {
                 $.messager.show({
                     msg: result.RSP.RSP_DESC,
                     timeout: 1000,
                     style: {right: '', bottom: ''},     //居中显示
                     showType: 'show'
                 });
-            } else {
-                showAppealProcess(processData);
             }
         });
     }

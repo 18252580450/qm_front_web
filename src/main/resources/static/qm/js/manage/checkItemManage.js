@@ -245,9 +245,11 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
                 }, Util.PageUtil.getParams($("#searchForm")));
 
                 Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.CHECK_ITEM_DNS + "/queryCheckItem", params, function (result) {
-                    var data = Transfer.DataGrid.transfer(result),
+                    var data = {rows: [], total: 0},
                         rspCode = result.RSP.RSP_CODE;
-                    if (rspCode != null && rspCode !== "1") {
+                    if (rspCode === "1") {
+                        data = Transfer.DataGrid.transfer(result);
+                    } else {
                         $.messager.show({
                             msg: result.RSP.RSP_DESC,
                             timeout: 1000,
@@ -918,7 +920,13 @@ require(["jquery", 'util', "transfer", "commonAjax", "easyui", "ztree-exedit"], 
         }, Util.PageUtil.getParams($("#searchForm")));
 
         Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.CHECK_ITEM_DNS + "/queryCheckItem", params, function (result) {
-            var data = result.RSP.DATA;
+            var data = [],
+                rspCode = result.RSP.RSP_CODE;
+            if (rspCode === "1") {
+                data = result.RSP.DATA;
+            } else {
+                return;
+            }
             checkItemListData = data;
             for (var i = 0; i < data.length; i++) {
                 var nodeMap =

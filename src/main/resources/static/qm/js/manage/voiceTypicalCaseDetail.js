@@ -123,9 +123,11 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                 }, Util.PageUtil.getParams($("#searchForm")));
 
                 Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.TYPICAL_CASE_DNS + "/queryTypicalCaseDetail", params, function (result) {
-                    var data = Transfer.DataGrid.transfer(result);
-                    var rspCode = result.RSP.RSP_CODE;
-                    if (rspCode != null && rspCode !== "1") {
+                    var data = {rows: [], total: 0},
+                        rspCode = result.RSP.RSP_CODE;
+                    if (rspCode === "1") {
+                        data = Transfer.DataGrid.transfer(result);
+                    } else {
                         $.messager.show({
                             msg: result.RSP.RSP_DESC,
                             timeout: 1000,

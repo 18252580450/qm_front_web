@@ -132,8 +132,7 @@ require(["jquery", 'util', "commonAjax", "dateUtil", "transfer", "easyui"], func
         Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.WRKFM_DETAIL_DNS + "/queryWrkfmDetail", params, function (result) {
 
             Util.loading.destroyLoading();
-            var data = result.RSP.DATA,
-                rspCode = result.RSP.RSP_CODE;
+            var rspCode = result.RSP.RSP_CODE;
             if (rspCode != null && rspCode !== "1") {
                 $.messager.show({
                     msg: result.RSP.RSP_DESC,
@@ -142,6 +141,7 @@ require(["jquery", 'util', "commonAjax", "dateUtil", "transfer", "easyui"], func
                     showType: 'show'
                 });
             } else {
+                var data = result.RSP.DATA;
                 phoneNum = data.userInfo.custNum;
                 $("#workFormId").val(data.acceptInfo.wrkfmShowSwftno).attr('title', data.acceptInfo.wrkfmShowSwftno);
                 $("#custNum").val(data.userInfo.custNum).attr('title', data.userInfo.custNum);
@@ -173,8 +173,7 @@ require(["jquery", 'util', "commonAjax", "dateUtil", "transfer", "easyui"], func
         Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.WRKFM_DETAIL_DNS + "/getProcProceLocus", params, function (result) {
 
             Util.loading.destroyLoading();
-            var data = result.RSP.DATAS,
-                rspCode = result.RSP.RSP_CODE;
+            var rspCode = result.RSP.RSP_CODE;
             if (rspCode != null && rspCode !== "1") {
                 $.messager.show({
                     msg: result.RSP.RSP_DESC,
@@ -183,7 +182,7 @@ require(["jquery", 'util', "commonAjax", "dateUtil", "transfer", "easyui"], func
                     showType: 'show'
                 });
             } else {
-                processData = data;
+                processData = result.RSP.DATAS;
                 showDealProcess(processData);  //初始化工单轨迹
                 //初始化考评项列表
                 var reqParams = {
@@ -197,9 +196,6 @@ require(["jquery", 'util', "commonAjax", "dateUtil", "transfer", "easyui"], func
                 }, Util.PageUtil.getParams($("#searchForm")));
 
                 Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.CHECK_ITEM_DNS + "/queryCheckItemDetail", params, function (result) {
-                    checkItemListData = result.RSP.DATA;
-                    //分值类型
-                    scoreType = checkItemListData[0].scoreType;
                     var rspCode = result.RSP.RSP_CODE;
                     if (rspCode != null && rspCode !== "1") {
                         $.messager.show({
@@ -209,6 +205,9 @@ require(["jquery", 'util', "commonAjax", "dateUtil", "transfer", "easyui"], func
                             showType: 'show'
                         });
                     } else {
+                        checkItemListData = result.RSP.DATA;
+                        //分值类型
+                        scoreType = checkItemListData[0].scoreType;
                         //初始化考评项列表
                         var checkLink = processData[0].opTypeCd;
                         $.each(checkItemListData, function (i, item) {
@@ -229,9 +228,9 @@ require(["jquery", 'util', "commonAjax", "dateUtil", "transfer", "easyui"], func
                         }, Util.PageUtil.getParams($("#searchForm")));
 
                         Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.ORDER_CHECK_DNS + "/queryOrderCheckResultDetail", params, function (result) {
-                            var savedData = result.RSP.DATA,
-                                rspCode = result.RSP.RSP_CODE;
-                            if (rspCode != null && rspCode === "1") {
+                            var rspCode = result.RSP.RSP_CODE;
+                            if (rspCode === "1") {
+                                var savedData = result.RSP.DATA;
                                 //初始化环节考评数据
                                 $.each(processData, function (i, processItem) {
                                     var checkItemScoreList = [],
@@ -290,10 +289,8 @@ require(["jquery", 'util', "commonAjax", "dateUtil", "transfer", "easyui"], func
         }, Util.PageUtil.getParams($("#searchForm")));
 
         Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.ORDER_CHECK_DNS + "/queryOrderCheckResult", param, function (result) {
-            var data = result.RSP.DATA,
-                rspCode = result.RSP.RSP_CODE;
-            if (rspCode != null && rspCode === "1") {
-                $("#checkComment").textbox('setValue', data[0].checkComment);
+            if (result.RSP.RSP_CODE === "1") {
+                $("#checkComment").textbox('setValue', result.RSP.DATA[0].checkComment);
             }
         });
     }
@@ -354,8 +351,7 @@ require(["jquery", 'util', "commonAjax", "dateUtil", "transfer", "easyui"], func
             Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.WRKFM_DETAIL_DNS + "/getHandingLog", params, function (result) {
 
                 Util.loading.destroyLoading();
-                var data = result.RSP.DATA,
-                    rspCode = result.RSP.RSP_CODE;
+                var rspCode = result.RSP.RSP_CODE;
                 if (rspCode != null && rspCode !== "1") {
                     $.messager.show({
                         msg: result.RSP.RSP_DESC,
@@ -364,7 +360,7 @@ require(["jquery", 'util', "commonAjax", "dateUtil", "transfer", "easyui"], func
                         showType: 'show'
                     });
                 } else {
-                    replyData = data;
+                    replyData = result.RSP.DATA;
                     showHandlingLog(replyData.externalReply, true); //展示外回复信息
                 }
             });
@@ -452,13 +448,13 @@ require(["jquery", 'util', "commonAjax", "dateUtil", "transfer", "easyui"], func
                 }, {});
 
                 Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.WRKFM_DETAIL_DNS + "/getRecordList", params, function (result) {
+                    var data = {rows: [], total: 0};
                     if (result.RSP.RSP_CODE === "1") {
-                        var data = {
+                        data = {
                             rows: result.RSP.DATAS,
                             total: result.RSP.ATTACH.TOTAL
                         };
                         recordData = result.RSP.DATAS;
-                        success(data);
                     } else {
                         $.messager.show({
                             msg: result.RSP.RSP_DESC,
@@ -466,12 +462,8 @@ require(["jquery", 'util', "commonAjax", "dateUtil", "transfer", "easyui"], func
                             style: {right: '', bottom: ''},     //居中显示
                             showType: 'show'
                         });
-                        var emptyData = {
-                            rows: [],
-                            total: 0
-                        };
-                        success(emptyData);
                     }
+                    success(data);
                 });
             },
             onLoadSuccess: function (data) {
@@ -539,10 +531,7 @@ require(["jquery", 'util', "commonAjax", "dateUtil", "transfer", "easyui"], func
                 }, {});
 
                 Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.WRKFM_DETAIL_DNS + "/getHistoryProProce", params, function (result) {
-                    var data = {
-                            rows: result.RSP.DATAS,
-                            total: result.RSP.ATTACH.TOTAL
-                        },
+                    var data = {rows: [], total: 0},
                         rspCode = result.RSP.RSP_CODE;
                     if (rspCode != null && rspCode !== "1") {
                         $.messager.show({
@@ -553,8 +542,12 @@ require(["jquery", 'util', "commonAjax", "dateUtil", "transfer", "easyui"], func
                         });
                     } else {
                         historyData = result.RSP.DATAS;
-                        success(data);
+                        data = {
+                            rows: result.RSP.DATAS,
+                            total: result.RSP.ATTACH.TOTAL
+                        };
                     }
+                    success(data);
                 });
             }
         });

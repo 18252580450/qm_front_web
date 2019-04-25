@@ -85,14 +85,15 @@ define(["text!html/manage/voiceQmResultHistory.tpl", "jquery", 'util', "transfer
                 }, Util.PageUtil.getParams($("#queryInfo", $el)));
 
                 Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.VOICE_QM_RESULT + "/selectByParams", params, function (result) {
-                    var data = Transfer.DataGrid.transfer(result);
-                    for (var i = 0; i < data.rows.length; i++) {
-                        if (data.rows[i].qmPlan != null) {
-                            data.rows[i]["planName"] = data.rows[i].qmPlan.planName;
+                    var data = {rows: [], total: 0};
+                    if (result.RSP.RSP_CODE === "1") {
+                        data = Transfer.DataGrid.transfer(result);
+                        for (var i = 0; i < data.rows.length; i++) {
+                            if (data.rows[i].qmPlan != null) {
+                                data.rows[i]["planName"] = data.rows[i].qmPlan.planName;
+                            }
                         }
-                    }
-                    var rspCode = result.RSP.RSP_CODE;
-                    if (rspCode != null && rspCode !== "1") {
+                    } else {
                         $.messager.show({
                             msg: result.RSP.RSP_DESC,
                             timeout: 1000,
