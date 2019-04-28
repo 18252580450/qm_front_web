@@ -194,7 +194,7 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
                     },
                     error: function () {
                         $.messager.show({
-                            title: "Error",
+                            title: "错误",
                             msg: "获取服务请求树失败!",
                             timeout: 2000,
                             style: {}

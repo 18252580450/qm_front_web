@@ -161,7 +161,7 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui","dateUti
                     },
                     error:function(){
                         $.messager.show({
-                            title: "Error",
+                            title: "错误",
                             msg: "获取服务请求树失败!",
                             timeout: 2000,
                             style: {}
