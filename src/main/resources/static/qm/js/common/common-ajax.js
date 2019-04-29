@@ -48,8 +48,8 @@ define(["jquery", 'util'], function ($, Util) {
                 for (var i = 0; i < strArr.length; i++) {
                     requestObj[strArr[i].split("=")[0]] = unescape(strArr[i].split("=")[1]);
                 }
-                callback(requestObj);
             }
+            callback(requestObj);
         },
         //新增标签页
         openMenu: function (url, menuName, menuId) {
