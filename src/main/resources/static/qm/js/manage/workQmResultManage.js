@@ -58,7 +58,7 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
     }
 
     function initTree(data) {
-        var url = Util.constants.SRV_REQTYPE_REDIS_TREE;
+        var url = Util.constants.TCWF_URL + Util.constants.SRV_REQTYPE_REDIS_TREE;
         var setting = {
             async: {
                 dataType: "json",
@@ -182,7 +182,7 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
                 });
                 var zNodes = [];
                 $.ajax({
-                    url: Util.constants.SRV_REQTYPE_REDIS_TREE,
+                    url: Util.constants.TCWF_URL + Util.constants.SRV_REQTYPE_REDIS_TREE,
                     dataType: 'json',
                     type: "POST",
                     data: {
@@ -274,10 +274,12 @@ require(["js/manage/queryQmPlan", "js/manage/workQmResultHistory", "jquery", 'ut
                 {field: 'unqualifiedNum', title: '不合格环节数', align: 'center', width: '10%'},
                 {
                     field: 'checkStaffId', title: '质检人', align: 'center', width: '10%',
-                    formatter:function(value, row, index){
-                        if(value){
-                            return "<span title='" +row.checkStaffName+"["+row.checkStaffId+"]" + "'>"+row.checkStaffName+"["+row.checkStaffId+"]" + "</span>";
-                        }}},
+                    formatter: function (value, row, index) {
+                        if (value) {
+                            return "<span title='" + row.checkStaffName + "[" + row.checkStaffId + "]" + "'>" + row.checkStaffName + "[" + row.checkStaffId + "]" + "</span>";
+                        }
+                    }
+                },
                 {
                     field: 'resultStatus', title: '质检状态', align: 'center', width: '10%',
                     formatter: function (value, row, index) {

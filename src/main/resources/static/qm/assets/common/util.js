@@ -6,7 +6,7 @@ define(['constants', 'page-util', 'ajax', 'loading'], function (constants, PageU
         var userInfo = {};
         jQuery.ajax({
             async: false,
-            url: constants.IS_LOG_IN,
+            url: constants.CQKBMANAGE_URL + constants.IS_LOG_IN,
             type: "GET",
             cache: false,//不设置ajax缓存
             dataType: "json",
@@ -77,7 +77,7 @@ define(['constants', 'page-util', 'ajax', 'loading'], function (constants, PageU
     }
 
     function jumpToLogin() {
-        top.location.href = constants.PAGE_LOGIN;
+        top.location.href = constants.CQKBMANAGE_URL + constants.PAGE_LOGIN;
         throw "用户未登录";
     }
 

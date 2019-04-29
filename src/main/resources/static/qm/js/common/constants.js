@@ -4,19 +4,27 @@
 define(function () {
 
     return {
-        CONTEXT: "http://localhost:9002",
-        URL_CONTEXT: "http://127.0.0.1:8080",
-        NGIX_URL_CONTEXT: "http://203.57.226.107:9990",
+        //质检url
+        URL_CONTEXT: "http://127.0.0.1:8080",//质检前台url（本地测试）
+        // URL_CONTEXT: "http://203.57.228.52:8090",//外网测试
+        // URL_CONTEXT: "http://192.168.247.48:9990",//内网测试
+        CONTEXT: "http://localhost:9002/qmBack",//质检后台url（本地测试）
+        // CONTEXT: "http://203.57.228.52:9002/qmBack",//外网测试
+        // CONTEXT: "http://192.168.247.48:9990/qmBack",//内网测试
+        //工单url
+        TCWF_URL:"http://203.57.227.53:8082/tcwfBack",//工单后台url（外网测试）
+        // TCWF_URL:"http://192.168.247.48:9990/tcwfBack",//内网测试
+        //知识库url
+        CQKBMANAGE_URL:"http://203.57.226.107:9990",//知识库后台url（外网测试）
+        // CQKBMANAGE_URL:"http://192.168.247.48:9990",//内网测试
+
         TENANT_ID: "10010000",
-        STAFF_ID: "123",       //模拟登陆工号
-        STAFF_NAME: "石莹",    //模拟员工姓名
-        CHECKED_DEPART_ID: "2231",  //模拟被质检员部门id
         PROVCODE: "00030000",//省份编码
         DIALOG_WIDTH: 2 / 3 * window.screen.width, //弹框宽
         DIALOG_HEIGHT: 2 / 3 * window.screen.height, //弹框高
         DIALOG_HEIGHT_SMALL: 0.63 * window.screen.height, //弹框高
 
-        //URI
+        //质检后台URL
         STATIC_PARAMS_DNS: "/qm/configservice/staticParams",//静态数据配置
         CHECK_ITEM_DNS: "/qm/configservice/checkItem",//考评项配置
         CHECK_TEMPLATE_DETAIL_DNS: "/qm/configservice/checkTemplateDetail",//考评模版详细信息
@@ -41,11 +49,14 @@ define(function () {
         APPEAL_DEAL_DNS: "/qm/configservice/appealDeal",//申诉待办
         WRKFM_DETAIL_DNS: "/qm/configservice/wrkfmDetail",//工单详情
         QM_BIND_RLN_DNS: "/qm/configservice/qmBindRln",//考评计划绑定关系
-        SRV_REQTYPE_REDIS_TREE: "http://203.57.227.53:8082/tcwf/servReqTypeManage/srvReqTypeRedisTree",//服务请求类型
-        FIND_SERV_REQ_TYPE_BY_CACHE: "http://203.57.227.53:8082/tcwf/servReqTypeManage/findServReqTypeByCache",
-        IS_LOG_IN: "http://203.57.226.107:9990/cqkbmanage/isLognIn",//登入验证
-        PAGE_LOGIN: "http://203.57.226.107:9990/cqkbmanage/",//登入页面
         USER_PERMISSION: "/qm/configservice/userPermission",//用户权限
+        //工单后台url
+        SRV_REQTYPE_REDIS_TREE: "/tcwf/servReqTypeManage/srvReqTypeRedisTree",//服务请求类型
+        FIND_SERV_REQ_TYPE_BY_CACHE: "/tcwf/servReqTypeManage/findServReqTypeByCache",
+        //知识库后台url
+        IS_LOG_IN: "/cqkbmanage/isLognIn",//登入验证
+        PAGE_LOGIN: "/cqkbmanage/",//登入页面
+
         //考评项目录类型
         CHECK_ITEM_PARENT: "0",          //目录
         CHECK_ITEM_CHILDREN: "1",        //非目录

@@ -44,7 +44,7 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui","dateUti
     }
 
     function initTree(data) {
-        var url = Util.constants.SRV_REQTYPE_REDIS_TREE;
+        var url = Util.constants.TCWF_URL + Util.constants.SRV_REQTYPE_REDIS_TREE;
         var setting = {
             async: {
                 dataType: "json",
@@ -149,7 +149,7 @@ require(["js/manage/queryQmPlan","jquery", 'util', "transfer", "easyui","dateUti
                 });
                 var zNodes = [];
                 $.ajax({
-                    url:Util.constants.SRV_REQTYPE_REDIS_TREE,
+                    url:Util.constants.TCWF_URL + Util.constants.SRV_REQTYPE_REDIS_TREE,
                     dataType:'json',
                     type:"POST",
                     data:{
