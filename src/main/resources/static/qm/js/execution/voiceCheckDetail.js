@@ -6,7 +6,7 @@ require(["jquery", "util", "commonAjax", "dateUtil", "transfer", "easyui"], func
         startTime,               //页面初始化时间
         checkItemScoreList = [], //考评项评分列表
         caseTypeData,            //典型类型静态数据
-        qmCheckUrl = Util.constants.NGIX_URL_CONTEXT + "/qm/html/execution/qmCheck.html";
+        qmCheckUrl = Util.constants.URL_CONTEXT + "/qm/html/execution/qmCheck.html";
 
     initialize();
 

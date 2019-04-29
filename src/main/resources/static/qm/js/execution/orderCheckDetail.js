@@ -17,7 +17,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
         processData = [],           //轨迹数据
         playingRecord,              //当前正在播放的录音id
         caseTypeData,               //典型类型静态数据
-        qmCheckUrl = Util.constants.NGIX_URL_CONTEXT + "/qm/html/execution/qmCheck.html";
+        qmCheckUrl = Util.constants.URL_CONTEXT + "/qm/html/execution/qmCheck.html";
 
     initialize();
 

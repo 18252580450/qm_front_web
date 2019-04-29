@@ -5,7 +5,7 @@ require([
     var staffInfo,                  //员工信息
         appealProcessData = [],     //新增流程（新增提交入参）
         checkTypeData = [],         //质检类型静态数据
-        appealProcessUrl = Util.constants.NGIX_URL_CONTEXT + "/qm/html/manage/appealProcessManage.html";
+        appealProcessUrl = Util.constants.URL_CONTEXT + "/qm/html/manage/appealProcessManage.html";
 
     initialize();
 
