@@ -22,7 +22,7 @@
         </repository>
     </repositories>
 
-    <name>kc_front_web</name>
+    <name>qm_front_web</name>
     <url>http://maven.apache.org</url>
 
     <parent>
