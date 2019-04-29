@@ -84,17 +84,6 @@ var requirePath = {
     "crossAPI": "js/common/crossAPI"
 };
 
-window.addEventListener("mousewheel", function (e) {
-    if (e.deltaY === 1) {
-        e.preventDefault();
-    }
-});
-
-window._Config_ = {
-    date: new Date()
-};
-
-
 /**
  * 避免data-main指定的js来自缓存
  */

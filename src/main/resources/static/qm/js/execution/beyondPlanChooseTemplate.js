@@ -1,8 +1,7 @@
 define([
         "text!html/execution/beyondPlanChooseTemplate.tpl",
-        "js/execution/beyondPlanOrderCheckDetail",
         "jquery", 'util', "commonAjax", "transfer", "easyui", "dateUtil"],
-    function (tpl, OrderCheckDetail, $, Util, CommonAjax, Transfer, dateUtil) {
+    function (tpl, $, Util, CommonAjax, Transfer, dateUtil) {
 
         var $el,
             templateType,   //模版类型（0语音、1工单）

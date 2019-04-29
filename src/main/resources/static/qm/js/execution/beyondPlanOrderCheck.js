@@ -1,8 +1,7 @@
 require([
         "js/execution/beyondPlanChooseTemplate",
-        "js/execution/beyondPlanOrderCheckDetail",
         "jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"],
-    function (QryCheckTemplate, OrderCheckDetail, $, Util, Transfer, CommonAjax) {
+    function (QryCheckTemplate, $, Util, Transfer, CommonAjax) {
 
         var userInfo,
             roleCode,

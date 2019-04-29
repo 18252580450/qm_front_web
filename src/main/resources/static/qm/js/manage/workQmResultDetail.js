@@ -407,7 +407,7 @@ require(["jquery", 'util', "commonAjax", "dateUtil", "transfer", "easyui"], func
                     formatter: function (value, row, index) {
                         var play = '<img src="../../image/record.png" style="height: 12px;width: 12px;" title="播放" alt="播放" id = "recordPlay_' + row.cntmngSwftno + '">',
                             download = '<img src="../../image/download.png" style="height: 12px;width: 12px;" title="下载" alt="下载" id = "recordDownload_' + row.cntmngSwftno + '">';
-                        return play + "&nbsp;&nbsp;" + download; //todo
+                        return download; //todo
                     }
                 }
             ]],
