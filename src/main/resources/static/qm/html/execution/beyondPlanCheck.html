@@ -31,8 +31,8 @@
 <!--data-main="js/execution/pendingAssignment"></script>-->
 <script type="text/javascript">
     $(function(){
-        showTaps("工单池", getUrl().BEYOND_PLAN_ORDER_CHECK_BENDI);
-        showTaps("语音池", getUrl().BEYOND_PLAN_VOICE_CHECK_BENDI);
+        showTaps("工单池", getUrl().QM_URL+"/qm/html/execution/beyondPlanOrderCheck.html");
+        showTaps("语音池", getUrl().QM_URL+"/qm/html/execution/beyondPlanVoiceCheck.html");
         $('#pendingAssignmentArea').tabs({selected: 1});
     });
 

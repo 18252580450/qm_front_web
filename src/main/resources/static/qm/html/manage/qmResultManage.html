@@ -1,13 +1,14 @@
 <!doctype html>
 <html>
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>质检结果管理</title>
 
-    <link rel="stylesheet" type="text/css" href="../../assets/lib/easyui/themes/cmcui/cmcui.css" />
+    <link rel="stylesheet" type="text/css" href="../../assets/lib/easyui/themes/cmcui/cmcui.css"/>
     <link rel="stylesheet" type="text/css" href="../../assets/lib/easyui/themes/cmcui/demo.css">
     <link rel="stylesheet" type="text/css" href="../../assets/lib/easyui/themes/cmcui/iconfont/iconfont.css">
     <link rel="stylesheet" type="text/css" href="../../assets/lib/ztree/css/cmcStyle/tree.css">
+
     <script type="text/javascript" src="../../js/common/urlConstants.js"></script>
     <script type="text/javascript" src="../../assets/lib/easyui/jquery.min.js"></script>
     <script type="text/javascript" src="../../assets/lib/easyui/jquery.easyui.min.js"></script>
@@ -27,13 +28,14 @@
 </div>
 </body>
 <script type="text/javascript">
-    $(function(){
-        showTaps("工单质检结果管理", getUrl().WORK_RESULT_MANAGE_BENDI);
-        showTaps("语音质检结果管理", getUrl().VOICE_RESULT_MANAGE_BENDI);
-       //Tabs初始化时让工单质检结果管理tab处于选中状态
+    $(function () {
+        showTaps("工单质检结果管理", getUrl().QM_URL + "/qm/html/manage/workQmResultManage.html");
+        showTaps("语音质检结果管理", getUrl().QM_URL + "/qm/html/manage/voiceQmResultManage.html");
+        //Tabs初始化时让工单质检结果管理tab处于选中状态
         $('#tt').tabs({selected: 1});
     });
-    function showTaps(title, url){
+
+    function showTaps(title, url) {
         if (!$('#tt').tabs('exists', title)) {
             $('#tt').tabs('add', {
                 title: title,

@@ -1,4 +1,4 @@
-require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, Transfer,easyui,dateUtil) {
+require(["jquery", 'util', "transfer", "easyui", "dateUtil"], function ($, Util, Transfer, easyui, dateUtil) {
     //初始化方法
     initialize();
     var userInfo;
@@ -7,24 +7,25 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
     var inspectionId = null;
     var touchId = null;
     var checkedStaffId = null;
+
     function initialize() {
         //获取templateId传值
         var url = location.search; //获取url中"?"符后的字串
         var theRequest = new Object();
-        if(url.indexOf("?") != -1) {
+        if (url.indexOf("?") != -1) {
             var str = url.substr(1);
             strs = str.split("&");
-            for(var i = 0; i < strs.length; i++) {
+            for (var i = 0; i < strs.length; i++) {
                 theRequest[strs[i].split("=")[0]] = unescape(strs[i].split("=")[1]);
             }
         }
-        acceptNumber=theRequest["acceptNumber"];
-        inspectionId=theRequest["inspectionId"];
-        touchId=theRequest["touchId"];
-        checkedStaffId=theRequest["checkedStaffId"];
+        acceptNumber = theRequest["acceptNumber"];
+        inspectionId = theRequest["inspectionId"];
+        touchId = theRequest["touchId"];
+        checkedStaffId = theRequest["checkedStaffId"];
         Util.getLogInData(function (data) {
             userInfo = data;//用户角色
-            Util.getRoleCode(userInfo,function(dataNew){
+            Util.getRoleCode(userInfo, function (dataNew) {
                 roleCode = dataNew;//用户信息
                 initPageInfo();
                 initEvent();
@@ -56,18 +57,24 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
                 {field: 'ck', checkbox: true, align: 'center'},
                 {field: 'touchId', title: '语音质检流水', align: 'center', width: '15%'},
                 {field: 'callingNumber', title: '主叫号码', align: 'center', width: '10%'},
-                {field: 'acceptNumber', title: '服务号码', align: 'center', width: '10%',hidden: true},
+                {field: 'acceptNumber', title: '服务号码', align: 'center', width: '10%', hidden: true},
                 {field: 'checkStaffName', title: '质检人', align: 'center', width: '10%'},
                 {field: 'checkedStaffName', title: '被质检人', align: 'center', width: '10%'},
-                {field: 'resultStatus', title: '状态', align: 'center', width: '10%',
-                    formatter:function(value, row, index){
-                        return {'0':'质检新生成','1':'临时保存','2':'放弃','3':'复检','4':'分检','5':'被检人确认'
-                            ,'6':'系统自确认','7':'申诉中','8':'申诉通过','9':'申诉驳回','99':'系统驳回'}[value];
-                    }},
-                {field: 'errorRank', title: '差错类型', align: 'center', width: '10%',
-                    formatter:function(value, row, index){
-                        return {'0':'无错误','1':'绝对错误'}[value];
-                    }},
+                {
+                    field: 'resultStatus', title: '状态', align: 'center', width: '10%',
+                    formatter: function (value, row, index) {
+                        return {
+                            '0': '质检新生成', '1': '临时保存', '2': '放弃', '3': '复检', '4': '分检', '5': '被检人确认'
+                            , '6': '系统自确认', '7': '申诉中', '8': '申诉通过', '9': '申诉驳回', '99': '系统驳回'
+                        }[value];
+                    }
+                },
+                {
+                    field: 'errorRank', title: '差错类型', align: 'center', width: '10%',
+                    formatter: function (value, row, index) {
+                        return {'0': '无错误', '1': '绝对错误'}[value];
+                    }
+                },
                 {field: 'errorRank', title: '质检得分', align: 'center', width: '10%'},
                 {
                     field: 'checkEndTime', title: '质检时间', align: 'center', width: '15%',
@@ -109,7 +116,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
                     "params": JSON.stringify(reqParams)
                 }, Util.PageUtil.getParams($("#queryInfo")));
 
-                Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.VOICE_QM_RESULT+ "/selectByParams", params, function (result) {
+                Util.ajax.getJson(Util.constants.CONTEXT + Util.constants.VOICE_QM_RESULT + "/selectByParams", params, function (result) {
                     var data = Transfer.DataGrid.transfer(result);
                     var rspCode = result.RSP.RSP_CODE;
                     if (rspCode != null && rspCode !== "1") {
@@ -127,7 +134,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
     }
 
     // 导出
-    function dao(){
+    function dao() {
         var oXL = new ActiveXObject("Excel.Application");
         var oWB = oXL.Workbooks.add();
         var oSheet = oWB.ActiveSheet;
@@ -136,18 +143,18 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
         var headDate = headTable.rows(0);
         var hang = dataTable.rows.length;
         var lie = dataTable.rows(0).cells.length;
-        for(var l = 0;l<lie;l++){
-            oSheet.Cells(1,l + 1).NumberFormatLocal = "@";
-            oSheet.Cells(1,l + 1).Font.Bold = true;
-            oSheet.Cells(1,l + 1).Font.Size = 10;
-            oSheet.Cells(1,l + 1).value = headDate.cells(l).innerText;
+        for (var l = 0; l < lie; l++) {
+            oSheet.Cells(1, l + 1).NumberFormatLocal = "@";
+            oSheet.Cells(1, l + 1).Font.Bold = true;
+            oSheet.Cells(1, l + 1).Font.Size = 10;
+            oSheet.Cells(1, l + 1).value = headDate.cells(l).innerText;
         }
-        for(i = 1; i <= hang; i++){
-            for(j = 0; j < lie; j++){
-                oSheet.Cells(i + 1,j + 1).NumberFormatLocal = "@";
-                oSheet.Cells(i + 1,j + 1).Font.Bold = true;
-                oSheet.Cells(i + 1,j + 1).Font.Size = 10;
-                oSheet.Cells(i + 1,j + 1).value = dataTable.rows(i-1).cells(j).innerText;
+        for (i = 1; i <= hang; i++) {
+            for (j = 0; j < lie; j++) {
+                oSheet.Cells(i + 1, j + 1).NumberFormatLocal = "@";
+                oSheet.Cells(i + 1, j + 1).Font.Bold = true;
+                oSheet.Cells(i + 1, j + 1).Font.Size = 10;
+                oSheet.Cells(i + 1, j + 1).value = dataTable.rows(i - 1).cells(j).innerText;
             }
         }
         oXL.Visible = true;
@@ -164,7 +171,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
         //修改
         $("#modifyBut").on("click", function () {
             var selRows = $("#queryInfo").datagrid("getSelections");//选中多行
-            if (selRows.length == 0||selRows.length>1) {
+            if (selRows.length == 0 || selRows.length > 1) {
                 $.messager.alert("提示", "请只选择一行数据!");
                 return false;
             }
@@ -173,7 +180,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
                 var id = selRows[i].touchId;
                 ids.push(id);
             }
-            addTabs("修改语音质检详情","http://127.0.0.1:8080/qm/html/manage/modiVoiceQmResultManage.html?touchId="+ids[0]);
+            addTabs("修改语音质检详情", Util.constants.URL_CONTEXT + "/qm/html/manage/modiVoiceQmResultManage.html?touchId=" + ids[0]);
         });
 
         //申诉
@@ -201,7 +208,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil"], function ($, Util, 
     /**
      * 申诉
      */
-    function appeal(){
+    function appeal() {
         var selRows = $("#queryInfo").datagrid("getSelections");//选中多行
         if (selRows.length == 0) {
             $.messager.alert("提示", "请至少选择一行数据!");
