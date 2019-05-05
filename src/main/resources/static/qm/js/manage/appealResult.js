@@ -14,11 +14,6 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                 userInfo = data;//用户角色
                 Util.getRoleCode(userInfo, function (dataNew) {
                     roleCode = dataNew;//用户权限
-                    //管理员或质检员显示申诉工号查询框
-                    if (roleCode === "checker" || roleCode === "manager") {
-                        $("#appealStaffLabel").show();
-                        $("#appealStaffName").show();
-                    }
                     initPageInfo();
                     initEvent();
                 });
@@ -27,31 +22,37 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
 
         //页面信息初始化
         function initPageInfo() {
-            //申诉人搜索框
-            var staffNameInput = $("#appealStaffName");
-            staffNameInput.searchbox({
-                    editable: false,//禁止手动输入
-                    searcher: function () {
-                        require(["js/execution/queryQmPeople"], function (qryQmPeople) {
-                            var queryQmPeople = qryQmPeople;
-                            queryQmPeople.initialize("", "", "");
-                            $('#qry_people_window').show().window({
-                                title: '审批人员信息',
-                                width: Util.constants.DIALOG_WIDTH,
-                                height: Util.constants.DIALOG_HEIGHT,
-                                cache: false,
-                                content: queryQmPeople.$el,
-                                modal: true,
-                                onClose: function () {//弹框关闭前触发事件
-                                    var appealStaff = queryQmPeople.getMap();//获取审批人员信息
-                                    staffNameInput.searchbox("setValue", appealStaff.staffName);
-                                    $("#appealStaffId").val(appealStaff.staffId);
-                                }
+
+            //管理员或质检员显示申诉工号查询框
+            if (roleCode === "checker" || roleCode === "manager") {
+                $("#appealStaffLabel").show();
+                //申诉人搜索框
+                var staffNameInput = $("#appealStaffName");
+                staffNameInput.show();
+                staffNameInput.searchbox({
+                        editable: false,//禁止手动输入
+                        searcher: function () {
+                            require(["js/execution/queryQmPeople"], function (qryQmPeople) {
+                                var queryQmPeople = qryQmPeople;
+                                queryQmPeople.initialize("", "", "");
+                                $('#qry_people_window').show().window({
+                                    title: '审批人员信息',
+                                    width: Util.constants.DIALOG_WIDTH,
+                                    height: Util.constants.DIALOG_HEIGHT,
+                                    cache: false,
+                                    content: queryQmPeople.$el,
+                                    modal: true,
+                                    onClose: function () {//弹框关闭前触发事件
+                                        var appealStaff = queryQmPeople.getMap();//获取审批人员信息
+                                        staffNameInput.searchbox("setValue", appealStaff.staffName);
+                                        $("#appealStaffId").val(appealStaff.staffId);
+                                    }
+                                });
                             });
-                        });
+                        }
                     }
-                }
-            );
+                );
+            }
 
             //申诉开始时间选择框
             var appealBeginTime = $("#appealBeginTime"),
