@@ -1,7 +1,7 @@
 /**
  * 全局公用模块
  */
-define(['constants', 'page-util', 'ajax', 'loading', 'underscore',  "jquery"], function (constants, PageUtil, ajax, loading, underscore, $) {
+define(['constants', 'page-util', 'ajax', 'loading', 'underscore', "jquery"], function (constants, PageUtil, ajax, loading, underscore, $) {
     function getLogInData(callback) {
         var userInfo = {};
         // jQuery.ajax({
@@ -38,14 +38,14 @@ define(['constants', 'page-util', 'ajax', 'loading', 'underscore',  "jquery"], f
             dataType: "json",
             async: false,
             type: "GET",
-            cache:false,
-            data:{},
-            success: function(data) {
+            cache: false,
+            data: {},
+            success: function (data) {
                 var result = JSON.stringify(data);
-                if(result.indexOf("<html>") !== -1){
+                if (result.indexOf("<html>") !== -1) {
                     jumpToLogin();
                 }
-                if(data.retVal !== '1'){
+                if (data.retVal !== '1') {
                     jumpToLogin();
                 }
                 userInfo = {
@@ -53,7 +53,9 @@ define(['constants', 'page-util', 'ajax', 'loading', 'underscore',  "jquery"], f
                     bssGroupId: data.bssGroupId,
                     bssId: data.bssOpId,
                     provCode: _.isEmpty(data.provCode) ? "00030000" : data.provCode,
-                    orgBrnchId: _.isEmpty(data.orgId) ? "00030000" : data.orgId
+                    orgId: _.isEmpty(data.orgId) ? "00030000" : data.orgId,
+                    staffName: data.uname,
+                    OrgName: data.OrgName
                 };
                 callback(userInfo);
             },
