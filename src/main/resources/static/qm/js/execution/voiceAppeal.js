@@ -24,9 +24,9 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                             var queryQmPeople = qryQmPeople;
                             queryQmPeople.initialize("", "", "");
                             $('#qry_people_window').show().window({
-                                title: '审批人员信息',
-                                width: 1000,
-                                height: 620,
+                                title: '查询申诉人',
+                                width: Util.constants.DIALOG_WIDTH,
+                                height: Util.constants.DIALOG_HEIGHT_SMALL,
                                 cache: false,
                                 content: queryQmPeople.$el,
                                 modal: true,
