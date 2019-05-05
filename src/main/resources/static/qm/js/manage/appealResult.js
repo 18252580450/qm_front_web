@@ -258,8 +258,8 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                     if (checkType === "-1") {
                         checkType = "";
                     }
-                    if (roleCode === "staffer") {  //话务员只能查自己的申诉结果
-                        appealId = userInfo.staffId;
+                    if (roleCode === "staffer" || roleCode === "") {  //话务员只能查自己的申诉结果
+                        appealStaffId = userInfo.staffId;
                     }
                     var reqParams = {
                         "appealTimeBegin": appealTimeBegin,
