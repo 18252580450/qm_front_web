@@ -1,34 +1,66 @@
 /**
  * 全局公用模块
  */
-define(['constants', 'page-util', 'ajax', 'loading'], function (constants, PageUtil, ajax, loading) {
+define(['constants', 'page-util', 'ajax', 'loading', 'underscore',  "jquery"], function (constants, PageUtil, ajax, loading, underscore, $) {
     function getLogInData(callback) {
         var userInfo = {};
-        jQuery.ajax({
-            async: false,
-            url: constants.CQKBMANAGE_URL + constants.IS_LOG_IN,
-            type: "GET",
-            cache: false,//不设置ajax缓存
+        // jQuery.ajax({
+        //     async: false,
+        //     url: constants.CQKBMANAGE_URL + constants.IS_LOG_IN,
+        //     type: "GET",
+        //     cache: false,//不设置ajax缓存
+        //     dataType: "json",
+        //     success: function (data) {
+        //         var result = JSON.stringify(data);
+        //         if (result.indexOf("<html>") !== -1) {
+        //             jumpToLogin();
+        //         }
+        //         if (data.retVal !== '1') {
+        //             jumpToLogin();
+        //         }
+        //         userInfo = {
+        //             staffId: data.staffId,
+        //             bssGroupId: data.bssGroupId,
+        //             bssId: data.bssOpId,
+        //             staffName: data.uname,
+        //             OrgName: data.OrgName,
+        //             orgId: data.orgId
+        //         };
+        //         callback(userInfo);
+        //     },
+        //     error: function (error) {
+        //         jumpToLogin();
+        //         callback(userInfo);
+        //     }
+        // });
+        $.ajax({
+            url: constants.CQKBMANAGE_URL + constants.IS_LOG_IN + "?time=" + new Date().getTime(),
             dataType: "json",
-            success: function (data) {
+            async: false,
+            type: "GET",
+            cache:false,
+            data:{},
+            success: function(data) {
                 var result = JSON.stringify(data);
-                if (result.indexOf("<html>") !== -1) {
+                if(result.indexOf("<html>") !== -1){
                     jumpToLogin();
                 }
-                if (data.retVal !== '1') {
+                if(data.retVal !== '1'){
                     jumpToLogin();
                 }
                 userInfo = {
                     staffId: data.staffId,
                     bssGroupId: data.bssGroupId,
                     bssId: data.bssOpId,
-                    staffName: data.uname,
-                    OrgName: data.OrgName,
-                    orgId: data.orgId
+                    provCode: _.isEmpty(data.provCode) ? "00030000" : data.provCode,
+                    orgBrnchId: _.isEmpty(data.orgId) ? "00030000" : data.orgId
                 };
                 callback(userInfo);
             },
-            error: function (error) {
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                // alert(XMLHttpRequest.status);
+                // alert(XMLHttpRequest.readyState);
+                // alert(textStatus);
                 jumpToLogin();
                 callback(userInfo);
             }

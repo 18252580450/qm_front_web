@@ -4,11 +4,12 @@
 define(function () {
 
     return {
-        //质检url
-        URL_CONTEXT: "http://127.0.0.1:8080",//质检前台url（本地测试）
-        // URL_CONTEXT: "http://203.57.228.52:8090",//外网测试
+        //质检前台url
+        URL_CONTEXT: "http://127.0.0.1:8080",//本地测试
+        // URL_CONTEXT: "http://203.57.226.107:9990",//外网测试
         // URL_CONTEXT: "http://192.168.247.48:9990",//内网测试
-        CONTEXT: "http://localhost:9002/qmBack",//质检后台url（本地测试）
+        //质检后台url
+        CONTEXT: "http://localhost:9002/qmBack",//本地测试
         // CONTEXT: "http://203.57.228.52:9002/qmBack",//外网测试
         // CONTEXT: "http://192.168.247.48:9990/qmBack",//内网测试
         //工单url
