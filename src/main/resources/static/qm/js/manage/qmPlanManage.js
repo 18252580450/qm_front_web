@@ -177,7 +177,7 @@ define([
                             return "<span title='" + DateUtil.formatDateTime(value,"hh:mm:ss") + "'>" + DateUtil.formatDateTime(value,"hh:mm:ss") + "</span>";
                         }
                     }},
-                {field: 'haltFlag', title: '发布状态', width: '5%',
+                {field: 'haltFlag', title: '发布状态', width: '8%',
                     formatter: function (value, row, index) {
                         if ("0" == value) {
                             return "<span title='暂停'>暂停</span>";
@@ -190,14 +190,14 @@ define([
                 {field: 'planStarttime', title: '计划开始时间', width: '12%',
                     formatter: function (value, row, index) {
                         if(value){
-                            return "<span title='" + DateUtil.formatDateTime(value,"hh:mm:ss") + "'>" + DateUtil.formatDateTime(value,"hh:mm:ss") + "</span>";
+                            return "<span title='" + DateUtil.formatDateTime(value) + "'>" + DateUtil.formatDateTime(value) + "</span>";
                         }
                     }
                 },
                 {field: 'planEndtime', title: '计划结束时间', width: '12%',
                     formatter: function (value, row, index) {
                         if(value){
-                            return "<span title='" + DateUtil.formatDateTime(value,"hh:mm:ss") + "'>" + DateUtil.formatDateTime(value,"hh:mm:ss") + "</span>";
+                            return "<span title='" + DateUtil.formatDateTime(value) + "'>" + DateUtil.formatDateTime(value) + "</span>";
                         }
                     }},
                 {field: 'remark', title: '描述', width: '10%',
