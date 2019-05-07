@@ -51,6 +51,7 @@ define(function () {
         WRKFM_DETAIL_DNS: "/qm/configservice/wrkfmDetail",//工单详情
         QM_BIND_RLN_DNS: "/qm/configservice/qmBindRln",//考评计划绑定关系
         USER_PERMISSION: "/qm/configservice/userPermission",//用户权限
+        PLAN_TASK_DNS:"/qm/configservice/doQmTask/doPlanTask",//计划任务
         //工单后台url
         SRV_REQTYPE_REDIS_TREE: "/tcwf/servReqTypeManage/srvReqTypeRedisTree",//服务请求类型
         FIND_SERV_REQ_TYPE_BY_CACHE: "/tcwf/servReqTypeManage/findServReqTypeByCache",

@@ -291,7 +291,7 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                                 showType: 'show'
                             });
                         } else {
-                            var record = result.RSP.DATAl;
+                            var record = result.RSP.DATA;
                             for (var i = 0; i < processData.length; i++) {
                                 for (var j = 0; j < record.length; j++) {
                                     if (record[j].processId === processData[i].processId && record[j].nodeId === parseInt(processData[i].nodeId)) {
