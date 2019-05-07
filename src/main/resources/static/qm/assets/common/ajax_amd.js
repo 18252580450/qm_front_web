@@ -308,9 +308,9 @@ define(['jquery', 'encrypt'], function (JQuery, EncryptJS) {
 				xhr.overrideMimeType("text/plain; charset=utf-8");
 			},
 			success: function (data, textStatus, xhr) {
-				if (!data) {
-					return;
-				}
+				// if (!data) {
+				// 	return;
+				// }
 				if (dataType == "html" && callback) {
 					callback(data, true);
 					return;
