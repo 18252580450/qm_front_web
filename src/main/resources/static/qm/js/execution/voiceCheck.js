@@ -1,7 +1,6 @@
-require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], function (QueryQmPlan, QueryQmHistory, $, Util, Transfer, CommonAjax) {
+require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui", "audioplayer"], function (QueryQmPlan, QueryQmHistory, $, Util, Transfer, CommonAjax) {
 
     var userInfo,
-        playingRecord,  //当前正在播放的录音id
         voiceCheckDetail = Util.constants.URL_CONTEXT + "/qm/html/execution/voiceCheckDetail.html",
         poolStatusData = [];  //质检状态下拉框静态数据（待质检、待复检）
 
@@ -93,17 +92,24 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
                 {
                     field: 'operate', title: '操作', width: '12%',
                     formatter: function (value, row, index) {
-                        var play = '<img src="../../image/record.png" style="height: 12px;width: 12px;" title="播放" alt="播放" id = "voicePlay_' + row.touchId + '">',
-                            download = '<img src="../../image/download.png" style="height: 12px;width: 12px;" title="下载" alt="下载" id = "voiceDownload_' + row.touchId + '">',
+                        var play = '<audio id="voicePlay_' + row.touchId + '" src=' + row.recordPath + ' preload="auto"></audio>',
+                            audio = '<a href="javascript:void(0);" class="list_operation_color" id = "voicePlay_' + row.touchId + '">播放</a>',
+                            download = '<a href="javascript:void(0);" class="list_operation_color" id = "voiceDownload_' + row.touchId + '">下载</a>',
                             check = '<a href="javascript:void(0);" class="list_operation_color" id = "voiceCheck_' + row.touchId + '">质检</a>',
                             checkHistory = '<a href="javascript:void(0);" class="list_operation_color" id = "checkHistory_' + row.touchId + '">质检记录</a>';
                         if (row.poolStatus.toString() === Util.constants.CHECK_STATUS_CHECK) {
-                            return check + "&nbsp;&nbsp;" + play + "&nbsp;&nbsp;" + download; //todo
-                            // return check;
+                            if (row.recordPath != null && row.recordPath !== "") {
+                                return '<div style="display: flex">' + check + "&nbsp;&nbsp;" + play + "&nbsp;&nbsp;" + download + '</div>';
+                            } else {
+                                return '<div style="display: flex">' + check + "&nbsp;&nbsp;" + audio + "&nbsp;&nbsp;" + download + '</div>';
+                            }
                         }
                         if (row.poolStatus.toString() === Util.constants.CHECK_STATUS_RECHECK) {
-                            return checkHistory + "&nbsp;&nbsp;" + check + "&nbsp;&nbsp;" + play + "&nbsp;&nbsp;" + download; //todo
-                            // return check + "&nbsp;&nbsp;" + checkHistory;
+                            if (row.recordPath != null && row.recordPath !== "") {
+                                return '<div style="display: flex">' + checkHistory + "&nbsp;&nbsp;" + check + "&nbsp;&nbsp;" + play + "&nbsp;&nbsp;" + download + '</div>';
+                            } else {
+                                return '<div style="display: flex">' + checkHistory + "&nbsp;&nbsp;" + check + "&nbsp;&nbsp;" + audio + "&nbsp;&nbsp;" + download + '</div>';
+                            }
                         }
                     }
                 },
@@ -245,12 +251,15 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
             onLoadSuccess: function (data) {
                 var audio = new Audio();
                 $.each(data.rows, function (i, item) {
-                    //语音播放
-                    $("#voicePlay_" + item.touchId).on("click", function () {
+                    //语言播放
+                    var voicePlay = $("#voicePlay_" + item.touchId);
+                    if (item.recordPath != null && item.recordPath !== "") {
+                        //语言播放初始化
+                        voicePlay.audioPlayer();
+                    }
+                    voicePlay.on("click", function () {
                         if (item.recordPath == null || item.recordPath === "") {
                             $.messager.alert("提示", "未找到录音地址!");
-                        } else {
-                            showPlayDialog(item);
                         }
                     });
                     //语音下载
@@ -299,25 +308,6 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
         $("#resetBtn").on("click", function () {
             $("#searchForm").form('clear');
             $("#poolStatus").combobox('setValue', poolStatusData[0].paramsCode);
-        });
-    }
-
-    //录音播放
-    function showPlayDialog(record) {
-        //加载录音
-        var voicePlayer = $("#voicePlayer");
-        voicePlayer.attr('src', "../../data/voice2.wav");
-        // voicePlayer.attr('src', record.recordPath); //todo
-        voicePlayer.get('0').load();
-
-        $("#voice_play_window").show().window({
-            width: 500,
-            height: 320,
-            modal: true,
-            title: record.touchId,
-            onClose: function () {
-                voicePlayer.get('0').pause();
-            }
         });
     }
 

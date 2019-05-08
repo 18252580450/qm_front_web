@@ -20,6 +20,8 @@ var requirePath = {
 
     "jplayer": "assets/components/jplayer/jquery.jplayer.min",
 
+    "audioplayer": "assets/components/audioplayer/audioplayer",
+
     "videojs": "assets/components/videojs/video.min",
     "videojs-ie8": "assets/components/videojs/ie8/videojs-ie8.min",
 
