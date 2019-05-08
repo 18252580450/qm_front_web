@@ -39,9 +39,9 @@
                         </div>
                         <div class='row cl'>
                             <label id="appealStaffLabel" class='form-label col-2' style="display: none">申诉人</label>
-                            <div class='formControls col-2'>
+                            <div id="appealStaffDiv" class='formControls col-2' style="display: none;">
                                 <input id="appealStaffName" class='easyui-combotree easyui-validatebox'
-                                       style='width:100%;height:30px;display:none;'>
+                                       style='width:100%;height:30px;'>
                                 <input id="appealStaffId" type='text' class='easyui-textbox' style="display:none">
                             </div>
                             <label class='form-label col-2'>申诉开始时间</label>
@@ -90,7 +90,8 @@
                             <div class='formControls col-5'>
                             </div>
                             <div class='formControls col-2'>
-                                <a href='javascript:void(0)' class='btn btn-secondary radius mt-l-20' style="display: none"
+                                <a href='javascript:void(0)' class='btn btn-secondary radius mt-l-20'
+                                   style="display: none"
                                    id="recordCloseBtn">关闭</a>
                             </div>
                         </div>
@@ -148,7 +149,7 @@
         </div>
 
         <!--查询员工组弹窗，默认隐藏-->
-        <div  id='qry_people_window' style='display:none;'></div>
+        <div id='qry_people_window' style='display:none;'></div>
 
     </div>
 </div>

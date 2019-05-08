@@ -25,10 +25,10 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
 
             //管理员或质检员显示申诉工号查询框
             if (roleCode === "checker" || roleCode === "manager") {
-                $("#appealStaffLabel").show();
+                $("#appealStaffLabel").show();  //显示申诉人搜索框
+                $("#appealStaffDiv").show();
                 //申诉人搜索框
                 var staffNameInput = $("#appealStaffName");
-                staffNameInput.show();
                 staffNameInput.searchbox({
                         editable: false,//禁止手动输入
                         searcher: function () {
