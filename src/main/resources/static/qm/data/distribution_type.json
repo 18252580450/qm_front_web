@@ -1,0 +1,18 @@
+[
+  {
+    "codeType": "DISTRIBUTION_TYPE@CS_IR",
+    "codeValue": "0",
+    "codeName": "自动分派",
+    "codeDesc": "自动分派",
+    "sortId": 0,
+    "state": "1"
+  },
+  {
+    "codeType": "DISTRIBUTION_TYPE@CS_IR",
+    "codeValue": "1",
+    "codeName": "人工分派",
+    "codeDesc": "人工分派",
+    "sortId": 1,
+    "state": "1"
+  }
+]
