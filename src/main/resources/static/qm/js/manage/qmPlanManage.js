@@ -96,23 +96,16 @@ define([
         }
 
         //手动执行计划
-        function extract() {
-            var selRows = $("#planList").datagrid("getSelections");
-            if (selRows.length === 0) {
-                $.messager.alert("提示", "请至少选择一行数据!");
-                return false;
-            } else if (selRows.length > 1) {
-                $.messager.alert("提示", "一次只能执行一个计划!");
-                return false;
-            }
-            var planId = selRows[0].planId,
-                planStatus = selRows[0].haltFlag;
-            if(planStatus !== "1"){ //未发布的计划不能执行
+        function extract(item) {
+            var planId = item.planId,
+                planStatus = item.haltFlag;
+            if (planStatus !== "1") { //未发布的计划不能执行
                 $.messager.alert("提示", "请先发布计划!");
                 return false;
             }
+            Util.loading.showLoading();
             Util.ajax.getJson(Util.constants.CONTEXT.concat(Util.constants.PLAN_TASK_DNS).concat("/").concat(planId), {}, function (result) {
-                debugger;
+                Util.loading.destroyLoading();
                 if (result) {
                     $.messager.alert("提示", "抽取成功!");
                 } else {
@@ -140,15 +133,16 @@ define([
                 columns: [[
                     {field: 'ck', checkbox: true, align: 'center'},
                     {
-                        field: 'action', title: '操作', width: '5%',
+                        field: 'action', title: '操作', width: '8%',
                         formatter: function (value, row, index) {
                             var Action =
-                                "<a href='javascript:void(0);' class='reviseBtn list_operation_color' id =" + row.planId + " >修改</a>";
-                            return Action;
+                                "<a href='javascript:void(0);' class='reviseBtn list_operation_color' id ='" + row.planId + "' >修改</a>",
+                                extract = "<a href='javascript:void(0);' class='list_operation_color' id ='extract_" + row.planId + "' >执行</a>";
+                            return Action + "&nbsp;&nbsp;" + extract;
                         }
                     },
                     {
-                        field: 'planId', title: '计划编码', width: '12%',
+                        field: 'planId', title: '计划编码', width: '15%',
                         formatter: function (value) {
                             return "<span title='" + value + "'>" + value + "</span>";
                         }
@@ -320,6 +314,14 @@ define([
 
                         success(data);
                     });
+                },
+                onLoadSuccess: function (data) {
+                    $.each(data.rows, function (i, item) {
+                        //手动执行计划
+                        $("#extract_" + item.planId).on("click", function () {
+                            extract(item);
+                        });
+                    });
                 }
             });
             // addToolsDom();
@@ -371,8 +373,6 @@ define([
             $("#batchStart").on("click", batchUpdate);
             //批量暂停
             $("#batchStop").on("click", batchUpdate);
-            //手动执行抽取任务
-            $("#extractBtn").on("click", extract);
         }
 
         //初始化搜索表单
