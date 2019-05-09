@@ -76,7 +76,7 @@
             }
             else if( canPlayType( audioFile ) ) isSupport = true;
 
-            var thePlayer = $( '<div class="' + params.classPrefix + '">' + ( isSupport ? $( '<div>' ).append( $this.eq( 0 ).clone() ).html() : '<embed src="' + audioFile + '" width="0" height="0" volume="100" autostart="' + isAutoPlay.toString() +'" loop="' + isLoop.toString() + '" />' ) + '<div class="' + cssClass.playPause + '" title="' + params.strPlay + '"><a href="#">' + params.strPlay + '</a></div></div>' ),
+            var thePlayer = $( '<div class="' + params.classPrefix + '">' + ( isSupport ? $( '<div>' ).append( $this.eq( 0 ).clone() ).html() : '<embed src="' + audioFile + '" width="0" height="0" volume="100" autostart="' + isAutoPlay.toString() +'" loop="' + isLoop.toString() + '" />' ) + '<div class="' + cssClass.playPause + '" title="' + params.strPlay + '"><a href="#" class="list_operation_color">' + params.strPlay + '</a></div></div>' ),
                 theAudio  = isSupport ? thePlayer.find( 'audio' ) : thePlayer.find( 'embed' ), theAudio = theAudio.get( 0 );
 
             if( isSupport )
@@ -183,6 +183,8 @@
             }
             else thePlayer.addClass( cssClass.mini );
 
+            thePlayer.find( 'embed' ).css( {'display': 'none' } );  //隐藏embed标签
+
             thePlayer.addClass( isAutoPlay ? cssClass.playing : cssClass.stopped );
 
             thePlayer.find( '.' + cssClass.playPause ).on( 'click', function()
@@ -195,6 +197,7 @@
                 }
                 else
                 {
+                    thePlayer
                     $( this ).attr( 'title', params.strPause ).find( 'a' ).html( params.strPause );
                     thePlayer.addClass( cssClass.playing ).removeClass( cssClass.stopped );
                     isSupport ? theAudio.play() : theAudio.Play();

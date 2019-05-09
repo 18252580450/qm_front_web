@@ -255,13 +255,19 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
                     var voicePlay = $("#voicePlay_" + item.touchId);
                     if (item.recordPath != null && item.recordPath !== "") {
                         //语言播放初始化
-                        voicePlay.audioPlayer();
-                    }
-                    voicePlay.on("click", function () {
-                        if (item.recordPath == null || item.recordPath === "") {
+                        voicePlay.audioPlayer(
+                            {
+                                classPrefix: 'audioplayer',
+                                strPlay: '播放',
+                                strPause: '暂停',
+                                strVolume: '音量'
+                            }
+                        );
+                    } else {
+                        voicePlay.on("click", function () {
                             $.messager.alert("提示", "未找到录音地址!");
-                        }
-                    });
+                        });
+                    }
                     //语音下载
                     $("#voiceDownload_" + item.touchId).on("click", function () {
                         if (item.recordPath == null || item.recordPath === "") {
