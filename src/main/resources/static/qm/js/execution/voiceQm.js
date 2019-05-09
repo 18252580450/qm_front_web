@@ -1,10 +1,9 @@
-require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPlan","ztree-exedit"], function ($, Util, Transfer,easyui,dateUtil,QueryQmPlan) {
+require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPlan","ztree-exedit","audioplayer"], function ($, Util, Transfer,easyui,dateUtil,QueryQmPlan) {
     //初始化方法
     initialize();
     var userInfo;
     var userPermission;
     var reqParams = null;
-    var i = 0;//播放按钮点击次数
     function initialize() {
         Util.getLogInData(function (data) {
             userInfo = data;//用户角色
@@ -166,7 +165,7 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
             columns: [[
                 {field: 'ck', checkbox: true, align: 'center'},
                 {
-                    field: 'action', title: '操作', width: '5%',
+                    field: 'action', title: '操作', width: '8%',
                     formatter: function (value, row, index) {
                         var bean = {//根据参数进行定位修改
                             'index':index,
@@ -174,9 +173,14 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
                             'recordPath':row.recordPath
                         };
                         var beanStr = JSON.stringify(bean);   //转成字符串
-                        var action = "<img href='javascript:void(0);' class='playBtn' src='../../image/record.png' style='height: 12px;width: 12px;' title='播放' alt='播放' id =" + beanStr + " >",
-                            download = "<img href='javascript:void(0);' class='downloadBtn' src='../../image/download.png' style='height: 12px;width: 12px;' title='下载' alt='下载' id =" + beanStr + " >";
-                        return action + "&nbsp;&nbsp;" + download;
+                        var play = '<audio id="voicePlay_' + row.touchId + '" src="' + row.recordPath + '" preload="auto"></audio>',
+                            action = "<a href='javascript:void(0);' class='playBtn' style='color: #4A90E2;' title='播放' id =" + beanStr + " >播放</a>",
+                            download = "<a href='javascript:void(0);' class='downloadBtn' style='color: #4A90E2;' title='下载' id =" + beanStr + " >下载</a>";
+                        if (row.recordPath != null && row.recordPath !== "") {
+                            return '<div style="display: flex">' + play + "&nbsp;&nbsp;" + download + '</div>';
+                        } else {
+                            return action + "&nbsp;&nbsp;" + download;
+                        }
                     }
                 },
                 {field: 'touchId', title: '语音流水', align: 'center', width: '15%',
@@ -344,6 +348,22 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
                     var json = {"rows":dataNew,"total":result.RSP.ATTACH.TOTAL};
                     success(json);
                 });
+            },
+            onLoadSuccess: function (data) {
+                $.each(data.rows, function (i, item) {
+                    //语言播放
+                    if (item.recordPath != null && item.recordPath !== "") {
+                        //语言播放初始化
+                        $("#voicePlay_" + item.touchId).audioPlayer(
+                            {
+                                classPrefix: 'audioplayer',
+                                strPlay: '播放',
+                                strPause: '暂停',
+                                strVolume: '音量'
+                            }
+                        );
+                    }
+                });
             }
         });
     }
@@ -454,17 +474,15 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
         });
 
         //语音播放
-        $("#page").on('click','img.playBtn',function(){
+        $("#page").on('click','a.playBtn',function(){
             var rowData = $(this).attr('id'), //获取a标签中传递的值
                 sensjson = JSON.parse(rowData); //转成json格式
             if (sensjson.recordPath == null || sensjson.recordPath === "") {
                 $.messager.alert("提示", "未找到录音地址!");
-            } else {
-                showPlayDialog(sensjson);
             }
         });
         //语音下载
-        $("#page").on('click', 'img.downloadBtn', function () {
+        $("#page").on('click', 'a.downloadBtn', function () {
             var rowData = $(this).attr('id'); //获取a标签中传递的值
             var sensjson = JSON.parse(rowData); //转成json格式
             var recordPath = sensjson.recordPath;
@@ -472,25 +490,6 @@ require(["jquery", 'util', "transfer", "easyui","dateUtil","js/manage/queryQmPla
                 $.messager.alert("提示", "未找到录音地址!");
             } else {
                 window.location.href = Util.constants.CONTEXT + Util.constants.WRKFM_DETAIL_DNS + "/recordDownload" + '?ftpPath=' + recordPath;
-            }
-        });
-    }
-
-    //录音播放
-    function showPlayDialog(record) {
-        //加载录音
-        var voicePlayer = $("#voicePlayer");
-        voicePlayer.attr('src', "../../data/voice2.wav");
-        // voicePlayer.attr('src', record.recordPath); //todo
-        voicePlayer.get('0').load();
-
-        $("#voice_play_window").show().window({
-            width: 500,
-            height: 320,
-            modal: true,
-            title: record.touchId,
-            onClose: function () {
-                voicePlayer.get('0').pause();
             }
         });
     }

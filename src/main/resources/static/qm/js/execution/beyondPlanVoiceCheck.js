@@ -1,6 +1,6 @@
 require([
         "js/execution/beyondPlanChooseTemplate",
-        "jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"],
+        "jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui", "audioplayer"],
     function (QryCheckTemplate, $, Util, Transfer, CommonAjax) {
 
         var userInfo,
@@ -87,9 +87,17 @@ require([
                 columns: [[
                     {field: 'ck', checkbox: true},
                     {
-                        field: 'operate', title: '操作', width: '5%',
+                        field: 'operate', title: '操作', width: '10%',
                         formatter: function (value, row, index) {
-                            return '<a href="javascript:void(0);" class="list_operation_color" id = "voiceCheck_' + row.touchId + '">质检</a>';
+                            var play = '<audio id="voicePlay_' + row.touchId + '" src=' + row.recordPath + ' preload="auto"></audio>',
+                                audio = '<a href="javascript:void(0);" class="list_operation_color" id = "voicePlay_' + row.touchId + '">播放</a>',
+                                download = '<a href="javascript:void(0);" class="list_operation_color" id = "voiceDownload_' + row.touchId + '">下载</a>',
+                                check = '<a href="javascript:void(0);" class="list_operation_color" id = "voiceCheck_' + row.touchId + '">质检</a>';
+                            if (row.recordPath != null && row.recordPath !== "") {
+                                return '<div style="display: flex">' + check + "&nbsp;&nbsp;" + play + "&nbsp;&nbsp;" + download + '</div>';
+                            } else {
+                                return '<div style="display: flex">' + check + "&nbsp;&nbsp;" + audio + "&nbsp;&nbsp;" + download + '</div>';
+                            }
                         }
                     },
                     {
@@ -213,8 +221,33 @@ require([
                     });
                 },
                 onLoadSuccess: function (data) {
-                    //语音质检详情
                     $.each(data.rows, function (i, item) {
+                        //语言播放
+                        var voicePlay = $("#voicePlay_" + item.touchId);
+                        if (item.recordPath != null && item.recordPath !== "") {
+                            //语言播放初始化
+                            voicePlay.audioPlayer(
+                                {
+                                    classPrefix: 'audioplayer',
+                                    strPlay: '播放',
+                                    strPause: '暂停',
+                                    strVolume: '音量'
+                                }
+                            );
+                        } else {
+                            voicePlay.on("click", function () {
+                                $.messager.alert("提示", "未找到录音地址!");
+                            });
+                        }
+                        //语音下载
+                        $("#voiceDownload_" + item.touchId).on("click", function () {
+                            if (item.recordPath == null || item.recordPath === "") {
+                                $.messager.alert("提示", "未找到录音地址!");
+                            } else {
+                                window.location.href = Util.constants.CONTEXT + Util.constants.WRKFM_DETAIL_DNS + "/recordDownload" + '?ftpPath=' + item.recordPath;
+                            }
+                        });
+                        //质检
                         $("#voiceCheck_" + item.touchId).on("click", function () {
                             if (item.templateId == null) {
                                 var qryCheckTemplate = QryCheckTemplate;

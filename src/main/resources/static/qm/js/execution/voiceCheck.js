@@ -249,7 +249,6 @@ require(["js/manage/queryQmPlan", "js/manage/voiceQmResultHistory", "jquery", 'u
                 });
             },
             onLoadSuccess: function (data) {
-                var audio = new Audio();
                 $.each(data.rows, function (i, item) {
                     //语言播放
                     var voicePlay = $("#voicePlay_" + item.touchId);

@@ -1,4 +1,4 @@
-require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], function ($, Util, Transfer, CommonAjax) {
+require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui", "audioplayer"], function ($, Util, Transfer, CommonAjax) {
 
     var caseInfo;  //案例信息
 
@@ -21,11 +21,16 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
             columns: [[
                 {field: 'ck', checkbox: true, align: 'center'},
                 {
-                    field: 'operate', title: '操作', width: '5%',
+                    field: 'operate', title: '操作', width: '8%',
                     formatter: function (value, row, index) {
-                        var play = '<img href="javascript:void(0);" src="../../image/record.png" style="height: 12px;width: 12px;" title="播放" alt="播放" id = "voicePlay_' + row.touchId + '">',
-                            download = '<img href="javascript:void(0);" src="../../image/download.png" style="height: 12px;width: 12px;" title="下载" alt="下载" id = "voiceDownload_' + row.touchId + '">';
-                        return play + "&nbsp;&nbsp;" + download;
+                        var play = '<audio id="voicePlay_' + row.touchId + '" src=' + row.recordPath + ' preload="auto"></audio>',
+                            audio = '<a href="javascript:void(0);" class="list_operation_color" id = "voicePlay_' + row.touchId + '">播放</a>',
+                            download = '<a href="javascript:void(0);" class="list_operation_color" id = "voiceDownload_' + row.touchId + '">下载</a>';
+                        if (row.recordPath != null && row.recordPath !== "") {
+                            return '<div style="display: flex">' + play + "&nbsp;&nbsp;" + download + '</div>';
+                        } else {
+                            return '<div style="display: flex">' + audio + "&nbsp;&nbsp;" + download + '</div>';
+                        }
                     }
                 },
                 {
@@ -139,6 +144,33 @@ require(["jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui"], func
                 });
             },
             onLoadSuccess: function (data) {
+                $.each(data.rows, function (i, item) {
+                    //语言播放
+                    var voicePlay = $("#voicePlay_" + item.touchId);
+                    if (item.recordPath != null && item.recordPath !== "") {
+                        //语言播放初始化
+                        voicePlay.audioPlayer(
+                            {
+                                classPrefix: 'audioplayer',
+                                strPlay: '播放',
+                                strPause: '暂停',
+                                strVolume: '音量'
+                            }
+                        );
+                    } else {
+                        voicePlay.on("click", function () {
+                            $.messager.alert("提示", "未找到录音地址!");
+                        });
+                    }
+                    //语音下载
+                    $("#voiceDownload_" + item.touchId).on("click", function () {
+                        if (item.recordPath == null || item.recordPath === "") {
+                            $.messager.alert("提示", "未找到录音地址!");
+                        } else {
+                            window.location.href = Util.constants.CONTEXT + Util.constants.WRKFM_DETAIL_DNS + "/recordDownload" + '?ftpPath=' + item.recordPath;
+                        }
+                    });
+                });
             }
         });
     }
