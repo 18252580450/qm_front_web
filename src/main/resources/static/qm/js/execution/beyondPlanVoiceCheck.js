@@ -1,6 +1,6 @@
 require([
         "js/execution/beyondPlanChooseTemplate",
-        "jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui", "audioplayer"],
+        "jquery", 'util', "transfer", "commonAjax", "dateUtil", "easyui", "audioplayer", "ztree-exedit"],
     function (QryCheckTemplate, $, Util, Transfer, CommonAjax) {
 
         var userInfo,
