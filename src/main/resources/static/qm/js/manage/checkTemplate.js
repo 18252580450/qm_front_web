@@ -184,6 +184,10 @@ define(["js/manage/addCheckTemplate","js/manage/modifyCheckTemplate","jquery", '
                 $.messager.alert("提示", "请只选择一行数据!");
                 return false;
             }
+            if (selRows[0].templateStatus == "1") {//模版状态是发布状态不可进行修改操作
+                $.messager.alert("提示", "模版发布状态不可进行修改操作!");
+                return false;
+            }
             var modifyCheckTemplate = new ModifyCheckTemplate(selRows);
             $('#modif_window').show().window({
                 title: '修改模版',
