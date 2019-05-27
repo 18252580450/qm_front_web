@@ -73,7 +73,8 @@ define(["js/manage/addCheckTemplate","js/manage/modifyCheckTemplate","jquery", '
                 {
                     field: 'templateType', title: '模板类型', width: '15%',
                     formatter: function (value, row, index) {
-                        return {'0': '录音考评模板', '1': '工单考评模板', '2': '互联网考评模板'}[value];
+                        return {'0': '录音考评模板', '1': '工单考评模板'}[value];
+                        // return {'0': '录音考评模板', '1': '工单考评模板', '2': '互联网考评模板'}[value];
                     }
                 },
                 {field: 'remark', title: '备注', width: '20%',

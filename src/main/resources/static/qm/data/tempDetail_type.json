@@ -14,13 +14,5 @@
     "codeDesc": "工单考评模板",
     "sortId": 0,
     "state": "1"
-  },
-  {
-    "codeType": "TENANT_TYPE@CS_IR",
-    "codeValue": "2",
-    "codeName": "互联网考评模板",
-    "codeDesc": "互联网考评模板",
-    "sortId": 0,
-    "state": "1"
   }
 ]
