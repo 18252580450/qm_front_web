@@ -28,4 +28,4 @@ RESTFul API的接口请求类型规范：
     2、easyui组件转换数据格式
         Transfer.Combobox.transfer(data)
         Transfer.DataGrid.transfer(result)
-        
+        # qm_front_web
