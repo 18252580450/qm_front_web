@@ -33,40 +33,49 @@ define(['constants', 'page-util', 'ajax', 'loading', 'underscore', "jquery"], fu
         //         callback(userInfo);
         //     }
         // });
-        $.ajax({
-            url: constants.CQKBMANAGE_URL + constants.IS_LOG_IN + "?time=" + new Date().getTime(),
-            dataType: "json",
-            async: false,
-            type: "GET",
-            cache: false,
-            data: {},
-            success: function (data) {
-                var result = JSON.stringify(data);
-                if (result.indexOf("<html>") !== -1) {
-                    jumpToLogin();
-                }
-                if (data.retVal !== '1') {
-                    jumpToLogin();
-                }
-                userInfo = {
-                    staffId: data.staffId,
-                    bssGroupId: data.bssGroupId,
-                    bssId: data.bssOpId,
-                    provCode: _.isEmpty(data.provCode) ? "00030000" : data.provCode,
-                    orgId: _.isEmpty(data.orgId) ? "00030000" : data.orgId,
-                    staffName: data.uname,
-                    OrgName: data.OrgName
-                };
-                callback(userInfo);
-            },
-            error: function (XMLHttpRequest, textStatus, errorThrown) {
-                // alert(XMLHttpRequest.status);
-                // alert(XMLHttpRequest.readyState);
-                // alert(textStatus);
-                jumpToLogin();
-                callback(userInfo);
-            }
-        });
+        // $.ajax({
+        //     url: constants.CQKBMANAGE_URL + constants.IS_LOG_IN + "?time=" + new Date().getTime(),
+        //     dataType: "json",
+        //     async: false,
+        //     type: "GET",
+        //     cache: false,
+        //     data: {},
+        //     success: function (data) {
+        //         var result = JSON.stringify(data);
+        //         if (result.indexOf("<html>") !== -1) {
+        //             jumpToLogin();
+        //         }
+        //         if (data.retVal !== '1') {
+        //             jumpToLogin();
+        //         }
+        //         userInfo = {
+        //             staffId: data.staffId,
+        //             bssGroupId: data.bssGroupId,
+        //             bssId: data.bssOpId,
+        //             provCode: _.isEmpty(data.provCode) ? "00030000" : data.provCode,
+        //             orgId: _.isEmpty(data.orgId) ? "00030000" : data.orgId,
+        //             staffName: data.uname,
+        //             OrgName: data.OrgName
+        //         };
+        //         callback(userInfo);
+        //     },
+        //     error: function (XMLHttpRequest, textStatus, errorThrown) {
+        //         // alert(XMLHttpRequest.status);
+        //         // alert(XMLHttpRequest.readyState);
+        //         // alert(textStatus);
+        //         jumpToLogin();
+        //         callback(userInfo);
+        //     }
+        // });
+        userInfo = {
+            staffId: "10000",
+            bssGroupId: "",
+            bssId: "",
+            staffName: "系统管理员",
+            OrgName:"TEST2",
+            orgId: "1000002"
+        };
+        callback(userInfo);
     }
 
     function getRoleCode(data, callback) {
